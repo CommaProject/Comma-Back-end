@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.apache.hc.core5.http.ParseException;
 
+import com.team.comma.exception.SpotifyException;
+
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.ClientCredentials;
@@ -24,6 +26,7 @@ public class CreateAccessToken {
 			System.out.println("Expires in: " + clientCredentials.getExpiresIn());
 		} catch (IOException | SpotifyWebApiException | ParseException e) {
 			System.out.println("Error: " + e.getMessage());
+			throw new SpotifyException(e.getMessage());
 		}
 		
 		return spotifyApi.getAccessToken();

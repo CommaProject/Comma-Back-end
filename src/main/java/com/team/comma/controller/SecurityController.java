@@ -35,10 +35,11 @@ public class SecurityController {
 				.build();
 	}
 	
+	/*
 	@RequestMapping(value = "/security" , method = RequestMethod.GET)
 	public String userRequest() {
 		return "인증 요청";
 	}
-	
+	*/
 	
 }

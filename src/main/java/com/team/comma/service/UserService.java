@@ -30,7 +30,7 @@ public class UserService {
 	@Autowired
 	JwtTokenProvider jwtTokenProvider;
 
-	public TokenDTO login(RequestUserDTO userDTO , HttpServletResponse response) throws AccountException {
+	public TokenDTO login(RequestUserDTO userDTO, HttpServletResponse response) throws AccountException {
 		UserEntity userEntity = userRepository.findByEmail(userDTO.getEmail());
 
 		if (userEntity == null || userEntity.getPassword() != userDTO.getPassword()) {
@@ -39,16 +39,7 @@ public class UserService {
 
 		Token tokenDTO = jwtTokenProvider.createAccessToken(userEntity.getUsername(), userEntity.getRoles());
 		jwtService.login(tokenDTO);
-
-		// 쿠키 저장
-		Cookie cookie = new Cookie("refreshToken", tokenDTO.getRefreshToken());
-		cookie.setDomain("localhost");
-		cookie.setPath("/");
-		// 14주간 저장
-		cookie.setMaxAge(14 * 24 * 60 * 60 * 1000);
-		cookie.setSecure(true);
-		cookie.setHttpOnly(true);
-		response.addCookie(cookie);
+		createCookies(tokenDTO.getRefreshToken(), response);
 
 		return TokenDTO.builder().code(1).id(userDTO.getEmail()).accessToken(tokenDTO.getAccessToken())
 				.grandType(tokenDTO.getGrantType()).build();
@@ -58,7 +49,7 @@ public class UserService {
 		UserEntity userEntity = userRepository.findByEmail(userDTO.getEmail());
 
 		if (userEntity != null) {
-			throw new AccountException("이미 있는 계정입니다.");
+			throw new AccountException("이미 존재하는 계정입니다.");
 		}
 
 		UserEntity buildEntity = UserEntity.builder().email(userDTO.getEmail()).name(userDTO.getName())
@@ -69,6 +60,16 @@ public class UserService {
 		userRepository.save(buildEntity);
 
 		return MessageDTO.builder().code(1).message("성공적으로 가입되었습니다.").build();
+	}
+
+	public void createCookies(String RefreshToken, HttpServletResponse response) {
+		Cookie cookie = new Cookie("refreshToken", RefreshToken);
+		cookie.setDomain("localhost");
+		cookie.setPath("/");
+		cookie.setMaxAge(14 * 24 * 60 * 60 * 1000); // 14주간 저장
+		cookie.setSecure(true);
+		cookie.setHttpOnly(true);
+		response.addCookie(cookie);
 	}
 
 }
