@@ -37,13 +37,10 @@ public class UserEntity implements UserDetails {
 	@Id
 	@GeneratedValue
 	private Long userKey;
-	
+
 	@Column(length = 50 , nullable = false)
 	private String email;
-	
-	@Column(length = 50 , nullable = false)
-	private String password;
-	
+
 	@Column(length = 10 , nullable = false)
 	private String name;
 	
@@ -88,7 +85,6 @@ public class UserEntity implements UserDetails {
 	}
 
 	// JWT Security
-	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> authorities = new ArrayList<>();
@@ -99,10 +95,10 @@ public class UserEntity implements UserDetails {
         return authorities;
 	}
 
-	@Override
-	public String getPassword() {
-		return null;
-	}
+//	@Override
+//	public String getPassword() {
+//		return password;
+//	}
 
 	@Override
 	public String getUsername() {
