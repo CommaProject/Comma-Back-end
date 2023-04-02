@@ -7,14 +7,19 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.team.comma.entity.Token;
 import com.team.comma.entity.UserEntity;
 import com.team.comma.repository.UserRepository;
+import com.team.comma.security.CreateCookie;
 import com.team.comma.service.UserService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,7 +30,6 @@ public class CreateOAuthUser {
 	final private UserRepository userRepository;
 	
 	public Token createKakaoUser(String token) {
-
 		String reqURL = "https://kapi.kakao.com/v2/user/me"; // access_token을 이용하여 사용자 정보 조회
 		try {
 			URL url = new URL(reqURL);
@@ -59,6 +63,8 @@ public class CreateOAuthUser {
 			} else { // 존재하지 않는 계정
 				
 			}
+			
+			return null;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;

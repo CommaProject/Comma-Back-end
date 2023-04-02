@@ -4,8 +4,9 @@ import java.util.Collections;
 
 import javax.security.auth.login.AccountException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.team.comma.dto.MessageDTO;
 import com.team.comma.dto.RequestUserDTO;
@@ -13,24 +14,23 @@ import com.team.comma.dto.TokenDTO;
 import com.team.comma.entity.Token;
 import com.team.comma.entity.UserEntity;
 import com.team.comma.repository.UserRepository;
+import com.team.comma.security.CreateCookie;
 import com.team.comma.security.JwtTokenProvider;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserService {
 
-	@Autowired
-	UserRepository userRepository;
-	@Autowired
-	JwtService jwtService;
-	@Autowired
-	JwtTokenProvider jwtTokenProvider;
+	final private UserRepository userRepository;
+	final private JwtService jwtService;
+	final private JwtTokenProvider jwtTokenProvider;
 
-	public TokenDTO login(RequestUserDTO userDTO , HttpServletResponse response) throws AccountException {
+	public TokenDTO login(RequestUserDTO userDTO) throws AccountException {
 		UserEntity userEntity = userRepository.findByEmail(userDTO.getEmail());
 
 		if (userEntity == null || userEntity.getPassword() != userDTO.getPassword()) {
@@ -39,16 +39,11 @@ public class UserService {
 
 		Token tokenDTO = jwtTokenProvider.createAccessToken(userEntity.getUsername(), userEntity.getRoles());
 		jwtService.login(tokenDTO);
-
-		// 쿠키 저장
-		Cookie cookie = new Cookie("refreshToken", tokenDTO.getRefreshToken());
-		cookie.setDomain("localhost");
-		cookie.setPath("/");
-		// 14주간 저장
-		cookie.setMaxAge(14 * 24 * 60 * 60 * 1000);
-		cookie.setSecure(true);
-		cookie.setHttpOnly(true);
-		response.addCookie(cookie);
+		
+		ServletRequestAttributes attr = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes());
+		HttpServletResponse response = attr.getResponse();
+		
+		response.addCookie(CreateCookie.createRefreshToken(tokenDTO.getRefreshToken()));
 
 		return TokenDTO.builder().code(1).id(userDTO.getEmail()).accessToken(tokenDTO.getAccessToken())
 				.grandType(tokenDTO.getGrantType()).build();

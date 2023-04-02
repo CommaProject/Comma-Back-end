@@ -36,8 +36,8 @@ public class UserController {
 	final private OauthService oauthService;
 	
 	@PostMapping(value = "/login")
-	public TokenDTO login(@RequestBody RequestUserDTO userDTO , HttpServletResponse response) throws AccountException {
-		return userService.login(userDTO , response);
+	public TokenDTO login(@RequestBody RequestUserDTO userDTO) throws AccountException {
+		return userService.login(userDTO);
 	}
 	
 	@PostMapping(value = "/register")
