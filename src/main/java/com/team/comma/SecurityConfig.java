@@ -47,10 +47,6 @@ public class SecurityConfig {
                 .logoutUrl("/logout") // logout URL에 접근하면
                 .deleteCookies("refreshToken") 
                 .deleteCookies("accessToken") // refreshToken 과 accessToken 삭제
-                .and()	// OAuth 2.0 기능 부분
-                .oauth2Login()
-                .clientRegistrationRepository(clientRegistrationRepository())
-                .authorizedClientService(authorizedClientService())
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint((request , response , Exception) -> {

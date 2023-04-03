@@ -48,33 +48,4 @@ public class UserController {
 	public MessageDTO OauthLogin(@RequestBody OauthRequest oauthRequest) throws AccountException {
 		return oauthService.loginOauthServer(oauthRequest);
 	}
-	
-	/*
-	final private String authorizationRequestBaseUri = "oauth2/authorization";
-	final private ClientRegistrationRepository clientRegistrationRepository;
-	final private Map<String, String> oauth2AuthenticationUrls = new HashMap<>();
-	@GetMapping("/oauth")
-    public Map getLoginLink() {
-		Iterable<ClientRegistration> clientRegistrations = null;
-
-        ResolvableType type = ResolvableType.forInstance(clientRegistrationRepository)
-                .as(Iterable.class);
-
-        if (type != ResolvableType.NONE &&
-                ClientRegistration.class.isAssignableFrom(type.resolveGenerics()[0])) {
-            clientRegistrations = (Iterable<ClientRegistration>) clientRegistrationRepository;
-        }
-
-        clientRegistrations.forEach(registration ->
-                oauth2AuthenticationUrls.put(registration.getClientName(),
-                        authorizationRequestBaseUri + "/" + registration.getRegistrationId()));
-
-        return oauth2AuthenticationUrls;
-	}
-	@GetMapping(value = "/oauth/login")
-	public MessageDTO OauthLogin(@RequestParam(name = "code") String code , @RequestParam(name = "state" , required = false) String state) throws AccountException {
-		return oauthService.loginOauthServer(OauthRequest.builder().code(code).state(state).type("google").build());
-	}
-	*/
-	
 }

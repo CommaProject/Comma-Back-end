@@ -130,38 +130,4 @@ public class GetAccessToken {
         return returnNode;
 	}
 	
-	public JsonNode getInstagramAccessToken(String code , String state) {
-		final String RequestUrl = "https://api.instagram.com/oauth/access_token"; // Host
-        final List<NameValuePair> postParams = new ArrayList<NameValuePair>();
- 
-        postParams.add(new BasicNameValuePair("grant_type", "authorization_code"));
-        postParams.add(new BasicNameValuePair("client_id", env.getProperty(CLIENT_PROPERTY_KEY + "instagram.client-id"))); // REST API KEY
-        postParams.add(new BasicNameValuePair("client_secret", env.getProperty(CLIENT_PROPERTY_KEY + "instagram.client-secret")));
-        postParams.add(new BasicNameValuePair("redirect_uri", env.getProperty(CLIENT_PROPERTY_KEY + "instagram.redirect-uri")));
-        postParams.add(new BasicNameValuePair("code", code)); // 로그인 과정중 얻은 code 값
- 
-        final HttpClient client = HttpClientBuilder.create().build();
-        final HttpPost post = new HttpPost(RequestUrl);
-        JsonNode returnNode = null;
- 
-        try {
-            post.setEntity(new UrlEncodedFormEntity(postParams));
-            final HttpResponse response = client.execute(post);
- 
-            // JSON 형태 반환값 처리
-            ObjectMapper mapper = new ObjectMapper();
-            returnNode = mapper.readTree(response.getEntity().getContent());
- 
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-        }
- 
-        return returnNode;
-	}
-	
 }
