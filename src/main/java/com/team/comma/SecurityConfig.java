@@ -43,16 +43,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/security/**").hasRole("USER")
                 .anyRequest().permitAll()
-                // .and().logout() RefreshToken 제거
-                // .logoutUrl("/logout")
-                //.deleteCookies("refreshToken")
-                // .logoutSuccessUrl("/")
-                .and()	// OAuth 2.0
-                .oauth2Login() 
-                //.and()
-                //.clientRegistrationRepository(clientRegistrationRepository())
-                //.authorizedClientService(authorizedClientService())
-                /**/
+                .and().logout() 
+                .logoutUrl("/logout") // logout URL에 접근하면
+                .deleteCookies("refreshToken") 
+                .deleteCookies("accessToken") // refreshToken 과 accessToken 삭제
+                .and()	// OAuth 2.0 기능 부분
+                .oauth2Login()
+                .clientRegistrationRepository(clientRegistrationRepository())
+                .authorizedClientService(authorizedClientService())
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint((request , response , Exception) -> {
