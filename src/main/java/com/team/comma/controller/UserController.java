@@ -69,12 +69,4 @@ public class UserController {
 		oauthService.loginOauthServer(OauthRequest.builder().code(code).state(state).type("kakao").build());
 	}
 	
-	/*
-	 * 
-	@GetMapping(value = "/oauth/login")
-	public void OauthLogin(@RequestBody OauthRequest oauthRequest) {
-		oauthService.loginOauthServer(oauthRequest);
-	}
-	 */
-	
 }

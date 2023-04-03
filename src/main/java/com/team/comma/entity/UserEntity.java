@@ -16,6 +16,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -41,8 +43,12 @@ public class UserEntity implements UserDetails {
 	@Column(length = 50 , nullable = false)
 	private String email;
 	
-	@Column(length = 50 , nullable = false)
+	@Column(length = 50 , nullable = true)
 	private String password;
+	
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private UserType userType;
 	
 	@Column(length = 10 , nullable = false)
 	private String name;
@@ -76,6 +82,12 @@ public class UserEntity implements UserDetails {
 	@Builder.Default
     private List<String> roles = new LinkedList<String>();
 	
+	// OAuth 인지 , GeneralUser 인지 확인
+	public enum UserType {
+		GeneralUser ,
+		OAuthUser
+	}
+
 	// 연관관계 편의 메소드
 	public void addUserArtist(UserArtist userArtist) {
 		getArtistName().add(userArtist);
@@ -101,7 +113,7 @@ public class UserEntity implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return null;
+		return password;
 	}
 
 	@Override
@@ -128,5 +140,6 @@ public class UserEntity implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-	
 }
+
+

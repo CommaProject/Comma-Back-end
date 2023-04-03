@@ -6,12 +6,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.security.auth.login.AccountException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.team.comma.dto.TokenDTO;
 import com.team.comma.entity.Token;
 import com.team.comma.entity.UserEntity;
 import com.team.comma.repository.UserRepository;
@@ -27,9 +30,8 @@ import lombok.RequiredArgsConstructor;
 public class CreateOAuthUser {
 	
 	final private UserService userService;
-	final private UserRepository userRepository;
 	
-	public Token createKakaoUser(String token) {
+	public TokenDTO createKakaoUser(String token) throws AccountException {
 		String reqURL = "https://kapi.kakao.com/v2/user/me"; // access_token을 이용하여 사용자 정보 조회
 		try {
 			URL url = new URL(reqURL);
@@ -57,13 +59,7 @@ public class CreateOAuthUser {
 			JsonObject jsonObject = JsonParser.parseString(result).getAsJsonObject();
 			String email = jsonObject.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
 			
-			UserEntity user = userRepository.findByEmail(email);
-			if(user != null) { // 이미 존재하는 계정일 경우
-				
-			} else { // 존재하지 않는 계정
-				
-			}
-			
+			// userService.loginOauth(email);
 			return null;
 		} catch (IOException e) {
 			e.printStackTrace();
