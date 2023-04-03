@@ -27,7 +27,6 @@ public enum OAuth2Provider {
 		public ClientRegistration.Builder getBuilder(String registrationId) {
 			ClientRegistration.Builder builder = getBuilder(registrationId, ClientAuthenticationMethod.CLIENT_SECRET_POST,
 					DEFAULT_REDIRECT_URL);
-			builder.scope("profile_nickname");
 			builder.authorizationUri("https://nid.naver.com/oauth2.0/authorize");
 			builder.tokenUri("https://nid.naver.com/oauth2.0/token");
 			builder.clientName("naver");
@@ -40,7 +39,7 @@ public enum OAuth2Provider {
 		public ClientRegistration.Builder getBuilder(String registrationId) {
 			ClientRegistration.Builder builder = getBuilder(registrationId,
                     ClientAuthenticationMethod.CLIENT_SECRET_BASIC, DEFAULT_REDIRECT_URL);
-            builder.scope("profile");
+            builder.scope("email");
             builder.authorizationUri("https://accounts.google.com/o/oauth2/v2/auth");
             builder.tokenUri("https://www.googleapis.com/oauth2/v4/token");
             builder.jwkSetUri("https://www.googleapis.com/oauth2/v3/certs");

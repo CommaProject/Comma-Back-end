@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	final private JwtTokenProvider jwtTokenProvider;
-	final private List<String> clients = Arrays.asList("google", "facebook", "github", "kakao", "naver");
+	final private List<String> clients = Arrays.asList("google", "kakao", "naver");
 	final private Environment env;
 	final private String CLIENT_PROPERTY_KEY= "spring.security.oauth2.client.registration.";
 	
@@ -99,14 +99,7 @@ public class SecurityConfig {
                     .clientSecret(clientSecret)
                     .build();
         }
-/*
-        if (client.equals("instagram")) {
-            return OAuth2Provider.FACEBOOK.getBuilder(client)
-                    .clientId(clientId)
-                    .clientSecret(clientSecret)
-                    .build();
-        }
-*/
+
         if (client.equals("kakao")) {
             return OAuth2Provider.KAKAO.getBuilder(client)
                     .clientId(clientId)

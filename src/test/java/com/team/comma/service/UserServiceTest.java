@@ -2,12 +2,10 @@ package com.team.comma.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.ArgumentMatchers.any;
-
-import java.time.LocalDateTime;
 
 import javax.security.auth.login.AccountException;
 
@@ -23,8 +21,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.team.comma.dto.MessageDTO;
 import com.team.comma.dto.RequestUserDTO;
-import com.team.comma.dto.TokenDTO;
 import com.team.comma.entity.UserEntity;
 import com.team.comma.entity.UserEntity.UserType;
 import com.team.comma.repository.UserRepository;
@@ -100,7 +98,7 @@ public class UserServiceTest {
 		doReturn(generalUserEntity).when(userRepository).save(any(UserEntity.class));
 
 		// when
-		TokenDTO result = userService.loginOauth(userDTO);
+		MessageDTO result = userService.loginOauth(userDTO);
 
 		// then
 		assertThat(result).isNotNull();
@@ -116,7 +114,7 @@ public class UserServiceTest {
 		doReturn(userEntity).when(userRepository).findByEmail(userEmail);
 
 		// when
-		TokenDTO result = userService.loginOauth(userDTO);
+		MessageDTO result = userService.loginOauth(userDTO);
 
 		// then
 		assertThat(result).isNotNull();
@@ -124,13 +122,11 @@ public class UserServiceTest {
 	}
 
 	public UserEntity getOauthUserEntity() {
-		return UserEntity.builder().age("20").email(userEmail).isLeave(0).name(userName).userType(UserType.OAuthUser)
-				.recommandTime(LocalDateTime.of(2015, 12, 25, 12, 0)).password(null).sex("femail").build();
+		return UserEntity.builder().email(userEmail).userType(UserType.OAuthUser).password(null).build();
 	}
 
 	public UserEntity getGeneralUserEntity() {
-		return UserEntity.builder().age("20").email(userEmail).isLeave(0).name(userName).userType(UserType.GeneralUser)
-				.recommandTime(LocalDateTime.of(2015, 12, 25, 12, 0)).password(null).sex("femail").build();
+		return UserEntity.builder().email(userEmail).userType(UserType.GeneralUser).password(null).build();
 	}
 
 	public RequestUserDTO getRequestUser() {

@@ -1,6 +1,7 @@
 package com.team.comma.exception;
 
 import javax.security.auth.login.AccountException;
+import javax.security.auth.login.AccountNotFoundException;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,4 +24,14 @@ public class GeneralExceptionHandler {
 				.build();
 	}
 	
+	/*
+	 * OAuth2.0 존재하지 않은 이메일
+	 */
+	@ExceptionHandler({AccountNotFoundException.class})
+	public MessageDTO handleAccountExcepteption(Exception e) {
+		return MessageDTO.builder()
+				.code(-3)
+				.message(e.getMessage())
+				.build();
+	}
 }

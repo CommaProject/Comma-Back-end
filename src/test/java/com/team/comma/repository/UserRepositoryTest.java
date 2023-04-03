@@ -2,8 +2,6 @@ package com.team.comma.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDateTime;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,6 @@ public class UserRepositoryTest {
 	private UserRepository userRepository;
 
 	private String userEmail = "email@naver.com";
-	private String userName = "userName";
 
 	@Test
 	@DisplayName("OAuth 사용자 저장")
@@ -56,8 +53,7 @@ public class UserRepositoryTest {
 	}
 
 	public UserEntity getuserEntity() {
-		return UserEntity.builder().age("20").email(userEmail).isLeave(0).name(userName).userType(UserType.OAuthUser)
-				.recommandTime(LocalDateTime.of(2015, 12, 25, 12, 0)).password(null).sex("femail").build();
+		return UserEntity.builder().email(userEmail).userType(UserType.OAuthUser).password(null).build();
 	}
 
 }
