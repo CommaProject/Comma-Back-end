@@ -128,7 +128,42 @@ public class UserServiceTest {
 	}
 
 	@Test
-	@DisplayName("사용자 로그인")
+	@DisplayName("사용자 로그인 예외 _ 일치하지 않은 비밀번호")
+	public void loginException_notEqualPassword() throws AccountException {
+		// given
+		LoginRequest loginRequest = getLoginRequest();
+		UserEntity userEntity = getUserEntity();
+		userEntity.setPassword("unknown");
+		doReturn(userEntity).when(userRepository).findByEmail(loginRequest.getEmail());
+		
+		// when
+		Throwable thrown = catchThrowable(() -> userService.login(loginRequest));
+		
+		// then
+		assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("정보가 올바르지 않습니다.");
+		
+	}
+
+	@Test
+	@DisplayName("사용자 로그인 예외 _ 존재하지 않은 사용자")
+	public void notExistUserLoginExceptionTest() {
+		// given
+		LoginRequest login = getLoginRequest();
+		doReturn(null).when(userRepository).findByEmail(login.getEmail());
+
+		// when
+		Throwable thrown = catchThrowable(() -> userService.login(login));
+		;
+
+		// then
+		assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("정보가 올바르지 않습니다.");
+
+		// verify
+		verify(userRepository, times(1)).findByEmail(login.getEmail());
+	}
+	
+	@Test
+	@DisplayName("사용자 로그인 성공")
 	public void userLoginTest() throws AccountException {
 		// given
 		LoginRequest login = getLoginRequest();
@@ -147,25 +182,22 @@ public class UserServiceTest {
 	}
 
 	@Test
-	@DisplayName("사용자 로그인 예외_존재하지 않은 사용자")
-	public void notExistUserLoginExceptionTest() {
+	@DisplayName("회원 가입 예외_존재하는 회원")
+	public void existUserException() {
 		// given
-		LoginRequest login = getLoginRequest();
-		doReturn(null).when(userRepository).findByEmail(login.getEmail());
+		RegisterRequest registerRequest = getRegisterRequest();
+		doReturn(getUserEntity()).when(userRepository).findByEmail(registerRequest.getEmail());
 
 		// when
-		Throwable thrown = catchThrowable(() -> userService.login(login));
-		;
+		Throwable thrown = catchThrowable(() -> userService.register(registerRequest));
 
 		// then
-		assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("정보가 올바르지 않습니다.");
+		assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("이미 존재하는 계정입니다.");
 
-		// verify
-		verify(userRepository, times(1)).findByEmail(login.getEmail());
 	}
-
+	
 	@Test
-	@DisplayName("사용자 회원 가입")
+	@DisplayName("사용자 회원 가입 성공")
 	public void registUser() throws AccountException {
 		// given
 		RegisterRequest registerRequest = getRegisterRequest();
@@ -180,21 +212,6 @@ public class UserServiceTest {
 		assertThat(message.getCode()).isEqualTo(1);
 		assertThat(message.getMessage()).isEqualTo("성공적으로 가입되었습니다.");
 		assertThat(message.getData()).isEqualTo(userEntity.getEmail());
-	}
-
-	@Test
-	@DisplayName("회원 가입 예외_존재하는 회원")
-	public void existUserException() {
-		// given
-		RegisterRequest registerRequest = getRegisterRequest();
-		doReturn(getUserEntity()).when(userRepository).findByEmail(registerRequest.getEmail());
-
-		// when
-		Throwable thrown = catchThrowable(() -> userService.register(registerRequest));
-
-		// then
-		assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("이미 존재하는 계정입니다.");
-
 	}
 
 	private UserEntity getUserEntity() {

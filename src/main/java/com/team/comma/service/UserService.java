@@ -42,7 +42,7 @@ public class UserService {
 			throw new AccountException("일반 사용자는 OAuth 계정으로 로그인할 수 없습니다.");
 		}
 		
-		if(userEntity.getPassword() != loginRequest.getPassword()) {
+		if(!userEntity.getPassword().equals(loginRequest.getPassword())) {
 			throw new AccountException("정보가 올바르지 않습니다.");
 		}
 
