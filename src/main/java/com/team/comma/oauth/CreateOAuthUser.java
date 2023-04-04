@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.team.comma.dto.MessageDTO;
-import com.team.comma.dto.RequestUserDTO;
+import com.team.comma.dto.RegisterRequest;
 import com.team.comma.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -123,8 +123,8 @@ public class CreateOAuthUser {
 		}
 	}
 	
-	public RequestUserDTO createUser(String email) {
-		return RequestUserDTO.builder()
+	public RegisterRequest createUser(String email) {
+		return RegisterRequest.builder()
 				.email(email)
 				.build();
 	}

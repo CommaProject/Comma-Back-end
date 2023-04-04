@@ -8,8 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.team.comma.dto.LoginRequest;
 import com.team.comma.dto.MessageDTO;
-import com.team.comma.dto.RequestUserDTO;
+import com.team.comma.dto.RegisterRequest;
 import com.team.comma.entity.Token;
 import com.team.comma.entity.UserEntity;
 import com.team.comma.entity.UserEntity.UserType;
@@ -30,7 +31,7 @@ public class UserService {
 	final private JwtService jwtService;
 	final private JwtTokenProvider jwtTokenProvider;
 
-	public MessageDTO login(final RequestUserDTO userDTO) throws AccountException {
+	public MessageDTO login(final LoginRequest userDTO) throws AccountException {
 		UserEntity userEntity = userRepository.findByEmail(userDTO.getEmail());
 
 		if (userEntity == null) {
@@ -50,7 +51,7 @@ public class UserService {
 		return MessageDTO.builder().code(1).message("로그인이 성공적으로 되었습니다.").data(userEntity.getEmail()).build();
 	}
 
-	public MessageDTO register(final RequestUserDTO userDTO) throws AccountException {
+	public MessageDTO register(final RegisterRequest userDTO) throws AccountException {
 		UserEntity userEntity = userRepository.findByEmail(userDTO.getEmail());
 
 		if (userEntity != null) {
@@ -64,7 +65,7 @@ public class UserService {
 		return MessageDTO.builder().code(1).message("성공적으로 가입되었습니다.").data(result.getEmail()).build();
 	}
 
-	public MessageDTO loginOauth(final RequestUserDTO userDTO) throws AccountException {
+	public MessageDTO loginOauth(final RegisterRequest userDTO) throws AccountException {
 		UserEntity userEntity = userRepository.findByEmail(userDTO.getEmail());
 
 		if (userEntity == null) { // 정보가 없다면 회원가입
@@ -80,7 +81,7 @@ public class UserService {
 		return MessageDTO.builder().code(1).message("로그인이 성공적으로 되었습니다.").data(userEntity.getEmail()).build();
 	}
 
-	public UserEntity createUser(final RequestUserDTO userDTO , final UserType userType) {
+	public UserEntity createUser(final RegisterRequest userDTO , final UserType userType) {
 		return UserEntity.builder().email(userDTO.getEmail())
 				.password(userDTO.getPassword())
 				.roles(Collections.singletonList("ROLE_USER")).userType(userType)

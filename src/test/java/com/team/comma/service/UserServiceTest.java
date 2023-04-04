@@ -25,8 +25,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.team.comma.dto.LoginRequest;
 import com.team.comma.dto.MessageDTO;
-import com.team.comma.dto.RequestUserDTO;
+import com.team.comma.dto.RegisterRequest;
 import com.team.comma.entity.Token;
 import com.team.comma.entity.UserEntity;
 import com.team.comma.entity.UserEntity.UserType;
@@ -64,12 +65,12 @@ public class UserServiceTest {
 	@DisplayName("일반 사용자가 OAuth2.0 계정에 접근 시 오류")
 	public void deniedToGeralUserAccessOAuthUser() throws AccountException {
 		// given
-		RequestUserDTO userDTO = getRequestUser();
+		LoginRequest login = loginRequest();
 		UserEntity userEntity = getOauthUserEntity();
 		doReturn(userEntity).when(userRepository).findByEmail(userEmail);
 
 		// when
-		Throwable thrown = catchThrowable(() -> userService.login(userDTO));
+		Throwable thrown = catchThrowable(() -> userService.login(login));
 
 		// then
 		assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("일반 사용자는 OAuth 계정으로 로그인할 수 없습니다.");
@@ -82,7 +83,7 @@ public class UserServiceTest {
 	@DisplayName("Oauth2.0 로그인 실패 _ 존재하는 일반 사용자")
 	public void existGeneralUser() {
 		// given
-		RequestUserDTO userDTO = getRequestUser();
+		RegisterRequest userDTO = getRequestUser();
 		UserEntity generalUserEntity = getGeneralUserEntity();
 		doReturn(generalUserEntity).when(userRepository).findByEmail(userDTO.getEmail());
 
@@ -97,7 +98,7 @@ public class UserServiceTest {
 	@DisplayName("OAuth2.0 DB에 없을 때 회원가입 및 로그인")
 	public void registerOauthUser() throws AccountException {
 		// given
-		RequestUserDTO userDTO = getRequestUser();
+		RegisterRequest userDTO = getRequestUser();
 		UserEntity generalUserEntity = getGeneralUserEntity();
 		doReturn(null).when(userRepository).findByEmail(userDTO.getEmail());
 		doReturn(generalUserEntity).when(userRepository).save(any(UserEntity.class));
@@ -114,7 +115,7 @@ public class UserServiceTest {
 	@DisplayName("OAuth2.0 계정 중복 시 로그인 성공")
 	public void loginOauthUser() throws AccountException {
 		// given
-		RequestUserDTO userDTO = getRequestUser();
+		RegisterRequest userDTO = getRequestUser();
 		UserEntity userEntity = getOauthUserEntity();
 		doReturn(userEntity).when(userRepository).findByEmail(userEmail);
 
@@ -130,7 +131,7 @@ public class UserServiceTest {
 	@DisplayName("사용자 로그인")
 	public void userLoginTest() throws AccountException {
 		// given
-		RequestUserDTO requestDTO = requestUserDTO();
+		LoginRequest login = loginRequest();
 		UserEntity userEntity = userEntity();
 		doReturn(userEntity).when(userRepository).findByEmail(userEmail);
 		doReturn(Token.builder().build()).when(jwtTokenProvider).createAccessToken(userEntity.getUsername(),
@@ -138,36 +139,36 @@ public class UserServiceTest {
 		doNothing().when(jwtService).login(any(Token.class));
 
 		// when
-		final MessageDTO result = userService.login(requestDTO);
+		final MessageDTO result = userService.login(login);
 
 		// then
 		assertThat(result.getCode()).isEqualTo(1);
-		assertThat(result.getData()).isEqualTo(requestDTO.getEmail());
+		assertThat(result.getData()).isEqualTo(login.getEmail());
 	}
 
 	@Test
 	@DisplayName("사용자 로그인 예외_존재하지 않은 사용자")
 	public void notExistUserLoginExceptionTest() {
 		// given
-		RequestUserDTO requestUserDTO = requestUserDTO();
-		doReturn(null).when(userRepository).findByEmail(requestUserDTO.getEmail());
+		LoginRequest login = loginRequest();
+		doReturn(null).when(userRepository).findByEmail(login.getEmail());
 
 		// when
-		Throwable thrown = catchThrowable(() -> userService.login(requestUserDTO));
+		Throwable thrown = catchThrowable(() -> userService.login(login));
 		;
 
 		// then
 		assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("정보가 올바르지 않습니다.");
 
 		// verify
-		verify(userRepository, times(1)).findByEmail(requestUserDTO.getEmail());
+		verify(userRepository, times(1)).findByEmail(login.getEmail());
 	}
 
 	@Test
 	@DisplayName("사용자 회원 가입")
 	public void registUser() throws AccountException {
 		// given
-		RequestUserDTO requestUserDTO = requestUserDTO();
+		RegisterRequest requestUserDTO = registerRequest();
 		UserEntity userEntity = userEntity();
 		doReturn(null).when(userRepository).findByEmail(requestUserDTO.getEmail());
 		doReturn(userEntity).when(userRepository).save(any(UserEntity.class));
@@ -185,7 +186,7 @@ public class UserServiceTest {
 	@DisplayName("회원 가입 예외_존재하는 회원")
 	public void existUserException() {
 		// given
-		RequestUserDTO requestUserDTO = requestUserDTO();
+		RegisterRequest requestUserDTO = registerRequest();
 		doReturn(userEntity()).when(userRepository).findByEmail(requestUserDTO.getEmail());
 
 		// when
@@ -200,9 +201,13 @@ public class UserServiceTest {
 		return UserEntity.builder().email(userEmail).password(userPassword)
 				.roles(Collections.singletonList("ROLE_USER")).build();
 	}
+	
+	private LoginRequest loginRequest() {
+		return LoginRequest.builder().email(userEmail).password(userPassword).build();
+	}
 
-	private RequestUserDTO requestUserDTO() {
-		return RequestUserDTO.builder().age("20").sex("female").recommandTime(LocalDateTime.of(2015, 12, 25, 12, 0))
+	private RegisterRequest registerRequest() {
+		return RegisterRequest.builder().age("20").sex("female").recommandTime(LocalDateTime.of(2015, 12, 25, 12, 0))
 				.isLeave(0).email(userEmail).name(userName).password(userPassword).build();
 	}
 
@@ -214,8 +219,8 @@ public class UserServiceTest {
 		return UserEntity.builder().email(userEmail).userType(UserType.GeneralUser).password(userPassword).build();
 	}
 
-	public RequestUserDTO getRequestUser() {
-		return RequestUserDTO.builder().email(userEmail).password(userPassword).age("20").isLeave(0).sex("femail")
+	public RegisterRequest getRequestUser() {
+		return RegisterRequest.builder().email(userEmail).password(userPassword).age("20").isLeave(0).sex("femail")
 				.name(userName).build();
 	}
 

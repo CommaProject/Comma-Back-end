@@ -24,8 +24,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.google.gson.Gson;
+import com.team.comma.dto.LoginRequest;
 import com.team.comma.dto.MessageDTO;
-import com.team.comma.dto.RequestUserDTO;
+import com.team.comma.dto.RegisterRequest;
 import com.team.comma.exception.GeneralExceptionHandler;
 import com.team.comma.service.UserService;
 
@@ -57,8 +58,8 @@ public class UserControllerTest {
 		// given
 		final String api = "/login";
 		final LoginRequest request = new LoginRequest(userEmail, userPassword);
-		final MessageDTO message = MessageDTO.builder().code(1).message("로그인이 성공적으로 되었습니다.").data(request.email).build();
-		doReturn(message).when(userService).login(any(RequestUserDTO.class));
+		final MessageDTO message = MessageDTO.builder().code(1).message("로그인이 성공적으로 되었습니다.").data(request.getEmail()).build();
+		doReturn(message).when(userService).login(any(LoginRequest.class));
 
 		// when
 		final ResultActions resultActions = mockMvc.perform(
@@ -71,7 +72,7 @@ public class UserControllerTest {
 				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageDTO.class);
 		assertThat(response.getCode()).isEqualTo(1);
 		assertThat(response.getMessage()).isEqualTo("로그인이 성공적으로 되었습니다.");
-		assertThat(response.getData()).isEqualTo(request.email);
+		assertThat(response.getData()).isEqualTo(request.getEmail());
 	}
 
 	@Test
@@ -81,7 +82,7 @@ public class UserControllerTest {
 		final String api = "/login";
 		LoginRequest request = new LoginRequest(userEmail, userPassword);
 		AccountException exception = new AccountException("정보가 올바르지 않습니다.");
-		doThrow(exception).when(userService).login(any(RequestUserDTO.class));
+		doThrow(exception).when(userService).login(any(LoginRequest.class));
 
 		// when
 		final ResultActions resultActions = mockMvc.perform(
@@ -103,7 +104,7 @@ public class UserControllerTest {
 		final String api = "/register";
 		LoginRequest request = new LoginRequest(userEmail, userPassword);
 		doReturn(MessageDTO.builder().code(1).message("성공적으로 가입되었습니다.").build()).when(userService)
-				.register(any(RequestUserDTO.class));
+				.register(any(RegisterRequest.class));
 
 		// when
 		final ResultActions resultActions = mockMvc.perform(
@@ -125,7 +126,7 @@ public class UserControllerTest {
 		final String api = "/register";
 		LoginRequest request = new LoginRequest(userEmail, userPassword);
 		doThrow(new AccountException("이미 존재하는 계정입니다.")).when(userService)
-				.register(any(RequestUserDTO.class));
+				.register(any(RegisterRequest.class));
 
 		// when
 		final ResultActions resultActions = mockMvc.perform(
@@ -140,14 +141,4 @@ public class UserControllerTest {
 		assertThat(response.getMessage()).isEqualTo("이미 존재하는 계정입니다.");
 	}
 
-}
-
-class LoginRequest {
-	String email;
-	String password;
-
-	public LoginRequest(String email, String password) {
-		this.email = email;
-		this.password = password;
-	}
 }

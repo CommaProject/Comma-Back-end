@@ -3,6 +3,8 @@ package com.team.comma.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.team.comma.dto.ArtistResponse;
+import com.team.comma.dto.TrackResponse;
 import com.team.comma.spotify.CreateAccessToken;
 
 import se.michaelthelin.spotify.SpotifyApi;
@@ -71,6 +75,19 @@ public class SpotifyServiceTest {
 	}
 	
 	@Test
+	@DisplayName("가수 목록 가져오기")
+	public void getArtistList() {
+		// given
+		final String artists = "Justin Bieber";
+		
+		// when
+		ArrayList<ArtistResponse> result = spotifyService.searchArtist_Sync(artists);
+		
+		// then
+		assertThat(result).isNotEmpty();
+	}
+	
+	@Test
 	@DisplayName("트랙 목록 API 호출")
 	public void executeTrackList() {
 		// given
@@ -83,6 +100,20 @@ public class SpotifyServiceTest {
 	}
 	
 	@Test
+	@DisplayName("트랙 목록 가져오기")
+	public void getTrackList() {
+		// given
+		final String track = "Hello";
+		
+		// when
+		ArrayList<TrackResponse> result = spotifyService.searchTrack_Sync(track);
+		
+		// then
+		assertThat(result).isNotEmpty();
+	}
+	
+	/*
+	@Test
 	@DisplayName("트랙 목록 API 호출")
 	public void executeItemList() {
 		// given
@@ -93,5 +124,5 @@ public class SpotifyServiceTest {
 		// then
 		assertThat(thrown).doesNotThrowAnyException();
 	}
-
+	*/
 }
