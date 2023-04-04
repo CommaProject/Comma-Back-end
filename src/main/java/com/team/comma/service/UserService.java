@@ -33,17 +33,21 @@ public class UserService {
 	public MessageDTO login(final RequestUserDTO userDTO) throws AccountException {
 		UserEntity userEntity = userRepository.findByEmail(userDTO.getEmail());
 
+		if (userEntity == null) {
+			throw new AccountException("정보가 올바르지 않습니다.");
+		}
+		
 		if (userEntity.getUserType() == UserType.OAuthUser) {
 			throw new AccountException("일반 사용자는 OAuth 계정으로 로그인할 수 없습니다.");
 		}
-
-		if (userEntity == null || userEntity.getPassword() != userDTO.getPassword()) {
+		
+		if(userEntity.getPassword() != userDTO.getPassword()) {
 			throw new AccountException("정보가 올바르지 않습니다.");
 		}
 
 		createJwtCookie(userEntity);
 
-		return MessageDTO.builder().code(1).message("로그인이 성공적으로 되었습니다.").build();
+		return MessageDTO.builder().code(1).message("로그인이 성공적으로 되었습니다.").data(userEntity.getEmail()).build();
 	}
 
 	public MessageDTO register(final RequestUserDTO userDTO) throws AccountException {
@@ -55,9 +59,9 @@ public class UserService {
 
 		UserEntity buildEntity = createUser(userDTO, UserType.GeneralUser);
 
-		userRepository.save(buildEntity);
+		UserEntity result = userRepository.save(buildEntity);
 
-		return MessageDTO.builder().code(1).message("성공적으로 가입되었습니다.").build();
+		return MessageDTO.builder().code(1).message("성공적으로 가입되었습니다.").data(result.getEmail()).build();
 	}
 
 	public MessageDTO loginOauth(final RequestUserDTO userDTO) throws AccountException {

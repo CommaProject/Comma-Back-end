@@ -3,9 +3,13 @@ package com.team.comma.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
 
 import javax.security.auth.login.AccountException;
 
@@ -23,6 +27,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.team.comma.dto.MessageDTO;
 import com.team.comma.dto.RequestUserDTO;
+import com.team.comma.entity.Token;
 import com.team.comma.entity.UserEntity;
 import com.team.comma.entity.UserEntity.UserType;
 import com.team.comma.repository.UserRepository;
@@ -121,12 +126,92 @@ public class UserServiceTest {
 		assertThat(result.getCode()).isEqualTo(1);
 	}
 
+	@Test
+	@DisplayName("사용자 로그인")
+	public void userLoginTest() throws AccountException {
+		// given
+		RequestUserDTO requestDTO = requestUserDTO();
+		UserEntity userEntity = userEntity();
+		doReturn(userEntity).when(userRepository).findByEmail(userEmail);
+		doReturn(Token.builder().build()).when(jwtTokenProvider).createAccessToken(userEntity.getUsername(),
+				userEntity.getRoles());
+		doNothing().when(jwtService).login(any(Token.class));
+
+		// when
+		final MessageDTO result = userService.login(requestDTO);
+
+		// then
+		assertThat(result.getCode()).isEqualTo(1);
+		assertThat(result.getData()).isEqualTo(requestDTO.getEmail());
+	}
+
+	@Test
+	@DisplayName("사용자 로그인 예외_존재하지 않은 사용자")
+	public void notExistUserLoginExceptionTest() {
+		// given
+		RequestUserDTO requestUserDTO = requestUserDTO();
+		doReturn(null).when(userRepository).findByEmail(requestUserDTO.getEmail());
+
+		// when
+		Throwable thrown = catchThrowable(() -> userService.login(requestUserDTO));
+		;
+
+		// then
+		assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("정보가 올바르지 않습니다.");
+
+		// verify
+		verify(userRepository, times(1)).findByEmail(requestUserDTO.getEmail());
+	}
+
+	@Test
+	@DisplayName("사용자 회원 가입")
+	public void registUser() throws AccountException {
+		// given
+		RequestUserDTO requestUserDTO = requestUserDTO();
+		UserEntity userEntity = userEntity();
+		doReturn(null).when(userRepository).findByEmail(requestUserDTO.getEmail());
+		doReturn(userEntity).when(userRepository).save(any(UserEntity.class));
+
+		// when
+		MessageDTO messageDTO = userService.register(requestUserDTO);
+
+		// then
+		assertThat(messageDTO.getCode()).isEqualTo(1);
+		assertThat(messageDTO.getMessage()).isEqualTo("성공적으로 가입되었습니다.");
+		assertThat(messageDTO.getData()).isEqualTo(userEntity.getEmail());
+	}
+
+	@Test
+	@DisplayName("회원 가입 예외_존재하는 회원")
+	public void existUserException() {
+		// given
+		RequestUserDTO requestUserDTO = requestUserDTO();
+		doReturn(userEntity()).when(userRepository).findByEmail(requestUserDTO.getEmail());
+
+		// when
+		Throwable thrown = catchThrowable(() -> userService.register(requestUserDTO));
+
+		// then
+		assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("이미 존재하는 계정입니다.");
+
+	}
+
+	private UserEntity userEntity() {
+		return UserEntity.builder().email(userEmail).password(userPassword)
+				.roles(Collections.singletonList("ROLE_USER")).build();
+	}
+
+	private RequestUserDTO requestUserDTO() {
+		return RequestUserDTO.builder().age("20").sex("female").recommandTime(LocalDateTime.of(2015, 12, 25, 12, 0))
+				.isLeave(0).email(userEmail).name(userName).password(userPassword).build();
+	}
+
 	public UserEntity getOauthUserEntity() {
 		return UserEntity.builder().email(userEmail).userType(UserType.OAuthUser).password(null).build();
 	}
 
 	public UserEntity getGeneralUserEntity() {
-		return UserEntity.builder().email(userEmail).userType(UserType.GeneralUser).password(null).build();
+		return UserEntity.builder().email(userEmail).userType(UserType.GeneralUser).password(userPassword).build();
 	}
 
 	public RequestUserDTO getRequestUser() {

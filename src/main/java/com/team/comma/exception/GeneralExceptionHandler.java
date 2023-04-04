@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.team.comma.dto.MessageDTO;
 
+import se.michaelthelin.spotify.exceptions.detailed.UnauthorizedException;
+
 
 @RestControllerAdvice
 public class GeneralExceptionHandler {
@@ -34,4 +36,15 @@ public class GeneralExceptionHandler {
 				.message(e.getMessage())
 				.build();
 	}
+	/*
+	 *  Spotify 예외
+	 */
+	@ExceptionHandler({SpotifyException.class , UnauthorizedException.class })
+	public MessageDTO handleSpotifyException(Exception e) {
+		return MessageDTO.builder()
+				.code(-2)
+				.message(e.getMessage())
+				.build();
+	}
+	
 }
