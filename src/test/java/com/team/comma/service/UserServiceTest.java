@@ -164,7 +164,7 @@ public class UserServiceTest {
 	
 	@Test
 	@DisplayName("사용자 로그인 성공")
-	public void userLoginTest() throws AccountException {
+	public void loginUserTest() throws AccountException {
 		// given
 		LoginRequest login = getLoginRequest();
 		UserEntity userEntity = getUserEntity();
