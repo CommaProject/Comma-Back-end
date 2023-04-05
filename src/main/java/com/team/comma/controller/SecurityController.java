@@ -16,7 +16,7 @@ public class SecurityController {
 	final private JwtService jwtService;
 
 	@GetMapping(value = "/authentication/denied")
-	public MessageResponse authenticationDenied(@CookieValue(name = "refreshToken" , required = false) String authorization) {
+	public MessageResponse informAuthenticationDenied(@CookieValue(name = "refreshToken" , required = false) String authorization) {
 		if(authorization == null) {
 			return MessageResponse.builder()
 					.code(-1)
@@ -29,10 +29,18 @@ public class SecurityController {
 	}
 	
 	@GetMapping(value = "/authorization/denied")
-	public MessageResponse authorizationDenied() {
+	public MessageResponse informAuthorizationDenied() {
 		return MessageResponse.builder()
 				.code(-1)
 				.message("인가되지 않은 사용자입니다.")
+				.build();
+	}
+	
+	@GetMapping(value = "/logout/message")
+	public MessageResponse logoutMessage() {
+		return MessageResponse.builder()
+				.code(1)
+				.message("로그아웃이 성공적으로 되었습니다.")
 				.build();
 	}
 	
