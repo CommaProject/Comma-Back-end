@@ -20,10 +20,6 @@ pipeline {
             }
         }
 
-        stage('Test') {
-
-        }
-
         stage('Deploy') {
             steps {
                 dir('build/libs'){
