@@ -86,7 +86,7 @@ public class JwtServiceTest {
 		assertThat(result.getCode()).isEqualTo(-7);
 		assertThat(result.getMessage()).isEqualTo("Refresh 토큰이 만료되었습니다. 로그인이 필요합니다.");
 	}
-	
+	//
 	@Test
 	@DisplayName("변조된 RefreshToken 예외")
 	public void falsifyToken() {
