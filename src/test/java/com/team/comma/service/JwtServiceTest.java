@@ -72,7 +72,7 @@ public class JwtServiceTest {
 	
 	@Test
 	@DisplayName("만료된 RefreshToken 반환")
-	public void expiretoken() {
+	public void expireToken() {
 		// given
 		RefreshToken refreshToken = getRefreshToken();
 		Optional<RefreshToken> tokens = Optional.of(refreshToken);
@@ -89,7 +89,7 @@ public class JwtServiceTest {
 	
 	@Test
 	@DisplayName("변조된 RefreshToken 예외")
-	public void falsifytoken() {
+	public void falsifyToken() {
 		// given
 		RefreshToken refreshToken = getRefreshToken();
 		doThrow(NoSuchElementException.class).when(refreshTokenRepository).findByRefreshToken(refreshToken.getRefreshToken());
