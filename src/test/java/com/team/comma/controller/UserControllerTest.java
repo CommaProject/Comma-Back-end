@@ -31,10 +31,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.google.gson.Gson;
 import com.team.comma.dto.LoginRequest;
 import com.team.comma.dto.MessageResponse;
-import com.team.comma.dto.OAuthRequest;
 import com.team.comma.dto.RegisterRequest;
 import com.team.comma.exception.GeneralExceptionHandler;
-import com.team.comma.service.OAuthService;
 import com.team.comma.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,9 +43,6 @@ public class UserControllerTest {
 
 	@Mock
 	UserService userService;
-	
-	@Mock
-	OAuthService oauthService;
 
 	MockMvc mockMvc;
 	Gson gson;
