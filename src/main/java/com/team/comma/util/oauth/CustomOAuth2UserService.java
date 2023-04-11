@@ -36,8 +36,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // 사용자 정보 값
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-        System.out.println(attributes.getAttributes());
-
         User user = saveOrUpdate(attributes);
 
         if(user != null) { // email 정보가 없을 경우
