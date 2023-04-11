@@ -1,6 +1,8 @@
 package com.team.comma.config;
 
 import com.team.comma.constant.UserRole;
+import com.team.comma.service.CustomOAuth2UserService;
+import com.team.comma.util.oauth.OAuth2AuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -25,7 +27,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
 	final private JwtTokenProvider jwtTokenProvider;
-	
+    final private CustomOAuth2UserService oauth2UserService;
+    final private OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -43,18 +47,19 @@ public class SecurityConfig {
                 .logoutSuccessHandler((request, response, authentication) -> {
                     response.sendRedirect("/logout/message");
                 })
-                .and()
-                .oauth2Login()
         .and()
             .exceptionHandling()
             .authenticationEntryPoint((request , response , Exception) -> {
                 response.sendRedirect("/authentication/denied"); // 인증되지 않은 사용자
             })
-            .accessDeniedPage("/authorization/denied"); // 인가되지 않은 사용자가 접속했을 때
-        
+            .accessDeniedPage("/authorization/denied")
+        .and()
+            .oauth2Login().successHandler(oauth2AuthenticationSuccessHandler)
+                .userInfoEndpoint().userService(oauth2UserService); // 인가되지 않은 사용자가 접속했을 때
+
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), // 필터
 				UsernamePasswordAuthenticationFilter.class);
-        
+
         return http.build();
     }
 
