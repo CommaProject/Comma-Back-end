@@ -1,15 +1,7 @@
 package com.team.comma.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
@@ -27,13 +19,12 @@ public class Track extends BaseEntity {
 
     private Integer durationMs;
 
-    private String artistNames;
+    private String artistName;
 
     private String albumName;
 
     private String albumImageUrl;
 
-    private Boolean albumFlag;
-
+    private Boolean alarmFlag;
 
 }
