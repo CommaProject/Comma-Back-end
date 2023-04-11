@@ -2,6 +2,7 @@ package com.team.comma.controller;
 
 import javax.security.auth.login.AccountException;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,7 +46,7 @@ public class UserController {
 	        @ApiResponse(responseCode = "500", description = "소셜 서버 및 서버에서 오류 발생", content = @Content(schema = @Schema(implementation = MessageResponse.class)))
 	    })
 	@PostMapping(value = "/oauth/login")
-	public MessageResponse loginOAuthUser(@RequestBody OAuthRequest oauthRequest) throws AccountException {
+	public ResponseEntity<MessageResponse> loginOAuthUser(@RequestBody OAuthRequest oauthRequest) throws AccountException {
 		return oauthService.loginOAuthServer(oauthRequest);
 	}
 }

@@ -28,6 +28,7 @@ import com.team.comma.dto.MessageResponse;
 import com.team.comma.dto.OAuthRequest;
 import com.team.comma.util.oauth.RegisterationOAuthUser;
 import com.team.comma.util.oauth.IssuanceAccessToken;
+import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 public class OAuthServiceTest {
@@ -94,11 +95,13 @@ public class OAuthServiceTest {
 		OAuthRequest oauthRequest = getOauthRequest("server");
 		
 		// when
-		MessageResponse result = oauthService.loginOAuthServer(oauthRequest);
-		
+		ResponseEntity result = oauthService.loginOAuthServer(oauthRequest);
+
+
 		// then
-		assertThat(result.getCode()).isEqualTo(-1);
-		assertThat(result.getMessage()).isEqualTo("잘못된 소셜서버입니다.");
+		MessageResponse response = (MessageResponse)result.getBody();
+		assertThat(response.getCode()).isEqualTo(-1);
+		assertThat(response.getMessage()).isEqualTo("잘못된 소셜서버입니다.");
 	}
 	
 	@Test
@@ -112,11 +115,12 @@ public class OAuthServiceTest {
 		doReturn(message).when(createOAuthUser).createGoogleUser(any(String.class));
 		
 		// when
-		MessageResponse result = oauthService.loginOAuthServer(oauthRequest);
+		ResponseEntity result = oauthService.loginOAuthServer(oauthRequest);
 		
 		// then
-		assertThat(result.getCode()).isEqualTo(1);
-		assertThat(result.getMessage()).isEqualTo("로그인이 성공적으로 되었습니다.");
+		MessageResponse response = (MessageResponse)result.getBody();
+		assertThat(response.getCode()).isEqualTo(1);
+		assertThat(response.getMessage()).isEqualTo("로그인이 성공적으로 되었습니다.");
 		
 		// verify
 		verify(createOAuthUser , times(1)).createGoogleUser(any(String.class));
@@ -134,11 +138,12 @@ public class OAuthServiceTest {
 		doReturn(message).when(createOAuthUser).createNaverUser(any(String.class));
 		
 		// when
-		MessageResponse result = oauthService.loginOAuthServer(oauthRequest);
+		ResponseEntity result = oauthService.loginOAuthServer(oauthRequest);
 		
 		// then
-		assertThat(result.getCode()).isEqualTo(1);
-		assertThat(result.getMessage()).isEqualTo("로그인이 성공적으로 되었습니다.");
+		MessageResponse response = (MessageResponse)result.getBody();
+		assertThat(response.getCode()).isEqualTo(1);
+		assertThat(response.getMessage()).isEqualTo("로그인이 성공적으로 되었습니다.");
 		
 		// verify
 		verify(createOAuthUser , times(1)).createNaverUser(any(String.class));
@@ -156,11 +161,12 @@ public class OAuthServiceTest {
 		doReturn(message).when(createOAuthUser).createKakaoUser(any(String.class));
 		
 		// when
-		MessageResponse result = oauthService.loginOAuthServer(oauthRequest);
+		ResponseEntity result = oauthService.loginOAuthServer(oauthRequest);
 		
 		// then
-		assertThat(result.getCode()).isEqualTo(1);
-		assertThat(result.getMessage()).isEqualTo("로그인이 성공적으로 되었습니다.");
+		MessageResponse response = (MessageResponse)result.getBody();
+		assertThat(response.getCode()).isEqualTo(1);
+		assertThat(response.getMessage()).isEqualTo("로그인이 성공적으로 되었습니다.");
 		
 		// verify
 		verify(createOAuthUser , times(1)).createKakaoUser(any(String.class));

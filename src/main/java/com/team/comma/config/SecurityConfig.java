@@ -43,6 +43,8 @@ public class SecurityConfig {
                 .logoutSuccessHandler((request, response, authentication) -> {
                     response.sendRedirect("/logout/message");
                 })
+                .and()
+                .oauth2Login()
         .and()
             .exceptionHandling()
             .authenticationEntryPoint((request , response , Exception) -> {

@@ -22,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -157,7 +158,8 @@ public class UserControllerTest {
 		final String api = "/oauth/login";
 		OAuthRequest oauthRequest = new OAuthRequest(server , "code", "state");
 		MessageResponse message = new MessageResponse(-1, "유효하지 않은 접근입니다." , null);
-		doReturn(message).when(oauthService).loginOAuthServer(any(OAuthRequest.class));
+		ResponseEntity responseEntity = ResponseEntity.ok(message);
+		doReturn(responseEntity).when(oauthService).loginOAuthServer(any(OAuthRequest.class));
 		
 		// when
 		final ResultActions resultActions = mockMvc.perform(
@@ -187,7 +189,8 @@ public class UserControllerTest {
 		final String api = "/oauth/login";
 		OAuthRequest oauthRequest = new OAuthRequest("unknown" , "code", "state");
 		MessageResponse message = new MessageResponse(-1, "잘못된 소셜서버입니다." , null);
-		doReturn(message).when(oauthService).loginOAuthServer(any(OAuthRequest.class));
+		ResponseEntity responseEntity = ResponseEntity.ok(message);
+		doReturn(responseEntity).when(oauthService).loginOAuthServer(any(OAuthRequest.class));
 		
 		// when
 		final ResultActions resultActions = mockMvc.perform(
