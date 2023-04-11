@@ -28,8 +28,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         SessionUser user = (SessionUser) httpSession.getAttribute("user");
+
+        if(user == null) { // 이메일이 없을 때
+            getRedirectStrategy().sendRedirect(request , response , createRedirectUrl("http://localhost:3000/oauth2/disallowance"));
+            return;
+        }
 
         Token token = jwtTokenProvider.createAccessToken(user.getEmail() , UserRole.USER);
         response.addCookie(CreationCookie.createAccessToken(token.getAccessToken()));
@@ -37,11 +41,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         httpSession.removeAttribute("user"); // 세션 삭제
 
-        getRedirectStrategy().sendRedirect(request , response , createRedirectUrl());
+        getRedirectStrategy().sendRedirect(request , response , createRedirectUrl("http://localhost:3000"));
     }
 
-    public String createRedirectUrl() {
-        return UriComponentsBuilder.fromUriString("http://localhost:3000").build().toUriString();
+    public String createRedirectUrl(String url) {
+        return UriComponentsBuilder.fromUriString(url).build().toUriString();
     }
 
 }

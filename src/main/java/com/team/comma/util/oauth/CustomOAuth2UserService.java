@@ -1,4 +1,4 @@
-package com.team.comma.service;
+package com.team.comma.util.oauth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team.comma.constant.UserRole;
@@ -40,20 +40,29 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // OAuth2 서버의 키값 ( 구글 = sub , 네이버 = response , 카카오 = id )
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
         // 사용자 정보 값
-        //Map<String, Object> attributes = oAuth2User.getAttributes();
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
+        System.out.println(attributes.getAttributes());
+
         User user = saveOrUpdate(attributes);
-        httpSession.setAttribute("user" , SessionUser.of(user)); // 세션 저장
+
+        if(user != null) { // email 정보가 없을 경우
+            httpSession.setAttribute("user" , SessionUser.of(user)); // 세션 저장
+        }
 
         return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")), attributes.getAttributes() , attributes.getNameAttributeKey());
     }
 
     public User saveOrUpdate(OAuthAttributes attributes) {
+
+        if(attributes.getEmail() == null) { // email 정보가 없으면 종료
+            return null;
+        }
+
         User user = userRepository.findByEmail(attributes.getEmail());
 
         if(user == null) { // 정보가 없을 때만
-            User createUser = User.builder().email(attributes.getEmail())
+            User createUser = User.builder().email(attributes.getEmail()).name(attributes.getName())
                     .role(UserRole.USER).type(UserType.OAuthUser).build();
             return userRepository.save(createUser);
         }

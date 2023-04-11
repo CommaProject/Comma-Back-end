@@ -1,7 +1,7 @@
 package com.team.comma.config;
 
 import com.team.comma.constant.UserRole;
-import com.team.comma.service.CustomOAuth2UserService;
+import com.team.comma.util.oauth.CustomOAuth2UserService;
 import com.team.comma.util.oauth.OAuth2AuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
