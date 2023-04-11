@@ -3,6 +3,7 @@ package com.team.comma.controller;
 import javax.security.auth.login.AccountException;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +39,8 @@ public class UserController {
 	public MessageResponse registerUser(@RequestBody RegisterRequest register) throws AccountException {
 		return userService.register(register);
 	}
-	
+
+	/*
 	@Operation(summary = "OAuth 로그인 API", description = "해당 서버 API에 code와 state를 전달하여 로그인 처리")
 	@ApiResponses(value = {
 	        @ApiResponse(responseCode = "200", description = "로그인 성공 시 사용자 아이디를 반환", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
@@ -49,4 +51,6 @@ public class UserController {
 	public ResponseEntity<MessageResponse> loginOAuthUser(@RequestBody OAuthRequest oauthRequest) throws AccountException {
 		return oauthService.loginOAuthServer(oauthRequest);
 	}
+	*/
+
 }

@@ -150,61 +150,6 @@ public class UserControllerTest {
 		assertThat(response.getMessage()).isEqualTo("이미 존재하는 계정입니다.");
 	}
 	
-	@ParameterizedTest
-	@DisplayName("OAuth 로그인 실패 _ 토큰 만료")
-	@MethodSource("oauthServerParameter")
-	public void loginReject_FalsifyToken(final String server) throws Exception {
-		// given
-		final String api = "/oauth/login";
-		OAuthRequest oauthRequest = new OAuthRequest(server , "code", "state");
-		MessageResponse message = new MessageResponse(-1, "유효하지 않은 접근입니다." , null);
-		ResponseEntity responseEntity = ResponseEntity.ok(message);
-		doReturn(responseEntity).when(oauthService).loginOAuthServer(any(OAuthRequest.class));
-		
-		// when
-		final ResultActions resultActions = mockMvc.perform(
-				MockMvcRequestBuilders.post(api).content(gson.toJson(oauthRequest)).contentType(MediaType.APPLICATION_JSON));
-				
-		// then
-		resultActions.andExpect(status().isOk());
-		final MessageResponse response = gson.fromJson(
-				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageResponse.class);
-		
-		assertThat(response.getCode()).isEqualTo(-1);
-		assertThat(response.getMessage()).isEqualTo("유효하지 않은 접근입니다.");	
-	}
-	
-	private static Stream<Arguments> oauthServerParameter() {
-	    return Stream.of(
-	            Arguments.of("google"),
-	            Arguments.of("naver"),
-	            Arguments.of("kakao")
-	    );
-	}
-	
-	@Test
-	@DisplayName("OAuth 로그인 실패 _ 일치하지 않은 소셜 서버")
-	public void loginReject_wrongSocialServer() throws Exception {
-		// given
-		final String api = "/oauth/login";
-		OAuthRequest oauthRequest = new OAuthRequest("unknown" , "code", "state");
-		MessageResponse message = new MessageResponse(-1, "잘못된 소셜서버입니다." , null);
-		ResponseEntity responseEntity = ResponseEntity.ok(message);
-		doReturn(responseEntity).when(oauthService).loginOAuthServer(any(OAuthRequest.class));
-		
-		// when
-		final ResultActions resultActions = mockMvc.perform(
-				MockMvcRequestBuilders.post(api).content(gson.toJson(oauthRequest)).contentType(MediaType.APPLICATION_JSON));
-		
-		// then
-		resultActions.andExpect(status().isOk());
-		final MessageResponse response = gson.fromJson(
-				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageResponse.class);
-		
-		assertThat(response.getCode()).isEqualTo(-1);
-		assertThat(response.getMessage()).isEqualTo("잘못된 소셜서버입니다.");
-	}
-	
 	public LoginRequest getLoginRequest() {
 		return LoginRequest.builder()
 				.email(userEmail)
