@@ -52,10 +52,10 @@ public class SecurityConfig {
             .authenticationEntryPoint((request , response , Exception) -> {
                 response.sendRedirect("/authentication/denied"); // 인증되지 않은 사용자
             })
-            .accessDeniedPage("/authorization/denied")
+            .accessDeniedPage("/authorization/denied") // 인가되지 않은 사용자가 접속했을 때
         .and()
             .oauth2Login().successHandler(oauth2AuthenticationSuccessHandler)
-                .userInfoEndpoint().userService(oauth2UserService); // 인가되지 않은 사용자가 접속했을 때
+                .userInfoEndpoint().userService(oauth2UserService);
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), // 필터
 				UsernamePasswordAuthenticationFilter.class);

@@ -1,16 +1,12 @@
 package com.team.comma.util.oauth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team.comma.constant.UserRole;
 import com.team.comma.constant.UserType;
 import com.team.comma.domain.User;
 import com.team.comma.dto.SessionUser;
 import com.team.comma.repository.UserRepository;
-import com.team.comma.util.oauth.OAuthAttributes;
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -20,9 +16,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import javax.security.auth.login.AccountException;
 import java.util.Collections;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
