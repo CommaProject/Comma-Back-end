@@ -29,7 +29,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         SessionUser user = (SessionUser) httpSession.getAttribute("user");
 
         if(user == null) { // 이메일이 없을 때
-            getRedirectStrategy().sendRedirect(request , response , createRedirectUrl("http://localhost:3000/oauth2/disallowance"));
+            getRedirectStrategy().sendRedirect(request , response , createRedirectUrl("http://43.201.188.96:3000/oauth2/disallowance"));
             return;
         }
 
@@ -39,7 +39,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         httpSession.removeAttribute("user"); // 세션 삭제
 
-        getRedirectStrategy().sendRedirect(request , response , createRedirectUrl("http://localhost:3000"));
+        getRedirectStrategy().sendRedirect(request , response , createRedirectUrl("http://43.201.188.96:3000"));
     }
 
     public String createRedirectUrl(String url) {
