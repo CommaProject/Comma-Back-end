@@ -2,6 +2,7 @@ package com.team.comma.controller;
 
 import javax.security.auth.login.AccountException;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,13 +22,13 @@ public class UserController {
 	final private UserService userService;
 	
 	@PostMapping(value = "/login")
-	public MessageResponse loginUser(@RequestBody LoginRequest login) throws AccountException {
-		return userService.login(login);
+	public ResponseEntity<MessageResponse> loginUser(@RequestBody LoginRequest login) throws AccountException {
+		return ResponseEntity.ok().body(userService.login(login));
 	}
 	
 	@PostMapping(value = "/register")
-	public MessageResponse registerUser(@RequestBody RegisterRequest register) throws AccountException {
-		return userService.register(register);
+	public ResponseEntity<MessageResponse> registerUser(@RequestBody RegisterRequest register) throws AccountException {
+		return ResponseEntity.ok().body(userService.register(register));
 	}
 
 }

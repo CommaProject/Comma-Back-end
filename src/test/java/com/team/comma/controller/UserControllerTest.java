@@ -93,7 +93,7 @@ public class UserControllerTest {
 				MockMvcRequestBuilders.post(api).content(gson.toJson(request)).contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		resultActions.andExpect(status().isOk());
+		resultActions.andExpect(status().isBadRequest());
 		final MessageResponse response = gson.fromJson(
 				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageResponse.class);
 
@@ -137,7 +137,7 @@ public class UserControllerTest {
 				MockMvcRequestBuilders.post(api).content(gson.toJson(request)).contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		resultActions.andExpect(status().isOk());
+		resultActions.andExpect(status().isBadRequest());
 		final MessageResponse response = gson.fromJson(
 				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageResponse.class);
 		

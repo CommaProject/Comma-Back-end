@@ -21,4 +21,5 @@ public final class ResponseCode {
     public static final int SPOTIFY_FAILURE = -2;
     public static final int OAUTH_NO_EXISTENT_EMAIL = -3;
     public static final int REFRESH_TOKEN_EXPIRED = -7;
+    public static final int AUTHORIZATION_ERROR = -4;
 }

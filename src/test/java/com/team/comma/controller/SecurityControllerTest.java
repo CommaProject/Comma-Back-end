@@ -1,5 +1,6 @@
 package com.team.comma.controller;
 
+import static com.team.comma.constant.ResponseCode.AUTHORIZATION_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,11 +53,11 @@ public class SecurityControllerTest {
 		final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(api));
 
 		// then
-		resultActions.andExpect(status().isOk());
+		resultActions.andExpect(status().isForbidden());
 		final MessageResponse messageDTO = gson.fromJson(
 				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageResponse.class);
 
-		assertThat(messageDTO.getCode()).isEqualTo(-1);
+		assertThat(messageDTO.getCode()).isEqualTo(AUTHORIZATION_ERROR);
 		assertThat(messageDTO.getMessage()).isEqualTo("인증되지 않은 사용자입니다.");
 	}
 
@@ -90,11 +91,11 @@ public class SecurityControllerTest {
 		final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(api));
 
 		// then
-		resultActions.andExpect(status().isOk());
+		resultActions.andExpect(status().isForbidden());
 		MessageResponse result = gson.fromJson(
 				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageResponse.class);
 
-		assertThat(result.getCode()).isEqualTo(-1);
+		assertThat(result.getCode()).isEqualTo(AUTHORIZATION_ERROR);
 		assertThat(result.getMessage()).isEqualTo("인가되지 않은 사용자입니다.");
 		
 	}
