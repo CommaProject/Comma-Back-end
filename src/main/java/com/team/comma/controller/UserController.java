@@ -5,6 +5,11 @@ import com.team.comma.dto.LoginRequest;
 import com.team.comma.dto.MessageResponse;
 import com.team.comma.dto.RegisterRequest;
 import com.team.comma.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +33,16 @@ public class UserController {
 		return ResponseEntity.ok().body(userService.register(register));
 	}
 
+	/*
+	@Operation(summary = "AccessToken으로 사용자 정보 가져오기", description = "Cookie에 존재하는 accessToken으로 사용자 정보를 조회")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200" , description = "문자열로 사용자 정보 반환" , content = @Content(schema = @Schema(implementation = String.class))) ,
+			@ApiResponse(responseCode = "400" , description = "AccessToken이 없을 때" , content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+	})
 	@GetMapping("/user/privacy")
 	public ResponseEntity<User> getUserInfoByEmail(@CookieValue("accessToken") String accessToken) throws AccountException {
 		return ResponseEntity.ok().body(userService.getUserByCookie(accessToken));
 	}
+	*/
 
 }
