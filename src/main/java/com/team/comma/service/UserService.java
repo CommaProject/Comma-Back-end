@@ -46,11 +46,7 @@ public class UserService {
 
 		createJwtCookie(user);
 
-		return MessageResponse.<User>builder()
-				.code(ResponseCode.LOGIN_SUCCESS)
-				.message("로그인이 성공적으로 되었습니다.")
-				.data(user)
-			.build();
+		return MessageResponse.of(ResponseCode.LOGIN_SUCCESS , "로그인이 성공적으로 되었습니다." , user);
 	}
 
 	public MessageResponse register(final RegisterRequest registerRequest) throws AccountException {
@@ -64,11 +60,7 @@ public class UserService {
 
 		User savedUser = userRepository.save(buildEntity);
 
-		return MessageResponse.<User>builder()
-			.code(ResponseCode.REGISTER_SUCCESS)
-			.message("성공적으로 가입되었습니다.")
-			.data(savedUser)
-			.build();
+		return MessageResponse.of(ResponseCode.REGISTER_SUCCESS , "성공적으로 가입되었습니다." , savedUser);
 	}
 
 	public MessageResponse loginOauth(final RegisterRequest registerRequest) throws AccountException {
@@ -84,11 +76,7 @@ public class UserService {
 
 		createJwtCookie(findUser);
 
-		return MessageResponse.<User>builder()
-			.code(ResponseCode.LOGIN_SUCCESS)
-			.message("로그인이 성공적으로 되었습니다.")
-			.data(findUser)
-			.build();
+		return MessageResponse.of(ResponseCode.LOGIN_SUCCESS , "로그인이 성공적으로 되었습니다." , findUser);
 	}
 
 	public User createUser(final RegisterRequest RegisterRequest , final UserType userType) {

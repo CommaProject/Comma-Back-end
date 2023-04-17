@@ -25,6 +25,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
 
+import static com.team.comma.constant.ResponseCode.LOGIN_SUCCESS;
+import static com.team.comma.constant.ResponseCode.REGISTER_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -59,7 +61,7 @@ public class UserControllerTest {
 		// given
 		final String api = "/login";
 		final LoginRequest request = getLoginRequest();
-		final MessageResponse message = MessageResponse.builder().code(1).message("로그인이 성공적으로 되었습니다.").data(request.getEmail()).build();
+		final MessageResponse message = MessageResponse.of( LOGIN_SUCCESS ,"로그인이 성공적으로 되었습니다." , request.getEmail());
 		doReturn(message).when(userService).login(any(LoginRequest.class));
 
 		// when
@@ -104,7 +106,7 @@ public class UserControllerTest {
 		// given
 		final String api = "/register";
 		LoginRequest request = getLoginRequest();
-		doReturn(MessageResponse.builder().code(1).message("성공적으로 가입되었습니다.").build()).when(userService)
+		doReturn(MessageResponse.of(REGISTER_SUCCESS , "성공적으로 가입되었습니다.")).when(userService)
 				.register(any(RegisterRequest.class));
 
 		// when

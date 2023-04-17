@@ -12,6 +12,7 @@ import com.team.comma.service.JwtService;
 import lombok.RequiredArgsConstructor;
 
 import static com.team.comma.constant.ResponseCode.AUTHORIZATION_ERROR;
+import static com.team.comma.constant.ResponseCode.LOGOUT_SUCCESS;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,10 +23,7 @@ public class SecurityController {
 	@GetMapping(value = "/authentication/denied")
 	public ResponseEntity<MessageResponse> informAuthenticationDenied(@CookieValue(name = "refreshToken" , required = false) String authorization) {
 		if(authorization == null) {
-			MessageResponse message = MessageResponse.builder()
-					.code(AUTHORIZATION_ERROR)
-					.message("인증되지 않은 사용자입니다.")
-					.build();
+			MessageResponse message = MessageResponse.of(AUTHORIZATION_ERROR , "인증되지 않은 사용자입니다.");
 
 			return new ResponseEntity(message , HttpStatus.FORBIDDEN);
 		}
@@ -35,20 +33,14 @@ public class SecurityController {
 
 	@GetMapping(value = "/authorization/denied")
 	public ResponseEntity<MessageResponse> informAuthorizationDenied() {
-		MessageResponse message = MessageResponse.builder()
-				.code(AUTHORIZATION_ERROR)
-				.message("인가되지 않은 사용자입니다.")
-				.build();
+		MessageResponse message = MessageResponse.of(AUTHORIZATION_ERROR , "인가되지 않은 사용자입니다.");
 
 		return new ResponseEntity(message , HttpStatus.FORBIDDEN);
 	}
 
 	@GetMapping(value = "/logout/message")
 	public ResponseEntity<MessageResponse> logoutMessage() {
-		MessageResponse message = MessageResponse.builder()
-				.code(1)
-				.message("로그아웃이 성공적으로 되었습니다.")
-				.build();
+		MessageResponse message = MessageResponse.of(LOGOUT_SUCCESS , "로그아웃이 성공적으로 되었습니다.");
 
 		return ResponseEntity.ok().body(message);
 	}

@@ -1,17 +1,14 @@
 package com.team.comma.exception;
 
-import javax.security.auth.login.AccountException;
-import javax.security.auth.login.AccountNotFoundException;
-
-import org.springframework.http.HttpStatus;
+import com.team.comma.dto.MessageResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import com.team.comma.dto.MessageResponse;
-
 import se.michaelthelin.spotify.exceptions.detailed.UnauthorizedException;
+
+import javax.security.auth.login.AccountException;
+import javax.security.auth.login.AccountNotFoundException;
 
 import static com.team.comma.constant.ResponseCode.*;
 
@@ -24,7 +21,7 @@ public class GeneralExceptionHandler {
 	 */
 	@ExceptionHandler({FalsifyTokenException.class , UsernameNotFoundException.class , AccountException.class})
 	public ResponseEntity<MessageResponse> handleBadRequest(Exception e) {
-		MessageResponse message = createMessageResponse(SIMPLE_REQUEST_FAILURE , e.getMessage());
+		MessageResponse message = MessageResponse.of(SIMPLE_REQUEST_FAILURE , e.getMessage());
 
 		return ResponseEntity.badRequest().body(message);
 	}
@@ -34,7 +31,7 @@ public class GeneralExceptionHandler {
 	 */
 	@ExceptionHandler({AccountNotFoundException.class})
 	public ResponseEntity<MessageResponse> handleAccountExcepteption(Exception e) {
-		MessageResponse message = createMessageResponse(OAUTH_NO_EXISTENT_EMAIL , e.getMessage());
+		MessageResponse message = MessageResponse.of(OAUTH_NO_EXISTENT_EMAIL , e.getMessage());
 
 		return ResponseEntity.badRequest().body(message);
 	}
@@ -43,16 +40,9 @@ public class GeneralExceptionHandler {
 	 */
 	@ExceptionHandler({SpotifyException.class , UnauthorizedException.class })
 	public ResponseEntity<MessageResponse> handleSpotifyException(Exception e) {
-		MessageResponse message = createMessageResponse(SPOTIFY_FAILURE , e.getMessage());
+		MessageResponse message = MessageResponse.of(SPOTIFY_FAILURE , e.getMessage());
 
 		return ResponseEntity.internalServerError().body(message);
-	}
-
-	public MessageResponse createMessageResponse(int code , String message) {
-		return MessageResponse.builder()
-				.code(code)
-				.message(message)
-				.build();
 	}
 
 }

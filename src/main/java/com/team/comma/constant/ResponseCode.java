@@ -11,6 +11,7 @@ public final class ResponseCode {
      */
     public static final int LOGIN_SUCCESS = 1;
     public static final int REGISTER_SUCCESS = 1;
+    public static final int LOGOUT_SUCCESS = 1;
     public static final int ACCESS_TOKEN_CREATE_SUCCESS = 7;
 
 
