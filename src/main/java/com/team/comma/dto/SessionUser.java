@@ -1,11 +1,11 @@
 package com.team.comma.dto;
 
 import com.team.comma.domain.User;
-import lombok.Data;
+import lombok.Getter;
 
 import java.io.Serializable;
 
-@Data
+@Getter
 public final class SessionUser implements Serializable {
     final private String email;
     final private String name;

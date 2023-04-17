@@ -1,9 +1,9 @@
 package com.team.comma.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public final class MessageResponse<D> {
 	@Schema(description = "응답 코드")
 	final private int code;
