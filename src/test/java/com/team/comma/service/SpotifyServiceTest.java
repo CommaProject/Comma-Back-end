@@ -1,24 +1,22 @@
 package com.team.comma.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-
-import java.util.ArrayList;
-
+import com.team.comma.dto.ArtistResponse;
+import com.team.comma.dto.TrackResponse;
+import com.team.comma.util.spotify.CreationAccessToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.team.comma.dto.ArtistResponse;
-import com.team.comma.dto.TrackResponse;
-import com.team.comma.util.spotify.CreationAccessToken;
-
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.detailed.UnauthorizedException;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchArtistsRequest;
+
+import java.util.ArrayList;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @ExtendWith(MockitoExtension.class)
 public class SpotifyServiceTest {
@@ -128,9 +126,9 @@ public class SpotifyServiceTest {
 	@DisplayName("연도 별 아티스트 가져오기")
 	public void getArtistByYear() {
 		// given
-		long year = 2023;
+
 		// when
-		ArrayList<String> result = spotifyService.getArtistByYear(year ,  0);
+		ArrayList<String> result = spotifyService.getArtistByYear(0);
 		// then
 		assertThat(result).isNotNull();
 	}

@@ -125,7 +125,7 @@ public class SpotifyControllerTest {
 		// given
 		final String api = "/spotify/artist?year=2023&offset=0";
 		doReturn(new ArrayList<String>(Arrays.asList("A" , "B" , "C" , "D" , "E"))).when(spotifyService)
-				.getArtistByYear(2023 , 0);
+				.getArtistByYear(0);
 		// when
 		final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(api));
 		// then
