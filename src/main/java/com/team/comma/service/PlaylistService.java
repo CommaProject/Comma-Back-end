@@ -50,4 +50,8 @@ public class PlaylistService {
         }
         return result;
     }
+
+    public void updatePlaylist(){
+
+    }
 }

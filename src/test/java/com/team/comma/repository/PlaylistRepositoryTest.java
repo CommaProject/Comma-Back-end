@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;  //자동 import되지 않음
 
@@ -39,8 +40,7 @@ public class PlaylistRepositoryTest {
     @Test
     public void 플레이리스트조회_성공_2(){
         // given
-        userRepository.save(getUser());
-        final User user = userRepository.findByEmail(userEmail);
+        final User user = userRepository.save(getUser());
 
         playlistRepository.save(getPlaylist(user, "테스트 플레이리스트1"));
         playlistRepository.save(getPlaylist(user, "테스트 플레이리스트2"));
@@ -50,6 +50,21 @@ public class PlaylistRepositoryTest {
 
         // then
         assertThat(result.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void 플레이리스트_알람설정변경(){
+//        // given
+//        final User user = userRepository.save(getUser());
+//        final Playlist playlist = playlistRepository.save(getPlaylist(user, "테스트 플레이리스트"));
+//
+//        // when
+//        playlist = playlist.builder().alarmFlag(true);
+//        playlistRepository.save(getPlaylist(user, "테스트 플레이리스트"));
+//        final Playlist result = playlistRepository.findById(playlist.getId());
+//
+//        // then
+//        assertThat(result).isNotEmpty();
     }
 
 
@@ -67,5 +82,12 @@ public class PlaylistRepositoryTest {
                 .user(user)
                 .build();
     }
+
+//    private Playlist changePlaylist(Long id, String delFlag) {
+//        return Playlist.builder()
+//                .id(id)
+//                .delFlag()
+//                .build();
+//    }
 
 }
