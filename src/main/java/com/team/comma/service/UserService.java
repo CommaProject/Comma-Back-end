@@ -1,6 +1,5 @@
 package com.team.comma.service;
 
-import com.team.comma.constant.ResponseCode;
 import com.team.comma.constant.UserRole;
 import com.team.comma.constant.UserType;
 import com.team.comma.domain.Token;
@@ -19,6 +18,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.security.auth.login.AccountException;
+
+import static com.team.comma.constant.ResponseCode.LOGIN_SUCCESS;
+import static com.team.comma.constant.ResponseCode.REGISTER_SUCCESS;
 
 @Service
 @Transactional
@@ -46,7 +48,7 @@ public class UserService {
 
 		createJwtCookie(user);
 
-		return MessageResponse.of(ResponseCode.LOGIN_SUCCESS , "로그인이 성공적으로 되었습니다." , user);
+		return MessageResponse.of(LOGIN_SUCCESS , "로그인이 성공적으로 되었습니다." , user);
 	}
 
 	public MessageResponse register(final RegisterRequest registerRequest) throws AccountException {
@@ -60,7 +62,7 @@ public class UserService {
 
 		User savedUser = userRepository.save(buildEntity);
 
-		return MessageResponse.of(ResponseCode.REGISTER_SUCCESS , "성공적으로 가입되었습니다." , savedUser);
+		return MessageResponse.of(REGISTER_SUCCESS , "성공적으로 가입되었습니다." , savedUser);
 	}
 
 	public MessageResponse loginOauth(final RegisterRequest registerRequest) throws AccountException {
@@ -76,7 +78,7 @@ public class UserService {
 
 		createJwtCookie(findUser);
 
-		return MessageResponse.of(ResponseCode.LOGIN_SUCCESS , "로그인이 성공적으로 되었습니다." , findUser);
+		return MessageResponse.of(LOGIN_SUCCESS , "로그인이 성공적으로 되었습니다." , findUser);
 	}
 
 	public User createUser(final RegisterRequest RegisterRequest , final UserType userType) {

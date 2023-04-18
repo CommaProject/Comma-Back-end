@@ -1,9 +1,7 @@
 package com.team.comma.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
 
-@Getter
 public final class MessageResponse<D> {
 	@Schema(description = "응답 코드")
 	final private int code;
@@ -26,4 +24,15 @@ public final class MessageResponse<D> {
 		return new MessageResponse(code , message , null);
 	}
 
+	public int getCode() {
+		return code;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public D getData() {
+		return data;
+	}
 }

@@ -1,11 +1,9 @@
 package com.team.comma.dto;
 
 import com.team.comma.domain.User;
-import lombok.Getter;
 
 import java.io.Serializable;
 
-@Getter
 public final class SessionUser implements Serializable {
     final private String email;
     final private String name;
@@ -17,5 +15,13 @@ public final class SessionUser implements Serializable {
 
     public static SessionUser of(User user) {
         return new SessionUser(user);
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getName() {
+        return name;
     }
 }

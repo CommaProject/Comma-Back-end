@@ -1,6 +1,5 @@
 package com.team.comma.service;
 
-import com.team.comma.constant.ResponseCode;
 import com.team.comma.domain.RefreshToken;
 import com.team.comma.domain.Token;
 import com.team.comma.dto.MessageResponse;
@@ -13,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
+import static com.team.comma.constant.ResponseCode.ACCESS_TOKEN_CREATE_SUCCESS;
+import static com.team.comma.constant.ResponseCode.REFRESH_TOKEN_EXPIRED;
 
 @Service
 public class JwtService {
@@ -54,10 +56,10 @@ public class JwtService {
 
 	public MessageResponse createRefreshJson(String createdAccessToken) {
 		if (createdAccessToken == null) {
-			return MessageResponse.of(ResponseCode.REFRESH_TOKEN_EXPIRED , "Refresh 토큰이 만료되었습니다. 로그인이 필요합니다.");
+			return MessageResponse.of(REFRESH_TOKEN_EXPIRED , "Refresh 토큰이 만료되었습니다. 로그인이 필요합니다.");
 		}
 		
-		return MessageResponse.of(ResponseCode.ACCESS_TOKEN_CREATE_SUCCESS , createdAccessToken);
+		return MessageResponse.of(ACCESS_TOKEN_CREATE_SUCCESS , createdAccessToken);
 	}
 
 	public JwtService() {
