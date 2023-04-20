@@ -1,7 +1,8 @@
 package com.team.comma.domain;
 
 import jakarta.persistence.*;
-import java.util.List;
+
+import java.util.ArrayList;
 import lombok.*;
 
 import java.util.List;
@@ -32,4 +33,8 @@ public class Track {
     @Column(length = 50)
     private String spotifyTrackHref;
 
+    private boolean alarmFlag;
+
+    @OneToMany(mappedBy = "track")
+    private List<TrackArtist> artistName;
 }

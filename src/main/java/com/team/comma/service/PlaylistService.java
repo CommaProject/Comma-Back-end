@@ -46,7 +46,7 @@ public class PlaylistService {
     public List<PlaylistTrackResponse> createPlaylistTracks(List<PlaylistTrack> playlistTracks){
         List<PlaylistTrackResponse> result = new ArrayList<>();
         for (PlaylistTrack playlistTrack : playlistTracks) {
-            result.add(PlaylistTrackResponse.of(playlistTrack.getTrack()));
+            result.add(PlaylistTrackResponse.of(playlistTrack.getTrack(),playlistTrack.getTrack().getArtistName()));
         }
         return result;
     }
