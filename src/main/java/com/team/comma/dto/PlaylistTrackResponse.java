@@ -1,5 +1,6 @@
 package com.team.comma.dto;
 
+import com.team.comma.domain.PlaylistTrack;
 import com.team.comma.domain.Track;
 import com.team.comma.domain.TrackArtist;
 import lombok.*;
@@ -18,16 +19,16 @@ public final class PlaylistTrackResponse {
 
     private final List<TrackArtist> artistName;
 
-    private PlaylistTrackResponse(Track track, List<TrackArtist> trackArtist) {
+    private PlaylistTrackResponse(PlaylistTrack playlistTrack, Track track) {
         this.id = track.getId();
         this.trackTitle = track.getTrackTitle();
         this.durationMs = track.getDurationTimeMs();
         this.albumImageUrl = track.getAlbumImageUrl();
-        this.alarmFlag = track.isAlarmFlag();
-        this.artistName = new ArrayList<>(trackArtist);
+        this.alarmFlag = playlistTrack.getTrackAlarmFlag();
+        this.artistName = new ArrayList<>(track.getArtistName());
     }
 
-    public static PlaylistTrackResponse of(Track track, List<TrackArtist> trackArtist) {
-        return new PlaylistTrackResponse(track, trackArtist);
+    public static PlaylistTrackResponse of(PlaylistTrack playlistTrack, Track track) {
+        return new PlaylistTrackResponse(playlistTrack, track);
     }
 }
