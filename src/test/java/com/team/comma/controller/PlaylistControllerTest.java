@@ -2,6 +2,7 @@ package com.team.comma.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.Playlist;
+import com.team.comma.domain.PlaylistTrack;
 import com.team.comma.domain.Track;
 import com.team.comma.domain.TrackArtist;
 import com.team.comma.dto.PlaylistResponse;
@@ -66,9 +67,9 @@ public class PlaylistControllerTest {
                 TrackArtist.builder().build());
 
         List<PlaylistTrackResponse> tracks = Arrays.asList(
-                PlaylistTrackResponse.of(Track.builder().build(), trackArtists),
-                PlaylistTrackResponse.of(Track.builder().build(), trackArtists),
-                PlaylistTrackResponse.of(Track.builder().build(), trackArtists));
+                PlaylistTrackResponse.of(PlaylistTrack.builder().build(), Track.builder().artistName(trackArtists).build()),
+                PlaylistTrackResponse.of(PlaylistTrack.builder().build(), Track.builder().artistName(trackArtists).build()),
+                PlaylistTrackResponse.of(PlaylistTrack.builder().build(), Track.builder().artistName(trackArtists).build()));
 
         doReturn(Arrays.asList(
                 PlaylistResponse.of(Playlist.builder().build(), tracks),

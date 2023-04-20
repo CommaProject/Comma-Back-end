@@ -33,8 +33,7 @@ public class Track {
     @Column(length = 50)
     private String spotifyTrackHref;
 
-    private boolean alarmFlag;
-
     @OneToMany(mappedBy = "track")
     private List<TrackArtist> artistName;
+
 }
