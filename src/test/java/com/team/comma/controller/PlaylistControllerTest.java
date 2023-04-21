@@ -67,9 +67,9 @@ public class PlaylistControllerTest {
                 TrackArtist.builder().build());
 
         List<PlaylistTrackResponse> tracks = Arrays.asList(
-                PlaylistTrackResponse.of(PlaylistTrack.builder().build(), Track.builder().artistName(trackArtists).build()),
-                PlaylistTrackResponse.of(PlaylistTrack.builder().build(), Track.builder().artistName(trackArtists).build()),
-                PlaylistTrackResponse.of(PlaylistTrack.builder().build(), Track.builder().artistName(trackArtists).build()));
+                PlaylistTrackResponse.of(PlaylistTrack.builder().build(), Track.builder().trackArtistList(trackArtists).build()),
+                PlaylistTrackResponse.of(PlaylistTrack.builder().build(), Track.builder().trackArtistList(trackArtists).build()),
+                PlaylistTrackResponse.of(PlaylistTrack.builder().build(), Track.builder().trackArtistList(trackArtists).build()));
 
         doReturn(Arrays.asList(
                 PlaylistResponse.of(Playlist.builder().build(), tracks),
