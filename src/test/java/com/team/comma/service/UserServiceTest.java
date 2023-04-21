@@ -32,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -102,13 +103,17 @@ public class UserServiceTest {
 		User generalUserEntity = getGeneralUserEntity();
 		doReturn(null).when(userRepository).findByEmail(registerRequest.getEmail());
 		doReturn(generalUserEntity).when(userRepository).save(any(User.class));
+		doReturn(Token.builder().accessToken("accessTokenData").refreshToken("refreshTokenData").build())
+				.when(jwtTokenProvider).createAccessToken(generalUserEntity.getUsername(),
+						generalUserEntity.getRole());
+		doNothing().when(jwtService).login(any(Token.class));
 
 		// when
-		MessageResponse result = userService.loginOauth(registerRequest);
+		ResponseEntity result = userService.loginOauth(registerRequest);
 
 		// then
-		assertThat(result).isNotNull();
-		assertThat(result.getCode()).isEqualTo(1);
+		assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(result.getHeaders().get(SET_COOKIE).toString()).contains("accessTokenData").contains("refreshTokenData");
 	}
 
 	@Test
@@ -118,13 +123,17 @@ public class UserServiceTest {
 		RegisterRequest registerRequest = getRequestUser();
 		User userEntity = getOauthUserEntity();
 		doReturn(userEntity).when(userRepository).findByEmail(userEmail);
+		doReturn(Token.builder().accessToken("accessTokenData").refreshToken("refreshTokenData").build())
+				.when(jwtTokenProvider).createAccessToken(userEntity.getUsername(),
+						userEntity.getRole());
+		doNothing().when(jwtService).login(any(Token.class));
 
 		// when
-		MessageResponse result = userService.loginOauth(registerRequest);
+		ResponseEntity result = userService.loginOauth(registerRequest);
 
 		// then
-		assertThat(result).isNotNull();
-		assertThat(result.getCode()).isEqualTo(1);
+		assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(result.getHeaders().get(SET_COOKIE).toString()).contains("accessTokenData").contains("refreshTokenData");
 	}
 
 	@Test
@@ -168,19 +177,17 @@ public class UserServiceTest {
 		LoginRequest login = getLoginRequest();
 		User userEntity = getUserEntity();
 		doReturn(userEntity).when(userRepository).findByEmail(userEmail);
-		doReturn(Token.builder().build()).when(jwtTokenProvider).createAccessToken(userEntity.getUsername(),
+		doReturn(Token.builder().accessToken("accessTokenData").refreshToken("refreshTokenData").build())
+				.when(jwtTokenProvider).createAccessToken(userEntity.getUsername(),
 				userEntity.getRole());
 		doNothing().when(jwtService).login(any(Token.class));
 
 		// when
-		final MessageResponse result = userService.login(login);
+		final ResponseEntity result = userService.login(login);
 
 		// then
-		User user = (User)result.getData();
-
-		assertThat(result.getCode()).isEqualTo(1);
-		assertThat(user).isNotNull();
-		assertThat(user.getEmail()).isEqualTo(userEmail);
+		assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(result.getHeaders().get(SET_COOKIE).toString()).contains("accessTokenData").contains("refreshTokenData");
 	}
 
 	@Test
@@ -224,7 +231,7 @@ public class UserServiceTest {
 	public void getUserInfoByCookieButNotExistendUser() {
 		// given
 		User user = getUserEntity();
-		String accessToken = userService.createJwtCookie(user).getAccessToken();
+		String accessToken = userService.createJwtToken(user).getAccessToken();
 		doReturn(null).when(userRepository).findByEmail(any(String.class));
 		// when
 		Throwable thrown = catchThrowable(() -> userService.getUserByCookie(accessToken));
@@ -237,7 +244,7 @@ public class UserServiceTest {
 	public void getUserInfoByCookie() throws AccountException {
 		// given
 		User user = getUserEntity();
-		String accessToken = userService.createJwtCookie(user).getAccessToken();
+		String accessToken = userService.createJwtToken(user).getAccessToken();
 		doReturn(getUserEntity()).when(userRepository).findByEmail(any(String.class));
 		// when
 		User result = userService.getUserByCookie(accessToken);
@@ -263,8 +270,9 @@ public class UserServiceTest {
 		// given
 		UserDetailRequest userDetail = getUserDetailRequest();
 		User user = getUserEntity();
-		String accessToken = userService.createJwtCookie(user).getAccessToken();
+		String accessToken = userService.createJwtToken(user).getAccessToken();
 		doReturn(null).when(userRepository).findByEmail(any(String.class));
+
 		// when
 		Throwable thrown = catchThrowable( () -> userService.createUserInformation(userDetail , accessToken));
 		// then
@@ -277,7 +285,7 @@ public class UserServiceTest {
 		// given
 		UserDetailRequest userDetail = getUserDetailRequest();
 		User user = getUserEntity();
-		String accessToken = userService.createJwtCookie(user).getAccessToken();
+		String accessToken = userService.createJwtToken(user).getAccessToken();
 		doReturn(user).when(userRepository).findByEmail(any(String.class));
 		// when
 		ResponseEntity result = userService.createUserInformation(userDetail , accessToken);

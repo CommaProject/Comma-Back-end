@@ -12,18 +12,18 @@ import com.team.comma.dto.UserDetailRequest;
 import com.team.comma.repository.UserRepository;
 import com.team.comma.util.security.CreationCookie;
 import com.team.comma.util.security.JwtTokenProvider;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.security.auth.login.AccountException;
 
-import static com.team.comma.constant.ResponseCode.*;
+import static com.team.comma.constant.ResponseCode.LOGIN_SUCCESS;
+import static com.team.comma.constant.ResponseCode.REGISTER_SUCCESS;
+import static org.apache.http.cookie.SM.SET_COOKIE;
 
 @Service
 @Transactional
@@ -34,7 +34,7 @@ public class UserService {
     final private JwtService jwtService;
     final private JwtTokenProvider jwtTokenProvider;
 
-    public MessageResponse login(final LoginRequest loginRequest) throws AccountException {
+    public ResponseEntity<MessageResponse> login(final LoginRequest loginRequest) throws AccountException {
         User user = userRepository.findByEmail(loginRequest.getEmail());
 
         if (user == null) {
@@ -49,9 +49,13 @@ public class UserService {
             throw new AccountException("정보가 올바르지 않습니다.");
         }
 
-        createJwtCookie(user);
+        Token token = createJwtToken(user);
+        MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, "로그인이 성공적으로 되었습니다.", user);
 
-        return MessageResponse.of(LOGIN_SUCCESS, "로그인이 성공적으로 되었습니다.", user);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(SET_COOKIE , CreationCookie.createResponseAccessToken(token.getAccessToken()).toString())
+                .header(SET_COOKIE , CreationCookie.createResponseRefreshToken( token.getRefreshToken()).toString())
+                .body(message);
     }
 
     public MessageResponse register(final RegisterRequest registerRequest) throws AccountException {
@@ -68,7 +72,7 @@ public class UserService {
         return MessageResponse.of(REGISTER_SUCCESS, "성공적으로 가입되었습니다.", savedUser);
     }
 
-    public MessageResponse loginOauth(final RegisterRequest registerRequest)
+    public ResponseEntity<MessageResponse> loginOauth(final RegisterRequest registerRequest)
         throws AccountException {
         User findUser = userRepository.findByEmail(registerRequest.getEmail());
 
@@ -80,9 +84,13 @@ public class UserService {
             throw new AccountException("일반 사용자가 이미 존재합니다.");
         }
 
-        createJwtCookie(findUser);
+        Token token = createJwtToken(findUser);
+        MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, "로그인이 성공적으로 되었습니다.", findUser);
 
-        return MessageResponse.of(LOGIN_SUCCESS, "로그인이 성공적으로 되었습니다.", findUser);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(SET_COOKIE , CreationCookie.createResponseAccessToken(token.getAccessToken()).toString())
+                .header(SET_COOKIE , CreationCookie.createResponseRefreshToken( token.getRefreshToken()).toString())
+                .body(message);
     }
 
     public ResponseEntity<MessageResponse> createUserInformation(final UserDetailRequest userDetail , final String token)
@@ -122,18 +130,9 @@ public class UserService {
             .build();
     }
 
-    public Token createJwtCookie(User userEntity) {
-        Token token = jwtTokenProvider.createAccessToken(userEntity.getUsername(),
-            userEntity.getRole());
+    public Token createJwtToken(User userEntity) {
+        Token token = jwtTokenProvider.createAccessToken(userEntity.getUsername(), userEntity.getRole());
         jwtService.login(token);
-
-        ServletRequestAttributes attr = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes());
-        HttpServletResponse response = attr.getResponse();
-
-        if (response != null) {
-            response.addCookie(CreationCookie.createRefreshToken(token.getRefreshToken()));
-            response.addCookie(CreationCookie.createAccessToken(token.getAccessToken()));
-        }
 
         return token;
     }
@@ -146,5 +145,15 @@ public class UserService {
             throw new AccountException("사용자를 찾을 수 없습니다.");
         }
         return user;
+    }
+
+    public ResponseCookie createCookie(int maxAge , String cookieName , String cookieContent) {
+        return ResponseCookie.from(cookieName , cookieContent)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(maxAge) // 14주
+                .domain("localhost")
+                .build();
     }
 }

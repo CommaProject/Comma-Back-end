@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -32,6 +33,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 
 import static com.team.comma.constant.ResponseCode.*;
+import static org.apache.http.cookie.SM.SET_COOKIE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -68,7 +70,10 @@ public class UserControllerTest {
 		final String api = "/login";
 		final LoginRequest request = getLoginRequest();
 		final MessageResponse message = MessageResponse.of( LOGIN_SUCCESS ,"로그인이 성공적으로 되었습니다." , request.getEmail());
-		doReturn(message).when(userService).login(any(LoginRequest.class));
+		final ResponseCookie cookie1 = ResponseCookie.from("accessToken" , "accessTokenData1564").build();
+		final ResponseCookie cookie2 = ResponseCookie.from("refreshToken" , "refreshTokenData4567").build();
+		doReturn(ResponseEntity.ok().header(SET_COOKIE , cookie1.toString()).header(SET_COOKIE , cookie2.toString())
+				.body(message)).when(userService).login(any(LoginRequest.class));
 
 		// when
 		final ResultActions resultActions = mockMvc.perform(
@@ -76,6 +81,10 @@ public class UserControllerTest {
 
 		// then
 		resultActions.andExpect(status().isOk());
+		String accessToken = resultActions.andReturn().getResponse().getCookie("accessToken").toString();
+		String refreshToken = resultActions.andReturn().getResponse().getCookie("refreshToken").toString();
+		assertThat(accessToken).contains("accessTokenData1564");
+		assertThat(refreshToken).contains("refreshTokenData4567");
 
 		final MessageResponse response = gson.fromJson(
 				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageResponse.class);
@@ -85,13 +94,12 @@ public class UserControllerTest {
 	}
 
 	@Test
-	@DisplayName("로그인 요청 실패_올바르지 않은 정보")
+	@DisplayName("로그인 요청 실패 _ 틀린 비밀번호 혹은 아이디")
 	public void notExistUser() throws Exception {
 		// given
 		final String api = "/login";
 		LoginRequest request = getLoginRequest();
-		AccountException exception = new AccountException("정보가 올바르지 않습니다.");
-		doThrow(exception).when(userService).login(any(LoginRequest.class));
+		doThrow(new AccountException("정보가 올바르지 않습니다.")).when(userService).login(any(LoginRequest.class));
 
 		// when
 		final ResultActions resultActions = mockMvc.perform(
@@ -129,7 +137,7 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	@DisplayName("사용자 회원가입 실패_이미 존재하는 회원")
+	@DisplayName("사용자 회원가입 실패 _ 이미 존재하는 회원")
 	public void existUserException() throws Exception {
 		// given
 		final String api = "/register";
