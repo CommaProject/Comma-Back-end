@@ -17,7 +17,7 @@ public final class PlaylistTrackResponse {
     private final String albumImageUrl;
     private final Boolean alarmFlag;
 
-    private final List<TrackArtist> artistName;
+    private final List<TrackArtist> trackArtistList;
 
     private PlaylistTrackResponse(PlaylistTrack playlistTrack, Track track) {
         this.id = track.getId();
@@ -25,7 +25,7 @@ public final class PlaylistTrackResponse {
         this.durationMs = track.getDurationTimeMs();
         this.albumImageUrl = track.getAlbumImageUrl();
         this.alarmFlag = playlistTrack.getTrackAlarmFlag();
-        this.artistName = new ArrayList<>(track.getArtistName());
+        this.trackArtistList = new ArrayList<>(track.getTrackArtistList());
     }
 
     public static PlaylistTrackResponse of(PlaylistTrack playlistTrack, Track track) {
