@@ -4,23 +4,26 @@ import com.team.comma.constant.UserRole;
 import com.team.comma.constant.UserType;
 import com.team.comma.domain.Token;
 import com.team.comma.domain.User;
+import com.team.comma.domain.UserDetail;
 import com.team.comma.dto.LoginRequest;
 import com.team.comma.dto.MessageResponse;
 import com.team.comma.dto.RegisterRequest;
+import com.team.comma.dto.UserDetailRequest;
 import com.team.comma.repository.UserRepository;
 import com.team.comma.util.security.CreationCookie;
 import com.team.comma.util.security.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.security.auth.login.AccountException;
 
-import static com.team.comma.constant.ResponseCode.LOGIN_SUCCESS;
-import static com.team.comma.constant.ResponseCode.REGISTER_SUCCESS;
+import static com.team.comma.constant.ResponseCode.*;
 
 @Service
 @Transactional
@@ -82,9 +85,38 @@ public class UserService {
         return MessageResponse.of(LOGIN_SUCCESS, "로그인이 성공적으로 되었습니다.", findUser);
     }
 
+    public ResponseEntity<MessageResponse> createUserInformation(final UserDetailRequest userDetail , final String token)
+            throws AccountException {
+        if(token == null) {
+            throw new AccountException("로그인이 되어있지 않습니다.");
+        }
+
+        User user = getUserByCookie(token);
+
+        UserDetail userDetail1 = UserDetail.builder()
+                .age(userDetail.getAge())
+                .sex(userDetail.getSex())
+                .nickname(userDetail.getNickName())
+                .recommendTime(userDetail.getRecommendTime())
+                .build();
+
+        user.setUserDetail(userDetail1);
+
+        for (String genre : userDetail.getGenres()) {
+            user.addFavoriteGenre(genre);
+        };
+
+        for (String artist : userDetail.getArtistNames()) {
+            user.addFavoriteArtist(artist);
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
     public User createUser(final RegisterRequest RegisterRequest, final UserType userType) {
         return User.builder()
             .email(RegisterRequest.getEmail())
+            .password(RegisterRequest.getPassword())
             .type(userType)
             .role(UserRole.USER)
             .build();

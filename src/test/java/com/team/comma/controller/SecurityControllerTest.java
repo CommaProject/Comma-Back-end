@@ -11,6 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -18,8 +21,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.nio.charset.StandardCharsets;
 
-import static com.team.comma.constant.ResponseCode.ACCESS_TOKEN_CREATE_SUCCESS;
 import static com.team.comma.constant.ResponseCode.AUTHORIZATION_ERROR;
+import static org.apache.http.cookie.SM.SET_COOKIE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -65,7 +68,8 @@ public class SecurityControllerTest {
 	public void createNewAccessToken() throws Exception {
 		// given
 		final String api = "/authentication/denied";
-		doReturn(MessageResponse.of(ACCESS_TOKEN_CREATE_SUCCESS ,"token")).when(jwtService).validateRefreshToken("token");
+		ResponseCookie responseCookie = ResponseCookie.from("accessToken" , "newAccessToken").build();
+		doReturn(ResponseEntity.status(HttpStatus.OK).header(SET_COOKIE , responseCookie.toString()).build()).when(jwtService).validateRefreshToken("token");
 		Cookie cookie = new Cookie("refreshToken", "token");
 
 		// when
@@ -73,11 +77,9 @@ public class SecurityControllerTest {
 
 		// then
 		resultActions.andExpect(status().isOk());
-		final MessageResponse messageDTO = gson.fromJson(
-				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageResponse.class);
+		String token = resultActions.andReturn().getResponse().getCookie("accessToken").toString();
 
-		assertThat(messageDTO.getCode()).isEqualTo(7);
-		assertThat(messageDTO.getMessage()).isEqualTo("token");
+		assertThat(token).contains("newAccessToken");
 	}
 
 	@Test

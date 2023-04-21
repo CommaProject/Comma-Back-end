@@ -1,6 +1,7 @@
 package com.team.comma.exception;
 
 import com.team.comma.dto.MessageResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,4 +46,13 @@ public class GeneralExceptionHandler {
 		return ResponseEntity.internalServerError().body(message);
 	}
 
+	/*
+		RefreshToken 만료
+	 */
+	@ExceptionHandler({ExpireTokenException.class})
+	public ResponseEntity<MessageResponse> handleExpireTokenException(Exception e) {
+		MessageResponse message = MessageResponse.of(REFRESH_TOKEN_EXPIRED, e.getMessage());
+
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+	}
 }

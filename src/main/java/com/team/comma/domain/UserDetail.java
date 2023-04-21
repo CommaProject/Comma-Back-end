@@ -1,19 +1,9 @@
 package com.team.comma.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalTime;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -31,7 +21,7 @@ public class UserDetail {
     private String sex;
 
     @Column(length = 5)
-    private Integer age;
+    private String age;
 
     @Column(length = 10)
     private LocalTime recommendTime;
@@ -48,8 +38,4 @@ public class UserDetail {
     private Boolean calenderPublicFlag;
 
     private Boolean allPublicFlag;
-
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 }

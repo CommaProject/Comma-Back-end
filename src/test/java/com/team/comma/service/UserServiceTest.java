@@ -7,6 +7,7 @@ import com.team.comma.domain.User;
 import com.team.comma.dto.LoginRequest;
 import com.team.comma.dto.MessageResponse;
 import com.team.comma.dto.RegisterRequest;
+import com.team.comma.dto.UserDetailRequest;
 import com.team.comma.repository.UserRepository;
 import com.team.comma.util.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,12 +18,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.security.auth.login.AccountException;
 import java.time.LocalTime;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -242,6 +246,53 @@ public class UserServiceTest {
 		assertThat(result.getEmail()).isEqualTo(userEmail);
 	}
 
+	@Test
+	@DisplayName("사용자 정보 저장 실패 _ 로그인 되어있지 않음")
+	public void saveUserInformationFail_notExistToken() {
+		// given
+		UserDetailRequest userDetail = getUserDetailRequest();
+		// when
+		Throwable thrown = catchThrowable(() -> userService.createUserInformation(userDetail , null));
+		// then
+		assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("로그인이 되어있지 않습니다.");
+	}
+
+	@Test
+	@DisplayName("사용자 정보 저장 실패 _ 존재하지 않는 사용자")
+	public void saveUserInfomationFail_notExistUser() {
+		// given
+		UserDetailRequest userDetail = getUserDetailRequest();
+		User user = getUserEntity();
+		String accessToken = userService.createJwtCookie(user).getAccessToken();
+		doReturn(null).when(userRepository).findByEmail(any(String.class));
+		// when
+		Throwable thrown = catchThrowable( () -> userService.createUserInformation(userDetail , accessToken));
+		// then
+		assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
+	}
+
+	@Test
+	@DisplayName("사용자 정보 저장 성공")
+	public void saveUserInfomation() throws AccountException {
+		// given
+		UserDetailRequest userDetail = getUserDetailRequest();
+		User user = getUserEntity();
+		String accessToken = userService.createJwtCookie(user).getAccessToken();
+		doReturn(user).when(userRepository).findByEmail(any(String.class));
+		// when
+		ResponseEntity result = userService.createUserInformation(userDetail , accessToken);
+		// then
+		assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+	}
+
+	private UserDetailRequest getUserDetailRequest() {
+		return UserDetailRequest.builder().age("20").sex("female").nickName("name")
+				.recommendTime(LocalTime.of(12 , 0))
+				.artistNames(Arrays.asList("artist1" , "artist2" , "artist3"))
+				.genres(Arrays.asList("genre1" , "genre2" , "genre3"))
+				.build();
+	}
+
 	private User getUserEntity() {
 		return User.builder().email(userEmail).password(userPassword)
 				.role(UserRole.USER).build();
@@ -252,9 +303,7 @@ public class UserServiceTest {
 	}
 
 	private RegisterRequest getRegisterRequest() {
-		return RegisterRequest.builder().age(20).sex("female").recommendTime(
-				LocalTime.of(12 , 00))
-				.isLeave(0).email(userEmail).name(userName).password(userPassword).build();
+		return RegisterRequest.builder().email(userEmail).password(userPassword).build();
 	}
 
 	public User getOauthUserEntity() {
@@ -266,8 +315,7 @@ public class UserServiceTest {
 	}
 
 	public RegisterRequest getRequestUser() {
-		return RegisterRequest.builder().email(userEmail).password(userPassword).age(20).isLeave(0).sex("femail")
-				.name(userName).build();
+		return RegisterRequest.builder().email(userEmail).password(userPassword).build();
 	}
 
 }
