@@ -1,10 +1,15 @@
 package com.team.comma.domain;
 
-import jakarta.persistence.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalTime;
-import java.util.List;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,15 +41,4 @@ public class Playlist {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @OneToMany(mappedBy = "playlist")
-    private List<PlaylistTrack> playlistTrackList;
-
-    public void addPlaylistTrack(Track track) {
-        PlaylistTrack playlistTrack = PlaylistTrack.builder()
-                .playlist(this)
-                .track(track)
-                .build();
-
-        playlistTrackList.add(playlistTrack);
-    }
 }

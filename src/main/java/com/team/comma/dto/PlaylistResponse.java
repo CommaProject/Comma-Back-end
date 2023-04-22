@@ -21,22 +21,22 @@ public final class PlaylistResponse {
     private final Boolean alarmFlag;
     private final LocalTime alarmStartTime;
 
-    private final List<PlaylistTrackResponse> trackList;
+    private final List<PlaylistTrackResponse> tracks;
 
-    private PlaylistResponse(Playlist playlist, List<PlaylistTrackResponse> trackList) {
+    private PlaylistResponse(Playlist playlist, List<PlaylistTrackResponse> tracks) {
         this.playlistId = playlist.getId();
         this.playlistTitle = playlist.getPlaylistTitle();
         this.alarmFlag = playlist.getAlarmFlag();
         this.alarmStartTime = playlist.getAlarmStartTime();
-        this.trackList = new ArrayList<>(trackList);
+        this.tracks = new ArrayList<>(tracks);
     }
 
-    public static PlaylistResponse of(Playlist playlist, List<PlaylistTrackResponse> trackList) {
-        return new PlaylistResponse(playlist, trackList);
+    public static PlaylistResponse of(Playlist playlist, List<PlaylistTrackResponse> tracks) {
+        return new PlaylistResponse(playlist, tracks);
     }
 
-    public List<PlaylistTrackResponse> getTrackList() {
-        return Collections.unmodifiableList(trackList);
+    public List<PlaylistTrackResponse> getTracks() {
+        return Collections.unmodifiableList(tracks);
     }
 
 }
