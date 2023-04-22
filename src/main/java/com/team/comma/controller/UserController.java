@@ -1,10 +1,6 @@
 package com.team.comma.controller;
 
-import com.team.comma.domain.User;
-import com.team.comma.dto.LoginRequest;
-import com.team.comma.dto.MessageResponse;
-import com.team.comma.dto.RegisterRequest;
-import com.team.comma.dto.UserDetailRequest;
+import com.team.comma.dto.*;
 import com.team.comma.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +37,7 @@ public class UserController {
 	}
 
 	@GetMapping("/user/information")
-	public ResponseEntity<User> getUserInfoByEmail(@CookieValue("accessToken") String accessToken) throws AccountException {
+	public ResponseEntity<UserResponse> getUserInfoByEmail(@CookieValue("accessToken") String accessToken) throws AccountException {
 		return ResponseEntity.ok().body(userService.getUserByCookie(accessToken));
 	}
 

@@ -2,6 +2,7 @@ package com.team.comma.domain;
 
 import com.team.comma.constant.UserRole;
 import com.team.comma.constant.UserType;
+import com.team.comma.util.converter.BooleanConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
@@ -75,7 +76,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    private Boolean delFlag;
+    @Builder.Default
+    @Convert(converter = BooleanConverter.class)
+    private Boolean delFlag = false;
 
     // JWT Security
     @Override

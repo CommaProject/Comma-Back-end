@@ -5,24 +5,19 @@ import com.team.comma.constant.UserType;
 import com.team.comma.domain.Token;
 import com.team.comma.domain.User;
 import com.team.comma.domain.UserDetail;
-import com.team.comma.dto.LoginRequest;
-import com.team.comma.dto.MessageResponse;
-import com.team.comma.dto.RegisterRequest;
-import com.team.comma.dto.UserDetailRequest;
+import com.team.comma.dto.*;
 import com.team.comma.repository.UserRepository;
 import com.team.comma.util.security.CreationCookie;
 import com.team.comma.util.security.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
 
-import static com.team.comma.constant.ResponseCode.LOGIN_SUCCESS;
-import static com.team.comma.constant.ResponseCode.REGISTER_SUCCESS;
+import static com.team.comma.constant.ResponseCode.*;
 import static org.apache.http.cookie.SM.SET_COOKIE;
 
 @Service
@@ -99,7 +94,12 @@ public class UserService {
             throw new AccountException("로그인이 되어있지 않습니다.");
         }
 
-        User user = getUserByCookie(token);
+        String userName = jwtTokenProvider.getUserPk(token);
+        User user = userRepository.findByEmail(userName);
+
+        if (user == null) {
+            throw new AccountException("사용자를 찾을 수 없습니다.");
+        }
 
         UserDetail userDetail1 = UserDetail.builder()
                 .age(userDetail.getAge())
@@ -137,23 +137,18 @@ public class UserService {
         return token;
     }
 
-    public User getUserByCookie(String token) throws AccountException {
+    public UserResponse getUserByCookie(String token) throws AccountException {
         String userName = jwtTokenProvider.getUserPk(token);
         User user = userRepository.findByEmail(userName);
 
         if (user == null) {
             throw new AccountException("사용자를 찾을 수 없습니다.");
         }
-        return user;
-    }
-
-    public ResponseCookie createCookie(int maxAge , String cookieName , String cookieContent) {
-        return ResponseCookie.from(cookieName , cookieContent)
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .maxAge(maxAge) // 14주
-                .domain("localhost")
+        return UserResponse.builder()
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .delFlag(user.getDelFlag())
+                .role(user.getRole())
                 .build();
     }
 }

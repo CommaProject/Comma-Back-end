@@ -4,10 +4,7 @@ import com.team.comma.constant.UserRole;
 import com.team.comma.constant.UserType;
 import com.team.comma.domain.Token;
 import com.team.comma.domain.User;
-import com.team.comma.dto.LoginRequest;
-import com.team.comma.dto.MessageResponse;
-import com.team.comma.dto.RegisterRequest;
-import com.team.comma.dto.UserDetailRequest;
+import com.team.comma.dto.*;
 import com.team.comma.repository.UserRepository;
 import com.team.comma.util.security.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -247,7 +244,7 @@ public class UserServiceTest {
 		String accessToken = userService.createJwtToken(user).getAccessToken();
 		doReturn(getUserEntity()).when(userRepository).findByEmail(any(String.class));
 		// when
-		User result = userService.getUserByCookie(accessToken);
+		UserResponse result = userService.getUserByCookie(accessToken);
 		// then
 		assertThat(result).isNotNull();
 		assertThat(result.getEmail()).isEqualTo(userEmail);
