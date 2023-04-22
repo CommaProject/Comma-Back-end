@@ -12,10 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -50,14 +51,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureRestDocs
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-@SpringBootTest
+@WebMvcTest(UserController.class)
+@MockBean(JpaMetamodelMappingContext.class)
+@WebAppConfiguration
 public class UserControllerTest {
 
 	@MockBean
-	UserService userService;
-
-	@Autowired
-	private WebApplicationContext context;
+	private UserService userService;
 
 	MockMvc mockMvc;
 	Gson gson;
@@ -65,10 +65,10 @@ public class UserControllerTest {
 	private String userPassword = "password";
 
 	@BeforeEach
-	public void init(RestDocumentationContextProvider restDocumentation) {
+	public void init(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
 		gson = GsonUtil.getGsonInstance();
 
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 				.apply(documentationConfiguration(restDocumentation))
 				.build();
 	}

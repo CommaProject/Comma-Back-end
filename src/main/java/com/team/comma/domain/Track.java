@@ -33,8 +33,12 @@ public class Track {
     @Column(length = 50)
     private String spotifyTrackHref;
 
-    private boolean alarmFlag;
-
     @OneToMany(mappedBy = "track")
-    private List<TrackArtist> artistName;
+    private List<TrackArtist> trackArtistList;
+
+    public void setTrackArtistList(TrackArtist trackArtist) {
+        getTrackArtistList().add(trackArtist);
+        trackArtist.setTrack(this);
+    }
+
 }
