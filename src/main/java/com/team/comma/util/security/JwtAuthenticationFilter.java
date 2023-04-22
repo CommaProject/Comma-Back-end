@@ -23,7 +23,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
 		Cookie cookies[] = ((HttpServletRequest) request).getCookies();
 
-		if(cookies.length != 0) {
+		if(cookies != null && cookies.length != 0) {
 			String token = Arrays.stream(cookies) // 쿠키에서 AccessToken 추출
 					.filter(c -> c.getName().equals("accessToken")).findFirst().map(Cookie::getValue).orElse(null);
 			// String token = jwtTokenProvider.resolveToken((HttpServletRequest) request); // 헤더에서 JWT 추출

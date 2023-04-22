@@ -215,7 +215,7 @@ public class UserServiceTest {
 		MessageResponse message = userService.register(registerRequest);
 
 		// then
-		User user = (User)message.getData();
+		UserResponse user = (UserResponse)message.getData();
 
 		assertThat(message.getCode()).isEqualTo(1);
 		assertThat(message.getMessage()).isEqualTo("성공적으로 가입되었습니다.");

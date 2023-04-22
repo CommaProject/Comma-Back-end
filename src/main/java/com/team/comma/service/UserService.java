@@ -45,7 +45,7 @@ public class UserService {
         }
 
         Token token = createJwtToken(user);
-        MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, "로그인이 성공적으로 되었습니다.", user);
+        MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, "로그인이 성공적으로 되었습니다.", createUserResponse(user));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header(SET_COOKIE , CreationCookie.createResponseAccessToken(token.getAccessToken()).toString())
@@ -62,25 +62,25 @@ public class UserService {
 
         User buildEntity = createUser(registerRequest, UserType.GeneralUser);
 
-        User savedUser = userRepository.save(buildEntity);
+        User user = userRepository.save(buildEntity);
 
-        return MessageResponse.of(REGISTER_SUCCESS, "성공적으로 가입되었습니다.", savedUser);
+        return MessageResponse.of(REGISTER_SUCCESS, "성공적으로 가입되었습니다.", createUserResponse(user));
     }
 
     public ResponseEntity<MessageResponse> loginOauth(final RegisterRequest registerRequest)
         throws AccountException {
-        User findUser = userRepository.findByEmail(registerRequest.getEmail());
+        User user = userRepository.findByEmail(registerRequest.getEmail());
 
-        if (findUser == null) { // 정보가 없다면 회원가입
+        if (user == null) { // 정보가 없다면 회원가입
             User createUser = createUser(registerRequest, UserType.OAuthUser);
 
-            findUser = userRepository.save(createUser);
-        } else if (findUser.getType() == UserType.GeneralUser) { // 일반 사용자가 존재한다면
+            user = userRepository.save(createUser);
+        } else if (user.getType() == UserType.GeneralUser) { // 일반 사용자가 존재한다면
             throw new AccountException("일반 사용자가 이미 존재합니다.");
         }
 
-        Token token = createJwtToken(findUser);
-        MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, "로그인이 성공적으로 되었습니다.", findUser);
+        Token token = createJwtToken(user);
+        MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, "로그인이 성공적으로 되었습니다.", createUserResponse(user));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .header(SET_COOKIE , CreationCookie.createResponseAccessToken(token.getAccessToken()).toString())
@@ -144,6 +144,10 @@ public class UserService {
         if (user == null) {
             throw new AccountException("사용자를 찾을 수 없습니다.");
         }
+        return createUserResponse(user);
+    }
+
+    public UserResponse createUserResponse(User user) {
         return UserResponse.builder()
                 .email(user.getEmail())
                 .password(user.getPassword())

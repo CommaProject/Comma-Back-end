@@ -54,14 +54,14 @@ CREATE TABLE user_detail_tb
     id                   BIGINT  NOT NULL AUTO_INCREMENT,
     user_id              BIGINT,
     sex                  VARCHAR(10),
-    age                  INTEGER,
+    age                  VARCHAR(10),
     recommend_time       TIME,
     nickname             VARCHAR(10),
     profile_image_url    VARCHAR(50),
-    popup_alert_flag     BOOLEAN NOT NULL,
-    favorite_public_flag BOOLEAN NOT NULL,
-    calender_public_flag BOOLEAN NOT NULL,
-    all_public_flag      BOOLEAN NOT NULL,
+    popup_alert_flag     VARCHAR(10) NOT NULL,
+    favorite_public_flag VARCHAR(10) NOT NULL,
+    calender_public_flag VARCHAR(10) NOT NULL,
+    all_public_flag      VARCHAR(10) NOT NULL,
     PRIMARY KEY (id)
 );
 

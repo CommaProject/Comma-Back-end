@@ -1,6 +1,7 @@
 package com.team.comma.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.team.comma.constant.UserRole;
 import com.team.comma.domain.User;
 import com.team.comma.dto.*;
@@ -79,7 +80,8 @@ public class UserControllerTest {
 		// given
 		final String api = "/login";
 		final LoginRequest request = getLoginRequest();
-		final MessageResponse message = MessageResponse.of( LOGIN_SUCCESS ,"로그인이 성공적으로 되었습니다." , request.getEmail());
+		final UserResponse response = getUserResponse();
+		final MessageResponse message = MessageResponse.of( LOGIN_SUCCESS ,"로그인이 성공적으로 되었습니다." , response);
 		final ResponseCookie cookie1 = ResponseCookie.from("accessToken" , "accessTokenData1564").build();
 		final ResponseCookie cookie2 = ResponseCookie.from("refreshToken" , "refreshTokenData4567").build();
 		doReturn(ResponseEntity.ok().header(SET_COOKIE , cookie1.toString()).header(SET_COOKIE , cookie2.toString())
@@ -94,7 +96,7 @@ public class UserControllerTest {
 				document("user/login" ,
 						preprocessRequest(prettyPrint()) ,
 						preprocessResponse(prettyPrint()) ,
-						requestFields( 
+						requestFields(
 								fieldWithPath("email").description("아이디") ,
 								fieldWithPath("password").description("비밀 번호")
 						),
@@ -103,9 +105,13 @@ public class UserControllerTest {
 								cookieWithName("refreshToken").description("refreshToken")
 						),
 						responseFields(
-								   fieldWithPath("code").description("응답 코드"),
+								fieldWithPath("code").description("응답 코드"),
 								fieldWithPath("message").description("메세지") ,
-								fieldWithPath("data").description("데이터")
+								fieldWithPath("data").description("사용자 데이터"),
+								fieldWithPath("data.email").description("이메일") ,
+								fieldWithPath("data.password").description("비밀번호") ,
+								fieldWithPath("data.delFlag").description("탈퇴 여부 True -> 탈퇴한 사용자") ,
+								fieldWithPath("data.role").description("사용자 권한")
 						)
 				)
 		);
@@ -114,11 +120,12 @@ public class UserControllerTest {
 		assertThat(accessToken).contains("accessTokenData1564");
 		assertThat(refreshToken).contains("refreshTokenData4567");
 
-		final MessageResponse response = gson.fromJson(
-				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageResponse.class);
-		assertThat(response.getCode()).isEqualTo(1);
-		assertThat(response.getMessage()).isEqualTo("로그인이 성공적으로 되었습니다.");
-		assertThat(response.getData()).isEqualTo(request.getEmail());
+		final MessageResponse responseResult = gson.fromJson(
+				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), new TypeToken<MessageResponse<UserResponse>>() {}.getType());
+		UserResponse userResponseResult = (UserResponse) responseResult.getData();
+		assertThat(responseResult.getCode()).isEqualTo(1);
+		assertThat(responseResult.getMessage()).isEqualTo("로그인이 성공적으로 되었습니다.");
+		assertThat(userResponseResult.getEmail()).isEqualTo(request.getEmail());
 	}
 
 	@Test
@@ -162,7 +169,8 @@ public class UserControllerTest {
 		// given
 		final String api = "/register";
 		LoginRequest request = getLoginRequest();
-		doReturn(MessageResponse.of(REGISTER_SUCCESS , "성공적으로 가입되었습니다.")).when(userService)
+		UserResponse response = getUserResponse();
+		doReturn(MessageResponse.of(REGISTER_SUCCESS , "성공적으로 가입되었습니다." , response)).when(userService)
 				.register(any(RegisterRequest.class));
 
 		// when
@@ -179,17 +187,23 @@ public class UserControllerTest {
 								fieldWithPath("password").description("비밀 번호")
 						),
 						responseFields(
-								   fieldWithPath("code").description("응답 코드"),
+								fieldWithPath("code").description("응답 코드"),
 								fieldWithPath("message").description("메세지") ,
-								fieldWithPath("data").description("데이터")
+								fieldWithPath("data").description("사용자 데이터") ,
+								fieldWithPath("data.email").description("이메일") ,
+								fieldWithPath("data.password").description("비밀번호") ,
+								fieldWithPath("data.delFlag").description("탈퇴 여부 True -> 탈퇴한 사용자") ,
+								fieldWithPath("data.role").description("사용자 권한")
 						)
 				)
 		);
-		final MessageResponse response = gson.fromJson(
-				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageResponse.class);
-		
-		assertThat(response.getCode()).isEqualTo(1);
-		assertThat(response.getMessage()).isEqualTo("성공적으로 가입되었습니다.");
+		final MessageResponse responseResult = gson.fromJson(
+				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), new TypeToken<MessageResponse<UserResponse>>() {}.getType());
+
+		UserResponse userResposne = (UserResponse) responseResult.getData();
+		assertThat(responseResult.getCode()).isEqualTo(1);
+		assertThat(responseResult.getMessage()).isEqualTo("성공적으로 가입되었습니다.");
+		assertThat(userResposne.getEmail()).isEqualTo(request.getEmail());
 	}
 	
 	@Test
@@ -456,6 +470,15 @@ public class UserControllerTest {
 				.recommendTime(LocalTime.of(12 , 0))
 				.artistNames(Arrays.asList("artist1" , "artist2" , "artist3"))
 				.genres(Arrays.asList("genre1" , "genre2" , "genre3"))
+				.build();
+	}
+
+	private UserResponse getUserResponse() {
+		return UserResponse.builder()
+				.email(userEmail)
+				.password(userPassword)
+				.role(UserRole.USER)
+				.delFlag(false)
 				.build();
 	}
 
