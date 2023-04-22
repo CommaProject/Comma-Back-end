@@ -1,4 +1,4 @@
-= Member API 문서
+= API 문서
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -128,6 +128,52 @@ include::{snippets}/user/register-Fail/existUser/request-fields.adoc[]
 include::{snippets}/user/register-Fail/existUser/http-response.adoc[]
 include::{snippets}/user/register-Fail/existUser/response-fields.adoc[]
 
+== Spotify API
 
+=== 아티스트 검색하기
 
+==== Request
 
+include::{snippets}/spotify/searchArtist/http-request.adoc[]
+include::{snippets}/spotify/searchArtist/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/spotify/searchArtist/http-response.adoc[]
+include::{snippets}/spotify/searchArtist/response-fields.adoc[]
+
+=== 트랙 검색하기
+
+==== Request
+
+include::{snippets}/spotify/searchTrack/http-request.adoc[]
+include::{snippets}/spotify/searchTrack/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/spotify/searchTrack/http-response.adoc[]
+include::{snippets}/spotify/searchTrack/response-fields.adoc[]
+
+=== 모든 장르 가져오기
+
+==== Request
+
+include::{snippets}/spotify/genreList/http-request.adoc[]
+include::{snippets}/spotify/genreList/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/spotify/genreList/http-response.adoc[]
+include::{snippets}/spotify/genreList/response-fields.adoc[]
+
+=== 연도별 아티스트 정보 가져오기
+
+==== Request
+
+include::{snippets}/spotify/searchArtistByYear/http-request.adoc[]
+include::{snippets}/spotify/searchArtistByYear/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/spotify/searchArtistByYear/http-response.adoc[]
+include::{snippets}/spotify/searchArtistByYear/response-fields.adoc[]

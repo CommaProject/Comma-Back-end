@@ -102,8 +102,8 @@ public class UserControllerTest {
 								cookieWithName("accessToken").description("accessToken") ,
 								cookieWithName("refreshToken").description("refreshToken")
 						),
-						responseFields(                  // (5)
-								fieldWithPath("code").description("사용자 id"), //
+						responseFields(
+								fieldWithPath("code").description("사용자 id"),
 								fieldWithPath("message").description("메세지") ,
 								fieldWithPath("data").description("데이터")
 						)
@@ -142,8 +142,8 @@ public class UserControllerTest {
 								fieldWithPath("email").description("아이디") ,
 								fieldWithPath("password").description("비밀 번호")
 						),
-						responseFields(                  // (5)
-								fieldWithPath("code").description("사용자 id"), //
+						responseFields(
+								fieldWithPath("code").description("사용자 id"),
 								fieldWithPath("message").description("메세지") ,
 								fieldWithPath("data").description("데이터")
 						)
@@ -178,8 +178,8 @@ public class UserControllerTest {
 								fieldWithPath("email").description("아이디") ,
 								fieldWithPath("password").description("비밀 번호")
 						),
-						responseFields(                  // (5)
-								fieldWithPath("code").description("사용자 id"), //
+						responseFields(
+								fieldWithPath("code").description("사용자 id"),
 								fieldWithPath("message").description("메세지") ,
 								fieldWithPath("data").description("데이터")
 						)
@@ -214,7 +214,7 @@ public class UserControllerTest {
 								fieldWithPath("email").description("아이디") ,
 								fieldWithPath("password").description("비밀 번호")
 						),
-						responseFields(                  // (5)
+						responseFields(   
 								fieldWithPath("code").description("사용자 id"), //
 								fieldWithPath("message").description("메세지") ,
 								fieldWithPath("data").description("데이터")
