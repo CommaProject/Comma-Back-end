@@ -7,6 +7,7 @@ import com.team.comma.dto.LoginRequest;
 import com.team.comma.dto.MessageResponse;
 import com.team.comma.dto.RegisterRequest;
 import com.team.comma.dto.UserDetailRequest;
+import com.team.comma.exception.FalsifyTokenException;
 import com.team.comma.exception.GeneralExceptionHandler;
 import com.team.comma.service.UserService;
 import com.team.comma.util.gson.GsonUtil;
@@ -214,12 +215,12 @@ public class UserControllerTest {
 		// then
 		resultActions.andExpect(status().isCreated());
 	}
-/*
+
 	@Test
 	@DisplayName("AccessToken 으로 사용자 정보 가져오기 실패 _ 존재하지 않는 회원")
 	public void getUserInfoByAccessTokenFail_NotExistUser() throws Exception {
 		// given
-		final String api = "/user/privacy";
+		final String api = "/user/information";
 		doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(userService).getUserByCookie(any(String.class));
 		// when
 		final ResultActions resultActions = mockMvc.perform(
@@ -235,10 +236,29 @@ public class UserControllerTest {
 	}
 
 	@Test
+	@DisplayName("AccessToken 으로 사용자 정보 가져오기 실패 _ AccessToken이 없음")
+	public void getUserInfoByAccessTokenFail_NotExistToken() throws Exception {
+		// given
+		final String api = "/user/information";
+		doThrow(new FalsifyTokenException("알 수 없는 토큰이거나 , 변조되었습니다.")).when(userService).getUserByCookie(any(String.class));
+		// when
+		final ResultActions resultActions = mockMvc.perform(
+				MockMvcRequestBuilders.get(api).cookie(new Cookie("accessToken" , "token"))
+		);
+		// then
+		resultActions.andExpect(status().isBadRequest());
+		final MessageResponse response = gson.fromJson(
+				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageResponse.class);
+
+		assertThat(response.getMessage()).isEqualTo("알 수 없는 토큰이거나 , 변조되었습니다.");
+		assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE);
+	}
+
+	@Test
 	@DisplayName("AccessToken 으로 사용자 정보 가져오기")
 	public void getUserInfoByAccessToken_Success() throws Exception {
 		// given
-		final String api = "/user/privacy";
+		final String api = "/user/information";
 		User user = getUserEntity();
 		doReturn(user).when(userService).getUserByCookie(any(String.class));
 		// when
@@ -253,7 +273,7 @@ public class UserControllerTest {
 		assertThat(response).isNotNull();
 		assertThat(response.getEmail()).isEqualTo(user.getEmail());
 	}
-*/
+
 
 	
 	public LoginRequest getLoginRequest() {

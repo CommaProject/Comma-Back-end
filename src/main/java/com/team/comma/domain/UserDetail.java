@@ -1,7 +1,9 @@
 package com.team.comma.domain;
 
+import com.team.comma.util.converter.BooleanConverter;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalTime;
 
@@ -10,6 +12,7 @@ import java.time.LocalTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicInsert
 @Table(name = "user_detail_tb")
 public class UserDetail {
 
@@ -32,10 +35,21 @@ public class UserDetail {
     @Column(length = 50)
     private String profileImageUrl;
 
-    private Boolean popupAlertFlag;
-    private Boolean favoritePublicFlag;
+    @Builder.Default
+    @Convert(converter = BooleanConverter.class)
+    private Boolean popupAlertFlag = true;
+    @Builder.Default
+    @Convert(converter = BooleanConverter.class)
+    private Boolean favoritePublicFlag = true;
 
-    private Boolean calenderPublicFlag;
+    @Builder.Default
+    @Convert(converter = BooleanConverter.class)
+    private Boolean calenderPublicFlag = true;
 
-    private Boolean allPublicFlag;
+    @Builder.Default
+    @Convert(converter = BooleanConverter.class)
+    private Boolean allPublicFlag = true;
 }
+
+
+

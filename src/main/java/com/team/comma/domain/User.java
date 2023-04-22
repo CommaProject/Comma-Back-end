@@ -4,6 +4,7 @@ import com.team.comma.constant.UserRole;
 import com.team.comma.constant.UserType;
 import jakarta.persistence.*;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +35,7 @@ public class User implements UserDetails {
     private String password;
 
     @Setter
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_detail_tb")
     private UserDetail userDetail;

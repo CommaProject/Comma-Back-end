@@ -1,5 +1,6 @@
 package com.team.comma.controller;
 
+import com.team.comma.domain.User;
 import com.team.comma.dto.LoginRequest;
 import com.team.comma.dto.MessageResponse;
 import com.team.comma.dto.RegisterRequest;
@@ -39,11 +40,9 @@ public class UserController {
 		return "awdawd";
 	}
 
-	/*
-	@GetMapping("/user/name")
+	@GetMapping("/user/information")
 	public ResponseEntity<User> getUserInfoByEmail(@CookieValue("accessToken") String accessToken) throws AccountException {
 		return ResponseEntity.ok().body(userService.getUserByCookie(accessToken));
 	}
-	*/
 
 }
