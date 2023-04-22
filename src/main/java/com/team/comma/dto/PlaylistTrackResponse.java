@@ -13,18 +13,18 @@ import java.util.List;
 public final class PlaylistTrackResponse {
     private final Long id;
     private final String trackTitle;
-    private final Integer durationMs;
+    private final Integer durationTimeMs;
     private final String albumImageUrl;
-    private final Boolean alarmFlag;
+    private final Boolean trackAlarmFlag;
 
     private final List<TrackArtist> trackArtistList;
 
     private PlaylistTrackResponse(PlaylistTrack playlistTrack, Track track) {
         this.id = track.getId();
         this.trackTitle = track.getTrackTitle();
-        this.durationMs = track.getDurationTimeMs();
+        this.durationTimeMs = track.getDurationTimeMs();
         this.albumImageUrl = track.getAlbumImageUrl();
-        this.alarmFlag = playlistTrack.getTrackAlarmFlag();
+        this.trackAlarmFlag = playlistTrack.getTrackAlarmFlag();
         this.trackArtistList = new ArrayList<>(track.getTrackArtistList());
     }
 
