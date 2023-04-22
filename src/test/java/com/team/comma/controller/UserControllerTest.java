@@ -259,12 +259,12 @@ public class UserControllerTest {
 						preprocessRequest(prettyPrint()) ,
 						preprocessResponse(prettyPrint()) ,
 						requestFields(
-								fieldWithPath("nick_name").description("닉네임") ,
+								fieldWithPath("nickName").description("닉네임") ,
 								fieldWithPath("sex").description("성별") ,
 								fieldWithPath("age").description("연령") ,
-								fieldWithPath("recommend_time").description("음악 듣는 시간대") ,
+								fieldWithPath("recommendTime").description("음악 듣는 시간대") ,
 								fieldWithPath("genres").description("좋아하는 장르") ,
-								fieldWithPath("artist_names").description("좋아하는 아티스트")
+								fieldWithPath("artistNames").description("좋아하는 아티스트")
 						),
 						responseFields(
 								   fieldWithPath("code").description("응답 코드"),
@@ -298,12 +298,12 @@ public class UserControllerTest {
 						preprocessRequest(prettyPrint()) ,
 						preprocessResponse(prettyPrint()) ,
 						requestFields(
-								fieldWithPath("nick_name").description("닉네임") ,
+								fieldWithPath("nickName").description("닉네임") ,
 								fieldWithPath("sex").description("성별") ,
 								fieldWithPath("age").description("연령") ,
-								fieldWithPath("recommend_time").description("음악 듣는 시간대") ,
+								fieldWithPath("recommendTime").description("음악 듣는 시간대") ,
 								fieldWithPath("genres").description("좋아하는 장르") ,
-								fieldWithPath("artist_names").description("좋아하는 아티스트")
+								fieldWithPath("artistNames").description("좋아하는 아티스트")
 						),
 						responseFields(
 								   fieldWithPath("code").description("응답 코드"),
@@ -337,12 +337,12 @@ public class UserControllerTest {
 						preprocessRequest(prettyPrint()) ,
 						preprocessResponse(prettyPrint()) ,
 						requestFields(
-								fieldWithPath("nick_name").description("닉네임") ,
+								fieldWithPath("nickName").description("닉네임") ,
 								fieldWithPath("sex").description("성별") ,
 								fieldWithPath("age").description("연령") ,
-								fieldWithPath("recommend_time").description("음악 듣는 시간대") ,
+								fieldWithPath("recommendTime").description("음악 듣는 시간대") ,
 								fieldWithPath("genres").description("좋아하는 장르") ,
-								fieldWithPath("artist_names").description("좋아하는 아티스트")
+								fieldWithPath("artistNames").description("좋아하는 아티스트")
 						)
 				)
 		);
