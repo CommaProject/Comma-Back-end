@@ -26,7 +26,7 @@ public final class PlaylistResponse {
     private PlaylistResponse(Playlist playlist, List<PlaylistTrackResponse> tracks) {
         this.playlistId = playlist.getId();
         this.playlistTitle = playlist.getPlaylistTitle();
-        this.alarmFlag = playlist.isAlarmFlag();
+        this.alarmFlag = playlist.getAlarmFlag();
         this.alarmStartTime = playlist.getAlarmStartTime();
         this.tracks = new ArrayList<>(tracks);
     }
