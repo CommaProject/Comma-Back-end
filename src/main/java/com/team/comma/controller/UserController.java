@@ -31,11 +31,6 @@ public class UserController {
 		return userService.createUserInformation(userDetail , accessToken);
 	}
 
-	@GetMapping("/security")
-	public String awdawd() {
-		return "awdawd";
-	}
-
 	@GetMapping("/user/information")
 	public ResponseEntity<UserResponse> getUserInfoByEmail(@CookieValue("accessToken") String accessToken) throws AccountException {
 		return ResponseEntity.ok().body(userService.getUserByCookie(accessToken));

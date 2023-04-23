@@ -391,7 +391,7 @@ public class UserControllerTest {
 				MockMvcRequestBuilders.get(api).cookie(new Cookie("accessToken" , "token"))
 		);
 		// then
-		resultActions.andExpect(status().isBadRequest()).andDo(
+		resultActions.andExpect(status().isForbidden()).andDo(
 				document("user/getUserInfoByToken-Fail/notExistToken" ,
 						preprocessRequest(prettyPrint()) ,
 						preprocessResponse(prettyPrint()) ,
@@ -409,7 +409,7 @@ public class UserControllerTest {
 				resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8), MessageResponse.class);
 
 		assertThat(response.getMessage()).isEqualTo("알 수 없는 토큰이거나 , 변조되었습니다.");
-		assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE);
+		assertThat(response.getCode()).isEqualTo(AUTHORIZATION_ERROR);
 	}
 
 	@Test

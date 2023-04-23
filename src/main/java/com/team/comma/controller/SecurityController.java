@@ -35,8 +35,13 @@ public class SecurityController {
 	public ResponseEntity<MessageResponse> informAuthorizationDenied() {
 		MessageResponse message = MessageResponse.of(AUTHORIZATION_ERROR , "인가되지 않은 사용자입니다.");
 
-
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
+	}
+
+
+	@GetMapping("/security")
+	public String getSecurity() {
+		return "Security";
 	}
 
 	@GetMapping(value = "/logout/message")

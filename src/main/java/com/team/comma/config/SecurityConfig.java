@@ -1,6 +1,7 @@
 package com.team.comma.config;
 
 import com.team.comma.constant.UserRole;
+import com.team.comma.exception.ExceptionHandlerFilter;
 import com.team.comma.util.oauth.CustomOAuth2UserService;
 import com.team.comma.util.oauth.OAuth2AuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +40,8 @@ public class SecurityConfig {
             .and()
             .csrf().disable()
             .authorizeHttpRequests()
-            .requestMatchers("/security/**").hasRole(UserRole.USER.name())
+                .requestMatchers("/security/**").hasRole(UserRole.USER.name())
+                .requestMatchers("/private-information").hasRole(UserRole.USER.name())
             .anyRequest().permitAll()
             .and()
             .logout()
@@ -61,6 +63,10 @@ public class SecurityConfig {
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), // 필터
             UsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterBefore(new ExceptionHandlerFilter() , // 필터 예외 처리
+                UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }

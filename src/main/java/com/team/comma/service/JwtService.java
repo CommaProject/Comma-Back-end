@@ -2,6 +2,7 @@ package com.team.comma.service;
 
 import com.team.comma.domain.RefreshToken;
 import com.team.comma.domain.Token;
+import com.team.comma.dto.MessageResponse;
 import com.team.comma.exception.ExpireTokenException;
 import com.team.comma.exception.FalsifyTokenException;
 import com.team.comma.repository.RefreshTokenRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static com.team.comma.constant.ResponseCode.ACCESS_TOKEN_CREATE;
 import static org.apache.http.cookie.SM.SET_COOKIE;
 
 @Service
@@ -71,7 +73,8 @@ public class JwtService {
                 .build();
 
 
-        return ResponseEntity.status(HttpStatus.OK).header(SET_COOKIE , cookie.toString()).build();
+        return ResponseEntity.status(HttpStatus.OK).header(SET_COOKIE , cookie.toString())
+                .body(MessageResponse.of(ACCESS_TOKEN_CREATE , "AccessToken이 재발급되었습니다."));
     }
 
     public JwtService() {
