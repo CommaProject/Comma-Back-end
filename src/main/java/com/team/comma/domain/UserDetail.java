@@ -23,8 +23,8 @@ public class UserDetail {
     @Column(length = 10)
     private String sex;
 
-    @Column(length = 5)
-    private String age;
+    @Column
+    private int age;
 
     @Column(length = 10)
     private LocalTime recommendTime;

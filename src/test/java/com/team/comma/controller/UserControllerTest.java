@@ -466,7 +466,7 @@ public class UserControllerTest {
 	}
 
 	private UserDetailRequest getUserDetailRequest() {
-		return UserDetailRequest.builder().age("20").sex("female").nickName("name")
+		return UserDetailRequest.builder().age(20).sex("female").nickName("name")
 				.recommendTime(LocalTime.of(12 , 0))
 				.artistNames(Arrays.asList("artist1" , "artist2" , "artist3"))
 				.genres(Arrays.asList("genre1" , "genre2" , "genre3"))

@@ -54,7 +54,7 @@ CREATE TABLE user_detail_tb
     id                   BIGINT  NOT NULL AUTO_INCREMENT,
     user_id              BIGINT,
     sex                  VARCHAR(10),
-    age                  VARCHAR(10),
+    age                  INT ,
     recommend_time       TIME,
     nickname             VARCHAR(10),
     profile_image_url    VARCHAR(50),

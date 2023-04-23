@@ -16,7 +16,7 @@ import java.util.List;
 public class UserDetailRequest {
     private String nickName;
     private String sex;
-    private String age;
+    private int age;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime recommendTime;
