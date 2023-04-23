@@ -28,6 +28,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     final private JwtTokenProvider jwtTokenProvider;
+    final private ExceptionHandlerFilter exceptionHandlerFilter;
     final private CustomOAuth2UserService oauth2UserService;
     final private OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
 
@@ -64,9 +65,8 @@ public class SecurityConfig {
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), // 필터
             UsernamePasswordAuthenticationFilter.class);
 
-        http.addFilterBefore(new ExceptionHandlerFilter() , // 필터 예외 처리
-                UsernamePasswordAuthenticationFilter.class
-                );
+        http.addFilterBefore(exceptionHandlerFilter , // 필터 예외 처리
+                JwtAuthenticationFilter.class);
 
         return http.build();
     }

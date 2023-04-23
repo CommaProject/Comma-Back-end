@@ -32,6 +32,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         ObjectMapper objectMapper = new ObjectMapper();
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setCharacterEncoding("UTF-8");
         MessageResponse errorResponse = MessageResponse.of(errorCode , errorMessage);
         try {
             response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
