@@ -1,12 +1,7 @@
 package com.team.comma.dto;
 
-import com.team.comma.domain.PlaylistTrack;
 import com.team.comma.domain.Track;
-import com.team.comma.domain.TrackArtist;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -14,21 +9,22 @@ public final class PlaylistTrackResponse {
     private final Long id;
     private final String trackTitle;
     private final Integer durationMs;
+    private final String artistName;
+    private final String albumName;
     private final String albumImageUrl;
     private final Boolean alarmFlag;
 
-    private final List<TrackArtist> trackArtistList;
-
-    private PlaylistTrackResponse(PlaylistTrack playlistTrack, Track track) {
+    private PlaylistTrackResponse(Track track) {
         this.id = track.getId();
         this.trackTitle = track.getTrackTitle();
-        this.durationMs = track.getDurationTimeMs();
+        this.durationMs = track.getDurationMs();
+        this.artistName = track.getArtistName();
+        this.albumName = track.getAlbumName();
         this.albumImageUrl = track.getAlbumImageUrl();
-        this.alarmFlag = playlistTrack.getTrackAlarmFlag();
-        this.trackArtistList = new ArrayList<>(track.getTrackArtistList());
+        this.alarmFlag = track.getAlarmFlag();
     }
 
-    public static PlaylistTrackResponse of(PlaylistTrack playlistTrack, Track track) {
-        return new PlaylistTrackResponse(playlistTrack, track);
+    public static PlaylistTrackResponse of(Track track) {
+        return new PlaylistTrackResponse(track);
     }
 }
