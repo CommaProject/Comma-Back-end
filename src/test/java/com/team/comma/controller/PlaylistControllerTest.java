@@ -2,6 +2,7 @@ package com.team.comma.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.Playlist;
+import com.team.comma.domain.PlaylistTrack;
 import com.team.comma.domain.Track;
 import com.team.comma.domain.TrackArtist;
 import com.team.comma.dto.PlaylistResponse;

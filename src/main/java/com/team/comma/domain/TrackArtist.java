@@ -26,6 +26,7 @@ public class TrackArtist {
     @Column(length = 30)
     private String artistName;
 
+    @Setter
     @JoinColumn(name = "track_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Track track;
