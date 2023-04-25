@@ -60,6 +60,9 @@ public class PlaylistService {
         return result;
     }
 
+    public void update() {
+    }
+
     public void updatePlaylist(){
 
     }

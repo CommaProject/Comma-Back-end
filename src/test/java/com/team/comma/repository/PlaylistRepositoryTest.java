@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,17 +55,20 @@ public class PlaylistRepositoryTest {
 
     @Test
     public void 플레이리스트_알람설정변경(){
-//        // given
-//        final User user = userRepository.save(getUser());
-//        final Playlist playlist = playlistRepository.save(getPlaylist(user, "테스트 플레이리스트"));
-//
-//        // when
-//        playlist = playlist.builder().alarmFlag(true);
-//        playlistRepository.save(getPlaylist(user, "테스트 플레이리스트"));
-//        final Playlist result = playlistRepository.findById(playlist.getId());
-//
-//        // then
-//        assertThat(result).isNotEmpty();
+        // given
+        final User user = userRepository.save(getUser());
+        final Playlist playlist = playlistRepository.save(getPlaylist(user, "테스트 플레이리스트"));
+        final Optional<Playlist> playlistSelected = playlistRepository.findById(playlist.getId());
+
+        // when
+        playlistSelected.ifPresent(playlistResult -> {
+            playlistResult.builder().alarmFlag(false).build();
+            playlistRepository.save(playlistResult);
+        });
+        final Optional<Playlist> result = playlistRepository.findById(playlistSelected.get().getId());
+
+        // then
+        assertThat(result.get().getAlarmFlag()).isEqualTo(false);
     }
 
 

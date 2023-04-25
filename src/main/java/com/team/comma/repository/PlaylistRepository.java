@@ -13,8 +13,4 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
 
     List<Playlist> findAllByUser_Email(String email);
 
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE playlist_tb p set p.del_flag = 'Y' where p.id = :id")
-    void deletePlaylist(@Param("id") Long id);
 }
