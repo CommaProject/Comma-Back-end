@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.DayOfWeek;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,24 +20,19 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "playlist_track_tb")
-public class PlaylistTrack {
+@Table(name = "alert_day_tb")
+public class AlertDay {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer playSequence;
-
-    private Boolean playFlag;
-
-    private Boolean trackAlarmFlag;
+    /**
+     * 1 ~ 7 : 월요일 ~ 일요일
+     */
+    private DayOfWeek alarmDay;
 
     @JoinColumn(name = "playlist_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Playlist playlist;
-
-    @JoinColumn(name = "track_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Track track;
 }

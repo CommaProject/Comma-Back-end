@@ -1,12 +1,13 @@
 package com.team.comma.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.team.comma.domain.Playlist;
+import com.team.comma.domain.PlaylistTrack;
 import com.team.comma.domain.Track;
-import com.team.comma.dto.ArtistResponse;
+import com.team.comma.domain.TrackArtist;
 import com.team.comma.dto.PlaylistResponse;
 import com.team.comma.dto.PlaylistTrackResponse;
+import com.team.comma.dto.PlaylistTrackArtistResponse;
 import com.team.comma.service.PlaylistService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,8 +20,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -64,15 +63,19 @@ public class PlaylistControllerTest {
     public void 사용자플레이리스트조회_성공() throws Exception {
         // given
         final String url = "/userPlaylist";
-        List<PlaylistTrackResponse> tracks = Arrays.asList(
-                PlaylistTrackResponse.of(Track.builder().build()),
-                PlaylistTrackResponse.of(Track.builder().build()),
-                PlaylistTrackResponse.of(Track.builder().build()));
+        List<PlaylistTrackArtistResponse> trackArtistList = Arrays.asList(
+                PlaylistTrackArtistResponse.of(TrackArtist.builder().build()),
+                PlaylistTrackArtistResponse.of(TrackArtist.builder().build()));
+
+        List<PlaylistTrackResponse> trackList = Arrays.asList(
+                PlaylistTrackResponse.of(Track.builder().build(), true, trackArtistList),
+                PlaylistTrackResponse.of(Track.builder().build(), true, trackArtistList),
+                PlaylistTrackResponse.of(Track.builder().build(), true, trackArtistList));
 
         doReturn(Arrays.asList(
-                PlaylistResponse.of(Playlist.builder().build(), tracks),
-                PlaylistResponse.of(Playlist.builder().build(), tracks),
-                PlaylistResponse.of(Playlist.builder().build(), tracks)
+                PlaylistResponse.of(Playlist.builder().build(), trackList),
+                PlaylistResponse.of(Playlist.builder().build(), trackList),
+                PlaylistResponse.of(Playlist.builder().build(), trackList)
         )).when(playlistService).getPlaylistResponse(userEmail);
 
         // when

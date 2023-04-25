@@ -1,5 +1,6 @@
 package com.team.comma.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -8,35 +9,26 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "playlist_track_tb")
-public class PlaylistTrack {
+@Table(name = "track_artist_tb")
+public class TrackArtist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer playSequence;
+    @Column(length = 30)
+    private String artistName;
 
-    private Boolean playFlag;
-
-    private Boolean trackAlarmFlag;
-
-    @JoinColumn(name = "playlist_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Playlist playlist;
-
+    @Setter
     @JoinColumn(name = "track_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Track track;
+
 }

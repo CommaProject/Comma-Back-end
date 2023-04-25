@@ -13,30 +13,28 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
 @Builder
+@DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "playlist_track_tb")
-public class PlaylistTrack {
+@Table(name = "track_play_count_tb")
+public class TrackPlayCount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer playSequence;
+    @ColumnDefault("1")
+    private Integer playCount;
 
-    private Boolean playFlag;
+    private String spotifyTrackId;
 
-    private Boolean trackAlarmFlag;
-
-    @JoinColumn(name = "playlist_id")
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Playlist playlist;
-
-    @JoinColumn(name = "track_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Track track;
+    private User user;
 }

@@ -19,22 +19,20 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "playlist_track_tb")
-public class PlaylistTrack {
+@Table(name = "favorite_track_tb")
+public class FavoriteTrack {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer playSequence;
+    private Integer playCount;
 
-    private Boolean playFlag;
+    private Boolean favoriteFlag;
 
-    private Boolean trackAlarmFlag;
-
-    @JoinColumn(name = "playlist_id")
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Playlist playlist;
+    private User user;
 
     @JoinColumn(name = "track_id")
     @ManyToOne(fetch = FetchType.LAZY)

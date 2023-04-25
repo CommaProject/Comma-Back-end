@@ -1,21 +1,15 @@
 package com.team.comma.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import java.time.DayOfWeek;
+import jakarta.persistence.*;
+
 import java.time.LocalTime;
+import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
@@ -23,28 +17,34 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "playlist_tb")
-public class Playlist extends BaseEntity {
+public class Playlist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 100)
     private String playlistTitle;
 
-    private boolean alarmFlag;
+    private LocalTime alarmStartTime;
 
-    /**
-     * 1~7 : 일~토
-     */
-    private DayOfWeek alarmDay;
+    private Boolean alarmFlag;
 
-    private LocalTime alarmTime;
+    private Integer listSequence;
 
-    @Setter
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @OneToMany(mappedBy = "playlist")
+    private List<PlaylistTrack> playlistTrackList;
 
+    public void addPlaylistTrack(Track track) {
+        PlaylistTrack playlistTrack = PlaylistTrack.builder()
+                .playlist(this)
+                .track(track)
+                .build();
 
+        playlistTrackList.add(playlistTrack);
+    }
 }

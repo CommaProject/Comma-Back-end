@@ -1,6 +1,7 @@
 package com.team.comma.config;
 
 import com.team.comma.constant.UserRole;
+import com.team.comma.exception.ExceptionHandlerFilter;
 import com.team.comma.util.oauth.CustomOAuth2UserService;
 import com.team.comma.util.oauth.OAuth2AuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +27,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-	final private JwtTokenProvider jwtTokenProvider;
+    final private JwtTokenProvider jwtTokenProvider;
+    final private ExceptionHandlerFilter exceptionHandlerFilter;
     final private CustomOAuth2UserService oauth2UserService;
     final private OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
 
@@ -34,31 +36,37 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors().configurationSource(corsConfigurationSource())
-        .and()
+            .and()
+            .headers().frameOptions().disable()
+            .and()
             .csrf().disable()
             .authorizeHttpRequests()
-            .requestMatchers("/security/**").hasRole(UserRole.USER.name())
+                .requestMatchers("/security/**").hasRole(UserRole.USER.name())
+                .requestMatchers("/private-information").hasRole(UserRole.USER.name())
             .anyRequest().permitAll()
-        .and()
+            .and()
             .logout()
-                .logoutUrl("/logout")  // logout URL에 접근하면
-                .deleteCookies("refreshToken")
-                .deleteCookies("accessToken") // refreshToken 과 accessToken 삭제
-                .logoutSuccessHandler((request, response, authentication) -> {
-                    response.sendRedirect("/logout/message");
-                })
-        .and()
+            .logoutUrl("/logout")  // logout URL에 접근하면
+            .deleteCookies("refreshToken")
+            .deleteCookies("accessToken") // refreshToken 과 accessToken 삭제
+            .logoutSuccessHandler((request, response, authentication) -> {
+                response.sendRedirect("/logout/message");
+            })
+            .and()
             .exceptionHandling()
-            .authenticationEntryPoint((request , response , Exception) -> {
+            .authenticationEntryPoint((request, response, Exception) -> {
                 response.sendRedirect("/authentication/denied"); // 인증되지 않은 사용자
             })
             .accessDeniedPage("/authorization/denied") // 인가되지 않은 사용자가 접속했을 때
-        .and()
+            .and()
             .oauth2Login().successHandler(oauth2AuthenticationSuccessHandler)
-                .userInfoEndpoint().userService(oauth2UserService);
+            .userInfoEndpoint().userService(oauth2UserService);
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), // 필터
-				UsernamePasswordAuthenticationFilter.class);
+            UsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterBefore(exceptionHandlerFilter , // 필터 예외 처리
+                JwtAuthenticationFilter.class);
 
         return http.build();
     }
@@ -68,17 +76,17 @@ public class SecurityConfig {
     /**
      * FIXME: CORS 세부 설정 필요
      */
-   @Bean
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-       CorsConfiguration configuration = new CorsConfiguration();
+        CorsConfiguration configuration = new CorsConfiguration();
 
-       configuration.addAllowedOrigin("/localhost:3000"); //허용할 URL
-       configuration.addAllowedHeader("*"); //허용할 Header
-       configuration.addAllowedMethod("*"); //허용할 Http Method
-       configuration.setAllowCredentials(true);
+        configuration.addAllowedOriginPattern("*"); //허용할 URL
+        configuration.addAllowedHeader("*"); //허용할 Header
+        configuration.addAllowedMethod("*"); //허용할 Http Method
+        configuration.setAllowCredentials(true);
 
-       UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-       source.registerCorsConfiguration("/**", configuration);
-       return source;
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

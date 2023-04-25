@@ -2,34 +2,17 @@ package com.team.comma.domain;
 
 import com.team.comma.constant.UserRole;
 import com.team.comma.constant.UserType;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import org.apache.commons.lang3.arch.Processor.Arch;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
+import com.team.comma.util.converter.BooleanConverter;
+import jakarta.persistence.*;
+import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 @Entity
@@ -38,104 +21,100 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user_tb")
-public class User extends BaseEntity implements UserDetails {
+public class User implements UserDetails {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column(length = 100, nullable = false)
-	private String email;
-	@Column(length = 10 , nullable = false)
-	private String name;
+    @Column(length = 100, nullable = false)
+    private String email;
 
-	@Column(length = 10)
-	private String sex;
+    @Column(length = 50)
+    private String password;
 
-	@Column(length = 5)
-	private Integer age;
+    @Setter
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "user_detail_tb")
+    private UserDetail userDetail;
 
-	@Column(length = 50)
-	private String password;
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "user")
+    @Builder.Default
+    private List<FavoriteGenre> favoriteGenre = new ArrayList<>();
 
-	@Column(length = 10 , nullable = false)
-	private LocalTime recommendTime;
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "user")
+    @Builder.Default
+    private List<FavoriteArtist> favoriteArtist = new ArrayList<>();
 
-	private String nickname;
+    // 연관관계 편의 메서드
+    public void addFavoriteGenre(String genre) {
+        FavoriteGenre genreData = FavoriteGenre.builder()
+                .genreName(genre)
+                .user(this)
+                .build();
 
-	private boolean soundFlag;
+        favoriteGenre.add(genreData);
+    }
 
-	private boolean vibrateFlag;
+    public void addFavoriteArtist(String artist) {
+        FavoriteArtist artistData = FavoriteArtist.builder()
+                .artistName(artist)
+                .user(this)
+                .build();
 
-	// OAuth 로그인 유저인지 , 기본 로그인 유저인지 확인
-	@Enumerated(EnumType.STRING)
-	private UserType type;
+        favoriteArtist.add(artistData);
+    }
+    /**
+     * OAuth 로그인 유저인지 , 기본 로그인 유저인지 확인
+     */
+    @Enumerated(EnumType.STRING)
+    private UserType type;
 
-	@Enumerated(EnumType.STRING)
-	private UserRole role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
-	@OneToMany(mappedBy = "user")
-	private List<Archive> archiveList;
+    @Builder.Default
+    @Convert(converter = BooleanConverter.class)
+    private Boolean delFlag = false;
 
-	@OneToMany(mappedBy = "user")
-	private List<FavoriteArtist> artistNames;
+    // JWT Security
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.getKey()));
+        return authorities;
+    }
 
-	@OneToMany(mappedBy = "genreName")
-	private List<FavoriteGenre> genreNames;
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
-	//연관관계 편의 메소드
-	public void addArchiveList(Archive archive) {
-		getArchiveList().add(archive);
-			archive.setUser(this);
-	}
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
-	public void addFavoriteArtists(FavoriteArtist favoriteArtist) {
-		getArtistNames().add(favoriteArtist);
-			favoriteArtist.setUser(this);
-	}
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-	public void addFavoriteGenres(FavoriteGenre favoriteGenre) {
-		getGenreNames().add(favoriteGenre);
-		favoriteGenre.setUser(this);
-	}
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-	// JWT Security
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Collection<GrantedAuthority> authorities = new ArrayList<>();
-			authorities.add(new SimpleGrantedAuthority(role.getKey()));
-		return authorities;
-	}
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-	@Override
-	public String getPassword() {
-		return password;
-	}
-
-	@Override
-	public String getUsername() {
-		return email;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

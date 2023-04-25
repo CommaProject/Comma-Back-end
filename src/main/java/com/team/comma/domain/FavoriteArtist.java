@@ -1,23 +1,19 @@
 package com.team.comma.domain;
 
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
 @Entity
 @Getter
@@ -25,27 +21,21 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "favorite_artist_tb")
-public class FavoriteArtist extends BaseEntity{
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+public class FavoriteArtist {
 
-	@JoinColumn(name = "user_id")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private User user;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column(length = 45 , nullable = false)
-	private String artistName;
+    @Column(length = 50)
+    private String artistName;
 
-	public void setUser(User user) {
-		if(this.user != null) {
-			this.user.getArtistNames().remove(this);
-		}
-		this.user = user;
+    @Column(length = 50)
+    private String artistImageUrl;
 
-		if(!user.getArtistNames().contains(this)) {
-			user.getArtistNames().add(this);
-		}
-	}
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }
