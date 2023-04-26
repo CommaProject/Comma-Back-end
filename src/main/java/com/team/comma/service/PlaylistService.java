@@ -25,8 +25,8 @@ public class PlaylistService {
         return playlistRepository.findAllByUser_Email(email);
     }
 
-    public List<PlaylistTrack> getPlaylistTrack(final Long id){
-        return playlistTrackRepository.findAllByPlaylist_Id(id);
+    public List<PlaylistTrack> getPlaylistTrack(final Long playlistId){
+        return playlistTrackRepository.findAllByPlaylist_Id(playlistId);
     }
 
     public List<PlaylistResponse> getPlaylistResponse(final String email) {
@@ -60,10 +60,8 @@ public class PlaylistService {
         return result;
     }
 
-    public void update() {
+    public int updateAlarmFlag(Long playlistId, Boolean alarmFlag) {
+        return playlistRepository.updateAlarm(playlistId, alarmFlag);
     }
 
-    public void updatePlaylist(){
-
-    }
 }

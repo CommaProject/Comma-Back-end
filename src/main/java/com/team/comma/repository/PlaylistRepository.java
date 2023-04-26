@@ -9,8 +9,12 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+@Transactional
 public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
 
     List<Playlist> findAllByUser_Email(String email);
 
+    @Modifying(clearAutomatically = true)
+    @Query("update Playlist p set p.alarmFlag = :alarmFlag where p.id = :id")
+    int updateAlarm(Long id, Boolean alarmFlag);
 }

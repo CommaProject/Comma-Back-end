@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;  //자동 import되지 않음
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -58,19 +60,16 @@ public class PlaylistRepositoryTest {
         // given
         final User user = userRepository.save(getUser());
         final Playlist playlist = playlistRepository.save(getPlaylist(user, "테스트 플레이리스트"));
-        final Optional<Playlist> playlistSelected = playlistRepository.findById(playlist.getId());
 
         // when
-        playlistSelected.ifPresent(playlistResult -> {
-            playlistResult.builder().alarmFlag(false).build();
-            playlistRepository.save(playlistResult);
-        });
-        final Optional<Playlist> result = playlistRepository.findById(playlistSelected.get().getId());
+        final int result = playlistRepository.updateAlarm(playlist.getId(), false);
+        final Optional<Playlist> resultPlaylist = playlistRepository.findById(playlist.getId());
 
         // then
-        assertThat(result.get().getAlarmFlag()).isEqualTo(false);
+        assertThat(result).isEqualTo(1);
+        assertThat(resultPlaylist).isPresent();
+        assertThat(resultPlaylist.get().getAlarmFlag()).isFalse();
     }
-
 
     private User getUser() {
         return User.builder()
@@ -87,12 +86,5 @@ public class PlaylistRepositoryTest {
                 .user(user)
                 .build();
     }
-
-//    private Playlist changePlaylist(Long id, String delFlag) {
-//        return Playlist.builder()
-//                .id(id)
-//                .delFlag()
-//                .build();
-//    }
 
 }
