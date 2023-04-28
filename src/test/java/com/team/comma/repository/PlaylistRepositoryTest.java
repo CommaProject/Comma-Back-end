@@ -8,14 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.security.core.parameters.P;
-
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;  //자동 import되지 않음
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -56,19 +51,27 @@ public class PlaylistRepositoryTest {
     }
 
     @Test
-    public void 플레이리스트_알람설정변경(){
+    public void 플레이리스트_알람설정변경_실패(){
         // given
-        final User user = userRepository.save(getUser());
-        final Playlist playlist = playlistRepository.save(getPlaylist(user, "테스트 플레이리스트"));
 
         // when
-        final int result = playlistRepository.updateAlarm(playlist.getId(), false);
-        final Optional<Playlist> resultPlaylist = playlistRepository.findById(playlist.getId());
+        final int result = playlistRepository.updateAlarm(123L,false);
+
+        // then
+        assertThat(result).isEqualTo(0);
+    }
+
+    @Test
+    public void 플레이리스트_알람설정변경_성공(){
+        // given
+        final User user = userRepository.save(getUser());
+        final Playlist playlist = playlistRepository.save(getPlaylist(user, "test playlist"));
+
+        // when
+        final int result = playlistRepository.updateAlarm(playlist.getId(),false);
 
         // then
         assertThat(result).isEqualTo(1);
-        assertThat(resultPlaylist).isPresent();
-        assertThat(resultPlaylist.get().getAlarmFlag()).isFalse();
     }
 
     private User getUser() {

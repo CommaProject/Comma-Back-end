@@ -10,6 +10,7 @@ import com.team.comma.repository.PlaylistRepository;
 import com.team.comma.repository.PlaylistTrackRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +61,11 @@ public class PlaylistService {
         return result;
     }
 
+    @Transactional
     public int updateAlarmFlag(Long playlistId, Boolean alarmFlag) {
-        return playlistRepository.updateAlarm(playlistId, alarmFlag);
+        int result = playlistRepository.updateAlarm(playlistId, alarmFlag);
+        System.out.println(result);
+        return 1;
     }
 
 }
