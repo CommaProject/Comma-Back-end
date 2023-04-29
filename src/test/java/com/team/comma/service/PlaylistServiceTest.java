@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
 
-@Transactional
 @ExtendWith(MockitoExtension.class)
 public class PlaylistServiceTest {
     @InjectMocks
@@ -80,20 +79,25 @@ public class PlaylistServiceTest {
     }
 
     @Test
-    public void 플레이리스트_알림설정변경_성공() {
+    public void 플레이리스트_알림설정변경_실패() {
         // given
-        doReturn(Optional.of(Playlist.builder()
-                .id(123L)
-                .alarmFlag(true)
-                .build()
-        )).when(playlistRepository).findById(123L);
 
         // when
-        playlistService.updateAlarmFlag(123L,false);
-        final Optional<Playlist> result = playlistRepository.findById(123L);
+        int result = playlistService.updateAlarmFlag(123L, false);
 
         // then
-        assertThat(result).isPresent();
-        assertFalse(result.get().getAlarmFlag());
+        assertThat(result).isEqualTo(0);
+    }
+
+    @Test
+    public void 플레이리스트_알림설정변경_성공() {
+        // given
+        when(playlistRepository.updateAlarmFlag(123L, false)).thenReturn(1);
+
+        // when
+        int result = playlistService.updateAlarmFlag(123L, false);
+
+        // then
+        assertThat(result).isEqualTo(1);
     }
 }

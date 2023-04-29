@@ -9,9 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,11 +21,25 @@ public class PlaylistController {
 
     @Operation(summary = "사용자 플레이리스트 조회", description = "사용자 이메일로 플레이리스트 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = PlaylistResponse.class)))
+            @ApiResponse(responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = PlaylistResponse.class)))
     })
-    @GetMapping("/userPlaylist")
+    @GetMapping("/playlist")
     public ResponseEntity<List<PlaylistResponse>> getUserPlaylist(
             @RequestHeader("email") final String email) {
         return ResponseEntity.ok(playlistService.getPlaylistResponse(email));
+    }
+
+    @PostMapping("/playlist/alarm/update")
+    public ResponseEntity<String> updateAlarmFlag(
+            @RequestBody final Long id,
+            @RequestBody final Boolean flag){
+        int updated = playlistService.updateAlarmFlag(id,flag);
+
+        if(updated > 0){
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

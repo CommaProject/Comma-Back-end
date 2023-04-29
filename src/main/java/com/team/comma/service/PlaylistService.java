@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -61,11 +62,8 @@ public class PlaylistService {
         return result;
     }
 
-    @Transactional
     public int updateAlarmFlag(Long playlistId, Boolean alarmFlag) {
-        int result = playlistRepository.updateAlarm(playlistId, alarmFlag);
-        System.out.println(result);
-        return 1;
+        return playlistRepository.updateAlarmFlag(playlistId, alarmFlag);
     }
 
 }

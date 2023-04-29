@@ -25,6 +25,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,7 +49,7 @@ public class PlaylistControllerTest {
     @Test
     public void 사용자플레이리스트조회_이메일없음() throws Exception {
         // given
-        final String url = "/userPlaylist";
+        final String url = "/playlist";
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -62,7 +63,7 @@ public class PlaylistControllerTest {
     @Test
     public void 사용자플레이리스트조회_성공() throws Exception {
         // given
-        final String url = "/userPlaylist";
+        final String url = "/playlist";
         List<PlaylistTrackArtistResponse> trackArtistList = Arrays.asList(
                 PlaylistTrackArtistResponse.of(TrackArtist.builder().build()),
                 PlaylistTrackArtistResponse.of(TrackArtist.builder().build()));
@@ -80,11 +81,25 @@ public class PlaylistControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(url).header("email",userEmail));
+        final List<PlaylistResponse> result = playlistService.getPlaylistResponse(userEmail);
 
         // then
         resultActions.andExpect(status().isOk());
-
-        final List<PlaylistResponse> result = playlistService.getPlaylistResponse(userEmail);
         assertThat(result.size()).isEqualTo(3);
+    }
+
+    @Test
+    public void 플레이리스트_알람설정변경_실패() throws Exception {
+        // given
+        final String url = "/playlist/alarm/update";
+
+        when(playlistService.updateAlarmFlag(123L, false)).thenReturn(1);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(url).header("id",123L).header("flag",false));
+
+        // then
+
+
     }
 }

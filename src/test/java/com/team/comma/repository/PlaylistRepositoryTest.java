@@ -55,7 +55,7 @@ public class PlaylistRepositoryTest {
         // given
 
         // when
-        final int result = playlistRepository.updateAlarm(123L,false);
+        final int result = playlistRepository.updateAlarmFlag(123L,false);
 
         // then
         assertThat(result).isEqualTo(0);
@@ -68,7 +68,7 @@ public class PlaylistRepositoryTest {
         final Playlist playlist = playlistRepository.save(getPlaylist(user, "test playlist"));
 
         // when
-        final int result = playlistRepository.updateAlarm(playlist.getId(),false);
+        final int result = playlistRepository.updateAlarmFlag(playlist.getId(),false);
 
         // then
         assertThat(result).isEqualTo(1);
