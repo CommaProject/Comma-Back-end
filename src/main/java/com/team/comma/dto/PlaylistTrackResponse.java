@@ -20,17 +20,17 @@ public final class PlaylistTrackResponse {
 
     private final List<PlaylistTrackArtistResponse> trackArtistList;
 
-    private PlaylistTrackResponse(Track track, Boolean trackAlarmFlag, List<PlaylistTrackArtistResponse> artists) {
+    private PlaylistTrackResponse(Track track, Boolean trackAlarmFlag, List<PlaylistTrackArtistResponse> trackArtistList) {
         this.trackId = track.getId();
         this.trackTitle = track.getTrackTitle();
         this.durationTimeMs = track.getDurationTimeMs();
         this.albumImageUrl = track.getAlbumImageUrl();
         this.trackAlarmFlag = trackAlarmFlag;
-        this.trackArtistList = new ArrayList<>(artists);
+        this.trackArtistList = new ArrayList<>(trackArtistList);
     }
 
-    public static PlaylistTrackResponse of(Track track, Boolean trackAlarmFlag, List<PlaylistTrackArtistResponse> artists) {
-        return new PlaylistTrackResponse(track, trackAlarmFlag, artists);
+    public static PlaylistTrackResponse of(Track track, Boolean trackAlarmFlag, List<PlaylistTrackArtistResponse> trackArtistList) {
+        return new PlaylistTrackResponse(track, trackAlarmFlag, trackArtistList);
     }
 
     public List<PlaylistTrackArtistResponse> getTrackArtistList() {

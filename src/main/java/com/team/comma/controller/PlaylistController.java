@@ -27,7 +27,7 @@ public class PlaylistController {
     @GetMapping("/playlist")
     public ResponseEntity<List<PlaylistResponse>> getUserPlaylist(
             @RequestHeader("email") final String email) {
-        return ResponseEntity.ok(playlistService.getPlaylistResponse(email));
+        return ResponseEntity.ok(playlistService.getPlaylist(email));
     }
 
     @PostMapping("/playlist/alarm/update")

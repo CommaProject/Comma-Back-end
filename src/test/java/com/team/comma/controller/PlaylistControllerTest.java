@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -47,7 +48,7 @@ public class PlaylistControllerTest {
     }
 
     @Test
-    public void 사용자플레이리스트조회_이메일없음() throws Exception {
+    public void 플레이리스트_조회_실패_사용자이메일없음() throws  Exception {
         // given
         final String url = "/playlist";
 
@@ -61,14 +62,15 @@ public class PlaylistControllerTest {
     }
 
     @Test
-    public void 사용자플레이리스트조회_성공() throws Exception {
+    public void 플레이리스트_조회_성공() throws Exception {
         // given
         final String url = "/playlist";
-        List<PlaylistTrackArtistResponse> trackArtistList = Arrays.asList(
+
+        final List<PlaylistTrackArtistResponse> trackArtistList = Arrays.asList(
                 PlaylistTrackArtistResponse.of(TrackArtist.builder().build()),
                 PlaylistTrackArtistResponse.of(TrackArtist.builder().build()));
 
-        List<PlaylistTrackResponse> trackList = Arrays.asList(
+        final List<PlaylistTrackResponse> trackList = Arrays.asList(
                 PlaylistTrackResponse.of(Track.builder().build(), true, trackArtistList),
                 PlaylistTrackResponse.of(Track.builder().build(), true, trackArtistList),
                 PlaylistTrackResponse.of(Track.builder().build(), true, trackArtistList));
@@ -77,29 +79,39 @@ public class PlaylistControllerTest {
                 PlaylistResponse.of(Playlist.builder().build(), trackList),
                 PlaylistResponse.of(Playlist.builder().build(), trackList),
                 PlaylistResponse.of(Playlist.builder().build(), trackList)
-        )).when(playlistService).getPlaylistResponse(userEmail);
+        )).when(playlistService).getPlaylist(userEmail);
 
         // when
-        final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(url).header("email",userEmail));
-        final List<PlaylistResponse> result = playlistService.getPlaylistResponse(userEmail);
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url).header("email",userEmail));
+        final List<PlaylistResponse> result = playlistService.getPlaylist(userEmail);
 
         // then
         resultActions.andExpect(status().isOk());
         assertThat(result.size()).isEqualTo(3);
     }
 
-    @Test
-    public void 플레이리스트_알람설정변경_실패() throws Exception {
-        // given
-        final String url = "/playlist/alarm/update";
-
-        when(playlistService.updateAlarmFlag(123L, false)).thenReturn(1);
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(url).header("id",123L).header("flag",false));
-
-        // then
 
 
-    }
+
+
+
+
+
+
+
+//    @Test
+//    public void 플레이리스트_알람설정변경_실패() throws Exception {
+//        // given
+//        final String url = "/playlist/alarm/update";
+//        when(playlistService.updateAlarmFlag(123L, false)).thenReturn(1);
+//
+//        // when
+//        final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(url).header("id",123L).header("flag",false));
+//        final Optional<Playlist> playlist = playlistService.getPlaylist();
+//        // then
+//        resultActions.andExpect(status().isOk());
+//        assertThat();
+//
+//    }
 }

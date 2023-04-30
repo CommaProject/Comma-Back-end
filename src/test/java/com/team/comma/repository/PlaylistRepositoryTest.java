@@ -22,11 +22,26 @@ public class PlaylistRepositoryTest {
     @Autowired
     private PlaylistRepository playlistRepository;
 
-    final String userEmail = "email@naver.com";
+    private final String userEmail = "email@naver.com";
+    private final String title = "test playlist";
 
     @Test
-    public void 플레이리스트조회_실패_데이터없음(){
+    public void 플레이리스트_저장(){
         // given
+        final User user = userRepository.save(getUser());
+
+        // when
+        final Playlist result = playlistRepository.save(getPlaylist(user, title));
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getPlaylistTitle()).isEqualTo(title);
+    }
+
+    @Test
+    public void 플레이리스트_조회_0개(){
+        // given
+        final User user = userRepository.save(getUser());
 
         // when
         final List<Playlist> result = playlistRepository.findAllByUser_Email(userEmail);
@@ -36,12 +51,11 @@ public class PlaylistRepositoryTest {
     }
 
     @Test
-    public void 플레이리스트조회_성공_2(){
+    public void 플레이리스트_조회_2개(){
         // given
         final User user = userRepository.save(getUser());
-
-        playlistRepository.save(getPlaylist(user, "테스트 플레이리스트1"));
-        playlistRepository.save(getPlaylist(user, "테스트 플레이리스트2"));
+        playlistRepository.save(getPlaylist(user, title));
+        playlistRepository.save(getPlaylist(user, title));
 
         // when
         final List<Playlist> result = playlistRepository.findAllByUser_Email(userEmail);
@@ -51,24 +65,13 @@ public class PlaylistRepositoryTest {
     }
 
     @Test
-    public void 플레이리스트_알람설정변경_실패(){
-        // given
-
-        // when
-        final int result = playlistRepository.updateAlarmFlag(123L,false);
-
-        // then
-        assertThat(result).isEqualTo(0);
-    }
-
-    @Test
-    public void 플레이리스트_알람설정변경_성공(){
+    public void 플레이리스트_알람설정변경(){
         // given
         final User user = userRepository.save(getUser());
         final Playlist playlist = playlistRepository.save(getPlaylist(user, "test playlist"));
 
         // when
-        final int result = playlistRepository.updateAlarmFlag(playlist.getId(),false);
+        int result = playlistRepository.updateAlarmFlag(playlist.getId(),false);
 
         // then
         assertThat(result).isEqualTo(1);

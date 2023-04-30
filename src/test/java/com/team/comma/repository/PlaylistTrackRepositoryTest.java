@@ -30,14 +30,33 @@ public class PlaylistTrackRepositoryTest {
     @Autowired
     private PlaylistTrackRepository playlistTrackRepository;
 
-    final String userEmail = "email@naver.com";
-    @Test
-    public void 플레이리스트_곡조회_실패_데이터없음(){
-        // given
-        userRepository.save(getUser());
-        final User user = userRepository.findByEmail(userEmail);
+    private final String userEmail = "email@naver.com";
 
-        Playlist playlist = playlistRepository.save(getPlaylist(user, "테스트 플레이리스트"));
+    private final String title = "test playlist";
+
+    private final String trackTitle = "test track";
+
+    @Test
+    public void 플레이리스트_곡_연관관계_저장(){
+        // given
+        final User user = userRepository.save(getUser());
+        final Playlist playlist = playlistRepository.save(getPlaylist(user, title));
+        final Track track = trackRepository.save(getTrack(trackTitle));
+
+        // when
+        final PlaylistTrack result = playlistTrackRepository.save(getPlaylistTrack(playlist,track));
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getPlaylist().getId()).isEqualTo(playlist.getId());
+        assertThat(result.getTrack().getId()).isEqualTo(track.getId());
+    }
+
+    @Test
+    public void 플레이리스트_곡_연관관계_조회_0개(){
+        // given
+        final User user = userRepository.save(getUser());
+        final Playlist playlist = playlistRepository.save(getPlaylist(user, title));
 
         // when
         final List<PlaylistTrack> result = playlistTrackRepository.findAllByPlaylist_Id(playlist.getId());
@@ -47,15 +66,12 @@ public class PlaylistTrackRepositoryTest {
     }
 
     @Test
-    public void 플레이리스트_곡조회_성공_2(){
+    public void 플레이리스트_곡_연관관계_조회_2개(){
         // given
-        userRepository.save(getUser());
-        final User user = userRepository.findByEmail(userEmail);
-
-        final Playlist playlist = playlistRepository.save(getPlaylist(user, "테스트 플레이리스트"));
-
-        final Track track1 = trackRepository.save(getTrack("track1"));
-        final Track track2 = trackRepository.save(getTrack("track2"));
+        final User user = userRepository.save(getUser());
+        final Playlist playlist = playlistRepository.save(getPlaylist(user, title));
+        final Track track1 = trackRepository.save(getTrack(trackTitle));
+        final Track track2 = trackRepository.save(getTrack(trackTitle));
         playlistTrackRepository.save(getPlaylistTrack(playlist,track1));
         playlistTrackRepository.save(getPlaylistTrack(playlist,track2));
 
