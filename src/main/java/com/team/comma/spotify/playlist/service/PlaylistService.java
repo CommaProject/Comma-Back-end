@@ -1,5 +1,7 @@
 package com.team.comma.spotify.playlist.service;
 
+import com.team.comma.spotify.playlist.exception.PlaylistErrorResult;
+import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,15 +53,11 @@ public class PlaylistService {
         return result;
     }
 
+    public void updateAlarmFlag(Long playlistId, Boolean alarmFlag) {
+        final Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
+        final Playlist playlist = optionalPlaylist.orElseThrow(() -> new PlaylistException(PlaylistErrorResult.PLAYLIST_NOT_FOUND));
 
-
-
-
-
-
-
-    public int updateAlarmFlag(Long playlistId, Boolean alarmFlag) {
-        return playlistRepository.updateAlarmFlag(playlistId, alarmFlag);
+        playlistRepository.updateAlarmFlag(playlistId,alarmFlag);
     }
 
 }

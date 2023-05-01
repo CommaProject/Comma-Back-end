@@ -1,6 +1,6 @@
 package com.team.comma.spotify.track.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;  //자동 import되지 않음
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.team.comma.spotify.track.domain.Track;
 import org.junit.jupiter.api.Test;

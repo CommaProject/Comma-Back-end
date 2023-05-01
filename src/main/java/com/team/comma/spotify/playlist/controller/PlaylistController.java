@@ -30,16 +30,16 @@ public class PlaylistController {
         return ResponseEntity.ok(playlistService.getPlaylist(email));
     }
 
-    @PostMapping("/playlist/alarm/update")
-    public ResponseEntity<String> updateAlarmFlag(
-            @RequestBody final Long id,
-            @RequestBody final Boolean flag){
-        int updated = playlistService.updateAlarmFlag(id,flag);
-
-        if(updated > 0){
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-    }
+//    @PostMapping("/playlist/alarm/update")
+//    public ResponseEntity<String> updateAlarmFlag(
+//            @RequestBody final Long id,
+//            @RequestBody final Boolean flag){
+//        int updated = playlistService.updateAlarmFlag(id,flag);
+//
+//        if(updated > 0){
+//            return ResponseEntity.ok().build();
+//        } else {
+//            return ResponseEntity.badRequest().build();
+//        }
+//    }
 }

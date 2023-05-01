@@ -1,14 +1,18 @@
 package com.team.comma.spotify.playlist.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+import com.team.comma.spotify.playlist.exception.PlaylistErrorResult;
+import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.domain.TrackArtist;
@@ -26,6 +30,10 @@ public class PlaylistServiceTest {
     private PlaylistRepository playlistRepository;
 
     private String userEmail = "email@naver.com";
+
+    private Long playlistId = 123L;
+
+    private Boolean flag = false;
 
     @Test
     public void 플레이리스트_조회() {
@@ -56,25 +64,30 @@ public class PlaylistServiceTest {
     }
 
     @Test
-    public void 플레이리스트_알림설정변경_실패() {
+    public void 플레이리스트_알림설정변경_실패_존재하지않음() {
         // given
+        doReturn(Optional.empty()).when(playlistRepository).findById(123L);
 
         // when
-        final int result = playlistService.updateAlarmFlag(123L, false);
+        final PlaylistException result = assertThrows(PlaylistException.class, () -> playlistService.updateAlarmFlag(playlistId, flag));
 
         // then
-        assertThat(result).isEqualTo(0);
+        assertThat(result.getErrorResult()).isEqualTo(PlaylistErrorResult.PLAYLIST_NOT_FOUND);
     }
 
     @Test
     public void 플레이리스트_알림설정변경_성공() {
         // given
-        when(playlistRepository.updateAlarmFlag(123L, false)).thenReturn(1);
+        doReturn(Optional.of(Playlist.builder()
+                .id(playlistId)
+                .alarmFlag(false)
+                .build()
+        )).when(playlistRepository).findById(playlistId);
 
         // when
-        final int result = playlistService.updateAlarmFlag(123L, false);
+        playlistService.updateAlarmFlag(playlistId,flag);
 
         // then
-        assertThat(result).isEqualTo(1);
+
     }
 }
