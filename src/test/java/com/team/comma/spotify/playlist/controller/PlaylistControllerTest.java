@@ -5,7 +5,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.google.gson.Gson;
-import com.team.comma.spotify.playlist.controller.PlaylistController;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
@@ -25,15 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class PlaylistControllerTest {

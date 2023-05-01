@@ -1,5 +1,7 @@
 package com.team.comma.spotify.playlist.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.track.domain.Track;
@@ -14,8 +16,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;  //자동 import되지 않음
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -88,7 +88,7 @@ public class PlaylistTrackRepositoryTest {
     private User getUser() {
         return User.builder()
                 .email(userEmail)
-                .type(UserType.GeneralUser)
+                .type(UserType.GENERAL_USER)
                 .role(UserRole.USER)
                 .build();
     }

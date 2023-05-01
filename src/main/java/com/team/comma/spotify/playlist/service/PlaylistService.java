@@ -1,29 +1,17 @@
 package com.team.comma.spotify.playlist.service;
 
-import com.team.comma.domain.Playlist;
-import com.team.comma.domain.PlaylistTrack;
-import com.team.comma.domain.Track;
-import com.team.comma.domain.TrackArtist;
-import com.team.comma.dto.PlaylistResponse;
-import com.team.comma.dto.PlaylistTrackArtistResponse;
-import com.team.comma.dto.PlaylistTrackResponse;
-import com.team.comma.repository.PlaylistRepository;
-import com.team.comma.repository.PlaylistTrackRepository;
-import com.team.comma.repository.TrackRepository;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
-import com.team.comma.spotify.playlist.repository.PlaylistTrackRepository;
 import com.team.comma.spotify.track.domain.TrackArtist;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

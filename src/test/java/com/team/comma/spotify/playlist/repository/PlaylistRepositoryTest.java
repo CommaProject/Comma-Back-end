@@ -12,9 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;  //자동 import되지 않음
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -84,7 +81,7 @@ class PlaylistRepositoryTest {
     private User getUser() {
         return User.builder()
                 .email(userEmail)
-                .type(UserType.GeneralUser)
+                .type(UserType.GENERAL_USER)
                 .role(UserRole.USER)
                 .build();
     }

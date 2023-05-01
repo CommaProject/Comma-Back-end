@@ -1,41 +1,29 @@
 package com.team.comma.spotify.playlist.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
+import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
-import com.team.comma.spotify.playlist.repository.PlaylistTrackRepository;
-import com.team.comma.spotify.playlist.service.PlaylistService;
 import java.util.Arrays;
 import java.util.List;
+
+import com.team.comma.spotify.track.domain.Track;
+import com.team.comma.spotify.track.domain.TrackArtist;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PlaylistServiceTest {
     @InjectMocks
     private PlaylistService playlistService;
     @Mock
-    private PlaylistTrackRepository playlistTrackRepository;
-    @Mock
     private PlaylistRepository playlistRepository;
-    @Mock
-    private TrackRepository trackRepository;
 
     private String userEmail = "email@naver.com";
 
