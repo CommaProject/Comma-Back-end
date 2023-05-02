@@ -1,0 +1,25 @@
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+
+== 메인 화면
+
+link:main.html[main 화면]
+
+== Playlist API
+
+=== Playlist 조회
+
+==== Request
+
+include::{snippets}/spotify/playlist/http-request.adoc[]
+include::{snippets}/spotify/playlist/request-headers.adoc[]
+
+==== Response
+
+include::{snippets}/spotify/playlist/http-response.adoc[]
+include::{snippets}/spotify/playlist/response-fields.adoc[]
+

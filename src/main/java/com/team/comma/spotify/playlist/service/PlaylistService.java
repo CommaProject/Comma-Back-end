@@ -1,5 +1,6 @@
 package com.team.comma.spotify.playlist.service;
 
+import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.exception.PlaylistErrorResult;
 import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.domain.Playlist;
@@ -10,11 +11,15 @@ import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.track.domain.TrackArtist;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
+import static com.team.comma.common.constant.ResponseCode.ALARM_UPDATE_FAILURE;
+import static com.team.comma.common.constant.ResponseCode.PLAYLIST_ALARM_UPDATED;
 
 @Service
 @RequiredArgsConstructor
@@ -53,11 +58,11 @@ public class PlaylistService {
         return result;
     }
 
-    public void updateAlarmFlag(Long playlistId, Boolean alarmFlag) {
-        final Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
-        final Playlist playlist = optionalPlaylist.orElseThrow(() -> new PlaylistException(PlaylistErrorResult.PLAYLIST_NOT_FOUND));
+    public MessageResponse updateAlarmFlag(Long playlistId, Boolean alarmFlag) {
+        playlistRepository.findById(playlistId).orElseThrow(() -> new PlaylistException(PlaylistErrorResult.PLAYLIST_NOT_FOUND));
 
-        playlistRepository.updateAlarmFlag(playlistId,alarmFlag);
+        playlistRepository.updateAlarmFlag(playlistId, alarmFlag);
+        return MessageResponse.of(PLAYLIST_ALARM_UPDATED, "알람 설정이 변경되었습니다.");
     }
 
 }

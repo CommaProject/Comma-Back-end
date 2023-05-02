@@ -20,3 +20,7 @@
 == Spotify 문서
 
 * link:spotify.html[Spotify 문서]
+
+== Playlist 문서
+
+* link:playlist.html[Playlist 문서]

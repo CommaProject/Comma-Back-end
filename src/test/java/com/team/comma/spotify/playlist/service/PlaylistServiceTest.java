@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.exception.PlaylistErrorResult;
 import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.domain.Playlist;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 public class PlaylistServiceTest {
@@ -85,9 +87,10 @@ public class PlaylistServiceTest {
         )).when(playlistRepository).findById(playlistId);
 
         // when
-        playlistService.updateAlarmFlag(playlistId,flag);
+        MessageResponse result = playlistService.updateAlarmFlag(playlistId,flag);
 
         // then
-
+        assertThat(result.getCode()).isEqualTo(2);
+        assertThat(result.getMessage()).isEqualTo("알람 설정이 변경되었습니다.");
     }
 }
