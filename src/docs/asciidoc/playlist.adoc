@@ -24,14 +24,14 @@ include::{snippets}/spotify/selectPlaylist/request-headers.adoc[]
 include::{snippets}/spotify/selectPlaylist/http-response.adoc[]
 include::{snippets}/spotify/selectPlaylist/response-fields.adoc[]
 
-== Playlist Update Alarm
+=== Playlist Update Alarm
 
-=== Request
+==== Request
 
 include::{snippets}/spotify/updatePlaylist/http-request.adoc[]
 include::{snippets}/spotify/updatePlaylist/request-fields.adoc[]
 
-=== Response
+==== Response
 
 include::{snippets}/spotify/updatePlaylist/http-response.adoc[]
 include::{snippets}/spotify/updatePlaylist/response-fields.adoc[]
