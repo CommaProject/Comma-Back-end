@@ -190,4 +190,51 @@ public class SpotifyHistoryControllerTest {
                 )
         );
     }
+
+    @Test
+    @DisplayName("History 전체 삭제 실패 _ 찾을 수 없는 사용자")
+    public void deleteAllHistoryFail_notFountUser() throws Exception {
+        // given
+        final String api = "/spotify/all-history";
+        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(spotifyHistoryService).deleteAllHistory("token");
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete(api).cookie(new Cookie("accessToken" , "token")));
+
+        // then
+        resultActions.andExpect(status().isBadRequest()).andDo(
+                document("spotify/history/deleteAllHistoryFail_notFoundUser",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        )
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("History 전체 삭제 성공")
+    public void deleteAllHistory() throws Exception {
+        // given
+        final String api = "/spotify/all-history";
+        doNothing().when(spotifyHistoryService).deleteAllHistory("token");
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.delete(api).cookie(new Cookie("accessToken" , "token")));
+
+        // then
+        resultActions.andExpect(status().isNoContent()).andDo(
+                document("spotify/history/deleteAllHistory",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        )
+                )
+        );
+    }
+
 }

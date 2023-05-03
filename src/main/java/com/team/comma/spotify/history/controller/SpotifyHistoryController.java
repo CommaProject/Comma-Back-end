@@ -29,6 +29,13 @@ public class SpotifyHistoryController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @DeleteMapping("/all-history")
+    public ResponseEntity deleteUserAllHistory(@CookieValue("accessToken") String token) throws AccountException {
+        spotifyHistoryService.deleteAllHistory(token);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @PostMapping("/history")
     public ResponseEntity addHistory(@RequestBody HistoryRequest historyRequest
             , @CookieValue("accessToken") String token) throws AccountException {

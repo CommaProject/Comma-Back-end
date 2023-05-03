@@ -50,7 +50,18 @@ public class SpotifyHistoryService {
 
     @Transactional
     public void deleteHistory(long historyId) {
-        spotifyHistoryRepository.deleteById(historyId);
+        spotifyHistoryRepository.deleteHistoryById(historyId);
     }
 
+    @Transactional
+    public void deleteAllHistory(String token) throws AccountException {
+        String userEmail = jwtTokenProvider.getUserPk(token);
+        User user = userRepository.findByEmail(userEmail);
+
+        if(user == null) {
+            throw new AccountException("사용자를 찾을 수 없습니다.");
+        }
+
+        spotifyHistoryRepository.deleteAllHistoryByUser(user);
+    }
 }

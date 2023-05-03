@@ -23,6 +23,7 @@ import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -107,6 +108,37 @@ public class SpotifyHistoryServiceTest {
         List<String> historyList = (List<String>) result.getData();
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
         assertThat(historyList.size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("모든 History 삭제하기 실패 _ 찾을 수 없는 사용자")
+    public void deleteAllHistoryFail_notFountUser() {
+        // given
+        String token = "token";
+        doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
+        doReturn(null).when(userRepository).findByEmail(any(String.class));
+        // when
+        Throwable thrown = catchThrowable(() -> spotifyHistoryService.deleteAllHistory(token));
+
+        // then
+        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("모든 History 삭제하기 성공")
+    public void deleteAllHistory() {
+        // given
+        String token = "token";
+        doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
+        User user = User.builder().email("email").password("password").role(UserRole.USER).build();
+        doReturn(user).when(userRepository).findByEmail(any(String.class));
+        doNothing().when(spotifyHistoryRepository).deleteAllHistoryByUser(any(User.class));
+
+        // when
+        Throwable thrown = catchThrowable(() -> spotifyHistoryService.deleteAllHistory(token));
+
+        // when
+        assertThat(thrown).doesNotThrowAnyException();
     }
 
 }
