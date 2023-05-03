@@ -11,14 +11,11 @@ import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.track.domain.TrackArtist;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.team.comma.common.constant.ResponseCode.ALARM_UPDATE_FAILURE;
 import static com.team.comma.common.constant.ResponseCode.PLAYLIST_ALARM_UPDATED;
 
 @Service

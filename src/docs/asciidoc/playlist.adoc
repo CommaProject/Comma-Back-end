@@ -5,6 +5,7 @@
 :toclevels: 2
 
 
+
 == 메인 화면
 
 link:main.html[main 화면]
@@ -15,11 +16,23 @@ link:main.html[main 화면]
 
 ==== Request
 
-include::{snippets}/spotify/playlist/http-request.adoc[]
-include::{snippets}/spotify/playlist/request-headers.adoc[]
+include::{snippets}/spotify/selectPlaylist/http-request.adoc[]
+include::{snippets}/spotify/selectPlaylist/request-headers.adoc[]
 
 ==== Response
 
-include::{snippets}/spotify/playlist/http-response.adoc[]
-include::{snippets}/spotify/playlist/response-fields.adoc[]
+include::{snippets}/spotify/selectPlaylist/http-response.adoc[]
+include::{snippets}/spotify/selectPlaylist/response-fields.adoc[]
+
+== Playlist Update Alarm
+
+=== Request
+
+include::{snippets}/spotify/updatePlaylist/http-request.adoc[]
+include::{snippets}/spotify/updatePlaylist/request-fields.adoc[]
+
+=== Response
+
+include::{snippets}/spotify/updatePlaylist/http-response.adoc[]
+include::{snippets}/spotify/updatePlaylist/response-fields.adoc[]
 
