@@ -1,6 +1,8 @@
 package com.team.comma.spotify.search.service;
 
 import com.neovisionaries.i18n.CountryCode;
+import com.team.comma.spotify.history.dto.HistoryRequest;
+import com.team.comma.spotify.history.service.SpotifyHistoryService;
 import com.team.comma.spotify.search.dto.ArtistResponse;
 import com.team.comma.spotify.search.dto.RequestResponse;
 import com.team.comma.spotify.search.support.SpotifyAuthorization;
@@ -16,6 +18,7 @@ import se.michaelthelin.spotify.requests.data.browse.miscellaneous.GetAvailableG
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchArtistsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchTracksRequest;
 
+import javax.security.auth.login.AccountException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -27,14 +30,15 @@ public class SpotifySearchService {
 
     private final SpotifyAuthorization spotifyAuthorization;
     private final SpotifySearchCommand spotifySearchCommand;
+    private final SpotifyHistoryService spotifyHistoryService;
 
-    public RequestResponse searchArtist_Sync(String artistName) {
+    public RequestResponse searchArtist_Sync(String artistName , String token) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
         SearchArtistsRequest searchArtistsRequest = spotifyApi.searchArtists(artistName).build();
         Object executeResult = spotifySearchCommand.executeCommand(searchArtistsRequest);
 
         if(executeResult instanceof SpotifyApi) {
-            return searchArtist_Sync(artistName);
+            return searchArtist_Sync(artistName , token);
         }
 
         Paging<Artist> artistsPaging = (Paging<Artist>) executeResult;
@@ -44,16 +48,18 @@ public class SpotifySearchService {
             result.add(ArtistResponse.createArtistResponse(artist));
         }
 
+        addHistory(artistName , token);
+
         return RequestResponse.of(REQUEST_SUCCESS , result);
     }
 
-    public RequestResponse searchTrack_Sync(String trackName) {
+    public RequestResponse searchTrack_Sync(String trackName , String token) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
         SearchTracksRequest searchTrackRequest = spotifyApi.searchTracks(trackName).build();
 
         Object executeResult = spotifySearchCommand.executeCommand(searchTrackRequest);
         if(executeResult instanceof SpotifyApi) {
-            return searchTrack_Sync(trackName);
+            return searchTrack_Sync(trackName , token);
         }
 
         Paging<Track> artistsPaging = (Paging<Track>) executeResult;
@@ -61,6 +67,8 @@ public class SpotifySearchService {
         for (Track track : artistsPaging.getItems()) {
             result.add(TrackResponse.createTrackResponse(track));
         }
+
+        addHistory(trackName , token);
 
         return RequestResponse.of(REQUEST_SUCCESS , result);
     }
@@ -99,5 +107,11 @@ public class SpotifySearchService {
         }
 
         return RequestResponse.of(REQUEST_SUCCESS, artistNames);
+    }
+
+    public void addHistory(String history , String token) throws AccountException {
+        HistoryRequest request = HistoryRequest.builder().searchHistory(history).build();
+
+        spotifyHistoryService.addHistory(request , token);
     }
 }

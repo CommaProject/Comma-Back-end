@@ -5,6 +5,7 @@ import com.team.comma.spotify.search.dto.ArtistResponse;
 import com.team.comma.spotify.search.dto.RequestResponse;
 import com.team.comma.spotify.search.service.SpotifySearchService;
 import com.team.comma.spotify.track.dto.TrackResponse;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,8 @@ import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
+import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -77,17 +80,20 @@ public class SearchControllerTest {
                         ArtistResponse.builder().build(),
                         ArtistResponse.builder().build(),
                         ArtistResponse.builder().build())));
-        doReturn(requestResponse).when(spotifyService).searchArtist_Sync(any(String.class));
+        doReturn(requestResponse).when(spotifyService).searchArtist_Sync(any(String.class) , any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.get(api, "{artistName}"));
+                RestDocumentationRequestBuilders.get(api, "{artistName}").cookie(new Cookie("accessToken" , "token")));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
                 document("spotify/searchArtist",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("History 등록에 필요한 accessToken")
+                        ),
                         pathParameters(
                                 parameterWithName("artist").description("아티스트 명")
                         ),
@@ -123,17 +129,20 @@ public class SearchControllerTest {
                         TrackResponse.builder().build()
                 )));
 
-        doReturn(requestResponse).when(spotifyService).searchTrack_Sync(any(String.class));
+        doReturn(requestResponse).when(spotifyService).searchTrack_Sync(any(String.class) , any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.get(api, "{trackName}"));
+                RestDocumentationRequestBuilders.get(api, "{trackName}").cookie(new Cookie("accessToken" , "token")));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
                 document("spotify/searchTrack",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("History 등록에 필요한 accessToken")
+                        ),
                         pathParameters(
                                 parameterWithName("track").description("트랙 이름")
                         ),
