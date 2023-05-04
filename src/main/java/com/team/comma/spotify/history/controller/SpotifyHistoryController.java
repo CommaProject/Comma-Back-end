@@ -41,7 +41,7 @@ public class SpotifyHistoryController {
             , @CookieValue("accessToken") String token) throws AccountException {
         spotifyHistoryService.addHistory(historyRequest , token);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }
