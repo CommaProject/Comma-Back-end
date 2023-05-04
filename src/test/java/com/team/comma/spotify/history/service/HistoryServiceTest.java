@@ -2,7 +2,7 @@ package com.team.comma.spotify.history.service;
 
 import com.team.comma.spotify.history.domain.History;
 import com.team.comma.spotify.history.dto.HistoryRequest;
-import com.team.comma.spotify.history.repository.SpotifyHistoryRepository;
+import com.team.comma.spotify.history.repository.HistoryRepository;
 import com.team.comma.spotify.search.dto.RequestResponse;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.domain.User;
@@ -27,13 +27,13 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
-public class SpotifyHistoryServiceTest {
+public class HistoryServiceTest {
 
     @InjectMocks
-    SpotifyHistoryService spotifyHistoryService;
+    HistoryService spotifyHistoryService;
 
     @Mock
-    SpotifyHistoryRepository spotifyHistoryRepository;
+    HistoryRepository spotifyHistoryRepository;
 
     @Mock
     JwtTokenProvider jwtTokenProvider;

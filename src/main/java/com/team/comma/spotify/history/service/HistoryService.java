@@ -2,7 +2,7 @@ package com.team.comma.spotify.history.service;
 
 import com.team.comma.spotify.history.dto.HistoryRequest;
 import com.team.comma.spotify.history.dto.HistoryResponse;
-import com.team.comma.spotify.history.repository.SpotifyHistoryRepository;
+import com.team.comma.spotify.history.repository.HistoryRepository;
 import com.team.comma.spotify.search.dto.RequestResponse;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
@@ -18,9 +18,9 @@ import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
 
 @Service
 @RequiredArgsConstructor
-public class SpotifyHistoryService {
+public class HistoryService {
 
-    final private SpotifyHistoryRepository spotifyHistoryRepository;
+    final private HistoryRepository historyRepository;
     final private UserRepository userRepository;
     final private JwtTokenProvider jwtTokenProvider;
 
@@ -44,13 +44,13 @@ public class SpotifyHistoryService {
             throw new AccountException("사용자를 찾을 수 없습니다.");
         }
 
-        List<HistoryResponse> historyList = spotifyHistoryRepository.getHistoryListByUserEmail(user.getEmail());
+        List<HistoryResponse> historyList = historyRepository.getHistoryListByUserEmail(user.getEmail());
         return RequestResponse.of(REQUEST_SUCCESS , historyList);
     }
 
     @Transactional
     public void deleteHistory(long historyId) {
-        spotifyHistoryRepository.deleteHistoryById(historyId);
+        historyRepository.deleteHistoryById(historyId);
     }
 
     @Transactional
@@ -62,6 +62,6 @@ public class SpotifyHistoryService {
             throw new AccountException("사용자를 찾을 수 없습니다.");
         }
 
-        spotifyHistoryRepository.deleteAllHistoryByUser(user);
+        historyRepository.deleteAllHistoryByUser(user);
     }
 }

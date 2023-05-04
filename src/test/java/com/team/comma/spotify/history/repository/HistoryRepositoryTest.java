@@ -21,7 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @Transactional
-public class SpotifyHistoryRepositoryTest {
+public class HistoryRepositoryTest {
 
     @Autowired
     UserRepository userRepository;

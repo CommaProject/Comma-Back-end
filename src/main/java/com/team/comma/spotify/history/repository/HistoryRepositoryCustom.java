@@ -5,7 +5,7 @@ import com.team.comma.user.domain.User;
 
 import java.util.List;
 
-public interface SpotifyHistoryRepositoryCustom {
+public interface HistoryRepositoryCustom {
     List<HistoryResponse> getHistoryListByUserEmail(String userEmail);
     void deleteHistoryById(long id);
 

@@ -3,7 +3,7 @@ package com.team.comma.spotify.history.controller;
 import com.google.gson.Gson;
 import com.team.comma.spotify.history.dto.HistoryRequest;
 import com.team.comma.spotify.history.dto.HistoryResponse;
-import com.team.comma.spotify.history.service.SpotifyHistoryService;
+import com.team.comma.spotify.history.service.HistoryService;
 import com.team.comma.spotify.search.dto.RequestResponse;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,12 +44,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureRestDocs
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-@WebMvcTest(SpotifyHistoryController.class)
+@WebMvcTest(HistoryController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @WebAppConfiguration
-public class SpotifyHistoryControllerTest {
+public class HistoryControllerTest {
     @MockBean
-    SpotifyHistoryService spotifyHistoryService;
+    HistoryService spotifyHistoryService;
 
     MockMvc mockMvc;
     Gson gson;

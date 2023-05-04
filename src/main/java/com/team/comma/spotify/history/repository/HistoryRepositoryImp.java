@@ -12,7 +12,7 @@ import static com.team.comma.spotify.history.domain.QHistory.history;
 import static com.team.comma.user.domain.QUser.user;
 
 @RequiredArgsConstructor
-public class SpotifyHistoryRepositoryImp implements SpotifyHistoryRepositoryCustom {
+public class HistoryRepositoryImp implements HistoryRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 

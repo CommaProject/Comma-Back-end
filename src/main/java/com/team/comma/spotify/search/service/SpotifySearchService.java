@@ -2,7 +2,7 @@ package com.team.comma.spotify.search.service;
 
 import com.neovisionaries.i18n.CountryCode;
 import com.team.comma.spotify.history.dto.HistoryRequest;
-import com.team.comma.spotify.history.service.SpotifyHistoryService;
+import com.team.comma.spotify.history.service.HistoryService;
 import com.team.comma.spotify.search.dto.ArtistResponse;
 import com.team.comma.spotify.search.dto.RequestResponse;
 import com.team.comma.spotify.search.support.SpotifyAuthorization;
@@ -30,7 +30,7 @@ public class SpotifySearchService {
 
     private final SpotifyAuthorization spotifyAuthorization;
     private final SpotifySearchCommand spotifySearchCommand;
-    private final SpotifyHistoryService spotifyHistoryService;
+    private final HistoryService historyService;
 
     public RequestResponse searchArtist_Sync(String artistName , String token) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
@@ -112,6 +112,6 @@ public class SpotifySearchService {
     public void addHistory(String history , String token) throws AccountException {
         HistoryRequest request = HistoryRequest.builder().searchHistory(history).build();
 
-        spotifyHistoryService.addHistory(request , token);
+        historyService.addHistory(request , token);
     }
 }
