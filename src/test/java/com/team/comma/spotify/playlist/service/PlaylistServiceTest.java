@@ -1,12 +1,9 @@
 package com.team.comma.spotify.playlist.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import com.team.comma.common.dto.MessageResponse;
-import com.team.comma.spotify.playlist.exception.PlaylistErrorResult;
-import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
@@ -17,12 +14,13 @@ import java.util.Optional;
 
 import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.domain.TrackArtist;
+import com.team.comma.user.domain.User;
+import com.team.comma.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 public class PlaylistServiceTest {
@@ -30,6 +28,8 @@ public class PlaylistServiceTest {
     private PlaylistService playlistService;
     @Mock
     private PlaylistRepository playlistRepository;
+    @Mock
+    private UserRepository userRepository;
 
     private String userEmail = "email@naver.com";
 
@@ -40,6 +40,9 @@ public class PlaylistServiceTest {
     @Test
     public void 플레이리스트_조회() {
         // given
+        final User user = User.builder().email(userEmail).build();
+        doReturn(user).when(userRepository).findByEmail(user.getEmail());
+
         final List<TrackArtist> artistList = Arrays.asList(
                 TrackArtist.builder().build()
         );
@@ -56,7 +59,7 @@ public class PlaylistServiceTest {
                 Playlist.builder().playlistTrackList(playlistTrack).build(),
                 Playlist.builder().playlistTrackList(playlistTrack).build(),
                 Playlist.builder().playlistTrackList(playlistTrack).build()
-        )).when(playlistRepository).findAllByUser_Email(userEmail);
+        )).when(playlistRepository).findAllByUser(user);
 
         // when
         final List<PlaylistResponse> result = playlistService.getPlaylist(userEmail);
@@ -66,15 +69,15 @@ public class PlaylistServiceTest {
     }
 
     @Test
-    public void 플레이리스트_알림설정변경_실패_존재하지않음() {
+    public void 플레이리스트_알림설정변경_실패_존재하지않는플레이리스트() {
         // given
-        doReturn(Optional.empty()).when(playlistRepository).findById(123L);
 
         // when
-        final PlaylistException result = assertThrows(PlaylistException.class, () -> playlistService.updateAlarmFlag(playlistId, flag));
+        final MessageResponse result = playlistService.updateAlarmFlag(playlistId, flag);
 
         // then
-        assertThat(result.getErrorResult()).isEqualTo(PlaylistErrorResult.PLAYLIST_NOT_FOUND);
+        assertThat(result.getCode()).isEqualTo(-5);
+        assertThat(result.getMessage()).isEqualTo("알람 설정 변경에 실패했습니다. 플레이리스트를 찾을 수 없습니다.");
     }
 
     @Test
@@ -87,7 +90,7 @@ public class PlaylistServiceTest {
         )).when(playlistRepository).findById(playlistId);
 
         // when
-        MessageResponse result = playlistService.updateAlarmFlag(playlistId,flag);
+        final MessageResponse result = playlistService.updateAlarmFlag(playlistId,flag);
 
         // then
         assertThat(result.getCode()).isEqualTo(2);

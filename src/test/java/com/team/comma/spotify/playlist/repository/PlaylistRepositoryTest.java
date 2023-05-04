@@ -45,7 +45,7 @@ class PlaylistRepositoryTest {
         final User user = userRepository.save(getUser());
 
         // when
-        final List<Playlist> result = playlistRepository.findAllByUser_Email(userEmail);
+        final List<Playlist> result = playlistRepository.findAllByUser(user);
 
         // then
         assertThat(result.size()).isEqualTo(0);
@@ -59,7 +59,7 @@ class PlaylistRepositoryTest {
         playlistRepository.save(getPlaylist(user, title));
 
         // when
-        final List<Playlist> result = playlistRepository.findAllByUser_Email(userEmail);
+        final List<Playlist> result = playlistRepository.findAllByUser(user);
 
         // then
         assertThat(result.size()).isEqualTo(2);

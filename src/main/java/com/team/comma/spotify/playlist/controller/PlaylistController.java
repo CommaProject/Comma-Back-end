@@ -3,7 +3,6 @@ package com.team.comma.spotify.playlist.controller;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistRequest;
-import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.service.PlaylistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +24,7 @@ public class PlaylistController {
 
     @PostMapping("/playlist/update/alarm")
     public ResponseEntity<MessageResponse> updateAlarmFlag(
-            @RequestBody final PlaylistRequest request)
-            throws PlaylistException{
-        return ResponseEntity.ok().body(playlistService.updateAlarmFlag(request.getPlaylistId(), request.getAlarmFlag()));
+            @RequestBody final PlaylistRequest request) {
+        return ResponseEntity.ok().body(playlistService.updateAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }
 }

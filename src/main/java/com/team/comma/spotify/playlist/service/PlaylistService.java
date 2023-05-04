@@ -1,8 +1,6 @@
 package com.team.comma.spotify.playlist.service;
 
 import com.team.comma.common.dto.MessageResponse;
-import com.team.comma.spotify.playlist.exception.PlaylistErrorResult;
-import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
@@ -10,12 +8,17 @@ import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.track.domain.TrackArtist;
+import com.team.comma.user.domain.User;
+import com.team.comma.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static com.team.comma.common.constant.ResponseCode.ALARM_UPDATE_FAILURE;
 import static com.team.comma.common.constant.ResponseCode.PLAYLIST_ALARM_UPDATED;
 
 @Service
@@ -24,8 +27,11 @@ public class PlaylistService {
 
     private final PlaylistRepository playlistRepository;
 
+    private final UserRepository userRepository;
+
     public List<PlaylistResponse> getPlaylist(final String email) {
-        List<Playlist> playlists = playlistRepository.findAllByUser_Email(email); // email로 playlist 조회
+        User user = userRepository.findByEmail(email);
+        List<Playlist> playlists = playlistRepository.findAllByUser(user); // email로 playlist 조회
         return createPlaylistResponse(playlists);
     }
 
@@ -55,8 +61,12 @@ public class PlaylistService {
         return result;
     }
 
+    @Transactional
     public MessageResponse updateAlarmFlag(Long playlistId, Boolean alarmFlag) {
-        playlistRepository.findById(playlistId).orElseThrow(() -> new PlaylistException(PlaylistErrorResult.PLAYLIST_NOT_FOUND));
+        Optional<Playlist> playlist = playlistRepository.findById(playlistId);
+        if(playlist.isEmpty()){
+            return MessageResponse.of(ALARM_UPDATE_FAILURE, "알람 설정 변경에 실패했습니다. 플레이리스트를 찾을 수 없습니다.");
+        }
 
         playlistRepository.updateAlarmFlag(playlistId, alarmFlag);
         return MessageResponse.of(PLAYLIST_ALARM_UPDATED, "알람 설정이 변경되었습니다.");
