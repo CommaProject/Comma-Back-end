@@ -13,7 +13,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class SpotifySearchCommand {
-    final private SpotifyAuthorization spotifyAuthorization;
+    private final SpotifyAuthorization spotifyAuthorization;
 
     public Object executeCommand(AbstractDataRequest searchRequest) {
         try {

@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class HistoryResponse {
-    final private long id;
-    final private String searchHistory;
+    private final long id;
+    private final String searchHistory;
 
 }

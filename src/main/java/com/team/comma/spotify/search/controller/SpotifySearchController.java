@@ -13,25 +13,25 @@ import javax.security.auth.login.AccountException;
 @RequiredArgsConstructor
 public class SpotifySearchController {
 
-    final private SpotifySearchService spotifyService;
+    private final SpotifySearchService spotifyService;
 
     @GetMapping("/artist/{artist}")
-    public ResponseEntity<RequestResponse> getArtist(@PathVariable String artist , @CookieValue("accessToken") String accessToken) throws AccountException {
-        return ResponseEntity.ok().body(spotifyService.searchArtist_Sync(artist , accessToken));
+    public ResponseEntity<RequestResponse> searchArtistList(@PathVariable String artist , @CookieValue("accessToken") String accessToken) throws AccountException {
+        return ResponseEntity.ok().body(spotifyService.searchArtistList(artist , accessToken));
     }
 
     @GetMapping("/track/{track}")
-    public ResponseEntity<RequestResponse> getTrack(@PathVariable String track , @CookieValue("accessToken") String accessToken) throws AccountException {
-        return ResponseEntity.ok().body(spotifyService.searchTrack_Sync(track , accessToken));
+    public ResponseEntity<RequestResponse> searchTrackList(@PathVariable String track , @CookieValue("accessToken") String accessToken) throws AccountException {
+        return ResponseEntity.ok().body(spotifyService.searchTrackList(track , accessToken));
     }
 
     @GetMapping("/genre")
-    public ResponseEntity<RequestResponse> getGenres() {
-        return ResponseEntity.ok().body(spotifyService.searchGenres());
+    public ResponseEntity<RequestResponse> searchGenreList() {
+        return ResponseEntity.ok().body(spotifyService.searchGenreList());
     }
 
     @GetMapping("/artist")
-    public ResponseEntity<RequestResponse> getArtistByYear(@RequestParam int offset) {
-        return ResponseEntity.ok().body(spotifyService.searchArtistByYear(offset));
+    public ResponseEntity<RequestResponse> searchArtistListByYear(@RequestParam int offset) {
+        return ResponseEntity.ok().body(spotifyService.searchArtistListByYear(offset));
     }
 }

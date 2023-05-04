@@ -80,7 +80,7 @@ public class SearchControllerTest {
                         ArtistResponse.builder().build(),
                         ArtistResponse.builder().build(),
                         ArtistResponse.builder().build())));
-        doReturn(requestResponse).when(spotifyService).searchArtist_Sync(any(String.class) , any(String.class));
+        doReturn(requestResponse).when(spotifyService).searchArtistList(any(String.class) , any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -129,7 +129,7 @@ public class SearchControllerTest {
                         TrackResponse.builder().build()
                 )));
 
-        doReturn(requestResponse).when(spotifyService).searchTrack_Sync(any(String.class) , any(String.class));
+        doReturn(requestResponse).when(spotifyService).searchTrackList(any(String.class) , any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -174,7 +174,7 @@ public class SearchControllerTest {
         final String api = "/spotify/genre";
         RequestResponse requestResponse = RequestResponse.of(REQUEST_SUCCESS,
                 new String[]{"hipPop", "sleep", "jazz"});
-        doReturn(requestResponse).when(spotifyService).searchGenres();
+        doReturn(requestResponse).when(spotifyService).searchGenreList();
 
         // when
         final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(api));
@@ -208,7 +208,7 @@ public class SearchControllerTest {
         RequestResponse requestResponse = RequestResponse.of(REQUEST_SUCCESS,
                 new String[]{"artist1", "artist2", "artist3"});
         doReturn(requestResponse)
-                .when(spotifyService).searchArtistByYear(0);
+                .when(spotifyService).searchArtistListByYear(0);
         // when
         final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get(api));
         // then

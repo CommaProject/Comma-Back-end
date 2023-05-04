@@ -20,9 +20,9 @@ import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
 @RequiredArgsConstructor
 public class HistoryService {
 
-    final private HistoryRepository historyRepository;
-    final private UserRepository userRepository;
-    final private JwtTokenProvider jwtTokenProvider;
+    private final HistoryRepository historyRepository;
+    private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public void addHistory(HistoryRequest history , String token) throws AccountException {

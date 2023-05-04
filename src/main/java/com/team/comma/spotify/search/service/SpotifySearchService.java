@@ -32,13 +32,13 @@ public class SpotifySearchService {
     private final SpotifySearchCommand spotifySearchCommand;
     private final HistoryService historyService;
 
-    public RequestResponse searchArtist_Sync(String artistName , String token) throws AccountException {
+    public RequestResponse searchArtistList(String artistName , String token) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
         SearchArtistsRequest searchArtistsRequest = spotifyApi.searchArtists(artistName).build();
         Object executeResult = spotifySearchCommand.executeCommand(searchArtistsRequest);
 
         if(executeResult instanceof SpotifyApi) {
-            return searchArtist_Sync(artistName , token);
+            return searchArtistList(artistName , token);
         }
 
         Paging<Artist> artistsPaging = (Paging<Artist>) executeResult;
@@ -53,13 +53,13 @@ public class SpotifySearchService {
         return RequestResponse.of(REQUEST_SUCCESS , result);
     }
 
-    public RequestResponse searchTrack_Sync(String trackName , String token) throws AccountException {
+    public RequestResponse searchTrackList(String trackName , String token) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
         SearchTracksRequest searchTrackRequest = spotifyApi.searchTracks(trackName).build();
 
         Object executeResult = spotifySearchCommand.executeCommand(searchTrackRequest);
         if(executeResult instanceof SpotifyApi) {
-            return searchTrack_Sync(trackName , token);
+            return searchTrackList(trackName , token);
         }
 
         Paging<Track> artistsPaging = (Paging<Track>) executeResult;
@@ -73,20 +73,20 @@ public class SpotifySearchService {
         return RequestResponse.of(REQUEST_SUCCESS , result);
     }
 
-    public RequestResponse searchGenres() {
+    public RequestResponse searchGenreList() {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
         GetAvailableGenreSeedsRequest genres = spotifyApi.getAvailableGenreSeeds().build();
 
         Object executeResult = spotifySearchCommand.executeCommand(genres);
         if(executeResult instanceof SpotifyApi) {
-            return searchGenres();
+            return searchGenreList();
         }
 
         String[] result = (String[]) executeResult;
         return RequestResponse.of(REQUEST_SUCCESS, result);
     }
 
-    public RequestResponse searchArtistByYear(int offset) {
+    public RequestResponse searchArtistListByYear(int offset) {
         int year = LocalDate.now().getYear();
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
         SearchArtistsRequest artists = spotifyApi.searchArtists(String.format("year:%d", year))
@@ -97,7 +97,7 @@ public class SpotifySearchService {
 
         Object executeResult = spotifySearchCommand.executeCommand(artists);
         if(executeResult instanceof SpotifyApi) {
-            return searchGenres();
+            return searchArtistListByYear(offset);
         }
 
         Paging<Artist> artistPaging = (Paging<Artist>) executeResult;

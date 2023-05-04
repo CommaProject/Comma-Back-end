@@ -15,7 +15,7 @@ import javax.security.auth.login.AccountException;
 @RequestMapping("/spotify")
 public class HistoryController {
 
-    final private HistoryService historyService;
+    private final HistoryService historyService;
 
     @GetMapping("/history")
     public RequestResponse getHistoryListByToken(@CookieValue("accessToken") String token) throws AccountException {
