@@ -9,6 +9,7 @@ import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.track.domain.TrackArtist;
+import com.team.comma.spotify.track.service.TrackService;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.team.comma.common.constant.ResponseCode.ALARM_UPDATE_FAILURE;
 import static com.team.comma.common.constant.ResponseCode.PLAYLIST_ALARM_UPDATED;
 
 @Service
@@ -52,16 +52,9 @@ public class PlaylistService {
     public List<PlaylistTrackResponse> createTrackResponse(List<PlaylistTrack> playlistTrackList){
         List<PlaylistTrackResponse> result = new ArrayList<>();
         for (PlaylistTrack playlistTrack : playlistTrackList) {
-            List<PlaylistTrackArtistResponse> artistList = createArtistResponse(playlistTrack.getTrack().getTrackArtistList()); // track의 artist list
+            TrackService trackService = new TrackService();
+            List<PlaylistTrackArtistResponse> artistList = trackService.createArtistResponse(playlistTrack.getTrack().getTrackArtistList()); // track의 artist list
             result.add(PlaylistTrackResponse.of(playlistTrack.getTrack(), playlistTrack.getTrackAlarmFlag(), artistList));
-        }
-        return result;
-    }
-
-    public List<PlaylistTrackArtistResponse> createArtistResponse(List<TrackArtist> artistList){
-        List<PlaylistTrackArtistResponse> result = new ArrayList<>();
-        for (TrackArtist artist : artistList){
-            result.add(PlaylistTrackArtistResponse.of(artist));
         }
         return result;
     }
