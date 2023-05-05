@@ -19,8 +19,8 @@
 
 == Spotify 문서
 
-* link:spotify.html[Spotify 문서]
+* link:spotifySearch.html[Search 탐색 문서]
 
-== Playlist 문서
+* link:spotifyHistory.html[History 문서]
 
 * link:playlist.html[Playlist 문서]
