@@ -1,7 +1,6 @@
 package com.team.comma.spotify.history.service;
 
 import com.team.comma.common.dto.MessageResponse;
-import com.team.comma.spotify.history.domain.History;
 import com.team.comma.spotify.history.dto.HistoryRequest;
 import com.team.comma.spotify.history.repository.HistoryRepository;
 import com.team.comma.user.constant.UserRole;
@@ -68,12 +67,12 @@ public class HistoryServiceTest {
         HistoryRequest request = HistoryRequest.builder().searchHistory("history").build();
 
         // when
-        spotifyHistoryService.addHistory(request , token);
+        MessageResponse result = spotifyHistoryService.addHistory(request , token);
 
         // then
-        List<History> history = user.getHistory();
-        assertThat(history).isNotNull();
-        assertThat(history.size()).isEqualTo(1);
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(result.getMessage()).isEqualTo("요청이 성공적으로 수행되었습니다.");
+        assertThat(result.getData()).isNull();
     }
 
     @Test
@@ -142,4 +141,18 @@ public class HistoryServiceTest {
         assertThat(thrown).doesNotThrowAnyException();
     }
 
+    @Test
+    @DisplayName("특정 History 삭제 하기")
+    public void deleteHistory() {
+        // given
+        doNothing().when(spotifyHistoryRepository).deleteHistoryById(20);
+        // when
+
+        MessageResponse result = spotifyHistoryService.deleteHistory(20);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(result.getMessage()).isEqualTo("요청이 성공적으로 수행되었습니다.");
+
+    }
 }
