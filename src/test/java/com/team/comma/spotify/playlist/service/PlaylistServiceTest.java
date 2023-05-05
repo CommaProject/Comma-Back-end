@@ -1,9 +1,11 @@
 package com.team.comma.spotify.playlist.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
@@ -73,10 +75,9 @@ public class PlaylistServiceTest {
         // given
 
         // when
-        final MessageResponse result = playlistService.updateAlarmFlag(playlistId, flag);
+        final PlaylistException result = assertThrows(PlaylistException.class, () -> playlistService.updateAlarmFlag(playlistId, flag));
 
         // then
-        assertThat(result.getCode()).isEqualTo(-5);
         assertThat(result.getMessage()).isEqualTo("알람 설정 변경에 실패했습니다. 플레이리스트를 찾을 수 없습니다.");
     }
 
