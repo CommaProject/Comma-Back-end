@@ -1,10 +1,10 @@
 package com.team.comma.spotify.history.controller;
 
 import com.google.gson.Gson;
+import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.history.dto.HistoryRequest;
 import com.team.comma.spotify.history.dto.HistoryResponse;
 import com.team.comma.spotify.history.service.HistoryService;
-import com.team.comma.spotify.search.dto.RequestResponse;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -159,7 +159,7 @@ public class HistoryControllerTest {
                 new HistoryResponse(1 , "history 1") ,
                 new HistoryResponse(2 , "history 2") ,
                 new HistoryResponse(3 , "history 3"));
-        doReturn(RequestResponse.of(REQUEST_SUCCESS , historyList)).when(spotifyHistoryService).getHistoryList("token");
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , historyList)).when(spotifyHistoryService).getHistoryList("token");
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.get(api).cookie(new Cookie("accessToken" , "token")));
@@ -174,6 +174,7 @@ public class HistoryControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
                                 fieldWithPath("data[].id").description("History Id 이며 삭제할 때 키 값으로 사용됨"),
                                 fieldWithPath("data[].searchHistory").description("history 데이터")
                         )

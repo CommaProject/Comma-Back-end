@@ -4,7 +4,7 @@ import com.team.comma.util.security.domain.RefreshToken;
 import com.team.comma.util.security.domain.Token;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.util.jwt.exception.TokenForgeryException;
-import com.team.comma.spotify.search.exception.ExpirationTokenException;
+import com.team.comma.spotify.search.exception.TokenExpirationException;
 import com.team.comma.util.security.repository.RefreshTokenRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
 import jakarta.transaction.Transactional;
@@ -61,7 +61,7 @@ public class JwtService {
 
     public ResponseEntity createRefreshJson(String createdAccessToken) {
         if (createdAccessToken == null) {
-            throw new ExpirationTokenException("Refresh 토큰이 만료되었습니다. 로그인이 필요합니다.");
+            throw new TokenExpirationException("Refresh 토큰이 만료되었습니다. 로그인이 필요합니다.");
         }
 
         ResponseCookie cookie = ResponseCookie.from("accessToken", createdAccessToken)

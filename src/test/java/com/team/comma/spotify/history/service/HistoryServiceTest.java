@@ -1,9 +1,9 @@
 package com.team.comma.spotify.history.service;
 
+import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.history.domain.History;
 import com.team.comma.spotify.history.dto.HistoryRequest;
 import com.team.comma.spotify.history.repository.HistoryRepository;
-import com.team.comma.spotify.search.dto.RequestResponse;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
@@ -102,11 +102,12 @@ public class HistoryServiceTest {
         doReturn(Arrays.asList("history1" , "history2" , "history3")).when(spotifyHistoryRepository)
                 .getHistoryListByUserEmail(any(String.class));
         // when
-        RequestResponse result = spotifyHistoryService.getHistoryList(token);
+        MessageResponse result = spotifyHistoryService.getHistoryList(token);
 
         // then
         List<String> historyList = (List<String>) result.getData();
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(result.getMessage()).isEqualTo("요청이 성공적으로 수행되었습니다.");
         assertThat(historyList.size()).isEqualTo(3);
     }
 

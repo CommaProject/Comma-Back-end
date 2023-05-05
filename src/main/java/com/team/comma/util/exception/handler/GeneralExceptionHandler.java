@@ -3,7 +3,7 @@ package com.team.comma.util.exception.handler;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.common.constant.ResponseCode;
 import com.team.comma.util.jwt.exception.TokenForgeryException;
-import com.team.comma.spotify.search.exception.ExpirationTokenException;
+import com.team.comma.spotify.search.exception.TokenExpirationException;
 import com.team.comma.spotify.search.exception.SpotifyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,7 +65,7 @@ public class GeneralExceptionHandler {
     /*
         RefreshToken 만료
      */
-    @ExceptionHandler({ExpirationTokenException.class})
+    @ExceptionHandler({TokenExpirationException.class})
     public ResponseEntity<MessageResponse> handleExpireTokenException(Exception e) {
         MessageResponse message = MessageResponse.of(ResponseCode.REFRESH_TOKEN_EXPIRED,
             e.getMessage());
