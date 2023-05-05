@@ -129,7 +129,7 @@ class PlaylistControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(url)
+                MockMvcRequestBuilders.put(url)
                         .content(gson.toJson(PlaylistRequest.builder().playlistId(123L).alarmFlag(false).build()))
                         .contentType(MediaType.APPLICATION_JSON)
         );

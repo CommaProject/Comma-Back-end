@@ -23,7 +23,7 @@ public class PlaylistController {
         return ResponseEntity.ok().body(playlistService.getPlaylist(accessToken));
     }
 
-    @PostMapping("/playlist/modify-alarm-state")
+    @PutMapping("/playlist/modify-alarm-state")
     public ResponseEntity<MessageResponse> modifyAlarmState(
             @RequestBody final PlaylistRequest request) throws PlaylistException {
         return ResponseEntity.ok().body(playlistService.updateAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
