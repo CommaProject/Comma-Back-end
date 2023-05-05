@@ -1,6 +1,7 @@
 package com.team.comma.spotify.playlist.controller;
 
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistRequest;
 import com.team.comma.spotify.playlist.service.PlaylistService;
@@ -24,7 +25,7 @@ public class PlaylistController {
 
     @PostMapping("/playlist/update/alarm")
     public ResponseEntity<MessageResponse> updateAlarmFlag(
-            @RequestBody final PlaylistRequest request) {
+            @RequestBody final PlaylistRequest request) throws PlaylistException {
         return ResponseEntity.ok().body(playlistService.updateAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }
 }

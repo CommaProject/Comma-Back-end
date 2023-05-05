@@ -1,6 +1,7 @@
 package com.team.comma.spotify.playlist.service;
 
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
@@ -62,11 +63,9 @@ public class PlaylistService {
     }
 
     @Transactional
-    public MessageResponse updateAlarmFlag(Long playlistId, Boolean alarmFlag) {
-        Optional<Playlist> playlist = playlistRepository.findById(playlistId);
-        if(playlist.isEmpty()){
-            return MessageResponse.of(ALARM_UPDATE_FAILURE, "알람 설정 변경에 실패했습니다. 플레이리스트를 찾을 수 없습니다.");
-        }
+    public MessageResponse updateAlarmFlag(Long playlistId, Boolean alarmFlag) throws PlaylistException{
+        Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
+        Playlist playlist = optionalPlaylist.orElseThrow(() -> new PlaylistException("알람 설정 변경에 실패했습니다. 플레이리스트를 찾을 수 없습니다."));
 
         playlistRepository.updateAlarmFlag(playlistId, alarmFlag);
         return MessageResponse.of(PLAYLIST_ALARM_UPDATED, "알람 설정이 변경되었습니다.");

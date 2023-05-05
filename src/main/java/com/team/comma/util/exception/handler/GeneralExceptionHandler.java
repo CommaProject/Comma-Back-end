@@ -2,6 +2,7 @@ package com.team.comma.util.exception.handler;
 
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.common.constant.ResponseCode;
+import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.util.jwt.exception.FalsifyTokenException;
 import com.team.comma.spotify.search.exception.ExpireTokenException;
 import com.team.comma.spotify.search.exception.SpotifyException;
@@ -71,5 +72,14 @@ public class GeneralExceptionHandler {
             e.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+    }
+
+    @ExceptionHandler({PlaylistException.class})
+    public ResponseEntity<MessageResponse> playlistNotFoundException(Exception e){
+        MessageResponse message = MessageResponse.of(ResponseCode.ALARM_UPDATE_FAILURE,
+                e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+
     }
 }
