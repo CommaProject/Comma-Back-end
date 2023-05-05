@@ -11,6 +11,7 @@ import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.track.domain.TrackArtist;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
+import com.team.comma.util.jwt.support.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +31,11 @@ public class PlaylistService {
 
     private final UserRepository userRepository;
 
-    public List<PlaylistResponse> getPlaylist(final String email) {
-        User user = userRepository.findByEmail(email);
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public List<PlaylistResponse> getPlaylist(final String accessToken) {
+        String userName = jwtTokenProvider.getUserPk(accessToken);
+        User user = userRepository.findByEmail(userName);
         List<Playlist> playlists = playlistRepository.findAllByUser(user); // email로 playlist 조회
         return createPlaylistResponse(playlists);
     }
@@ -63,7 +67,7 @@ public class PlaylistService {
     }
 
     @Transactional
-    public MessageResponse updateAlarmFlag(Long playlistId, Boolean alarmFlag) throws PlaylistException{
+    public MessageResponse updateAlarmFlag(long playlistId, boolean alarmFlag) throws PlaylistException{
         Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
         Playlist playlist = optionalPlaylist.orElseThrow(() -> new PlaylistException("알람 설정 변경에 실패했습니다. 플레이리스트를 찾을 수 없습니다."));
 

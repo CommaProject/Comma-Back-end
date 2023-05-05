@@ -74,8 +74,11 @@ public class GeneralExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
     }
 
+    /*
+        알람 설정 변경 시 플레이리스트 찾을 수 없음
+     */
     @ExceptionHandler({PlaylistException.class})
-    public ResponseEntity<MessageResponse> playlistNotFoundException(Exception e){
+    public ResponseEntity<MessageResponse> handlePlaylistNotFoundException(Exception e){
         MessageResponse message = MessageResponse.of(ResponseCode.ALARM_UPDATE_FAILURE,
                 e.getMessage());
 

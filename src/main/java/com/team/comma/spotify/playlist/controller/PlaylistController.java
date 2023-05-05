@@ -19,12 +19,12 @@ public class PlaylistController {
 
     @GetMapping("/playlist")
     public ResponseEntity<List<PlaylistResponse>> getUserPlaylist(
-            @RequestHeader final String email) {
-        return ResponseEntity.ok().body(playlistService.getPlaylist(email));
+            @CookieValue final String accessToken) {
+        return ResponseEntity.ok().body(playlistService.getPlaylist(accessToken));
     }
 
-    @PostMapping("/playlist/update/alarm")
-    public ResponseEntity<MessageResponse> updateAlarmFlag(
+    @PostMapping("/playlist/modify-alarm-state")
+    public ResponseEntity<MessageResponse> modifyAlarmState(
             @RequestBody final PlaylistRequest request) throws PlaylistException {
         return ResponseEntity.ok().body(playlistService.updateAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }

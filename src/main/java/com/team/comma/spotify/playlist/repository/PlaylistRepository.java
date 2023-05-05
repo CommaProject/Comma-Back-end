@@ -14,5 +14,5 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
 
     @Modifying
     @Query("update Playlist p set p.alarmFlag = :alarmFlag where p.id = :id")
-    int updateAlarmFlag(Long id, Boolean alarmFlag);
+    int updateAlarmFlag(long id, boolean alarmFlag);
 }

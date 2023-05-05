@@ -62,7 +62,7 @@ public class PlaylistTrackRepositoryTest {
         final Playlist playlist = playlistRepository.save(getPlaylist(user, title));
 
         // when
-        final List<PlaylistTrack> result = playlistTrackRepository.findAllByPlaylist_Id(playlist.getId());
+        final List<PlaylistTrack> result = playlistTrackRepository.findAllByPlaylist(playlist);
 
         // then
         assertThat(result.size()).isEqualTo(0);
@@ -79,7 +79,7 @@ public class PlaylistTrackRepositoryTest {
         playlistTrackRepository.save(getPlaylistTrack(playlist,track2));
 
         // when
-        final List<PlaylistTrack> result = playlistTrackRepository.findAllByPlaylist_Id(playlist.getId());
+        final List<PlaylistTrack> result = playlistTrackRepository.findAllByPlaylist(playlist);
 
         // then
         assertThat(result.size()).isEqualTo(2);

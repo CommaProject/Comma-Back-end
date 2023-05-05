@@ -16,8 +16,12 @@ import java.util.Optional;
 
 import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.domain.TrackArtist;
+import com.team.comma.user.constant.UserRole;
+import com.team.comma.user.constant.UserType;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
+import com.team.comma.util.jwt.support.JwtTokenProvider;
+import com.team.comma.util.security.domain.Token;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,38 +37,46 @@ public class PlaylistServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private JwtTokenProvider jwtTokenProvider;
+
     private String userEmail = "email@naver.com";
-
-    private Long playlistId = 123L;
-
-    private Boolean flag = false;
+    private long playlistId = 123L;
+    private boolean flag = false;
+    private String token = "accessToken";
 
     @Test
     public void 플레이리스트_조회() {
         // given
-        final User user = User.builder().email(userEmail).build();
+        final User user = User.builder()
+                .email(userEmail)
+                .type(UserType.GENERAL_USER)
+                .role(UserRole.USER)
+                .build();
         doReturn(user).when(userRepository).findByEmail(user.getEmail());
+        doReturn(userEmail).when(jwtTokenProvider).getUserPk(token);
 
         final List<TrackArtist> artistList = Arrays.asList(
-                TrackArtist.builder().build()
+                TrackArtist.builder().id(123L).build()
         );
 
         final Track track = Track.builder()
+                .id(123L)
                 .trackArtistList(artistList)
                 .build();
 
         final List<PlaylistTrack> playlistTrack = Arrays.asList(
-                PlaylistTrack.builder().track(track).build()
+                PlaylistTrack.builder().track(track).trackAlarmFlag(true).build()
         );
 
         doReturn(Arrays.asList(
-                Playlist.builder().playlistTrackList(playlistTrack).build(),
-                Playlist.builder().playlistTrackList(playlistTrack).build(),
-                Playlist.builder().playlistTrackList(playlistTrack).build()
+                Playlist.builder().id(1L).alarmFlag(true).playlistTrackList(playlistTrack).build(),
+                Playlist.builder().id(2L).alarmFlag(true).playlistTrackList(playlistTrack).build(),
+                Playlist.builder().id(3L).alarmFlag(true).playlistTrackList(playlistTrack).build()
         )).when(playlistRepository).findAllByUser(user);
 
         // when
-        final List<PlaylistResponse> result = playlistService.getPlaylist(userEmail);
+        final List<PlaylistResponse> result = playlistService.getPlaylist(token);
 
         // then
         assertThat(result.size()).isEqualTo(3);
@@ -97,4 +109,5 @@ public class PlaylistServiceTest {
         assertThat(result.getCode()).isEqualTo(2);
         assertThat(result.getMessage()).isEqualTo("알람 설정이 변경되었습니다.");
     }
+
 }

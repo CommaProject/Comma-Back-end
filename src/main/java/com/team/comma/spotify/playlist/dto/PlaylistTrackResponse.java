@@ -11,15 +11,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public final class PlaylistTrackResponse {
 
-    private final Long trackId;
+    private final long trackId;
     private final String trackTitle;
     private final Integer durationTimeMs;
     private final String albumImageUrl;
-    private final Boolean trackAlarmFlag;
+    private final boolean trackAlarmFlag;
 
     private final List<PlaylistTrackArtistResponse> trackArtistList;
 
-    private PlaylistTrackResponse(Track track, Boolean trackAlarmFlag, List<PlaylistTrackArtistResponse> trackArtistList) {
+    private PlaylistTrackResponse(Track track, boolean trackAlarmFlag, List<PlaylistTrackArtistResponse> trackArtistList) {
         this.trackId = track.getId();
         this.trackTitle = track.getTrackTitle();
         this.durationTimeMs = track.getDurationTimeMs();
@@ -28,7 +28,7 @@ public final class PlaylistTrackResponse {
         this.trackArtistList = new ArrayList<>(trackArtistList);
     }
 
-    public static PlaylistTrackResponse of(Track track, Boolean trackAlarmFlag, List<PlaylistTrackArtistResponse> trackArtistList) {
+    public static PlaylistTrackResponse of(Track track, boolean trackAlarmFlag, List<PlaylistTrackArtistResponse> trackArtistList) {
         return new PlaylistTrackResponse(track, trackAlarmFlag, trackArtistList);
     }
 

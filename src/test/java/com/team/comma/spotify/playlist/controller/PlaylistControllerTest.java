@@ -3,6 +3,8 @@ package com.team.comma.spotify.playlist.controller;
 import static com.team.comma.common.constant.ResponseCode.PLAYLIST_ALARM_UPDATED;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
+import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -26,6 +28,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -82,20 +85,22 @@ class PlaylistControllerTest {
 
         doReturn(Arrays.asList(
                 PlaylistResponse.of(createPlaylist(), trackList)
-        )).when(playlistService).getPlaylist(userEmail);
+        )).when(playlistService).getPlaylist("accessToken");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.get(url).header("email",userEmail));
-        final List<PlaylistResponse> result = playlistService.getPlaylist(userEmail);
+                RestDocumentationRequestBuilders.get(url)
+                        .cookie(new Cookie("accessToken","accessToken"))
+                        .contentType(MediaType.APPLICATION_JSON));
+        final List<PlaylistResponse> result = playlistService.getPlaylist("accessToken");
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("spotify/selectPlaylist",
+                document("spotify/getPlaylist",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestHeaders(
-                                headerWithName("email").description("이메일")
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 access token 값")
                         ),
                         responseFields(
                                 fieldWithPath("[].playlistId").description("플레이리스트 id"),
@@ -118,7 +123,7 @@ class PlaylistControllerTest {
     @Test
     public void 플레이리스트_알람설정변경_성공() throws Exception {
         // given
-        final String url = "/playlist/update/alarm";
+        final String url = "/playlist/modify-alarm-state";
         doReturn(MessageResponse.of(PLAYLIST_ALARM_UPDATED,"알람 설정이 변경되었습니다.")
         ).when(playlistService).updateAlarmFlag(123L, false);
 
@@ -131,7 +136,7 @@ class PlaylistControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("spotify/updatePlaylist",
+                document("spotify/modifyPlaylist",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
