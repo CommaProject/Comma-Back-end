@@ -23,25 +23,19 @@ public class HistoryController {
     }
 
     @DeleteMapping("/history/{id}")
-    public ResponseEntity<Object> deleteUserHistory(@PathVariable long id) {
-        historyService.deleteHistory(id);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<MessageResponse> deleteUserHistory(@PathVariable long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(historyService.deleteHistory(id));
     }
 
     @DeleteMapping("/all-history")
-    public ResponseEntity<Object> deleteUserAllHistory(@CookieValue("accessToken") String token) throws AccountException {
-        historyService.deleteAllHistory(token);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<MessageResponse> deleteUserAllHistory(@CookieValue("accessToken") String token) throws AccountException {
+        return ResponseEntity.status(HttpStatus.OK).body(historyService.deleteAllHistory(token));
     }
 
     @PostMapping("/history")
-    public ResponseEntity<Object> addHistory(@RequestBody HistoryRequest historyRequest
+    public ResponseEntity<MessageResponse> addHistory(@RequestBody HistoryRequest historyRequest
             , @CookieValue("accessToken") String token) throws AccountException {
-        historyService.addHistory(historyRequest , token);
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(historyService.addHistory(historyRequest , token));
     }
 
 }

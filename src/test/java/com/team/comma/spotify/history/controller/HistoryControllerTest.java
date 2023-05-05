@@ -98,11 +98,12 @@ public class HistoryControllerTest {
 
     @Test
     @DisplayName("History 등록 성공")
-    public void addhistorySuccess() throws Exception {
+    public void addHistorySuccess() throws Exception {
         // given
         final String api = "/spotify/history";
         HistoryRequest request = HistoryRequest.builder().searchHistory("history").build();
-        doNothing().when(spotifyHistoryService).addHistory(request , "token");
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , null);
+        doReturn(messageResponse).when(spotifyHistoryService).addHistory(request , "token");
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.post(api).content(gson.toJson(request))
@@ -118,6 +119,11 @@ public class HistoryControllerTest {
                         ),
                         requestFields(
                                 fieldWithPath("searchHistory").description("등록할 History 데이터")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("데이터")
                         )
                 )
         );
@@ -187,13 +193,14 @@ public class HistoryControllerTest {
     public void deleteHistorySuccess() throws Exception {
         // given
         final String api = "/spotify/history/{id}";
-        doNothing().when(spotifyHistoryService).deleteHistory(any(Long.class));
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , null);
+        doReturn(messageResponse).when(spotifyHistoryService).deleteHistory(any(Long.class));
         // when
         final ResultActions resultActions = mockMvc.perform(
                 RestDocumentationRequestBuilders.delete(api , "1").cookie(new Cookie("accessToken" , "token")));
 
         // then
-        resultActions.andExpect(status().isNoContent()).andDo(
+        resultActions.andExpect(status().isOk()).andDo(
                 document("spotify/history/deleteHistory",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -202,6 +209,11 @@ public class HistoryControllerTest {
                         ) ,
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("데이터")
                         )
                 )
         );
@@ -240,19 +252,25 @@ public class HistoryControllerTest {
     public void deleteAllHistory() throws Exception {
         // given
         final String api = "/spotify/all-history";
-        doNothing().when(spotifyHistoryService).deleteAllHistory("token");
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , null);
+        doReturn(messageResponse).when(spotifyHistoryService).deleteAllHistory("token");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.delete(api).cookie(new Cookie("accessToken" , "token")));
 
         // then
-        resultActions.andExpect(status().isNoContent()).andDo(
+        resultActions.andExpect(status().isOk()).andDo(
                 document("spotify/history/deleteAllHistory",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("데이터")
                         )
                 )
         );
