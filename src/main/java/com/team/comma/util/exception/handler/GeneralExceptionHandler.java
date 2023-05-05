@@ -79,7 +79,7 @@ public class GeneralExceptionHandler {
         MessageResponse message = MessageResponse.of(ResponseCode.ALARM_UPDATE_FAILURE,
                 e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 
     }
 }
