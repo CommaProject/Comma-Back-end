@@ -123,7 +123,7 @@ class PlaylistControllerTest {
     @Test
     public void 플레이리스트_알람설정변경_성공() throws Exception {
         // given
-        final String url = "/playlist/modify-alarm-state";
+        final String url = "/playlist/alert";
         doReturn(MessageResponse.of(PLAYLIST_ALARM_UPDATED,"알람 설정이 변경되었습니다.")
         ).when(playlistService).updateAlarmFlag(123L, false);
 
