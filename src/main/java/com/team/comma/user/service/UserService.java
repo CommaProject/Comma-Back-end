@@ -1,19 +1,21 @@
 package com.team.comma.user.service;
 
+import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;
-import com.team.comma.util.jwt.service.JwtService;
-import com.team.comma.user.dto.UserDetailRequest;
-import com.team.comma.user.dto.UserResponse;
-import com.team.comma.user.dto.LoginRequest;
-import com.team.comma.common.dto.MessageResponse;
-import com.team.comma.user.dto.RegisterRequest;
-import com.team.comma.util.security.domain.Token;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.domain.UserDetail;
+import com.team.comma.user.dto.LoginRequest;
+import com.team.comma.user.dto.RegisterRequest;
+import com.team.comma.user.dto.UserDetailRequest;
+import com.team.comma.user.dto.UserResponse;
+import com.team.comma.user.repository.FavoriteArtistRepository;
+import com.team.comma.user.repository.FavoriteGenreRepository;
 import com.team.comma.user.repository.UserRepository;
+import com.team.comma.util.jwt.service.JwtService;
 import com.team.comma.util.jwt.support.CreationCookie;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
+import com.team.comma.util.security.domain.Token;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,8 +23,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
+import java.util.List;
 
-import static com.team.comma.common.constant.ResponseCode.*;
+import static com.team.comma.common.constant.ResponseCode.LOGIN_SUCCESS;
+import static com.team.comma.common.constant.ResponseCode.REGISTER_SUCCESS;
 import static org.apache.http.cookie.SM.SET_COOKIE;
 
 @Service
@@ -33,6 +37,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final FavoriteGenreRepository favoriteGenreRepository;
+    private final FavoriteArtistRepository favoriteArtistRepository;
 
     public ResponseEntity<MessageResponse> login(final LoginRequest loginRequest)
         throws AccountException {
@@ -132,6 +138,28 @@ public class UserService {
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    public List<String> getFavoriteGenreList(String token) throws AccountException {
+        String userName = jwtTokenProvider.getUserPk(token);
+        User user = userRepository.findByEmail(userName);
+
+        if (user == null) {
+            throw new AccountException("사용자를 찾을 수 없습니다.");
+        }
+
+        return favoriteGenreRepository.findByGenreNameList(user);
+    }
+
+    public List<String> getFavoriteArtistList(String token) throws AccountException {
+        String userName = jwtTokenProvider.getUserPk(token);
+        User user = userRepository.findByEmail(userName);
+
+        if (user == null) {
+            throw new AccountException("사용자를 찾을 수 없습니다.");
+        }
+
+        return favoriteArtistRepository.findArtistListByUser(user);
     }
 
     public User createUser(final RegisterRequest registerRequest, final UserType userType) {

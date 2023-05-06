@@ -5,15 +5,16 @@ import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.history.dto.HistoryRequest;
 import com.team.comma.spotify.history.service.HistoryService;
 import com.team.comma.spotify.search.dto.ArtistResponse;
+import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.search.support.SpotifyAuthorization;
 import com.team.comma.spotify.search.support.SpotifySearchCommand;
 import com.team.comma.spotify.track.dto.TrackResponse;
+import com.team.comma.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import se.michaelthelin.spotify.SpotifyApi;
-import se.michaelthelin.spotify.model_objects.specification.Artist;
-import se.michaelthelin.spotify.model_objects.specification.Paging;
-import se.michaelthelin.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.model_objects.specification.*;
+import se.michaelthelin.spotify.requests.data.browse.GetRecommendationsRequest;
 import se.michaelthelin.spotify.requests.data.browse.miscellaneous.GetAvailableGenreSeedsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchArtistsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchTracksRequest;
@@ -21,8 +22,11 @@ import se.michaelthelin.spotify.requests.data.search.simplified.SearchTracksRequ
 import javax.security.auth.login.AccountException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
+import static com.team.comma.spotify.track.dto.TrackResponse.createTrackResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,7 @@ public class SearchService {
     private final SpotifyAuthorization spotifyAuthorization;
     private final SpotifySearchCommand spotifySearchCommand;
     private final HistoryService historyService;
+    private final UserService userService;
 
     public MessageResponse searchArtistList(String artistName , String token) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
@@ -65,12 +70,18 @@ public class SearchService {
         Paging<Track> artistsPaging = (Paging<Track>) executeResult;
         ArrayList<TrackResponse> result = new ArrayList<>();
         for (Track track : artistsPaging.getItems()) {
-            result.add(TrackResponse.createTrackResponse(track));
+            result.add(createTrackResponse(track));
         }
 
         addHistory(trackName , token);
 
         return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , result);
+    }
+
+    public void addHistory(String history , String token) throws AccountException {
+        HistoryRequest request = HistoryRequest.builder().searchHistory(history).build();
+
+        historyService.addHistory(request , token);
     }
 
     public MessageResponse searchGenreList() {
@@ -109,9 +120,77 @@ public class SearchService {
         return MessageResponse.of(REQUEST_SUCCESS, "요청이 성공적으로 수행되었습니다." ,artistNames);
     }
 
-    public void addHistory(String history , String token) throws AccountException {
-        HistoryRequest request = HistoryRequest.builder().searchHistory(history).build();
+    public MessageResponse searchRecommendation(String accessToken) throws AccountException {
+        SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
+        String favoriteGenre = getFavoriteGenreByUser(accessToken);
+        String favoriteArtist = getFavoriteArtistByUser(accessToken);
+        GetRecommendationsRequest recommend = spotifyApi.getRecommendations()
+                .seed_genres(favoriteGenre)
+                .seed_artists(favoriteArtist)
+                .market(CountryCode.KR)
+                .limit(10).build();
 
-        historyService.addHistory(request , token);
+        Object executeResult = spotifySearchCommand.executeCommand(recommend);
+        if(executeResult instanceof SpotifyApi) {
+            return searchRecommendation(accessToken);
+        }
+
+        Recommendations recommendations = (Recommendations) executeResult;
+        ArrayList<TrackResponse> result = new ArrayList<>();
+        for(TrackSimplified track : recommendations.getTracks()) {
+            result.add(createTrackResponse(track));
+        }
+
+        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , result);
     }
+
+    public String getFavoriteGenreByUser(String token) throws AccountException {
+        List<String> genreList = userService.getFavoriteGenreList(token);
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+
+        if(genreList.isEmpty()) {
+            throw new SpotifyException("사용자 관심 장르를 찾을 수 없습니다.");
+        }
+
+        for(int i = 0; i < 4 ; i++) {
+            int randomNumber = random.nextInt(genreList.size());
+            sb.append(genreList.get(randomNumber)).append(",");
+        }
+
+        sb.delete(sb.length() - 1 , sb.length());
+        return sb.toString();
+    }
+
+    public String getFavoriteArtistByUser(String token) throws AccountException {
+        List<String> artistList = userService.getFavoriteArtistList(token);
+        Random random = new Random();
+
+        if(artistList.isEmpty()) {
+            throw new SpotifyException("사용자 관심 아티스트를 찾을 수 없습니다.");
+        }
+
+        return getSpotifyArtistId(artistList.get(random.nextInt(artistList.size())));
+    }
+
+    public String getSpotifyArtistId(String artist) {
+        SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
+        SearchArtistsRequest searchArtistsRequest = spotifyApi.searchArtists(artist).limit(1).build();
+
+        Object executeResult = spotifySearchCommand.executeCommand(searchArtistsRequest);
+
+        if(executeResult instanceof SpotifyApi) {
+            return getSpotifyArtistId(artist);
+        }
+
+        Paging<Artist> artistsPaging = (Paging<Artist>) executeResult;
+        Artist[] artistData = artistsPaging.getItems();
+
+        if(artistData.length == 0) {
+            return "";
+        }
+
+        return artistData[0].getId();
+    }
+
 }

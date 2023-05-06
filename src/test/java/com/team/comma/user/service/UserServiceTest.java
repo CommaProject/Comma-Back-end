@@ -1,14 +1,5 @@
 package com.team.comma.user.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
-
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;
@@ -17,13 +8,11 @@ import com.team.comma.user.dto.LoginRequest;
 import com.team.comma.user.dto.RegisterRequest;
 import com.team.comma.user.dto.UserDetailRequest;
 import com.team.comma.user.dto.UserResponse;
+import com.team.comma.user.repository.FavoriteGenreRepository;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.service.JwtService;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
 import com.team.comma.util.security.domain.Token;
-import java.time.LocalTime;
-import java.util.Arrays;
-import javax.security.auth.login.AccountException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +27,17 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.security.auth.login.AccountException;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
+
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
@@ -49,6 +49,9 @@ class UserServiceTest {
 
     @Mock
     private JwtService jwtService;
+
+    @Mock
+    private FavoriteGenreRepository favoriteGenreRepository;
 
     @Spy
     private JwtTokenProvider jwtTokenProvider;
@@ -305,6 +308,37 @@ class UserServiceTest {
         ResponseEntity result = userService.createUserInformation(userDetail, accessToken);
         // then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    @DisplayName("사용자 관심 장르 가져오기 실패 _ 찾을 수 없는 사용자")
+    void getInterestGenreFail_notFoundUser() {
+        // given
+        doReturn(null).when(userRepository).findByEmail(any(String.class));
+        doReturn("").when(jwtTokenProvider).getUserPk(any(String.class));
+
+        // when
+        Throwable thrown = catchThrowable(() -> userService.getFavoriteGenreList("token"));
+
+        // then
+        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("사용자 관심 장르 가져오기")
+    void getInterestGenre() throws AccountException {
+        // given
+        User user = getUserEntity();
+        doReturn(user).when(userRepository).findByEmail(any(String.class));
+        doReturn("").when(jwtTokenProvider).getUserPk(any(String.class));
+        doReturn(Arrays.asList("genre1" , "genre2" , "genre3")).when(favoriteGenreRepository)
+                .findByGenreNameList(any(User.class));
+
+        // when
+        List<String> result = userService.getFavoriteGenreList("token");
+
+        // then
+        assertThat(result.size()).isEqualTo(3);
     }
 
     private UserDetailRequest getUserDetailRequest() {

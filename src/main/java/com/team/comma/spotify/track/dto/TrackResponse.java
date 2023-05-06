@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.model_objects.specification.TrackSimplified;
 
 @Builder
 @Data
@@ -29,6 +30,17 @@ public class TrackResponse {
     private String href;
 
     public static TrackResponse createTrackResponse(Track track) {
+        return TrackResponse.builder()
+                .id(track.getId())
+                .name(track.getName())
+                .uri(track.getUri())
+                .artists(track.getArtists())
+                .previewUrl(track.getPreviewUrl())
+                .href(track.getHref())
+                .build();
+    }
+
+    public static TrackResponse createTrackResponse(TrackSimplified track) {
         return TrackResponse.builder()
                 .id(track.getId())
                 .name(track.getName())

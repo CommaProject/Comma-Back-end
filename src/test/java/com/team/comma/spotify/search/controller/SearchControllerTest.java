@@ -3,6 +3,7 @@ package com.team.comma.spotify.search.controller;
 import com.google.gson.Gson;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.search.dto.ArtistResponse;
+import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.search.service.SearchService;
 import com.team.comma.spotify.track.dto.TrackResponse;
 import jakarta.servlet.http.Cookie;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -25,6 +27,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,13 +36,13 @@ import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -240,6 +243,135 @@ public class SearchControllerTest {
 
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
         assertThat(artistResult.size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("노래 추천 받기 실패 _ 사용자 정보를 찾을 수 없음")
+    public void recommendMusicFail_notFountUser() throws Exception {
+        // given
+        final String api = "/spotify/recommendation";
+        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(spotifyService).searchRecommendation(any(String.class));
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(api).contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "token")));
+
+        // then
+        resultActions.andExpect(status().isBadRequest()).andDo(
+                document("spotify/recommend/userNotExist",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터")
+                        )
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("노래 추천 받기 실패 _ 사용자 관심 장르 찾기 실패")
+    public void recommendMusicFail_notFavoriteGenre() throws Exception {
+        // given
+        final String api = "/spotify/recommendation";
+        doThrow(new SpotifyException("사용자 관심 장르를 찾을 수 없습니다.")).when(spotifyService).searchRecommendation(any(String.class));
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(api).contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "token")));
+
+        // then
+        resultActions.andExpect(status().isInternalServerError()).andDo(
+                document("spotify/recommend/notFountFavoriteGenre",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터")
+                        )
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("노래 추천 받기 실패 _ 사용자 관심 아티스트 찾기 실패")
+    public void recommendMusicFail_notFavoriteArtist() throws Exception {
+        // given
+        final String api = "/spotify/recommendation";
+        doThrow(new SpotifyException("사용자 관심 아티스트를 찾을 수 없습니다.")).when(spotifyService).searchRecommendation(any(String.class));
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(api).contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "token")));
+
+        // then
+        resultActions.andExpect(status().isInternalServerError()).andDo(
+                document("spotify/recommend/notFountFavoriteArtist",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터")
+                        )
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("노래 추천 받기 성공")
+    public void recommendMusicSuccess() throws Exception {
+        // given
+        final String api = "/spotify/recommendation";
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
+                "요청이 성공적으로 수행되었습니다.",
+                new ArrayList<>(Arrays.asList(
+                        TrackResponse.builder().build(),
+                        TrackResponse.builder().build(),
+                        TrackResponse.builder().build()
+                )));
+
+        doReturn(messageResponse).when(spotifyService).searchRecommendation(any(String.class));
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(api).contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "token")));
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("spotify/recommend/success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ) ,
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data[].id").description("Spotify 트랙 아이디"),
+                                fieldWithPath("data[].uri").description("Spotify uri 에서의 트랙 주소"),
+                                fieldWithPath("data[].name").description("트랙 명"),
+                                fieldWithPath("data[].artists").description("트랙의 아티스트 이름"),
+                                fieldWithPath("data[].previewUrl").description("1분 미리 듣기"),
+                                fieldWithPath("data[].href").description("트랙의 재생 주소 ( 토큰 필요 )")
+                        )
+                )
+        );
     }
 
 }
