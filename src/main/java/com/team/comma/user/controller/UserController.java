@@ -44,4 +44,9 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUserByCookie(accessToken));
     }
 
+    @GetMapping("/user/{userName}")
+    public ResponseEntity<UserResponse> getUserInfo(@PathVariable String userName) {
+        return null;
+    }
+
 }
