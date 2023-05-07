@@ -29,7 +29,10 @@ public class UserDetail {
     @Column(length = 10)
     private LocalTime recommendTime;
 
-    @Column(length = 10)
+    @Column(length = 45)
+    private String name;
+
+    @Column(length = 45)
     private String nickname;
 
     @Column(length = 50)

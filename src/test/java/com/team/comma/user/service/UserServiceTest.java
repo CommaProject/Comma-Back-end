@@ -1,9 +1,12 @@
 package com.team.comma.user.service;
 
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.spotify.history.dto.HistoryRequest;
+import com.team.comma.spotify.history.service.HistoryService;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;
 import com.team.comma.user.domain.User;
+import com.team.comma.user.domain.UserDetail;
 import com.team.comma.user.dto.LoginRequest;
 import com.team.comma.user.dto.RegisterRequest;
 import com.team.comma.user.dto.UserDetailRequest;
@@ -32,6 +35,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,6 +59,9 @@ class UserServiceTest {
 
     @Spy
     private JwtTokenProvider jwtTokenProvider;
+
+    @Mock
+    private HistoryService historyService;
 
 
     private final String userEmail = "email@naver.com";
@@ -262,10 +269,10 @@ class UserServiceTest {
         String accessToken = userService.createJwtToken(user).getAccessToken();
         doReturn(getUserEntity()).when(userRepository).findByEmail(any(String.class));
         // when
-        UserResponse result = userService.getUserByCookie(accessToken);
+        MessageResponse result = userService.getUserByCookie(accessToken);
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getEmail()).isEqualTo(userEmail);
+        assertThat(((UserResponse) result.getData()).getEmail()).isEqualTo(userEmail);
     }
 
     @Test
@@ -341,6 +348,22 @@ class UserServiceTest {
         assertThat(result.size()).isEqualTo(3);
     }
 
+    @Test
+    @DisplayName("사용자 이름이나 닉네임으로 사용자 탐색")
+    void searchUserByNameAndNickNameTest() throws AccountException {
+        // given
+        List<User> userList = Arrays.asList(getUserEntity() , getUserEntity() , getUserEntity());
+        doReturn(userList).when(userRepository).searchUserByUserNameAndNickName(any(String.class));
+        doReturn(null).when(historyService).addHistory(any(HistoryRequest.class) , any(String.class));
+
+        // when
+        MessageResponse result = userService.searchUserByNameAndNickName("name" , "token");
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(((List<UserResponse>) result.getData()).size()).isEqualTo(3);
+    }
+
     private UserDetailRequest getUserDetailRequest() {
         return UserDetailRequest.builder().age(20).sex("female").nickName("name")
             .recommendTime(LocalTime.of(12, 0))
@@ -350,8 +373,21 @@ class UserServiceTest {
     }
 
     private User getUserEntity() {
-        return User.builder().email(userEmail).password(userPassword)
+        return User.builder().id(0L).email(userEmail).password(userPassword).userDetail(createUserDetail())
             .role(UserRole.USER).build();
+    }
+
+    private UserDetail createUserDetail() {
+        return UserDetail.builder()
+                .id(0L)
+                .name("name")
+                .age(0)
+                .allPublicFlag(false)
+                .calenderPublicFlag(false)
+                .favoritePublicFlag(false)
+                .nickname("nickName")
+                .profileImageUrl("url")
+                .build();
     }
 
     private LoginRequest getLoginRequest() {
@@ -363,11 +399,11 @@ class UserServiceTest {
     }
 
     public User getOauthUserEntity() {
-        return User.builder().email(userEmail).type(UserType.OAUTH_USER).password(null).build();
+        return User.builder().id(0L).email(userEmail).type(UserType.OAUTH_USER).password(null).build();
     }
 
     public User getGeneralUserEntity() {
-        return User.builder().email(userEmail).type(UserType.GENERAL_USER).password(userPassword)
+        return User.builder().id(0L).email(userEmail).type(UserType.GENERAL_USER).password(userPassword)
             .build();
     }
 

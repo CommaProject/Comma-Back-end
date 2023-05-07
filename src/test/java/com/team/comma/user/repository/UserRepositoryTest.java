@@ -1,8 +1,10 @@
 package com.team.comma.user.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;
 import com.team.comma.user.domain.User;
+import com.team.comma.user.domain.UserDetail;
 import com.team.comma.util.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
+import java.util.List;
+
+import static com.team.comma.user.domain.QUser.user;
+import static com.team.comma.user.domain.QUserDetail.userDetail;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -21,6 +27,9 @@ public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JPAQueryFactory queryFactory;
 
     private String userEmail = "email@naver.com";
     private String userPassword = "password";
@@ -47,11 +56,40 @@ public class UserRepositoryTest {
 
         // when
         userRepository.save(userEntity);
-        User result = userRepository.findByEmail(userEntity.getEmail());
+        User result = queryFactory.select(user)
+                .from(user)
+                .leftJoin(user.userDetail)
+                .fetchJoin()
+                .where(user.email.eq(userEntity.getEmail()))
+                .fetchFirst();
 
         // then
         assertThat(result).isNotNull();
         assertThat(result.getEmail()).isEqualTo(userEmail);
+    }
+
+    @Test
+    @DisplayName("이름과 닉네임으로 연관된 사용자 탐색")
+    public void findUserByNickNameAndName() {
+        // given
+        User userEntity1 = getUserEntity();
+        userEntity1.setUserDetail(UserDetail.builder().name("a01").nickname("b01").build());
+        User userEntity2 = getUserEntity();
+        userEntity2.setUserDetail(UserDetail.builder().name("b01").nickname("a02").build());
+        User userEntity3 = getUserEntity();
+        userEntity3.setUserDetail(UserDetail.builder().name("b02").nickname("c01").build());
+
+        userRepository.save(userEntity1);
+        userRepository.save(userEntity2);
+        userRepository.save(userEntity3);
+
+        // when
+        List<User> result = queryFactory.select(user).from(user).join(user.userDetail).fetchJoin()
+                .where(userDetail.nickname.like("b01").or(userDetail.name.like("b01")))
+                .fetch();
+
+        // then
+        assertThat(result.size()).isEqualTo(2);
     }
 
     private User getUserEntity() {

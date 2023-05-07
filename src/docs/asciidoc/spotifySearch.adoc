@@ -105,3 +105,17 @@ include::{snippets}/spotify/recommend/userNotExist/request-cookies.adoc[]
 
 include::{snippets}/spotify/recommend/userNotExist/http-response.adoc[]
 include::{snippets}/spotify/recommend/userNotExist/response-fields.adoc[]
+
+=== 유저 탐색
+
+==== Request
+
+include::{snippets}/user/searchUser/http-request.adoc[]
+include::{snippets}/user/searchUser/query-parameters.adoc[]
+include::{snippets}/user/searchUser/request-cookies.adoc[]
+
+==== Resposne
+
+include::{snippets}/user/searchUser/http-response.adoc[]
+include::{snippets}/user/searchUser/response-fields.adoc[]
+

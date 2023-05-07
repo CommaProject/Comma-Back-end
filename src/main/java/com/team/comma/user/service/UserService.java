@@ -1,6 +1,8 @@
 package com.team.comma.user.service;
 
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.spotify.history.dto.HistoryRequest;
+import com.team.comma.spotify.history.service.HistoryService;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;
 import com.team.comma.user.domain.User;
@@ -23,10 +25,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.team.comma.common.constant.ResponseCode.LOGIN_SUCCESS;
-import static com.team.comma.common.constant.ResponseCode.REGISTER_SUCCESS;
+import static com.team.comma.common.constant.ResponseCode.*;
+import static com.team.comma.user.dto.UserResponse.createUserResponse;
 import static org.apache.http.cookie.SM.SET_COOKIE;
 
 @Service
@@ -39,6 +42,7 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final FavoriteGenreRepository favoriteGenreRepository;
     private final FavoriteArtistRepository favoriteArtistRepository;
+    private final HistoryService historyService;
 
     public ResponseEntity<MessageResponse> login(final LoginRequest loginRequest)
         throws AccountException {
@@ -162,6 +166,18 @@ public class UserService {
         return favoriteArtistRepository.findArtistListByUser(user);
     }
 
+    public MessageResponse searchUserByNameAndNickName(String name , String accessToken) throws AccountException {
+        List<User> userList = userRepository.searchUserByUserNameAndNickName(name);
+        historyService.addHistory(HistoryRequest.builder().searchHistory(name).build() , accessToken);
+        ArrayList<UserResponse> userResponses = new ArrayList<>();
+
+        for(User user : userList) {
+            userResponses.add(UserResponse.createUserResponse(user));
+        }
+
+        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , userResponses);
+    }
+
     public User createUser(final RegisterRequest registerRequest, final UserType userType) {
         return User.builder()
             .email(registerRequest.getEmail())
@@ -179,22 +195,13 @@ public class UserService {
         return token;
     }
 
-    public UserResponse getUserByCookie(String token) throws AccountException {
+    public MessageResponse getUserByCookie(String token) throws AccountException {
         String userName = jwtTokenProvider.getUserPk(token);
         User user = userRepository.findByEmail(userName);
 
         if (user == null) {
             throw new AccountException("사용자를 찾을 수 없습니다.");
         }
-        return createUserResponse(user);
-    }
-
-    public UserResponse createUserResponse(User user) {
-        return UserResponse.builder()
-            .email(user.getEmail())
-            .password(user.getPassword())
-            .delFlag(user.getDelFlag())
-            .role(user.getRole())
-            .build();
+        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 처리되었습니다." , createUserResponse(user));
     }
 }

@@ -1,0 +1,32 @@
+package com.team.comma.user.repository;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.comma.user.domain.User;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
+import static com.team.comma.user.domain.QUser.user;
+import static com.team.comma.user.domain.QUserDetail.userDetail;
+
+@RequiredArgsConstructor
+public class UserRepositoryImpl implements UserRepositoryCustom {
+    private final JPAQueryFactory queryFactory;
+
+    @Override
+    public List<User> searchUserByUserNameAndNickName(String name) {
+        return queryFactory.select(user).from(user).leftJoin(user.userDetail).fetchJoin()
+                .where(userDetail.nickname.like(name).or(userDetail.name.like(name)))
+                .fetch();
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return queryFactory.select(user)
+                .from(user)
+                .leftJoin(user.userDetail)
+                .fetchJoin()
+                .where(user.email.eq(email))
+                .fetchFirst();
+    }
+}
