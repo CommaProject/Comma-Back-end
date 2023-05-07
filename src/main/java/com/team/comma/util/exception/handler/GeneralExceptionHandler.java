@@ -6,6 +6,7 @@ import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.search.exception.TokenExpirationException;
 import com.team.comma.util.jwt.exception.TokenForgeryException;
+import com.team.comma.util.s3.exception.S3Exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,7 +24,7 @@ public class GeneralExceptionHandler {
     /*
      * 토큰 변조 , 사용자를 찾을 수 없을 때 , 사용자가 이미 존재하거나 정보가 일치하지 않을 때
      */
-    @ExceptionHandler({UsernameNotFoundException.class, AccountException.class})
+    @ExceptionHandler({UsernameNotFoundException.class, AccountException.class , S3Exception.class})
     public ResponseEntity<MessageResponse> handleBadRequest(Exception e) {
         MessageResponse message = MessageResponse.of(ResponseCode.SIMPLE_REQUEST_FAILURE,
             e.getMessage());
