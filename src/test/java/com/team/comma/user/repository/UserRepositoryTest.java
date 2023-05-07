@@ -73,11 +73,11 @@ public class UserRepositoryTest {
     public void findUserByNickNameAndName() {
         // given
         User userEntity1 = getUserEntity();
-        userEntity1.setUserDetail(UserDetail.builder().name("a01").nickname("b01").build());
+        userEntity1.setUserDetail(UserDetail.builder().name("a01").nickname("b02").build());
         User userEntity2 = getUserEntity();
         userEntity2.setUserDetail(UserDetail.builder().name("b01").nickname("a02").build());
         User userEntity3 = getUserEntity();
-        userEntity3.setUserDetail(UserDetail.builder().name("b02").nickname("c01").build());
+        userEntity3.setUserDetail(UserDetail.builder().name("c01").nickname("c02").build());
 
         userRepository.save(userEntity1);
         userRepository.save(userEntity2);
@@ -85,7 +85,7 @@ public class UserRepositoryTest {
 
         // when
         List<User> result = queryFactory.select(user).from(user).join(user.userDetail).fetchJoin()
-                .where(userDetail.nickname.like("b01").or(userDetail.name.like("b01")))
+                .where(userDetail.name.eq("b01").or(userDetail.nickname.eq("c02")))
                 .fetch();
 
         // then

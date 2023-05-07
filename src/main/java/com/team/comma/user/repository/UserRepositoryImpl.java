@@ -16,7 +16,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     @Override
     public List<User> searchUserByUserNameAndNickName(String name) {
         return queryFactory.select(user).from(user).leftJoin(user.userDetail).fetchJoin()
-                .where(userDetail.nickname.like(name).or(userDetail.name.like(name)))
+                .where(userDetail.nickname.eq(name)
+                        .or(userDetail.name.eq(name)))
                 .fetch();
     }
 
