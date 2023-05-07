@@ -12,9 +12,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TrackService {
 
-    public List<PlaylistTrackArtistResponse> createArtistResponse(List<TrackArtist> artistList){
+    public List<PlaylistTrackArtistResponse> getTrackArtistResponseList(List<TrackArtist> artists){
         List<PlaylistTrackArtistResponse> result = new ArrayList<>();
-        for (TrackArtist artist : artistList){
+        for (TrackArtist artist : artists){
             result.add(PlaylistTrackArtistResponse.of(artist));
         }
         return result;

@@ -8,7 +8,6 @@ import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
-import com.team.comma.spotify.track.domain.TrackArtist;
 import com.team.comma.spotify.track.service.TrackService;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
@@ -27,34 +26,36 @@ import static com.team.comma.common.constant.ResponseCode.PLAYLIST_ALARM_UPDATED
 @RequiredArgsConstructor
 public class PlaylistService {
 
+    private final TrackService trackService;
+
     private final PlaylistRepository playlistRepository;
 
     private final UserRepository userRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
+
     public List<PlaylistResponse> getPlaylist(final String accessToken) {
         String userName = jwtTokenProvider.getUserPk(accessToken);
         User user = userRepository.findByEmail(userName);
-        List<Playlist> playlists = playlistRepository.findAllByUser(user); // email로 playlist 조회
-        return createPlaylistResponse(playlists);
+        List<Playlist> playlists = playlistRepository.findAllByUser(user);
+        return getPlaylistResponse(playlists);
     }
 
-    public List<PlaylistResponse> createPlaylistResponse(List<Playlist> playlists){
+    public List<PlaylistResponse> getPlaylistResponse(List<Playlist> playlists){
         List<PlaylistResponse> result = new ArrayList<>();
         for(Playlist playlist : playlists){
-            List<PlaylistTrackResponse> trackList = createTrackResponse(playlist.getPlaylistTrackList()); // playlist의 track list
-            result.add(PlaylistResponse.of(playlist, trackList));
+            List<PlaylistTrackResponse> tracks = getTrackReponseList(playlist.getPlaylistTrackList());
+            result.add(PlaylistResponse.of(playlist, tracks));
         }
         return result;
     }
 
-    public List<PlaylistTrackResponse> createTrackResponse(List<PlaylistTrack> playlistTrackList){
+    public List<PlaylistTrackResponse> getTrackReponseList(List<PlaylistTrack> playlistTracks){
         List<PlaylistTrackResponse> result = new ArrayList<>();
-        for (PlaylistTrack playlistTrack : playlistTrackList) {
-            TrackService trackService = new TrackService();
-            List<PlaylistTrackArtistResponse> artistList = trackService.createArtistResponse(playlistTrack.getTrack().getTrackArtistList()); // track의 artist list
-            result.add(PlaylistTrackResponse.of(playlistTrack.getTrack(), playlistTrack.getTrackAlarmFlag(), artistList));
+        for (PlaylistTrack playlistTrack : playlistTracks) {
+            List<PlaylistTrackArtistResponse> trackArtists = trackService.getTrackArtistResponseList(playlistTrack.getTrack().getTrackArtistList());
+            result.add(PlaylistTrackResponse.of(playlistTrack.getTrack(), playlistTrack.getTrackAlarmFlag(), trackArtists));
         }
         return result;
     }
