@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import se.michaelthelin.spotify.model_objects.specification.Image;
 
 import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
@@ -42,7 +43,8 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.requestCo
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -81,9 +83,8 @@ public class SearchControllerTest {
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
                 "요청이 성공적으로 수행되었습니다." ,
                 new ArrayList<>(Arrays.asList(
-                        ArtistResponse.builder().build(),
-                        ArtistResponse.builder().build(),
-                        ArtistResponse.builder().build())));
+                        createArtistResponse()
+                )));
         doReturn(messageResponse).when(spotifyService).searchArtistList(any(String.class) , any(String.class));
 
         // when
@@ -104,13 +105,14 @@ public class SearchControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메세지"),
-                                fieldWithPath("data[].id").description("Spotify 아티스트 아이디"),
-                                fieldWithPath("data[].uri").description("Spotify uri 에서의 아티스트 주소"),
-                                fieldWithPath("data[].name").description("가수 명"),
-                                fieldWithPath("data[].externalUrls").description("Spotify 아티스트 주소"),
-                                fieldWithPath("data[].genres").description("아티스트의 장르"),
-                                fieldWithPath("data[].image").description("아티스트 이미지 정보"),
-                                fieldWithPath("data[].href").description("아티스트의 세부정보를 제공하는 Spotify api 정보")
+                                fieldWithPath("data[].artistId").description("Spotify 아티스트 아이디"),
+                                fieldWithPath("data[].artistName").description("가수 명"),
+                                fieldWithPath("data[].genres[]").description("아티스트의 장르 [배열]"),
+                                fieldWithPath("data[].images[]").description("아티스트 이미지 정보"),
+                                fieldWithPath("data[].images[].height").description("이미지 Height"),
+                                fieldWithPath("data[].images[].width").description("이미지 Width"),
+                                fieldWithPath("data[].images[].url").description("이미지 URL"),
+                                fieldWithPath("data[].popularity").description("인기도")
                         )
                 )
         );
@@ -130,9 +132,7 @@ public class SearchControllerTest {
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
                 "요청이 성공적으로 수행되었습니다.",
                 new ArrayList<>(Arrays.asList(
-                        TrackResponse.builder().build(),
-                        TrackResponse.builder().build(),
-                        TrackResponse.builder().build()
+                        createTrackResponse()
                 )));
 
         doReturn(messageResponse).when(spotifyService).searchTrackList(any(String.class) , any(String.class));
@@ -155,12 +155,18 @@ public class SearchControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메세지"),
-                                fieldWithPath("data[].id").description("Spotify 트랙 아이디"),
-                                fieldWithPath("data[].uri").description("Spotify uri 에서의 트랙 주소"),
-                                fieldWithPath("data[].name").description("트랙 명"),
-                                fieldWithPath("data[].artists").description("트랙의 아티스트 이름"),
+                                fieldWithPath("data[].trackId").description("Spotify 트랙 아이디"),
+                                fieldWithPath("data[].trackName").description("트랙 명"),
+                                fieldWithPath("data[].artist").description("아티스트 명"),
+                                fieldWithPath("data[].artistId").description("아티스트 Id"),
+                                fieldWithPath("data[].albumId").description("앨범 Id"),
                                 fieldWithPath("data[].previewUrl").description("1분 미리 듣기"),
-                                fieldWithPath("data[].href").description("트랙의 재생 주소 ( 토큰 필요 )")
+                                fieldWithPath("data[].images[]").description("Track 이미지 데이터"),
+                                fieldWithPath("data[].images[].height").description("이미지 Height"),
+                                fieldWithPath("data[].images[].width").description("이미지 Width"),
+                                fieldWithPath("data[].images[].url").description("이미지 URL"),
+                                fieldWithPath("data[].popularity").description("인기도"),
+                                fieldWithPath("data[].releaseData").description("출시 일")
                         )
                 )
         );
@@ -171,7 +177,7 @@ public class SearchControllerTest {
         ArrayList<TrackResponse> trackResult = (ArrayList<TrackResponse>) result.getData();
 
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
-        assertThat(trackResult.size()).isEqualTo(3);
+        assertThat(trackResult.size()).isEqualTo(1);
     }
 
     @Test
@@ -340,9 +346,7 @@ public class SearchControllerTest {
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
                 "요청이 성공적으로 수행되었습니다.",
                 new ArrayList<>(Arrays.asList(
-                        TrackResponse.builder().build(),
-                        TrackResponse.builder().build(),
-                        TrackResponse.builder().build()
+                        createTrackResponse()
                 )));
 
         doReturn(messageResponse).when(spotifyService).searchRecommendation(any(String.class));
@@ -363,15 +367,53 @@ public class SearchControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메세지"),
-                                fieldWithPath("data[].id").description("Spotify 트랙 아이디"),
-                                fieldWithPath("data[].uri").description("Spotify uri 에서의 트랙 주소"),
-                                fieldWithPath("data[].name").description("트랙 명"),
-                                fieldWithPath("data[].artists").description("트랙의 아티스트 이름"),
+                                fieldWithPath("data[].trackId").description("Spotify 트랙 아이디"),
+                                fieldWithPath("data[].trackName").description("트랙 명"),
+                                fieldWithPath("data[].artist").description("아티스트 명"),
+                                fieldWithPath("data[].artistId").description("아티스트 Id"),
+                                fieldWithPath("data[].albumId").description("앨범 Id"),
                                 fieldWithPath("data[].previewUrl").description("1분 미리 듣기"),
-                                fieldWithPath("data[].href").description("트랙의 재생 주소 ( 토큰 필요 )")
+                                fieldWithPath("data[].popularity").description("인기도"),
+                                fieldWithPath("data[].images[]").description("Track 이미지 데이터"),
+                                fieldWithPath("data[].images[].height").description("이미지 Height"),
+                                fieldWithPath("data[].images[].width").description("이미지 Width"),
+                                fieldWithPath("data[].images[].url").description("이미지 URL"),
+                                fieldWithPath("data[].releaseData").description("출시 일")
                         )
                 )
         );
+    }
+
+    public TrackResponse createTrackResponse() {
+        Image image1 = new Image.Builder().setHeight(640).setWidth(640).setUrl("https://i.scdn.co/image/ab67616d0000b2737645cbd0f9fefff1771ea50c").build();
+        Image image2 = new Image.Builder().setHeight(300).setWidth(300).setUrl("https://i.scdn.co/image/ab67616d00001e027645cbd0f9fefff1771ea50c").build();
+        Image image3 = new Image.Builder().setHeight(64).setWidth(64).setUrl("https://i.scdn.co/image/ab67616d000048517645cbd0f9fefff1771ea50c").build();
+
+        return TrackResponse.builder()
+                .trackId("6tohHT5sQRMjdWHMNn190u")
+                .trackName("Wild Flower")
+                .artist("Park Hyo Shin")
+                .artistId("57htMBtzpppc1yoXgjbslj")
+                .albumId("4aLnzOsnBf5gqTDMJn3XLz")
+                .previewUrl("https://p.scdn.co/mp3-preview/a2d5d6880809b93ccb3149ebef43d582597cfd1c?cid=f6d89d8d397049678cbbf45f829dd85a")
+                .images(new Image[] {image1 , image2 , image3})
+                .popularity(42)
+                .releaseData("2014-03-28")
+                .build();
+    }
+
+    public ArtistResponse createArtistResponse() {
+        Image image1 = new Image.Builder().setHeight(640).setWidth(640).setUrl("https://i.scdn.co/image/ab67616d0000b273d3430c9daa4cf3572627c420").build();
+        Image image2 = new Image.Builder().setHeight(300).setWidth(300).setUrl("https://i.scdn.co/image/ab67616d00001e02d3430c9daa4cf3572627c420").build();
+        Image image3 = new Image.Builder().setHeight(64).setWidth(64).setUrl("https://i.scdn.co/image/ab67616d00004851d3430c9daa4cf3572627c420").build();
+
+        return ArtistResponse.builder()
+                .artistId("57htMBtzpppc1yoXgjbslj")
+                .artistName("Wild Flower")
+                .genres(new String[]{"korean pop"})
+                .images(new Image[] {image1 , image2 , image3})
+                .popularity(42)
+                .build();
     }
 
 }

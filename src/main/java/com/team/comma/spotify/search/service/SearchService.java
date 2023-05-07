@@ -18,6 +18,7 @@ import se.michaelthelin.spotify.requests.data.browse.GetRecommendationsRequest;
 import se.michaelthelin.spotify.requests.data.browse.miscellaneous.GetAvailableGenreSeedsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchArtistsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchTracksRequest;
+import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 
 import javax.security.auth.login.AccountException;
 import java.time.LocalDate;
@@ -122,8 +123,8 @@ public class SearchService {
 
     public MessageResponse searchRecommendation(String accessToken) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
-        String favoriteGenre = getFavoriteGenreByUser(accessToken);
-        String favoriteArtist = getFavoriteArtistByUser(accessToken);
+        String favoriteGenre = getRandomFourFavoriteGenreByUser(accessToken);
+        String favoriteArtist = getRandomOneFavoriteArtistByUser(accessToken);
         GetRecommendationsRequest recommend = spotifyApi.getRecommendations()
                 .seed_genres(favoriteGenre)
                 .seed_artists(favoriteArtist)
@@ -138,13 +139,13 @@ public class SearchService {
         Recommendations recommendations = (Recommendations) executeResult;
         ArrayList<TrackResponse> result = new ArrayList<>();
         for(TrackSimplified track : recommendations.getTracks()) {
-            result.add(createTrackResponse(track));
+            result.add(createTrackResponse(searchTrackById(track.getId())));
         }
 
         return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , result);
     }
 
-    public String getFavoriteGenreByUser(String token) throws AccountException {
+    public String getRandomFourFavoriteGenreByUser(String token) throws AccountException {
         List<String> genreList = userService.getFavoriteGenreList(token);
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
@@ -162,7 +163,7 @@ public class SearchService {
         return sb.toString();
     }
 
-    public String getFavoriteArtistByUser(String token) throws AccountException {
+    public String getRandomOneFavoriteArtistByUser(String token) throws AccountException {
         List<String> artistList = userService.getFavoriteArtistList(token);
         Random random = new Random();
 
@@ -170,27 +171,42 @@ public class SearchService {
             throw new SpotifyException("사용자 관심 아티스트를 찾을 수 없습니다.");
         }
 
-        return getSpotifyArtistId(artistList.get(random.nextInt(artistList.size())));
+        return searchArtistByArtistName(artistList.get(random.nextInt(artistList.size()))).getId();
     }
 
-    public String getSpotifyArtistId(String artist) {
+    public Artist searchArtistByArtistName(String artist) {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
         SearchArtistsRequest searchArtistsRequest = spotifyApi.searchArtists(artist).limit(1).build();
 
         Object executeResult = spotifySearchCommand.executeCommand(searchArtistsRequest);
 
         if(executeResult instanceof SpotifyApi) {
-            return getSpotifyArtistId(artist);
+            return searchArtistByArtistName(artist);
         }
 
         Paging<Artist> artistsPaging = (Paging<Artist>) executeResult;
         Artist[] artistData = artistsPaging.getItems();
 
-        if(artistData.length == 0) {
-            return "";
+        if(artistsPaging.getTotal() == 0) {
+            throw new SpotifyException("아티스트를 찾을 수 없습니다.");
         }
 
-        return artistData[0].getId();
+        return artistData[0];
+    }
+
+    public Track searchTrackById(String id) {
+        SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
+        GetTrackRequest request = spotifyApi.getTrack(id).build();
+
+        Object executeResult = spotifySearchCommand.executeCommand(request);
+
+        if(executeResult instanceof SpotifyApi) {
+            return searchTrackById(id);
+        }
+
+        Track track = (Track) executeResult;
+
+        return track;
     }
 
 }
