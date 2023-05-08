@@ -34,8 +34,7 @@ public class PlaylistService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-
-    public List<PlaylistResponse> getPlaylist(final String accessToken) {
+    public List<PlaylistResponse> getPlaylist(String accessToken) {
         String userName = jwtTokenProvider.getUserPk(accessToken);
         User user = userRepository.findByEmail(userName);
         List<Playlist> playlists = playlistRepository.findAllByUser(user);
