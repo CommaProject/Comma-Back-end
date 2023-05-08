@@ -51,7 +51,8 @@ public class PlaylistServiceTest {
     public void 플레이리스트_조회() {
         // given
         final User user = User.builder().email(userEmail).build();
-        final Playlist playlist = getPlaylistWithAlarmFlag(getPlaylistTrackWithAlarmFlag(getTrack(getTrackArtist()),true),true);
+        final Playlist playlist = getPlaylistWithAlarmFlag(Arrays.asList(
+                getPlaylistTrackWithAlarmFlag(getTrack(Arrays.asList(getTrackArtist())),true)),true);
         final List<Playlist> playlists = Arrays.asList(playlist, playlist, playlist);
 
         doReturn(userEmail).when(jwtTokenProvider).getUserPk(token);
@@ -96,11 +97,11 @@ public class PlaylistServiceTest {
         assertThat(result.getMessage()).isEqualTo("알람 설정이 변경되었습니다.");
     }
 
-    public Playlist getPlaylistWithAlarmFlag(PlaylistTrack playlistTrack, boolean alarmFlag) {
+    public Playlist getPlaylistWithAlarmFlag(List<PlaylistTrack> playlistTrackList, boolean alarmFlag) {
         return Playlist.builder()
                 .id(123L)
                 .alarmFlag(alarmFlag)
-                .playlistTrackList(Arrays.asList(playlistTrack))
+                .playlistTrackList(playlistTrackList)
                 .build();
     }
 
@@ -111,10 +112,10 @@ public class PlaylistServiceTest {
                 .build();
     }
 
-    public Track getTrack(TrackArtist trackArtist) {
+    public Track getTrack(List<TrackArtist> trackArtistList) {
         return Track.builder()
                 .id(123L)
-                .trackArtistList(Arrays.asList(trackArtist))
+                .trackArtistList(trackArtistList)
                 .build();
     }
 
