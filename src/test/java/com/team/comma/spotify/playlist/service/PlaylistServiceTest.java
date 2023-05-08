@@ -51,11 +51,8 @@ public class PlaylistServiceTest {
     public void 플레이리스트_조회() {
         // given
         final User user = User.builder().email(userEmail).build();
-        final List<Playlist> playlists = Arrays.asList(
-                getPlaylist(),
-                getPlaylist(),
-                getPlaylist()
-        );
+        final Playlist playlist = getPlaylistWithAlarmFlag(getPlaylistTrackWithAlarmFlag(getTrack(getTrackArtist()),true),true);
+        final List<Playlist> playlists = Arrays.asList(playlist, playlist, playlist);
 
         doReturn(userEmail).when(jwtTokenProvider).getUserPk(token);
         doReturn(user).when(userRepository).findByEmail(userEmail);
@@ -65,7 +62,7 @@ public class PlaylistServiceTest {
         )).when(trackService).getTrackArtistResponseList(any());
 
         // when
-        final List<PlaylistResponse> result = playlistService.getPlaylist(token);
+        final List<PlaylistResponse> result = playlistService.getPlaylists(token);
 
         // then
         assertThat(result.size()).isEqualTo(3);
@@ -99,25 +96,25 @@ public class PlaylistServiceTest {
         assertThat(result.getMessage()).isEqualTo("알람 설정이 변경되었습니다.");
     }
 
-    public Playlist getPlaylist() {
+    public Playlist getPlaylistWithAlarmFlag(PlaylistTrack playlistTrack, boolean alarmFlag) {
         return Playlist.builder()
                 .id(123L)
-                .alarmFlag(true)
-                .playlistTrackList(Arrays.asList(getPlaylistTrack()))
+                .alarmFlag(alarmFlag)
+                .playlistTrackList(Arrays.asList(playlistTrack))
                 .build();
     }
 
-    public PlaylistTrack getPlaylistTrack() {
+    public PlaylistTrack getPlaylistTrackWithAlarmFlag(Track track, boolean trackAlarmFlag) {
         return PlaylistTrack.builder()
-                .trackAlarmFlag(true)
-                .track(getTrack())
+                .trackAlarmFlag(trackAlarmFlag)
+                .track(track)
                 .build();
     }
 
-    public Track getTrack() {
+    public Track getTrack(TrackArtist trackArtist) {
         return Track.builder()
                 .id(123L)
-                .trackArtistList(Arrays.asList(getTrackArtist()))
+                .trackArtistList(Arrays.asList(trackArtist))
                 .build();
     }
 

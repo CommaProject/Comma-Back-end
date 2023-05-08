@@ -17,7 +17,7 @@ public class TrackService {
 
     private final TrackRepository trackRepository;
 
-    public List<PlaylistTrackArtistResponse> getTrackArtistResponseList(List<TrackArtist> artists){
+    public List<PlaylistTrackArtistResponse> getTrackArtistResponseList(final List<TrackArtist> artists){
         List<PlaylistTrackArtistResponse> result = new ArrayList<>();
         for (TrackArtist artist : artists){
             result.add(PlaylistTrackArtistResponse.of(artist));

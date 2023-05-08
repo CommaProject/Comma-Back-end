@@ -34,14 +34,14 @@ public class PlaylistService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public List<PlaylistResponse> getPlaylist(String accessToken) {
+    public List<PlaylistResponse> getPlaylists(final String accessToken) {
         String userName = jwtTokenProvider.getUserPk(accessToken);
         User user = userRepository.findByEmail(userName);
         List<Playlist> playlists = playlistRepository.findAllByUser(user);
         return getPlaylistResponse(playlists);
     }
 
-    public List<PlaylistResponse> getPlaylistResponse(List<Playlist> playlists){
+    public List<PlaylistResponse> getPlaylistResponse(final List<Playlist> playlists){
         List<PlaylistResponse> result = new ArrayList<>();
         for(Playlist playlist : playlists){
             List<PlaylistTrackResponse> tracks = getTrackReponseList(playlist.getPlaylistTrackList());
@@ -50,7 +50,7 @@ public class PlaylistService {
         return result;
     }
 
-    public List<PlaylistTrackResponse> getTrackReponseList(List<PlaylistTrack> playlistTracks){
+    public List<PlaylistTrackResponse> getTrackReponseList(final List<PlaylistTrack> playlistTracks){
         List<PlaylistTrackResponse> result = new ArrayList<>();
         for (PlaylistTrack playlistTrack : playlistTracks) {
             List<PlaylistTrackArtistResponse> trackArtists = trackService.getTrackArtistResponseList(playlistTrack.getTrack().getTrackArtistList());
@@ -60,7 +60,7 @@ public class PlaylistService {
     }
 
     @Transactional
-    public MessageResponse updateAlarmFlag(long playlistId, boolean alarmFlag) throws PlaylistException{
+    public MessageResponse updateAlarmFlag(final long playlistId, final boolean alarmFlag) throws PlaylistException{
         Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
         Playlist playlist = optionalPlaylist.orElseThrow(() -> new PlaylistException("알람 설정 변경에 실패했습니다. 플레이리스트를 찾을 수 없습니다."));
 
