@@ -24,12 +24,12 @@ public class HistoryController {
 
     @DeleteMapping("/history/{id}")
     public ResponseEntity<MessageResponse> deleteUserHistory(@PathVariable long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(historyService.deleteHistory(id));
+        return ResponseEntity.ok().body(historyService.deleteHistory(id));
     }
 
     @DeleteMapping("/all-history")
     public ResponseEntity<MessageResponse> deleteUserAllHistory(@CookieValue("accessToken") String token) throws AccountException {
-        return ResponseEntity.status(HttpStatus.OK).body(historyService.deleteAllHistory(token));
+        return ResponseEntity.ok().body(historyService.deleteAllHistory(token));
     }
 
     @PostMapping("/history")

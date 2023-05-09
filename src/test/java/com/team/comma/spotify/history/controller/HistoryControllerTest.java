@@ -27,10 +27,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.security.auth.login.AccountException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
+import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
@@ -94,6 +97,12 @@ public class HistoryControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
+        assertThat(result.getData()).isNull();
     }
 
     @Test
@@ -102,7 +111,7 @@ public class HistoryControllerTest {
         // given
         final String api = "/spotify/history";
         HistoryRequest request = HistoryRequest.builder().searchHistory("history").build();
-        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , null);
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , null);
         doReturn(messageResponse).when(spotifyHistoryService).addHistory(request , "token");
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -127,6 +136,12 @@ public class HistoryControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getData()).isNull();
     }
 
     @Test
@@ -154,6 +169,12 @@ public class HistoryControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
+        assertThat(result.getData()).isNull();
     }
 
     @Test
@@ -165,7 +186,7 @@ public class HistoryControllerTest {
                 new HistoryResponse(1 , "history 1") ,
                 new HistoryResponse(2 , "history 2") ,
                 new HistoryResponse(3 , "history 3"));
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , historyList)).when(spotifyHistoryService).getHistoryList("token");
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , historyList)).when(spotifyHistoryService).getHistoryList("token");
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.get(api).cookie(new Cookie("accessToken" , "token")));
@@ -186,6 +207,12 @@ public class HistoryControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(((List<HistoryResponse>)result.getData()).size()).isEqualTo(3);
     }
 
     @Test
@@ -193,7 +220,7 @@ public class HistoryControllerTest {
     public void deleteHistorySuccess() throws Exception {
         // given
         final String api = "/spotify/history/{id}";
-        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , null);
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , null);
         doReturn(messageResponse).when(spotifyHistoryService).deleteHistory(any(Long.class));
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -217,6 +244,12 @@ public class HistoryControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getData()).isNull();
     }
 
     @Test
@@ -245,6 +278,12 @@ public class HistoryControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
+        assertThat(result.getData()).isNull();
     }
 
     @Test
@@ -252,7 +291,7 @@ public class HistoryControllerTest {
     public void deleteAllHistory() throws Exception {
         // given
         final String api = "/spotify/all-history";
-        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , null);
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , null);
         doReturn(messageResponse).when(spotifyHistoryService).deleteAllHistory("token");
 
         // when
@@ -274,6 +313,12 @@ public class HistoryControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getData()).isNull();
     }
 
 }

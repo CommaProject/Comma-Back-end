@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
+import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.spotify.track.dto.TrackResponse.createTrackResponse;
 
 @Service
@@ -56,7 +56,7 @@ public class SearchService {
 
         addHistory(artistName , token);
 
-        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , result);
+        return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
     public MessageResponse searchTrackList(String trackName , String token) throws AccountException {
@@ -76,7 +76,7 @@ public class SearchService {
 
         addHistory(trackName , token);
 
-        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , result);
+        return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
     public void addHistory(String history , String token) throws AccountException {
@@ -95,7 +95,7 @@ public class SearchService {
         }
 
         String[] result = (String[]) executeResult;
-        return MessageResponse.of(REQUEST_SUCCESS, "요청이 성공적으로 수행되었습니다." , result);
+        return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
     public MessageResponse searchArtistListByYear(int offset) {
@@ -118,13 +118,13 @@ public class SearchService {
             artistNames.add(artist.getName());
         }
 
-        return MessageResponse.of(REQUEST_SUCCESS, "요청이 성공적으로 수행되었습니다." ,artistNames);
+        return MessageResponse.of(REQUEST_SUCCESS ,artistNames);
     }
 
     public MessageResponse searchRecommendation(String accessToken) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
-        String favoriteGenre = getRandomFourFavoriteGenreByUser(accessToken);
-        String favoriteArtist = getRandomOneFavoriteArtistByUser(accessToken);
+        String favoriteGenre = getFourRandomFavoriteGenreByUser(accessToken);
+        String favoriteArtist = getOneRandomFavoriteArtistByUser(accessToken);
         GetRecommendationsRequest recommend = spotifyApi.getRecommendations()
                 .seed_genres(favoriteGenre)
                 .seed_artists(favoriteArtist)
@@ -142,10 +142,10 @@ public class SearchService {
             result.add(createTrackResponse(searchTrackById(track.getId())));
         }
 
-        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , result);
+        return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
-    public String getRandomFourFavoriteGenreByUser(String token) throws AccountException {
+    public String getFourRandomFavoriteGenreByUser(String token) throws AccountException {
         List<String> genreList = userService.getFavoriteGenreList(token);
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
@@ -163,7 +163,7 @@ public class SearchService {
         return sb.toString();
     }
 
-    public String getRandomOneFavoriteArtistByUser(String token) throws AccountException {
+    public String getOneRandomFavoriteArtistByUser(String token) throws AccountException {
         List<String> artistList = userService.getFavoriteArtistList(token);
         Random random = new Random();
 

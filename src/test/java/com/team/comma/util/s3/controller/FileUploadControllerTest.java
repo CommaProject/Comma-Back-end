@@ -24,7 +24,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
+import java.nio.charset.StandardCharsets;
+
+import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -88,6 +92,12 @@ public class FileUploadControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
+        assertThat(result.getData()).isNull();
     }
 
     @Test
@@ -101,7 +111,7 @@ public class FileUploadControllerTest {
         byte[] content = new byte[1];
         MultipartFile multipartFile = new MockMultipartFile(name, originalFileName, contentType, content);
 
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 처리되었습니다." , "url")).when(fileUploadService).uploadFileToS3(any(MultipartFile.class));
+        doReturn(MessageResponse.of(REQUEST_SUCCESS, "url")).when(fileUploadService).uploadFileToS3(any(MultipartFile.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -120,5 +130,11 @@ public class FileUploadControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getData()).isEqualTo("url");
     }
 }

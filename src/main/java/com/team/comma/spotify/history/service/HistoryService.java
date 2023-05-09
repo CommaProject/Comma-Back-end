@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.security.auth.login.AccountException;
 import java.util.List;
 
-import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
+import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +34,7 @@ public class HistoryService {
         }
         user.addHistory(history.getSearchHistory());
 
-        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , null);
+        return MessageResponse.of(REQUEST_SUCCESS);
     }
 
     public MessageResponse getHistoryList(String token) throws AccountException {
@@ -46,14 +46,14 @@ public class HistoryService {
         }
         List<HistoryResponse> historyList = historyRepository.getHistoryListByUserEmail(user.getEmail());
 
-        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , historyList);
+        return MessageResponse.of(REQUEST_SUCCESS , historyList);
     }
 
     @Transactional
     public MessageResponse deleteHistory(long historyId) {
         historyRepository.deleteHistoryById(historyId);
 
-        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , null);
+        return MessageResponse.of(REQUEST_SUCCESS);
     }
 
     @Transactional
@@ -66,6 +66,6 @@ public class HistoryService {
         }
         historyRepository.deleteAllHistoryByUser(user);
 
-        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , null);
+        return MessageResponse.of(REQUEST_SUCCESS);
     }
 }

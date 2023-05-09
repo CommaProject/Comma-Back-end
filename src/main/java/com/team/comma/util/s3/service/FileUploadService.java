@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.UUID;
 
-import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
+import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class FileUploadService {
         metadata.setContentLength(file.getInputStream().available());
         amazonS3Client.putObject(bucket , uuid ,file.getInputStream() , metadata);
 
-        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 처리되었습니다." , amazonS3Client.getUrl(bucket , uuid));
+        return MessageResponse.of(REQUEST_SUCCESS , amazonS3Client.getUrl(bucket , uuid));
     }
 
     public boolean isImageFile(MultipartFile file) {

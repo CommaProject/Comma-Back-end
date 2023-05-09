@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
+import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -64,8 +64,8 @@ public class FileUploadServiceTest {
         MessageResponse result = fileUploadService.uploadFileToS3(multipartFile);
 
         // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
-        assertThat(result.getMessage()).isEqualTo("요청이 성공적으로 처리되었습니다.");
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo("요청이 성공적으로 수행되었습니다.");
         assertThat(result.getData()).isEqualTo(null);
     }
 }

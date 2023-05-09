@@ -28,7 +28,7 @@ import javax.security.auth.login.AccountException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.team.comma.common.constant.ResponseCode.*;
+import static com.team.comma.common.constant.ResponseCodeEnum.*;
 import static com.team.comma.user.dto.UserResponse.createUserResponse;
 import static org.apache.http.cookie.SM.SET_COOKIE;
 
@@ -61,8 +61,7 @@ public class UserService {
         }
 
         Token token = createJwtToken(user);
-        MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, "로그인이 성공적으로 되었습니다.",
-            createUserResponse(user));
+        MessageResponse message = MessageResponse.of(LOGIN_SUCCESS , createUserResponse(user));
 
         return ResponseEntity.status(HttpStatus.OK)
             .header(SET_COOKIE,
@@ -83,7 +82,7 @@ public class UserService {
 
         User user = userRepository.save(buildEntity);
 
-        return MessageResponse.of(REGISTER_SUCCESS, "성공적으로 가입되었습니다.", createUserResponse(user));
+        return MessageResponse.of(REGISTER_SUCCESS , createUserResponse(user));
     }
 
     public ResponseEntity<MessageResponse> loginOauth(final RegisterRequest registerRequest)
@@ -99,8 +98,7 @@ public class UserService {
         }
 
         Token token = createJwtToken(user);
-        MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, "로그인이 성공적으로 되었습니다.",
-            createUserResponse(user));
+        MessageResponse message = MessageResponse.of(LOGIN_SUCCESS , createUserResponse(user));
 
         return ResponseEntity.status(HttpStatus.OK)
             .header(SET_COOKIE,
@@ -110,7 +108,7 @@ public class UserService {
             .body(message);
     }
 
-    public ResponseEntity<MessageResponse> createUserInformation(final UserDetailRequest userDetail,
+    public MessageResponse createUserInformation(final UserDetailRequest userDetail,
         final String token)
         throws AccountException {
         if (token == null) {
@@ -141,7 +139,7 @@ public class UserService {
             user.addFavoriteArtist(artist);
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return MessageResponse.of(REQUEST_SUCCESS);
     }
 
     public List<String> getFavoriteGenreList(String token) throws AccountException {
@@ -175,7 +173,7 @@ public class UserService {
             userResponses.add(UserResponse.createUserResponse(user));
         }
 
-        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다." , userResponses);
+        return MessageResponse.of(REQUEST_SUCCESS , userResponses);
     }
 
     public User createUser(final RegisterRequest registerRequest, final UserType userType) {
@@ -202,6 +200,6 @@ public class UserService {
         if (user == null) {
             throw new AccountException("사용자를 찾을 수 없습니다.");
         }
-        return MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 처리되었습니다." , createUserResponse(user));
+        return MessageResponse.of(REQUEST_SUCCESS , createUserResponse(user));
     }
 }

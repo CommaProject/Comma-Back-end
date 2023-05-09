@@ -17,6 +17,8 @@ import se.michaelthelin.spotify.exceptions.detailed.UnauthorizedException;
 import javax.security.auth.login.AccountException;
 import javax.security.auth.login.AccountNotFoundException;
 
+import static com.team.comma.common.constant.ResponseCodeEnum.*;
+
 
 @RestControllerAdvice
 public class GeneralExceptionHandler {
@@ -26,7 +28,7 @@ public class GeneralExceptionHandler {
      */
     @ExceptionHandler({UsernameNotFoundException.class, AccountException.class , S3Exception.class})
     public ResponseEntity<MessageResponse> handleBadRequest(Exception e) {
-        MessageResponse message = MessageResponse.of(ResponseCode.SIMPLE_REQUEST_FAILURE,
+        MessageResponse message = MessageResponse.of(SIMPLE_REQUEST_FAILURE.getCode() ,
             e.getMessage());
 
         return ResponseEntity.badRequest().body(message);
@@ -37,7 +39,7 @@ public class GeneralExceptionHandler {
      */
     @ExceptionHandler(TokenForgeryException.class)
     public ResponseEntity<MessageResponse> handleForbiddenRequest(Exception e) {
-        MessageResponse message = MessageResponse.of(ResponseCode.AUTHORIZATION_ERROR,
+        MessageResponse message = MessageResponse.of(AUTHORIZATION_ERROR.getCode(),
             e.getMessage());
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
@@ -48,7 +50,7 @@ public class GeneralExceptionHandler {
      */
     @ExceptionHandler({AccountNotFoundException.class})
     public ResponseEntity<MessageResponse> handleAccountException(Exception e) {
-        MessageResponse message = MessageResponse.of(ResponseCode.OAUTH_NO_EXISTENT_EMAIL,
+        MessageResponse message = MessageResponse.of(OAUTH_NO_EXISTENT_EMAIL.getCode() ,
             e.getMessage());
 
         return ResponseEntity.badRequest().body(message);
@@ -59,7 +61,7 @@ public class GeneralExceptionHandler {
      */
     @ExceptionHandler({SpotifyException.class, UnauthorizedException.class})
     public ResponseEntity<MessageResponse> handleSpotifyException(Exception e) {
-        MessageResponse message = MessageResponse.of(ResponseCode.SPOTIFY_FAILURE, e.getMessage());
+        MessageResponse message = MessageResponse.of(SPOTIFY_FAILURE.getCode() , e.getMessage());
 
         return ResponseEntity.internalServerError().body(message);
     }
@@ -69,7 +71,7 @@ public class GeneralExceptionHandler {
      */
     @ExceptionHandler({TokenExpirationException.class})
     public ResponseEntity<MessageResponse> handleExpireTokenException(Exception e) {
-        MessageResponse message = MessageResponse.of(ResponseCode.REFRESH_TOKEN_EXPIRED,
+        MessageResponse message = MessageResponse.of(REFRESH_TOKEN_EXPIRED.getCode() ,
             e.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);

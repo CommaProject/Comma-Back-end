@@ -33,7 +33,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
+import static com.team.comma.common.constant.ResponseCodeEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -80,8 +80,7 @@ public class SearchControllerTest {
     public void searchBySinger() throws Exception {
         // given
         final String api = "/spotify/artist/{artist}";
-        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
-                "요청이 성공적으로 수행되었습니다." ,
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS ,
                 new ArrayList<>(Arrays.asList(
                         createArtistResponse()
                 )));
@@ -120,7 +119,7 @@ public class SearchControllerTest {
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 MessageResponse.class);
 
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getData()).isNotNull();
     }
 
@@ -129,8 +128,7 @@ public class SearchControllerTest {
     public void searchByTrack() throws Exception {
         // given
         final String api = "/spotify/track/{track}";
-        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
-                "요청이 성공적으로 수행되었습니다.",
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS ,
                 new ArrayList<>(Arrays.asList(
                         createTrackResponse()
                 )));
@@ -176,7 +174,7 @@ public class SearchControllerTest {
 
         ArrayList<TrackResponse> trackResult = (ArrayList<TrackResponse>) result.getData();
 
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(trackResult.size()).isEqualTo(1);
     }
 
@@ -185,8 +183,7 @@ public class SearchControllerTest {
     public void getGenresList() throws Exception {
         // given
         final String api = "/spotify/genre";
-        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
-                "요청이 성공적으로 수행되었습니다.",
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS ,
                 new String[]{"hipPop", "sleep", "jazz"});
         doReturn(messageResponse).when(spotifyService).searchGenreList();
 
@@ -211,7 +208,7 @@ public class SearchControllerTest {
 
         ArrayList<String> genreResult = (ArrayList<String>) result.getData();
 
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(genreResult.size()).isEqualTo(3);
     }
 
@@ -220,8 +217,7 @@ public class SearchControllerTest {
     public void getArtistListByYear() throws Exception {
         // given
         final String api = "/spotify/artist?offset=0";
-        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
-                "요청이 성공적으로 수행되었습니다.",
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS ,
                 new String[]{"artist1", "artist2", "artist3"});
         doReturn(messageResponse)
                 .when(spotifyService).searchArtistListByYear(0);
@@ -247,7 +243,7 @@ public class SearchControllerTest {
 
         ArrayList<String> artistResult = (ArrayList<String>) result.getData();
 
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(artistResult.size()).isEqualTo(3);
     }
 
@@ -278,6 +274,12 @@ public class SearchControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
+        assertThat(result.getData()).isNull();
     }
 
     @Test
@@ -307,6 +309,12 @@ public class SearchControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(SPOTIFY_FAILURE.getCode());
+        assertThat(result.getData()).isNull();
     }
 
     @Test
@@ -336,6 +344,12 @@ public class SearchControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(SPOTIFY_FAILURE.getCode());
+        assertThat(result.getData()).isNull();
     }
 
     @Test
@@ -343,8 +357,7 @@ public class SearchControllerTest {
     public void recommendMusicSuccess() throws Exception {
         // given
         final String api = "/spotify/recommendation";
-        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
-                "요청이 성공적으로 수행되었습니다.",
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS ,
                 new ArrayList<>(Arrays.asList(
                         createTrackResponse()
                 )));
@@ -382,6 +395,12 @@ public class SearchControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getData()).isNotNull();
     }
 
     public TrackResponse createTrackResponse() {

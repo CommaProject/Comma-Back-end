@@ -21,7 +21,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +40,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.team.comma.common.constant.ResponseCode.*;
+import static com.team.comma.common.constant.ResponseCodeEnum.*;
 import static org.apache.http.cookie.SM.SET_COOKIE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -89,8 +88,7 @@ class UserControllerTest {
         final String api = "/login";
         final LoginRequest request = getLoginRequest();
         final UserResponse response = getUserResponse();
-        final MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, "로그인이 성공적으로 되었습니다.",
-                response);
+        final MessageResponse message = MessageResponse.of(LOGIN_SUCCESS , response);
         final ResponseCookie cookie1 = ResponseCookie.from("accessToken", "accessTokenData1564")
                 .build();
         final ResponseCookie cookie2 = ResponseCookie.from("refreshToken", "refreshTokenData4567")
@@ -146,7 +144,7 @@ class UserControllerTest {
                 new TypeToken<MessageResponse<UserResponse>>() {
                 }.getType());
         UserResponse userResponseResult = (UserResponse) responseResult.getData();
-        assertThat(responseResult.getCode()).isEqualTo(1);
+        assertThat(responseResult.getCode()).isEqualTo(LOGIN_SUCCESS.getCode());
         assertThat(responseResult.getMessage()).isEqualTo("로그인이 성공적으로 되었습니다.");
         assertThat(userResponseResult.getEmail()).isEqualTo(request.getEmail());
     }
@@ -185,7 +183,7 @@ class UserControllerTest {
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 MessageResponse.class);
 
-        assertThat(response.getCode()).isEqualTo(-1);
+        assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
         assertThat(response.getMessage()).isEqualTo("정보가 올바르지 않습니다.");
     }
 
@@ -196,7 +194,7 @@ class UserControllerTest {
         final String api = "/register";
         LoginRequest request = getLoginRequest();
         UserResponse response = getUserResponse();
-        doReturn(MessageResponse.of(REGISTER_SUCCESS, "성공적으로 가입되었습니다.", response)).when(userService)
+        doReturn(MessageResponse.of(REGISTER_SUCCESS , response)).when(userService)
                 .register(any(RegisterRequest.class));
 
         // when
@@ -235,10 +233,10 @@ class UserControllerTest {
                 new TypeToken<MessageResponse<UserResponse>>() {
                 }.getType());
 
-        UserResponse userResposne = (UserResponse) responseResult.getData();
-        assertThat(responseResult.getCode()).isEqualTo(1);
+        UserResponse userResponse = (UserResponse) responseResult.getData();
+        assertThat(responseResult.getCode()).isEqualTo(REGISTER_SUCCESS.getCode());
         assertThat(responseResult.getMessage()).isEqualTo("성공적으로 가입되었습니다.");
-        assertThat(userResposne.getEmail()).isEqualTo(request.getEmail());
+        assertThat(userResponse.getEmail()).isEqualTo(request.getEmail());
     }
 
     @Test
@@ -275,7 +273,7 @@ class UserControllerTest {
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 MessageResponse.class);
 
-        assertThat(response.getCode()).isEqualTo(-1);
+        assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
         assertThat(response.getMessage()).isEqualTo("이미 존재하는 계정입니다.");
     }
 
@@ -315,7 +313,7 @@ class UserControllerTest {
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 MessageResponse.class);
 
-        assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE);
+        assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
         assertThat(response.getMessage()).isEqualTo("로그인이 되어있지 않습니다.");
     }
 
@@ -355,7 +353,7 @@ class UserControllerTest {
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 MessageResponse.class);
 
-        assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE);
+        assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
         assertThat(response.getMessage()).isEqualTo("사용자를 찾을 수 없습니다.");
     }
 
@@ -365,7 +363,7 @@ class UserControllerTest {
         // given
         String api = "/private-information";
         UserDetailRequest userDetail = getUserDetailRequest();
-        doReturn(ResponseEntity.status(HttpStatus.CREATED).build()).when(userService)
+        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(userService)
                 .createUserInformation(any(UserDetailRequest.class), eq("token"));
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -386,6 +384,12 @@ class UserControllerTest {
                         )
                 )
         );
+        final MessageResponse response = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(response.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
     @Test
@@ -419,7 +423,7 @@ class UserControllerTest {
                 MessageResponse.class);
 
         assertThat(response.getMessage()).isEqualTo("사용자를 찾을 수 없습니다.");
-        assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE);
+        assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
     }
 
     @Test
@@ -453,7 +457,7 @@ class UserControllerTest {
                 MessageResponse.class);
 
         assertThat(response.getMessage()).isEqualTo("알 수 없는 토큰이거나 , 변조되었습니다.");
-        assertThat(response.getCode()).isEqualTo(AUTHORIZATION_ERROR);
+        assertThat(response.getCode()).isEqualTo(AUTHORIZATION_ERROR.getCode());
     }
 
     @Test
@@ -467,7 +471,7 @@ class UserControllerTest {
                 .delFlag(false)
                 .role(UserRole.USER)
                 .build();
-        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , "요청을 성공적으로 처리했습니다." , user);
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , user);
         doReturn(messageResponse).when(userService).getUserByCookie(any(String.class));
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -503,7 +507,7 @@ class UserControllerTest {
                 MessageResponse.class);
 
         assertThat(response).isNotNull();
-        assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
     }
 
     @Test
@@ -511,7 +515,7 @@ class UserControllerTest {
     void searchUserByNameAndNickName() throws Exception {
         // given
         String api = "/search/user?name=name";
-        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , "요청이 성공적으로 수행되었습니다."
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS
                 , Arrays.asList(getUserResponse() , getUserResponse() , getUserResponse()));
         doReturn(messageResponse).when(userService)
                 .searchUserByNameAndNickName("name" , "token");
@@ -554,7 +558,7 @@ class UserControllerTest {
                 MessageResponse.class);
 
         assertThat(response).isNotNull();
-        assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(((List<UserResponse>) response.getData()).size()).isEqualTo(3);
     }
 

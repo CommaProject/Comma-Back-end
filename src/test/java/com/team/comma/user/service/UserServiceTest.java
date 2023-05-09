@@ -35,7 +35,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
+import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -312,9 +312,10 @@ class UserServiceTest {
         String accessToken = userService.createJwtToken(user).getAccessToken();
         doReturn(user).when(userRepository).findByEmail(any(String.class));
         // when
-        ResponseEntity result = userService.createUserInformation(userDetail, accessToken);
+        MessageResponse result = userService.createUserInformation(userDetail, accessToken);
         // then
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
     @Test
@@ -360,7 +361,7 @@ class UserServiceTest {
         MessageResponse result = userService.searchUserByNameAndNickName("name" , "token");
 
         // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(((List<UserResponse>) result.getData()).size()).isEqualTo(3);
     }
 

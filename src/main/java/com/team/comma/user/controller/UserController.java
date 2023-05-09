@@ -6,6 +6,7 @@ import com.team.comma.user.dto.RegisterRequest;
 import com.team.comma.user.dto.UserDetailRequest;
 import com.team.comma.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class UserController {
     public ResponseEntity<MessageResponse> createUserInformation(
         @CookieValue(value = "accessToken", required = false) String accessToken
         , @RequestBody UserDetailRequest userDetail) throws AccountException {
-        return userService.createUserInformation(userDetail, accessToken);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUserInformation(userDetail, accessToken));
     }
 
     @GetMapping("/user/information")

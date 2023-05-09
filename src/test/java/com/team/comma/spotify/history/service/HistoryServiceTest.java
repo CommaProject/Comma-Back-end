@@ -18,7 +18,7 @@ import javax.security.auth.login.AccountException;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.team.comma.common.constant.ResponseCode.REQUEST_SUCCESS;
+import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,7 +70,7 @@ public class HistoryServiceTest {
         MessageResponse result = spotifyHistoryService.addHistory(request , token);
 
         // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo("요청이 성공적으로 수행되었습니다.");
         assertThat(result.getData()).isNull();
     }
@@ -105,7 +105,7 @@ public class HistoryServiceTest {
 
         // then
         List<String> historyList = (List<String>) result.getData();
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo("요청이 성공적으로 수행되었습니다.");
         assertThat(historyList.size()).isEqualTo(3);
     }
@@ -151,7 +151,7 @@ public class HistoryServiceTest {
         MessageResponse result = spotifyHistoryService.deleteHistory(20);
 
         // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS);
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo("요청이 성공적으로 수행되었습니다.");
 
     }
