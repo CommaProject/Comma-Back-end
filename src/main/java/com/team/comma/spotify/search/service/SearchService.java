@@ -147,13 +147,18 @@ public class SearchService {
 
     public String getFourRandomFavoriteGenreByUser(String token) throws AccountException {
         List<String> genreList = userService.getFavoriteGenreList(token);
-        StringBuilder sb = new StringBuilder();
-        Random random = new Random();
 
         if(genreList.isEmpty()) {
             throw new SpotifyException("사용자 관심 장르를 찾을 수 없습니다.");
         }
 
+        return chooseAndCombineFourRandomGenres(genreList);
+    }
+
+    public String chooseAndCombineFourRandomGenres(List<String> genreList) {
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        
         for(int i = 0; i < 4 ; i++) {
             int randomNumber = random.nextInt(genreList.size());
             sb.append(genreList.get(randomNumber)).append(",");

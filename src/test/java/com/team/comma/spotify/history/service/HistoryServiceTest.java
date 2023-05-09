@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.security.auth.login.AccountException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -46,7 +47,7 @@ public class HistoryServiceTest {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(null).when(userRepository).findByEmail(any(String.class));
+        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
         HistoryRequest request = HistoryRequest.builder().searchHistory("history").build();
 
         // when
@@ -62,7 +63,7 @@ public class HistoryServiceTest {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
-        User user = User.builder().email("email").password("password").role(UserRole.USER).build();
+        Optional<User> user = createUserEntity();
         doReturn(user).when(userRepository).findByEmail(any(String.class));
         HistoryRequest request = HistoryRequest.builder().searchHistory("history").build();
 
@@ -81,7 +82,7 @@ public class HistoryServiceTest {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(null).when(userRepository).findByEmail(any(String.class));
+        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
 
         // when
         Throwable thrown = catchThrowable(() -> spotifyHistoryService.getHistoryList(token));
@@ -96,7 +97,7 @@ public class HistoryServiceTest {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
-        User user = User.builder().email("email").password("password").role(UserRole.USER).build();
+        Optional<User> user = createUserEntity();
         doReturn(user).when(userRepository).findByEmail(any(String.class));
         doReturn(Arrays.asList("history1" , "history2" , "history3")).when(spotifyHistoryRepository)
                 .getHistoryListByUserEmail(any(String.class));
@@ -116,7 +117,7 @@ public class HistoryServiceTest {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(null).when(userRepository).findByEmail(any(String.class));
+        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
         // when
         Throwable thrown = catchThrowable(() -> spotifyHistoryService.deleteAllHistory(token));
 
@@ -130,7 +131,7 @@ public class HistoryServiceTest {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
-        User user = User.builder().email("email").password("password").role(UserRole.USER).build();
+        Optional<User> user = createUserEntity();
         doReturn(user).when(userRepository).findByEmail(any(String.class));
         doNothing().when(spotifyHistoryRepository).deleteAllHistoryByUser(any(User.class));
 
@@ -155,4 +156,11 @@ public class HistoryServiceTest {
         assertThat(result.getMessage()).isEqualTo("요청이 성공적으로 수행되었습니다.");
 
     }
+
+    public Optional<User> createUserEntity() {
+        User user = User.builder().email("email").password("password").role(UserRole.USER).build();
+
+        return Optional.of(user);
+    }
+
 }

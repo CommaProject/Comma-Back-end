@@ -1,19 +1,11 @@
 package com.team.comma.spotify.playlist.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
-
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
 import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.domain.TrackArtist;
 import com.team.comma.user.constant.UserRole;
@@ -21,12 +13,20 @@ import com.team.comma.user.constant.UserType;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
-import com.team.comma.util.security.domain.Token;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import javax.security.auth.login.AccountException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 public class PlaylistServiceTest {
@@ -46,14 +46,16 @@ public class PlaylistServiceTest {
     private String token = "accessToken";
 
     @Test
-    public void 플레이리스트_조회() {
+    public void 플레이리스트_조회() throws AccountException {
         // given
         final User user = User.builder()
                 .email(userEmail)
                 .type(UserType.GENERAL_USER)
                 .role(UserRole.USER)
                 .build();
-        doReturn(user).when(userRepository).findByEmail(user.getEmail());
+
+        Optional<User> optionalUser = Optional.of(user);
+        doReturn(optionalUser).when(userRepository).findByEmail(user.getEmail());
         doReturn(userEmail).when(jwtTokenProvider).getUserPk(token);
 
         final List<TrackArtist> artistList = Arrays.asList(

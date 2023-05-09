@@ -5,6 +5,7 @@ import com.team.comma.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.team.comma.user.domain.QUser.user;
 import static com.team.comma.user.domain.QUserDetail.userDetail;
@@ -22,12 +23,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     }
 
     @Override
-    public User findByEmail(String email) {
-        return queryFactory.select(user)
+    public Optional<User> findByEmail(String email) {
+        User result = queryFactory.select(user)
                 .from(user)
                 .leftJoin(user.userDetail)
                 .fetchJoin()
                 .where(user.email.eq(email))
                 .fetchFirst();
+
+        return Optional.ofNullable(result);
     }
 }

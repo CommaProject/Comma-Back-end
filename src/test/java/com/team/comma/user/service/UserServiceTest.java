@@ -34,6 +34,7 @@ import javax.security.auth.login.AccountException;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,7 +82,7 @@ class UserServiceTest {
     void deniedToGeralUserAccessOAuthUser() throws AccountException {
         // given
         LoginRequest login = getLoginRequest();
-        User userEntity = getOauthUserEntity();
+        Optional<User> userEntity = getOauthUserEntity();
         doReturn(userEntity).when(userRepository).findByEmail(userEmail);
 
         // when
@@ -96,73 +97,14 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("Oauth2.0 로그인 실패 _ 존재하는 일반 사용자")
-    void existGeneralUser() {
-        // given
-        RegisterRequest registerRequest = getRequestUser();
-        User generalUserEntity = getGeneralUserEntity();
-        doReturn(generalUserEntity).when(userRepository).findByEmail(registerRequest.getEmail());
-
-        // when
-        Throwable thrown = catchThrowable(() -> userService.loginOauth(registerRequest));
-
-        // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("일반 사용자가 이미 존재합니다.");
-    }
-
-    @Test
-    @DisplayName("OAuth2.0 DB에 없을 때 회원가입 및 로그인")
-    void registerOauthUser() throws AccountException {
-        // given
-        RegisterRequest registerRequest = getRequestUser();
-        User generalUserEntity = getGeneralUserEntity();
-        doReturn(null).when(userRepository).findByEmail(registerRequest.getEmail());
-        doReturn(generalUserEntity).when(userRepository).save(any(User.class));
-        doReturn(
-            Token.builder().accessToken("accessTokenData").refreshToken("refreshTokenData").build())
-            .when(jwtTokenProvider).createAccessToken(generalUserEntity.getUsername(),
-                generalUserEntity.getRole());
-        doNothing().when(jwtService).login(any(Token.class));
-
-        // when
-        ResponseEntity result = userService.loginOauth(registerRequest);
-
-        // then
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getHeaders().get(SET_COOKIE).toString()).contains("accessTokenData")
-            .contains("refreshTokenData");
-    }
-
-    @Test
-    @DisplayName("OAuth2.0 계정 중복 시 로그인 성공")
-    void loginOauthUser() throws AccountException {
-        // given
-        RegisterRequest registerRequest = getRequestUser();
-        User userEntity = getOauthUserEntity();
-        doReturn(userEntity).when(userRepository).findByEmail(userEmail);
-        doReturn(
-            Token.builder().accessToken("accessTokenData").refreshToken("refreshTokenData").build())
-            .when(jwtTokenProvider).createAccessToken(userEntity.getUsername(),
-                userEntity.getRole());
-        doNothing().when(jwtService).login(any(Token.class));
-
-        // when
-        ResponseEntity result = userService.loginOauth(registerRequest);
-
-        // then
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getHeaders().get(SET_COOKIE).toString()).contains("accessTokenData")
-            .contains("refreshTokenData");
-    }
-
-    @Test
     @DisplayName("사용자 로그인 예외 _ 일치하지 않은 비밀번호")
     void loginException_notEqualPassword() throws AccountException {
         // given
         LoginRequest loginRequest = getLoginRequest();
-        User userEntity = User.builder().email(userEmail).password("unknown").role(UserRole.USER)
-            .build();
-        doReturn(userEntity).when(userRepository).findByEmail(loginRequest.getEmail());
+        User user = User.builder().email(userEmail).password("unknown").role(UserRole.USER)
+                .build();
+        Optional<User> optionalUser = Optional.of(user);
+        doReturn(optionalUser).when(userRepository).findByEmail(loginRequest.getEmail());
 
         // when
         Throwable thrown = catchThrowable(() -> userService.login(loginRequest));
@@ -177,11 +119,10 @@ class UserServiceTest {
     void notExistUserLoginExceptionTest() {
         // given
         LoginRequest login = getLoginRequest();
-        doReturn(null).when(userRepository).findByEmail(login.getEmail());
+        doReturn(Optional.empty()).when(userRepository).findByEmail(login.getEmail());
 
         // when
         Throwable thrown = catchThrowable(() -> userService.login(login));
-        ;
 
         // then
         assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("정보가 올바르지 않습니다.");
@@ -195,12 +136,12 @@ class UserServiceTest {
     void loginUserTest() throws AccountException {
         // given
         LoginRequest login = getLoginRequest();
-        User userEntity = getUserEntity();
+        Optional<User> userEntity = getUserEntity();
         doReturn(userEntity).when(userRepository).findByEmail(userEmail);
         doReturn(
             Token.builder().accessToken("accessTokenData").refreshToken("refreshTokenData").build())
-            .when(jwtTokenProvider).createAccessToken(userEntity.getUsername(),
-                userEntity.getRole());
+            .when(jwtTokenProvider).createAccessToken(userEntity.get().getUsername(),
+                userEntity.get().getRole());
         doNothing().when(jwtService).login(any(Token.class));
 
         // when
@@ -217,7 +158,7 @@ class UserServiceTest {
     void existUserException() {
         // given
         RegisterRequest registerRequest = getRegisterRequest();
-        doReturn(getUserEntity()).when(userRepository).findByEmail(registerRequest.getEmail());
+        doReturn(getUserEntity()).when(userRepository).findByEmail(any(String.class));
 
         // when
         Throwable thrown = catchThrowable(() -> userService.register(registerRequest));
@@ -232,9 +173,9 @@ class UserServiceTest {
     void registUser() throws AccountException {
         // given
         RegisterRequest registerRequest = getRegisterRequest();
-        User userEntity = getUserEntity();
-        doReturn(null).when(userRepository).findByEmail(registerRequest.getEmail());
-        doReturn(userEntity).when(userRepository).save(any(User.class));
+        Optional<User> userEntity = getUserEntity();
+        doReturn(Optional.empty()).when(userRepository).findByEmail(registerRequest.getEmail());
+        doReturn(userEntity.get()).when(userRepository).save(any(User.class));
 
         // when
         MessageResponse message = userService.register(registerRequest);
@@ -245,16 +186,16 @@ class UserServiceTest {
         assertThat(message.getCode()).isEqualTo(1);
         assertThat(message.getMessage()).isEqualTo("성공적으로 가입되었습니다.");
         assertThat(user).isNotNull();
-        assertThat(user.getEmail()).isEqualTo(userEntity.getEmail());
+        assertThat(user.getEmail()).isEqualTo(userEntity.get().getEmail());
     }
 
     @Test
     @DisplayName("AccessToken 쿠키로 사용자 정보 가져오기 실패 _ 존재하지 않은 사용자")
     void getUserInfoByCookieButNotExistendUser() {
         // given
-        User user = getUserEntity();
-        String accessToken = userService.createJwtToken(user).getAccessToken();
-        doReturn(null).when(userRepository).findByEmail(any(String.class));
+        Optional<User> user = getUserEntity();
+        String accessToken = userService.createJwtToken(user.get()).getAccessToken();
+        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
         // when
         Throwable thrown = catchThrowable(() -> userService.getUserByCookie(accessToken));
         // then
@@ -265,7 +206,7 @@ class UserServiceTest {
     @DisplayName("AccessToken 쿠키로 사용자 정보 가져오기")
     void getUserInfoByCookie() throws AccountException {
         // given
-        User user = getUserEntity();
+        User user = getUserEntity().get();
         String accessToken = userService.createJwtToken(user).getAccessToken();
         doReturn(getUserEntity()).when(userRepository).findByEmail(any(String.class));
         // when
@@ -292,9 +233,9 @@ class UserServiceTest {
     void saveUserInfomationFail_notExistUser() {
         // given
         UserDetailRequest userDetail = getUserDetailRequest();
-        User user = getUserEntity();
-        String accessToken = userService.createJwtToken(user).getAccessToken();
-        doReturn(null).when(userRepository).findByEmail(any(String.class));
+        Optional<User> user = getUserEntity();
+        String accessToken = userService.createJwtToken(user.get()).getAccessToken();
+        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
 
         // when
         Throwable thrown = catchThrowable(
@@ -308,8 +249,8 @@ class UserServiceTest {
     void saveUserInfomation() throws AccountException {
         // given
         UserDetailRequest userDetail = getUserDetailRequest();
-        User user = getUserEntity();
-        String accessToken = userService.createJwtToken(user).getAccessToken();
+        Optional<User> user = getUserEntity();
+        String accessToken = userService.createJwtToken(user.get()).getAccessToken();
         doReturn(user).when(userRepository).findByEmail(any(String.class));
         // when
         MessageResponse result = userService.createUserInformation(userDetail, accessToken);
@@ -322,7 +263,7 @@ class UserServiceTest {
     @DisplayName("사용자 관심 장르 가져오기 실패 _ 찾을 수 없는 사용자")
     void getInterestGenreFail_notFoundUser() {
         // given
-        doReturn(null).when(userRepository).findByEmail(any(String.class));
+        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
         doReturn("").when(jwtTokenProvider).getUserPk(any(String.class));
 
         // when
@@ -336,7 +277,7 @@ class UserServiceTest {
     @DisplayName("사용자 관심 장르 가져오기")
     void getInterestGenre() throws AccountException {
         // given
-        User user = getUserEntity();
+        Optional<User> user = getUserEntity();
         doReturn(user).when(userRepository).findByEmail(any(String.class));
         doReturn("").when(jwtTokenProvider).getUserPk(any(String.class));
         doReturn(Arrays.asList("genre1" , "genre2" , "genre3")).when(favoriteGenreRepository)
@@ -353,7 +294,7 @@ class UserServiceTest {
     @DisplayName("사용자 이름이나 닉네임으로 사용자 탐색")
     void searchUserByNameAndNickNameTest() throws AccountException {
         // given
-        List<User> userList = Arrays.asList(getUserEntity() , getUserEntity() , getUserEntity());
+        List<User> userList = Arrays.asList(getUserEntity().get() , getUserEntity().get() , getUserEntity().get());
         doReturn(userList).when(userRepository).searchUserByUserNameAndNickName(any(String.class));
         doReturn(null).when(historyService).addHistory(any(HistoryRequest.class) , any(String.class));
 
@@ -373,9 +314,11 @@ class UserServiceTest {
             .build();
     }
 
-    private User getUserEntity() {
-        return User.builder().id(0L).email(userEmail).password(userPassword).userDetail(createUserDetail())
+    private Optional<User> getUserEntity() {
+        User user = User.builder().id(0L).email(userEmail).password(userPassword).userDetail(createUserDetail())
             .role(UserRole.USER).build();
+
+        return Optional.of(user);
     }
 
     private UserDetail createUserDetail() {
@@ -399,8 +342,10 @@ class UserServiceTest {
         return RegisterRequest.builder().email(userEmail).password(userPassword).build();
     }
 
-    public User getOauthUserEntity() {
-        return User.builder().id(0L).email(userEmail).type(UserType.OAUTH_USER).password(null).build();
+    public Optional<User> getOauthUserEntity() {
+        User user = User.builder().id(0L).email(userEmail).type(UserType.OAUTH_USER).password(null).build();
+
+        return Optional.of(user);
     }
 
     public User getGeneralUserEntity() {

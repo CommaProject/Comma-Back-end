@@ -27,11 +27,9 @@ public class HistoryService {
     @Transactional
     public MessageResponse addHistory(HistoryRequest history , String token) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail);
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
 
-        if(user == null) {
-            throw new AccountException("사용자를 찾을 수 없습니다.");
-        }
         user.addHistory(history.getSearchHistory());
 
         return MessageResponse.of(REQUEST_SUCCESS);
@@ -39,11 +37,9 @@ public class HistoryService {
 
     public MessageResponse getHistoryList(String token) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail);
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
 
-        if(user == null) {
-            throw new AccountException("사용자를 찾을 수 없습니다.");
-        }
         List<HistoryResponse> historyList = historyRepository.getHistoryListByUserEmail(user.getEmail());
 
         return MessageResponse.of(REQUEST_SUCCESS , historyList);
@@ -59,11 +55,9 @@ public class HistoryService {
     @Transactional
     public MessageResponse deleteAllHistory(String token) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail);
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
 
-        if(user == null) {
-            throw new AccountException("사용자를 찾을 수 없습니다.");
-        }
         historyRepository.deleteAllHistoryByUser(user);
 
         return MessageResponse.of(REQUEST_SUCCESS);

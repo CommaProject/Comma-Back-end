@@ -16,11 +16,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.auth.login.AccountException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.team.comma.common.constant.ResponseCode.ALARM_UPDATE_FAILURE;
 import static com.team.comma.common.constant.ResponseCode.PLAYLIST_ALARM_UPDATED;
 
 @Service
@@ -33,9 +33,11 @@ public class PlaylistService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public List<PlaylistResponse> getPlaylist(final String accessToken) {
+    public List<PlaylistResponse> getPlaylist(final String accessToken) throws AccountException {
         String userName = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(userName);
+        User user = userRepository.findByEmail(userName)
+                .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
+
         List<Playlist> playlists = playlistRepository.findAllByUser(user); // email로 playlist 조회
         return createPlaylistResponse(playlists);
     }

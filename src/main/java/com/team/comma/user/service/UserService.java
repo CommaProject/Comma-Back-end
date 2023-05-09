@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import javax.security.auth.login.AccountException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.*;
 import static com.team.comma.user.dto.UserResponse.createUserResponse;
@@ -46,11 +47,8 @@ public class UserService {
 
     public ResponseEntity<MessageResponse> login(final LoginRequest loginRequest)
         throws AccountException {
-        User user = userRepository.findByEmail(loginRequest.getEmail());
-
-        if (user == null) {
-            throw new AccountException("정보가 올바르지 않습니다.");
-        }
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
 
         if (user.getType() == UserType.OAUTH_USER) {
             throw new AccountException("일반 사용자는 OAuth 계정으로 로그인할 수 없습니다.");
@@ -72,70 +70,35 @@ public class UserService {
     }
 
     public MessageResponse register(final RegisterRequest registerRequest) throws AccountException {
-        User findUser = userRepository.findByEmail(registerRequest.getEmail());
-
-        if (findUser != null) {
+        Optional<User> findUser = userRepository.findByEmail(registerRequest.getEmail());
+        if(findUser.isPresent()) {
             throw new AccountException("이미 존재하는 계정입니다.");
         }
 
         User buildEntity = createUser(registerRequest, UserType.GENERAL_USER);
-
         User user = userRepository.save(buildEntity);
 
         return MessageResponse.of(REGISTER_SUCCESS , createUserResponse(user));
     }
 
-    public ResponseEntity<MessageResponse> loginOauth(final RegisterRequest registerRequest)
-        throws AccountException {
-        User user = userRepository.findByEmail(registerRequest.getEmail());
-
-        if (user == null) { // 정보가 없다면 회원가입
-            User createUser = createUser(registerRequest, UserType.OAUTH_USER);
-
-            user = userRepository.save(createUser);
-        } else if (user.getType() == UserType.GENERAL_USER) { // 일반 사용자가 존재한다면
-            throw new AccountException("일반 사용자가 이미 존재합니다.");
-        }
-
-        Token token = createJwtToken(user);
-        MessageResponse message = MessageResponse.of(LOGIN_SUCCESS , createUserResponse(user));
-
-        return ResponseEntity.status(HttpStatus.OK)
-            .header(SET_COOKIE,
-                CreationCookie.createResponseAccessToken(token.getAccessToken()).toString())
-            .header(SET_COOKIE,
-                CreationCookie.createResponseRefreshToken(token.getRefreshToken()).toString())
-            .body(message);
-    }
-
-    public MessageResponse createUserInformation(final UserDetailRequest userDetail,
-        final String token)
-        throws AccountException {
+    public MessageResponse createUserInformation(final UserDetailRequest userDetailRequest,
+        final String token) throws AccountException {
         if (token == null) {
             throw new AccountException("로그인이 되어있지 않습니다.");
         }
 
         String userName = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userName);
+        User user = userRepository.findByEmail(userName)
+                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
 
-        if (user == null) {
-            throw new AccountException("사용자를 찾을 수 없습니다.");
-        }
+        UserDetail userDetail = UserDetail.createUserDetail(userDetailRequest);
+        user.setUserDetail(userDetail);
 
-        UserDetail userDetail1 = UserDetail.builder()
-            .age(userDetail.getAge())
-            .sex(userDetail.getSex())
-            .nickname(userDetail.getNickName())
-            .recommendTime(userDetail.getRecommendTime())
-            .build();
-
-        user.setUserDetail(userDetail1);
-
-        for (String genre : userDetail.getGenres()) {
+        for (String genre : userDetailRequest.getGenres()) {
             user.addFavoriteGenre(genre);
         }
 
-        for (String artist : userDetail.getArtistNames()) {
+        for (String artist : userDetailRequest.getArtistNames()) {
             user.addFavoriteArtist(artist);
         }
 
@@ -144,22 +107,16 @@ public class UserService {
 
     public List<String> getFavoriteGenreList(String token) throws AccountException {
         String userName = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userName);
-
-        if (user == null) {
-            throw new AccountException("사용자를 찾을 수 없습니다.");
-        }
+        User user = userRepository.findByEmail(userName)
+                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
 
         return favoriteGenreRepository.findByGenreNameList(user);
     }
 
     public List<String> getFavoriteArtistList(String token) throws AccountException {
         String userName = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userName);
-
-        if (user == null) {
-            throw new AccountException("사용자를 찾을 수 없습니다.");
-        }
+        User user = userRepository.findByEmail(userName)
+                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
 
         return favoriteArtistRepository.findArtistListByUser(user);
     }
@@ -195,11 +152,9 @@ public class UserService {
 
     public MessageResponse getUserByCookie(String token) throws AccountException {
         String userName = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userName);
+        User user = userRepository.findByEmail(userName)
+                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
 
-        if (user == null) {
-            throw new AccountException("사용자를 찾을 수 없습니다.");
-        }
         return MessageResponse.of(REQUEST_SUCCESS , createUserResponse(user));
     }
 }

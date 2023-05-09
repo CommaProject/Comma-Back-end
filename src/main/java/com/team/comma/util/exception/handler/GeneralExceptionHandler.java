@@ -1,10 +1,11 @@
 package com.team.comma.util.exception.handler;
 
-import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.common.constant.ResponseCode;
+import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.search.exception.TokenExpirationException;
+import com.team.comma.util.auth.exception.OAuth2EmailNotFoundException;
 import com.team.comma.util.jwt.exception.TokenForgeryException;
 import com.team.comma.util.s3.exception.S3Exception;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import se.michaelthelin.spotify.exceptions.detailed.UnauthorizedException;
 
 import javax.security.auth.login.AccountException;
-import javax.security.auth.login.AccountNotFoundException;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.*;
 
@@ -48,7 +48,7 @@ public class GeneralExceptionHandler {
     /*
      * OAuth2.0 존재하지 않은 이메일
      */
-    @ExceptionHandler({AccountNotFoundException.class})
+    @ExceptionHandler({OAuth2EmailNotFoundException.class})
     public ResponseEntity<MessageResponse> handleAccountException(Exception e) {
         MessageResponse message = MessageResponse.of(OAUTH_NO_EXISTENT_EMAIL.getCode() ,
             e.getMessage());

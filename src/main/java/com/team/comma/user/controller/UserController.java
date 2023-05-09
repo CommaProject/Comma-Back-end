@@ -20,14 +20,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<MessageResponse> loginUser(@RequestBody LoginRequest login)
-        throws AccountException {
+    public ResponseEntity<MessageResponse> loginUser(@RequestBody LoginRequest login) throws AccountException {
         return userService.login(login);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<MessageResponse> registerUser(@RequestBody RegisterRequest register)
-        throws AccountException {
+    public ResponseEntity<MessageResponse> registerUser(@RequestBody RegisterRequest register) throws AccountException {
         return ResponseEntity.ok().body(userService.register(register));
     }
 
