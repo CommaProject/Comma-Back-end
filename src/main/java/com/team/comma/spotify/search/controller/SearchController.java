@@ -35,7 +35,7 @@ public class SearchController {
         return ResponseEntity.ok().body(spotifyService.searchArtistListByYear(offset));
     }
 
-    @GetMapping("/recommendation")
+    @GetMapping("/recommendations")
     public ResponseEntity<MessageResponse> searchRecommendation(@CookieValue("accessToken") String accessToken)
             throws AccountException {
         return ResponseEntity.ok().body(spotifyService.searchRecommendation(accessToken));

@@ -19,7 +19,7 @@ import java.io.IOException;
 public class FileUploadController {
     final private FileUploadService fileUploadService;
 
-    @PostMapping("/resource")
+    @PostMapping("/resources")
     public ResponseEntity<MessageResponse> uploadFileToS3(@RequestParam("file") MultipartFile multipartFile)
             throws IOException {
         return ResponseEntity.status(HttpStatus.CREATED).body(fileUploadService.uploadFileToS3(multipartFile));

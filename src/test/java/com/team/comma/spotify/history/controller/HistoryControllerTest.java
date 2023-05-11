@@ -71,7 +71,7 @@ public class HistoryControllerTest {
     @DisplayName("History 등록 실패 _ 존재하지 않는 사용자")
     public void addHistoryFail_notFountUser() throws Exception {
         // given
-        final String api = "/spotify/history";
+        final String api = "/spotify/historys";
         HistoryRequest request = HistoryRequest.builder().searchHistory("history").build();
         doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(spotifyHistoryService).addHistory(request , "token");
         // when
@@ -109,7 +109,7 @@ public class HistoryControllerTest {
     @DisplayName("History 등록 성공")
     public void addHistorySuccess() throws Exception {
         // given
-        final String api = "/spotify/history";
+        final String api = "/spotify/historys";
         HistoryRequest request = HistoryRequest.builder().searchHistory("history").build();
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , null);
         doReturn(messageResponse).when(spotifyHistoryService).addHistory(request , "token");
@@ -148,7 +148,7 @@ public class HistoryControllerTest {
     @DisplayName("History 조회 실패 _ 존재하지 않는 사용자")
     public void getHistoryFail_notFountUser() throws Exception {
         // given
-        final String api = "/spotify/history";
+        final String api = "/spotify/historys";
         doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(spotifyHistoryService).getHistoryList("token");
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -181,7 +181,7 @@ public class HistoryControllerTest {
     @DisplayName("History 조회 성공")
     public void getHistorySuccess() throws Exception {
         // given
-        final String api = "/spotify/history";
+        final String api = "/spotify/historys";
         List<HistoryResponse> historyList = Arrays.asList(
                 new HistoryResponse(1 , "history 1") ,
                 new HistoryResponse(2 , "history 2") ,
@@ -219,7 +219,7 @@ public class HistoryControllerTest {
     @DisplayName("History 삭제 성공")
     public void deleteHistorySuccess() throws Exception {
         // given
-        final String api = "/spotify/history/{id}";
+        final String api = "/spotify/historys/{id}";
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , null);
         doReturn(messageResponse).when(spotifyHistoryService).deleteHistory(any(Long.class));
         // when
@@ -256,7 +256,7 @@ public class HistoryControllerTest {
     @DisplayName("History 전체 삭제 실패 _ 찾을 수 없는 사용자")
     public void deleteAllHistoryFail_notFountUser() throws Exception {
         // given
-        final String api = "/spotify/all-history";
+        final String api = "/spotify/all-historys";
         doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(spotifyHistoryService).deleteAllHistory("token");
 
         // when
@@ -290,7 +290,7 @@ public class HistoryControllerTest {
     @DisplayName("History 전체 삭제 성공")
     public void deleteAllHistory() throws Exception {
         // given
-        final String api = "/spotify/all-history";
+        final String api = "/spotify/all-historys";
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS , null);
         doReturn(messageResponse).when(spotifyHistoryService).deleteAllHistory("token");
 

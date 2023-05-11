@@ -251,7 +251,7 @@ public class SearchControllerTest {
     @DisplayName("노래 추천 받기 실패 _ 사용자 정보를 찾을 수 없음")
     public void recommendMusicFail_notFountUser() throws Exception {
         // given
-        final String api = "/spotify/recommendation";
+        final String api = "/spotify/recommendations";
         doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(spotifyService).searchRecommendation(any(String.class));
 
         // when
@@ -286,7 +286,7 @@ public class SearchControllerTest {
     @DisplayName("노래 추천 받기 실패 _ 사용자 관심 장르 찾기 실패")
     public void recommendMusicFail_notFavoriteGenre() throws Exception {
         // given
-        final String api = "/spotify/recommendation";
+        final String api = "/spotify/recommendations";
         doThrow(new SpotifyException("사용자 관심 장르를 찾을 수 없습니다.")).when(spotifyService).searchRecommendation(any(String.class));
 
         // when
@@ -321,7 +321,7 @@ public class SearchControllerTest {
     @DisplayName("노래 추천 받기 실패 _ 사용자 관심 아티스트 찾기 실패")
     public void recommendMusicFail_notFavoriteArtist() throws Exception {
         // given
-        final String api = "/spotify/recommendation";
+        final String api = "/spotify/recommendations";
         doThrow(new SpotifyException("사용자 관심 아티스트를 찾을 수 없습니다.")).when(spotifyService).searchRecommendation(any(String.class));
 
         // when
@@ -356,7 +356,7 @@ public class SearchControllerTest {
     @DisplayName("노래 추천 받기 성공")
     public void recommendMusicSuccess() throws Exception {
         // given
-        final String api = "/spotify/recommendation";
+        final String api = "/spotify/recommendations";
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS ,
                 new ArrayList<>(Arrays.asList(
                         createTrackResponse()

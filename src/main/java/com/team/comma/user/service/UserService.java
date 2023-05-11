@@ -15,7 +15,6 @@ import com.team.comma.user.repository.FavoriteArtistRepository;
 import com.team.comma.user.repository.FavoriteGenreRepository;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.service.JwtService;
-import com.team.comma.util.jwt.support.CreationCookie;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
 import com.team.comma.util.security.domain.Token;
 import jakarta.transaction.Transactional;
@@ -31,6 +30,8 @@ import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.*;
 import static com.team.comma.user.dto.UserResponse.createUserResponse;
+import static com.team.comma.util.jwt.support.CreationCookie.createResponseAccessToken;
+import static com.team.comma.util.jwt.support.CreationCookie.createResponseRefreshToken;
 import static org.apache.http.cookie.SM.SET_COOKIE;
 
 @Service
@@ -62,10 +63,8 @@ public class UserService {
         MessageResponse message = MessageResponse.of(LOGIN_SUCCESS , createUserResponse(user));
 
         return ResponseEntity.status(HttpStatus.OK)
-            .header(SET_COOKIE,
-                CreationCookie.createResponseAccessToken(token.getAccessToken()).toString())
-            .header(SET_COOKIE,
-                CreationCookie.createResponseRefreshToken(token.getRefreshToken()).toString())
+            .header(SET_COOKIE, createResponseAccessToken(token.getAccessToken()).toString())
+            .header(SET_COOKIE, createResponseRefreshToken(token.getRefreshToken()).toString())
             .body(message);
     }
 

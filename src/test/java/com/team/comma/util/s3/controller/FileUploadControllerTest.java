@@ -66,7 +66,7 @@ public class FileUploadControllerTest {
     @DisplayName("파일 업로드 실패 _ 이미지 파일이 아님")
     public void uploadFileFail_notImageFile() throws Exception {
         // given
-        final String api = "/s3/resource";
+        final String api = "/s3/resources";
         String name = "file.txt";
         String originalFileName = "file.txt";
         String contentType = "text/plain";
@@ -104,7 +104,7 @@ public class FileUploadControllerTest {
     @DisplayName("파일 업로드 실패 _ 이미지 파일이 아님")
     public void uploadFileSuccess() throws Exception {
         // given
-        final String api = "/s3/resource";
+        final String api = "/s3/resources";
         String name = "file.txt";
         String originalFileName = "file.txt";
         String contentType = "text/plain";
