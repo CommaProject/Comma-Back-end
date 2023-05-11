@@ -78,7 +78,7 @@ public class PlaylistServiceTest {
         )).when(playlistRepository).findAllByUser(user);
 
         // when
-        final List<PlaylistResponse> result = playlistService.getPlaylist(token);
+        final List<PlaylistResponse> result = playlistService.getPlaylists(token);
 
         // then
         assertThat(result.size()).isEqualTo(3);

@@ -21,7 +21,7 @@ public class PlaylistController {
     @GetMapping("/playlist")
     public ResponseEntity<List<PlaylistResponse>> getUserPlaylist(
             @CookieValue final String accessToken) throws AccountException {
-        return ResponseEntity.ok().body(playlistService.getPlaylist(accessToken));
+        return ResponseEntity.ok().body(playlistService.getPlaylists(accessToken));
     }
 
     @PatchMapping("/playlist/alert")

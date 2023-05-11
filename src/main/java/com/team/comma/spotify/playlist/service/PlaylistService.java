@@ -33,7 +33,7 @@ public class PlaylistService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public List<PlaylistResponse> getPlaylist(final String accessToken) throws AccountException {
+    public List<PlaylistResponse> getPlaylists(final String accessToken) throws AccountException {
         String userName = jwtTokenProvider.getUserPk(accessToken);
         User user = userRepository.findByEmail(userName)
                 .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
