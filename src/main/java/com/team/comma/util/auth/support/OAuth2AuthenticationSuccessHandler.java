@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     final private JwtTokenProvider jwtTokenProvider;
     final private HttpSession httpSession;
 
+    @Value("${client.url}")
+    private String clientUrl;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException {
@@ -33,7 +37,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         if (user == null) {
             getRedirectStrategy().sendRedirect(request, response,
-                createRedirectUrl("http://localhost:3000/oauth2/disallowance"));
+                createRedirectUrl(clientUrl + "/oauth2/disallowance"));
             return;
         }
 
@@ -44,8 +48,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         httpSession.removeAttribute("user");
 
-        getRedirectStrategy().sendRedirect(request, response,
-            createRedirectUrl("http://localhost:3000"));
+        getRedirectStrategy().sendRedirect(request, response, createRedirectUrl(clientUrl));
     }
 
     public String createRedirectUrl(String url) {
