@@ -15,7 +15,7 @@ import javax.security.auth.login.AccountException;
 @RequestMapping("/following")
 public class FollowingController {
 
-    final private FollowingService followingService;
+    private final FollowingService followingService;
 
     @GetMapping
     public ResponseEntity<MessageResponse> isFollow(@CookieValue String accessToken
