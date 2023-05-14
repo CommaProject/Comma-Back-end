@@ -4,6 +4,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.user.domain.QUser;
 import com.team.comma.user.domain.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
@@ -28,6 +29,7 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
     }
 
     @Override
+    @Transactional
     public void blockFollowedUser(String toUserEmail, String fromUserEmail) {
         queryFactory.update(following)
                 .set(following.blockFlag , true)
@@ -40,6 +42,7 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
     }
 
     @Override
+    @Transactional
     public void unblockFollowedUser(String toUserEmail, String fromUserEmail) {
         queryFactory.update(following)
                 .set(following.blockFlag , false)
