@@ -148,7 +148,7 @@ public class SearchControllerTest {
                                 cookieWithName("accessToken").description("History 등록에 필요한 accessToken")
                         ),
                         pathParameters(
-                                parameterWithName("track").description("트랙 이름")
+                                parameterWithName("track").description("트랙 이름 또는 아티스트 이름")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -164,7 +164,9 @@ public class SearchControllerTest {
                                 fieldWithPath("data[].images[].width").description("이미지 Width"),
                                 fieldWithPath("data[].images[].url").description("이미지 URL"),
                                 fieldWithPath("data[].popularity").description("인기도"),
-                                fieldWithPath("data[].releaseData").description("출시 일")
+                                fieldWithPath("data[].releaseData").description("출시 일"),
+                                fieldWithPath("data[].durationMinute").description("곡 재생 시간 ( 분 )"),
+                                fieldWithPath("data[].durationSecond").description("곡 재생 시간 ( 초 )")
                         )
                 )
         );
@@ -391,7 +393,9 @@ public class SearchControllerTest {
                                 fieldWithPath("data[].images[].height").description("이미지 Height"),
                                 fieldWithPath("data[].images[].width").description("이미지 Width"),
                                 fieldWithPath("data[].images[].url").description("이미지 URL"),
-                                fieldWithPath("data[].releaseData").description("출시 일")
+                                fieldWithPath("data[].releaseData").description("출시 일"),
+                                fieldWithPath("data[].durationMinute").description("곡 재생 시간 ( 분 )"),
+                                fieldWithPath("data[].durationSecond").description("곡 재생 시간 ( 초 )")
                         )
                 )
         );
