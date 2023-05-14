@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
 @Builder
 @Data
 @NoArgsConstructor
@@ -34,6 +37,23 @@ public class TrackResponse {
     @Schema(description = "발매일")
     private String releaseData;
 
+    private String durationMinute;
+    private String durationSecond;
+
+    public static String MillToMinute(int ms) {
+        SimpleDateFormat format = new SimpleDateFormat("mm");
+        String date = (String) format.format(new Timestamp(ms));
+
+        return date;
+    }
+
+    public static String MillToSecond(int ms) {
+        SimpleDateFormat format = new SimpleDateFormat("ss");
+        String date = (String) format.format(new Timestamp(ms));
+
+        return date;
+    }
+
     public static TrackResponse createTrackResponse(Track track) {
         return TrackResponse.builder()
                 .trackId(track.getId())
@@ -45,6 +65,8 @@ public class TrackResponse {
                 .previewUrl(track.getPreviewUrl())
                 .popularity(track.getPopularity())
                 .releaseData(track.getAlbum().getReleaseDate())
+                .durationMinute(MillToMinute(track.getDurationMs()))
+                .durationSecond(MillToSecond(track.getDurationMs()))
                 .build();
     }
 }

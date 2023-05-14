@@ -1,5 +1,6 @@
-package com.team.comma.user.domain;
+package com.team.comma.follow.domain;
 
+import com.team.comma.user.domain.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
