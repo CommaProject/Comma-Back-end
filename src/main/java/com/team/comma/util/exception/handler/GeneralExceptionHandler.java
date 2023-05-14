@@ -2,6 +2,7 @@ package com.team.comma.util.exception.handler;
 
 import com.team.comma.common.constant.ResponseCode;
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.follow.exception.FollowingException;
 import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.search.exception.TokenExpirationException;
@@ -26,7 +27,7 @@ public class GeneralExceptionHandler {
     /*
      * 토큰 변조 , 사용자를 찾을 수 없을 때 , 사용자가 이미 존재하거나 정보가 일치하지 않을 때
      */
-    @ExceptionHandler({UsernameNotFoundException.class, AccountException.class , S3Exception.class})
+    @ExceptionHandler({UsernameNotFoundException.class, AccountException.class , S3Exception.class , FollowingException.class})
     public ResponseEntity<MessageResponse> handleBadRequest(Exception e) {
         MessageResponse message = MessageResponse.of(SIMPLE_REQUEST_FAILURE.getCode() ,
             e.getMessage());

@@ -1,19 +1,8 @@
 package com.team.comma.follow.domain;
 
 import com.team.comma.user.domain.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
@@ -28,12 +17,22 @@ public class Following {
     private Long id;
     private Boolean blockFlag;
 
+    @Setter
     @JoinColumn(name = "user_from")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
     private User userFrom;
 
+    @Setter
     @JoinColumn(name = "user_to")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
     private User userTo;
+
+    public static Following createFollowing(User userTo , User userFrom) {
+        return Following.builder()
+                .blockFlag(false)
+                .userTo(userTo)
+                .userFrom(userFrom)
+                .build();
+    }
 
 }
