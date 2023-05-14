@@ -23,24 +23,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/playlist")
 public class PlaylistController {
 
     private final PlaylistService playlistService;
 
-    @GetMapping("/userPlaylist")
+    @GetMapping
     public ResponseEntity<List<PlaylistResponse>> getUserPlaylist(
         @CookieValue final String accessToken) throws AccountException {
         return ResponseEntity.ok().body(playlistService.getPlaylists(accessToken));
     }
 
-    @PatchMapping("/playlist/alert")
+    @PatchMapping("/alert")
     public ResponseEntity<MessageResponse> modifyAlarmState(
         @RequestBody final PlaylistRequest request) throws PlaylistException {
         return ResponseEntity.ok()
             .body(playlistService.updateAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }
 
-    @GetMapping("/playlist/all-duration-time/{id}")
+    @GetMapping("/all-duration-time/{id}")
     public ResponseEntity<MessageResponse> getPlaylistAllDurationTime(
         @PathVariable("id") final Long id
     ) {
@@ -48,7 +49,7 @@ public class PlaylistController {
             playlistService.getTotalDurationTimeMsByPlaylist(id));
     }
 
-    @PatchMapping("/playlist")
+    @PatchMapping
     public ResponseEntity<MessageResponse> patchPlaylist(
         @RequestBody final PlaylistUpdateRequest playlistUpdateRequest
     ) {

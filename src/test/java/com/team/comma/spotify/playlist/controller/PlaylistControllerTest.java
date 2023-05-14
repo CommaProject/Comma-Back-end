@@ -98,7 +98,7 @@ class PlaylistControllerTest {
     @Test
     void 플레이리스트_조회_성공() throws Exception {
         // given
-        final String url = "/userPlaylist";
+        final String url = "/playlist";
 
         final List<PlaylistTrackArtistResponse> trackArtistList = Arrays.asList(
             PlaylistTrackArtistResponse.of(createTrackArtist()));
