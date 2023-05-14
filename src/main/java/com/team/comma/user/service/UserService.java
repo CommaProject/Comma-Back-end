@@ -11,7 +11,7 @@ import com.team.comma.user.dto.LoginRequest;
 import com.team.comma.user.dto.RegisterRequest;
 import com.team.comma.user.dto.UserDetailRequest;
 import com.team.comma.user.dto.UserResponse;
-import com.team.comma.user.repository.FavoriteArtistRepository;
+import com.team.comma.spotify.favorite.artist.repository.FavoriteArtistRepository;
 import com.team.comma.user.repository.FavoriteGenreRepository;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.service.JwtService;

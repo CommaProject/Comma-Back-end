@@ -112,6 +112,21 @@ public class FollowingServiceTest {
     }
 
     @Test
+    @DisplayName("팔로우 추가 실패 _ 차단된 사용자")
+    public void followFail_isBlockedUser() {
+        // given
+        doReturn("fromUserEmail").when(jwtTokenProvider).getUserPk("token");
+        doReturn(Optional.empty()).when(followingRepository).getFollowedMeUserByEmail("toUserEmail" , "fromUserEmail");
+        doReturn(Optional.of(User.builder().build())).when(followingRepository).getBlockedUser("toUserEmail" , "fromUserEmail");
+
+        // when
+        Throwable thrown = catchThrowable(() -> followingService.addFollow("token" , "toUserEmail"));
+
+        // when
+        assertThat(thrown).isInstanceOf(FollowingException.class).hasMessage("차단된 사용자입니다.");
+    }
+
+    @Test
     @DisplayName("팔로우 여부 확인 _ 거짓")
     public void isfollow_false() {
         // given

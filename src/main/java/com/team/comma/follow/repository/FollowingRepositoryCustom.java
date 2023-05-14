@@ -8,6 +8,8 @@ public interface FollowingRepositoryCustom {
 
     Optional<User> getFollowedMeUserByEmail(String toUserEmail , String fromUserEmail);
 
+    Optional<User> getBlockedUser(String toUserEmail , String fromUserEmail);
+
     void blockFollowedUser(String toUserEmail , String fromUserEmail);
 
     void unblockFollowedUser(String toUserEmail , String fromUserEmail);

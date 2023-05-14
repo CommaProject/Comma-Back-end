@@ -143,6 +143,44 @@ public class FollowingControllerTest {
     }
 
     @Test
+    @DisplayName("새로운 Follow 등록 실패 _ 차단된 사용자")
+    public void addFollowFail_isBlockedUser() throws Exception {
+        // given
+        final String api = "/following";
+        FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
+        doThrow(new FollowingException("차단된 사용자입니다.")).when(followingService).addFollow("accessToken" , "toUserEmail");
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post(api).content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "accessToken")));
+
+        // then
+        resultActions.andExpect(status().isBadRequest()).andDo(
+                document("following/addFail-isBlockUser",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        requestFields(
+                                fieldWithPath("toUserEmail").description("follow할 대상의 Email")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
+        assertThat(result.getData()).isNull();
+    }
+
+    @Test
     @DisplayName("새로운 Follow 등록 성공")
     public void addFollowSuccess() throws Exception {
         // given

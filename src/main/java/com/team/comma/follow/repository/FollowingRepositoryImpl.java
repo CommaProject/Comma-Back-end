@@ -23,6 +23,18 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
         User result = queryFactory.select(following.userTo).from(following)
                 .innerJoin(following.userTo , user1).on(user1.email.eq(toUserEmail))
                 .innerJoin(following.userFrom , user2).on(user2.email.eq(fromUserEmail))
+                .where(following.blockFlag.eq(false))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
+    public Optional<User> getBlockedUser(String toUserEmail, String fromUserEmail) {
+        User result = queryFactory.select(following.userTo).from(following)
+                .innerJoin(following.userTo , user1).on(user1.email.eq(toUserEmail))
+                .innerJoin(following.userFrom , user2).on(user2.email.eq(fromUserEmail))
+                .where(following.blockFlag.eq(true))
                 .fetchOne();
 
         return Optional.ofNullable(result);

@@ -1,5 +1,6 @@
 package com.team.comma.user.domain;
 
+import com.team.comma.spotify.favorite.artist.domain.FavoriteArtist;
 import com.team.comma.spotify.history.domain.History;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;

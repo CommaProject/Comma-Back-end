@@ -145,6 +145,40 @@ public class FollowingRepositoryTest {
         assertThat(result.getBlockFlag()).isEqualTo(changeValue);
     }
 
+    @Test
+    @DisplayName("삭제된 사용자 확인")
+    public void isBlockedUser() {
+        // given
+        User toUser = User.builder()
+                .email("toEmail")
+                .build();
+        QUser user1 = new QUser("user1");
+        User fromUser = User.builder()
+                .email("fromEmail")
+                .build();
+        QUser user2 = new QUser("user2");
+
+        Following follow = Following.builder()
+                .userTo(toUser)
+                .blockFlag(true)
+                .userFrom(fromUser)
+                .build();
+
+        follow.setUserTo(toUser);
+        follow.setUserFrom(fromUser);
+        followingRepository.save(follow);
+
+        // when
+        User result = queryFactory.select(following.userTo).from(following)
+                .innerJoin(following.userTo , user1).on(user1.email.eq("toEmail"))
+                .innerJoin(following.userFrom , user2).on(user2.email.eq("fromEmail"))
+                .where(following.blockFlag.eq(true))
+                .fetchOne();
+
+        // then
+        assertThat(result).isNotNull();
+    }
+
     private static Stream<Arguments> blockUserParameter() {
         return Stream.of(
                 Arguments.of(true, false),

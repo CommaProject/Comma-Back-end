@@ -43,6 +43,9 @@ public class FollowingService {
         if(isFollowed(toUserEmail , fromUserEmail)) {
             throw new FollowingException("이미 팔로우중인 사용자입니다.");
         }
+        if(isBlockedUser(toUserEmail , fromUserEmail)) {
+            throw new FollowingException("차단된 사용자입니다.");
+        }
 
         saveFollowing(toUserEmail , fromUserEmail);
 
@@ -67,6 +70,14 @@ public class FollowingService {
         }
 
         return MessageResponse.of(REQUEST_SUCCESS , false);
+    }
+
+    public boolean isBlockedUser(String toUserEmail , String fromUserEmail) {
+        if(followingRepository.getBlockedUser(toUserEmail , fromUserEmail).isPresent()) {
+            return true;
+        }
+
+        return false;
     }
 
     public boolean isFollowed(String toUserEmail , String fromUserEmail) {
