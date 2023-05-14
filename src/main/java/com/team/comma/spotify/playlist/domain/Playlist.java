@@ -45,13 +45,11 @@ public class Playlist {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @OneToMany(mappedBy = "playlist")
-    private List<PlaylistTrack> playlistTrackList;
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "playlist")
+    @Builder.Default
+    private List<PlaylistTrack> playlistTrackList = new ArrayList<>();
 
     public void addPlaylistTrack(Track track) {
-        if (playlistTrackList == null) {
-            playlistTrackList = new ArrayList<>();
-        }
 
         PlaylistTrack playlistTrack = PlaylistTrack.builder()
             .playlist(this)
