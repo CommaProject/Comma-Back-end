@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -65,6 +66,14 @@ public class FavoriteArtistService {
         favoriteArtistRepository.deleteByUser(user , artistName);
 
         return MessageResponse.of(ResponseCodeEnum.REQUEST_SUCCESS);
+    }
+
+    public List<String> getFavoriteArtistList(String token) throws AccountException {
+        String userName = jwtTokenProvider.getUserPk(token);
+        User user = userRepository.findByEmail(userName)
+                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
+
+        return favoriteArtistRepository.findFavoriteArtistListByUser(user);
     }
 
 }
