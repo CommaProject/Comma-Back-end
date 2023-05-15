@@ -32,3 +32,5 @@
 * link:archive.html[Archive 문서]
 
 * link:favoriteArtist.html[관심 아티스트 문서]
+
+* link:playlist-track.html[Playlist-Track 문서]
