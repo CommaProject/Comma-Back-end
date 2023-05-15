@@ -68,7 +68,7 @@ public class FollowingControllerTest {
 
     @Test
     @DisplayName("새로운 Follow 등록 실패 _ 이미 팔로우 중인 사용자")
-    public void addFollowFail_alreadyFollowedUser() throws Exception {
+    public void addNewFollowFail_alreadyFollowedUser() throws Exception {
         // given
         final String api = "/following";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
@@ -106,7 +106,7 @@ public class FollowingControllerTest {
 
     @Test
     @DisplayName("새로운 Follow 등록 실패 _ 사용자를 찾을 수 없음")
-    public void addFollowFail_notFoundUser() throws Exception {
+    public void addNewFollowFail_notFoundUser() throws Exception {
         // given
         final String api = "/following";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
@@ -144,7 +144,7 @@ public class FollowingControllerTest {
 
     @Test
     @DisplayName("새로운 Follow 등록 실패 _ 차단된 사용자")
-    public void addFollowFail_isBlockedUser() throws Exception {
+    public void addNewFollowFail_isBlockedUser() throws Exception {
         // given
         final String api = "/following";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
@@ -182,7 +182,7 @@ public class FollowingControllerTest {
 
     @Test
     @DisplayName("새로운 Follow 등록 성공")
-    public void addFollowSuccess() throws Exception {
+    public void addNewFollowSuccess() throws Exception {
         // given
         final String api = "/following";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();

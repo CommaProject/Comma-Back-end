@@ -16,6 +16,13 @@ public class FavoriteArtistController {
 
     private final FavoriteArtistService favoriteArtistService;
 
+    @GetMapping
+    public ResponseEntity isFavoriteArtist(@CookieValue String accessToken
+            , @RequestBody FavoriteArtistRequest favoriteArtistRequest) throws AccountException {
+        return ResponseEntity.ok()
+                .body(favoriteArtistService.isFavoriteArtist(accessToken , favoriteArtistRequest.getArtistName()));
+    }
+
     @PostMapping
     public ResponseEntity addFavoriteArtist(@CookieValue String accessToken
             , @RequestBody FavoriteArtistRequest favoriteArtistRequest) throws AccountException {

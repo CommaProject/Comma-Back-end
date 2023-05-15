@@ -6,6 +6,7 @@ import com.team.comma.spotify.favorite.artist.domain.FavoriteArtist;
 import com.team.comma.spotify.favorite.artist.repository.FavoriteArtistRepository;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;
+import com.team.comma.user.domain.QUser;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.config.TestConfig;
@@ -38,6 +39,7 @@ public class FavoriteArtistRepositoryTest {
 
     private String userEmail = "email@naver.com";
     private String userPassword = "password";
+    QUser qUser = new QUser("user");
 
     @Autowired
     private JPAQueryFactory queryFactory;
@@ -87,7 +89,7 @@ public class FavoriteArtistRepositoryTest {
 
     @Test
     @DisplayName("사용자 관심 아티스트 가져오기")
-    public void getArtistGenreRepository() {
+    public void getFavoriteArtistRepository() {
         // given
         User user = getUserEntity();
         userRepository.save(user);
@@ -103,6 +105,24 @@ public class FavoriteArtistRepositoryTest {
 
         // then
         assertThat(result.size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("유저가 추가한 하나의 아티스트 가져오기")
+    public void getFavoriteArtistByUser() {
+        // given
+        User user = getUserEntity();
+        userRepository.save(user);
+        user.addFavoriteArtist("artist1");
+
+        // when
+        FavoriteArtist result = queryFactory.select(favoriteArtist).from(favoriteArtist)
+                .innerJoin(favoriteArtist.user , qUser).on(qUser.eq(user))
+                .where(favoriteArtist.artistName.eq("artist1"))
+                .fetchOne();
+
+        // then
+        assertThat(result).isNotNull();
     }
 
     private User getUserEntity() {

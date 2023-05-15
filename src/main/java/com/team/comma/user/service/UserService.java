@@ -117,7 +117,7 @@ public class UserService {
         User user = userRepository.findByEmail(userName)
                 .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
 
-        return favoriteArtistRepository.findArtistListByUser(user);
+        return favoriteArtistRepository.findFavoriteArtistListByUser(user);
     }
 
     public MessageResponse searchUserByNameAndNickName(String name , String accessToken) throws AccountException {

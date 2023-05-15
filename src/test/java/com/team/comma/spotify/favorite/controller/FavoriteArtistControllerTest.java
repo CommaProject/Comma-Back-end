@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.favorite.artist.controller.FavoriteArtistController;
 import com.team.comma.spotify.favorite.artist.dto.FavoriteArtistRequest;
+import com.team.comma.spotify.favorite.artist.exception.FavoriteArtistException;
 import com.team.comma.spotify.favorite.artist.service.FavoriteArtistService;
 import com.team.comma.util.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
@@ -106,6 +107,45 @@ public class FavoriteArtistControllerTest {
     }
 
     @Test
+    @DisplayName("사용자 아티스트 추가 실패 _ 이미 추가된 아티스트")
+    public void addFavoriteArtistFail_alreadyAddedArtist() throws Exception {
+        // given
+        final String api = "/favorite/artist";
+        FavoriteArtistRequest request = FavoriteArtistRequest.builder().artistName("artistName").build();
+        doThrow(new FavoriteArtistException("이미 추가된 관심 아티스트입니다.")).when(favoriteArtistService).addFavoriteArtist("token" , "artistName");
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post(api).content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+
+        // then
+        resultActions.andExpect(status().isBadRequest()).andDo(
+                document("favoriteArtist/addFail-alreadyAddedArtist",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        requestFields(
+                                fieldWithPath("artistName").description("artist 이름")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
+        assertThat(result.getData()).isNull();
+    }
+
+    @Test
     @DisplayName("사용자 아티스트 추가 성공")
     public void addFavoriteArtistSuccess() throws Exception {
         // given
@@ -181,7 +221,6 @@ public class FavoriteArtistControllerTest {
 
         assertThat(result.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
         assertThat(result.getData()).isNull();
-
     }
 
     @Test
@@ -221,5 +260,83 @@ public class FavoriteArtistControllerTest {
 
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getData()).isNull();
+    }
+
+    @Test
+    @DisplayName("아티스트 추가 여부 확인 _ 참")
+    public void isAddedFavoriteArtist_true() throws Exception {
+        // given
+        final String api = "/favorite/artist";
+        FavoriteArtistRequest request = FavoriteArtistRequest.builder().artistName("artistName").build();
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , true)).when(favoriteArtistService).isFavoriteArtist("token" , "artistName");
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(api).content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("favoriteArtist/isAddedArtist-true",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        requestFields(
+                                fieldWithPath("artistName").description("artist 이름")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getData()).isEqualTo(true);
+    }
+
+    @Test
+    @DisplayName("아티스트 추가 여부 확인 _ 거짓")
+    public void isAddedFavoriteArtist_false() throws Exception {
+        // given
+        final String api = "/favorite/artist";
+        FavoriteArtistRequest request = FavoriteArtistRequest.builder().artistName("artistName").build();
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , false)).when(favoriteArtistService).isFavoriteArtist("token" , "artistName");
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(api).content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("favoriteArtist/isAddedArtist-false",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        requestFields(
+                                fieldWithPath("artistName").description("artist 이름")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getData()).isEqualTo(false);
     }
 }
