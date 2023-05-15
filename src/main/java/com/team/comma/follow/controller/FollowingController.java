@@ -38,7 +38,7 @@ public class FollowingController {
                 .body(followingService.blockFollowedUser(accessToken , followingRequest.getToUserEmail()));
     }
 
-    @PatchMapping
+    @PatchMapping("/unblock")
     public ResponseEntity<MessageResponse> unBlockFollow(@CookieValue String accessToken
             , @RequestBody FollowingRequest followingRequest) {
         return ResponseEntity.ok()

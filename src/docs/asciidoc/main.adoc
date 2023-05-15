@@ -19,7 +19,7 @@
 
 == Follow 문서
 
-* link:follow.adoc[Follow 문서]
+* link:follow.html[Follow 문서]
 
 == Spotify 문서
 
@@ -31,4 +31,4 @@
 
 * link:archive.html[Archive 문서]
 
-* link:favoriteArtist.adoc[관심 아티스트 문서]
+* link:favoriteArtist.html[관심 아티스트 문서]

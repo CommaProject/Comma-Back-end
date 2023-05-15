@@ -262,7 +262,7 @@ public class FollowingControllerTest {
     @DisplayName("Follow 삭제 해제")
     public void unblockFollow() throws Exception {
         // given
-        final String api = "/following";
+        final String api = "/following/unblock";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS);
         doReturn(message).when(followingService).unblockFollowedUser("accessToken" , "toUserEmail");

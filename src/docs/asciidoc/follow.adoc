@@ -60,7 +60,7 @@ include::{snippets}/following/addSuccess/request-cookies.adoc[]
 include::{snippets}/following/addSuccess/http-response.adoc[]
 include::{snippets}/following/addSuccess/response-fields.adoc[]
 
-=== 사용자 차단
+=== 팔로우 차단
 
 ==== request
 
