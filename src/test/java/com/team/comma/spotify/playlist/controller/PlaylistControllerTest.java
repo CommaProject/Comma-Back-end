@@ -101,13 +101,13 @@ class PlaylistControllerTest {
         final String url = "/playlist";
 
         final List<PlaylistTrackArtistResponse> trackArtistList = Arrays.asList(
-            PlaylistTrackArtistResponse.of(createTrackArtist()));
+            PlaylistTrackArtistResponse.of(buildTrackArtist()));
 
         final List<PlaylistTrackResponse> trackList = Arrays.asList(
-            PlaylistTrackResponse.of(createTrack(), true, trackArtistList));
+            PlaylistTrackResponse.of(buildTrack(), true, trackArtistList));
 
         doReturn(Arrays.asList(
-            PlaylistResponse.of(createPlaylist(), trackList)
+            PlaylistResponse.of(buildPlaylist(), trackList)
         )).when(playlistService).getPlaylists("accessToken");
 
         // when
@@ -325,7 +325,7 @@ class PlaylistControllerTest {
 
     }
 
-    public TrackArtist createTrackArtist() {
+    public TrackArtist buildTrackArtist() {
         return TrackArtist.builder()
             .id(123L)
             .artistName("test ar{\n"
@@ -337,7 +337,7 @@ class PlaylistControllerTest {
             .build();
     }
 
-    public Track createTrack() {
+    public Track buildTrack() {
         return Track.builder()
             .id(123L)
             .trackTitle("test track")
@@ -346,7 +346,7 @@ class PlaylistControllerTest {
             .build();
     }
 
-    public Playlist createPlaylist() {
+    public Playlist buildPlaylist() {
         return Playlist.builder()
             .id(123L)
             .playlistTitle("test playlist")

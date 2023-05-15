@@ -42,10 +42,10 @@ public class PlaylistRepositoryTest {
     @Test
     public void 플레이리스트_저장() {
         // given
-        final User user = userRepository.save(getUser());
+        final User user = userRepository.save(buildUser());
 
         // when
-        final Playlist result = playlistRepository.save(getPlaylist(user, title));
+        final Playlist result = playlistRepository.save(buildPlaylist(user, title));
 
         // then
         assertThat(result).isNotNull();
@@ -55,7 +55,7 @@ public class PlaylistRepositoryTest {
     @Test
     public void 플레이리스트_조회_0개() {
         // given
-        final User user = userRepository.save(getUser());
+        final User user = userRepository.save(buildUser());
 
         // when
         final List<Playlist> result = playlistRepository.findAllByUser(user);
@@ -67,9 +67,9 @@ public class PlaylistRepositoryTest {
     @Test
     public void 플레이리스트_조회_2개() {
         // given
-        final User user = userRepository.save(getUser());
-        playlistRepository.save(getPlaylist(user, title));
-        playlistRepository.save(getPlaylist(user, title));
+        final User user = userRepository.save(buildUser());
+        playlistRepository.save(buildPlaylist(user, title));
+        playlistRepository.save(buildPlaylist(user, title));
 
         // when
         final List<Playlist> result = playlistRepository.findAllByUser(user);
@@ -81,8 +81,8 @@ public class PlaylistRepositoryTest {
     @Test
     public void 플레이리스트_알람설정변경() {
         // given
-        final User user = userRepository.save(getUser());
-        final Playlist playlist = playlistRepository.save(getPlaylist(user, "test playlist"));
+        final User user = userRepository.save(buildUser());
+        final Playlist playlist = playlistRepository.save(buildPlaylist(user, "test playlist"));
 
         // when
         int result = playlistRepository.updateAlarmFlag(playlist.getId(), false);
@@ -234,7 +234,7 @@ public class PlaylistRepositoryTest {
         return Track.builder().durationTimeMs(durationTimeMs).build();
     }
 
-    private User getGeneralUser() {
+    private User buildGeneralUser() {
         return User.builder()
             .email(userEmail)
             .type(UserType.GENERAL_USER)
@@ -242,7 +242,7 @@ public class PlaylistRepositoryTest {
             .build();
     }
 
-    private Playlist getPlaylist(User user, String title, List<Track> trackList) {
+    private Playlist buildPlaylist(User user, String title, List<Track> trackList) {
         return Playlist.builder()
             .playlistTitle(title)
             .alarmFlag(true)
@@ -250,7 +250,7 @@ public class PlaylistRepositoryTest {
             .build();
     }
 
-    private User getUser() {
+    private User buildUser() {
         return User.builder()
             .email(userEmail)
             .type(UserType.GENERAL_USER)
@@ -258,7 +258,7 @@ public class PlaylistRepositoryTest {
             .build();
     }
 
-    private Playlist getPlaylist(User user, String title) {
+    private Playlist buildPlaylist(User user, String title) {
         return Playlist.builder()
             .playlistTitle(title)
             .alarmFlag(true)
