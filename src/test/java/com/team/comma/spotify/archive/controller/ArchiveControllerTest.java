@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.archive.dto.ArchiveRequest;
 import com.team.comma.spotify.archive.service.ArchiveService;
-import com.team.comma.spotify.playlist.Exception.PlaylistException;
+import com.team.comma.spotify.playlist.exception.PlaylistException;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

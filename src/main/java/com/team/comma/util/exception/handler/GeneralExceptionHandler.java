@@ -4,7 +4,7 @@ import com.team.comma.common.constant.ResponseCode;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.follow.exception.FollowingException;
 import com.team.comma.spotify.favorite.artist.exception.FavoriteArtistException;
-import com.team.comma.spotify.playlist.Exception.PlaylistException;
+import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.search.exception.TokenExpirationException;
 import com.team.comma.util.auth.exception.OAuth2EmailNotFoundException;

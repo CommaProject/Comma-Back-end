@@ -4,7 +4,7 @@ import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.archive.domain.Archive;
 import com.team.comma.spotify.archive.dto.ArchiveRequest;
 import com.team.comma.spotify.archive.repository.ArchiveRepository;
-import com.team.comma.spotify.playlist.Exception.PlaylistException;
+import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.user.domain.User;
