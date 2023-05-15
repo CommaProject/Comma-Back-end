@@ -69,7 +69,7 @@ public class ArchiveControllerTest {
     @DisplayName("아카이브 추가 실패 _ 사용자 정보를 찾을 수 없음")
     public void addArchiveFail_notFoundUser() throws Exception {
         // given
-        final String api = "/archive";
+        final String api = "/archives";
         ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).content("content").build();
         doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(archiveService).addArchive(any(String.class) , any(ArchiveRequest.class));
 
@@ -109,7 +109,7 @@ public class ArchiveControllerTest {
     @DisplayName("아카이브 추가 실패 _ 플레이리스트 조회 실패")
     public void addArchiveFail_notFoundPlaylist() throws Exception {
         // given
-        final String api = "/archive";
+        final String api = "/archives";
         ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).content("content").build();
         doThrow(new PlaylistException("Playlist를 찾을 수 없습니다.")).when(archiveService).addArchive(any(String.class) , any(ArchiveRequest.class));
 
@@ -149,7 +149,7 @@ public class ArchiveControllerTest {
     @DisplayName("아카이브 추가 성공")
     public void addArchiveSuccess() throws Exception {
         // given
-        final String api = "/archive";
+        final String api = "/archives";
         ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).content("content").build();
         doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(archiveService).addArchive(any(String.class) , any(ArchiveRequest.class));
 

@@ -70,7 +70,7 @@ public class FollowingControllerTest {
     @DisplayName("새로운 Follow 등록 실패 _ 이미 팔로우 중인 사용자")
     public void addNewFollowFail_alreadyFollowedUser() throws Exception {
         // given
-        final String api = "/following";
+        final String api = "/followings";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         doThrow(new FollowingException("이미 팔로우중인 사용자입니다.")).when(followingService).addFollow("accessToken" , "toUserEmail");
         // when
@@ -108,7 +108,7 @@ public class FollowingControllerTest {
     @DisplayName("새로운 Follow 등록 실패 _ 사용자를 찾을 수 없음")
     public void addNewFollowFail_notFoundUser() throws Exception {
         // given
-        final String api = "/following";
+        final String api = "/followings";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         doThrow(new AccountException("대상 사용자를 찾을 수 없습니다.")).when(followingService).addFollow("accessToken" , "toUserEmail");
         // when
@@ -146,7 +146,7 @@ public class FollowingControllerTest {
     @DisplayName("새로운 Follow 등록 실패 _ 차단된 사용자")
     public void addNewFollowFail_isBlockedUser() throws Exception {
         // given
-        final String api = "/following";
+        final String api = "/followings";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         doThrow(new FollowingException("차단된 사용자입니다.")).when(followingService).addFollow("accessToken" , "toUserEmail");
         // when
@@ -184,7 +184,7 @@ public class FollowingControllerTest {
     @DisplayName("새로운 Follow 등록 성공")
     public void addNewFollowSuccess() throws Exception {
         // given
-        final String api = "/following";
+        final String api = "/followings";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS);
         doReturn(message).when(followingService).addFollow("accessToken" , "toUserEmail");
@@ -223,7 +223,7 @@ public class FollowingControllerTest {
     @DisplayName("Follow 삭제")
     public void blockFollow() throws Exception {
         // given
-        final String api = "/following";
+        final String api = "/followings";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS);
         doReturn(message).when(followingService).blockFollowedUser("accessToken" , "toUserEmail");
@@ -262,7 +262,7 @@ public class FollowingControllerTest {
     @DisplayName("Follow 삭제 해제")
     public void unblockFollow() throws Exception {
         // given
-        final String api = "/following/unblock";
+        final String api = "/followings/unblocks";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS);
         doReturn(message).when(followingService).unblockFollowedUser("accessToken" , "toUserEmail");
@@ -301,7 +301,7 @@ public class FollowingControllerTest {
     @DisplayName("Follow 여부 _ 참")
     public void isFollow_true() throws Exception {
         // given
-        final String api = "/following";
+        final String api = "/followings";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , true);
         doReturn(message).when(followingService).isFollowedUser("accessToken" , "toUserEmail");
@@ -340,7 +340,7 @@ public class FollowingControllerTest {
     @DisplayName("Follow 여부 _ 거짓")
     public void isFollow_false() throws Exception {
         // given
-        final String api = "/following";
+        final String api = "/followings";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , false);
         doReturn(message).when(followingService).isFollowedUser("accessToken" , "toUserEmail");

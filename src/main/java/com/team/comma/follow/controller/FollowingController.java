@@ -12,7 +12,7 @@ import javax.security.auth.login.AccountException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/following")
+@RequestMapping("/followings")
 public class FollowingController {
 
     private final FollowingService followingService;
@@ -38,7 +38,7 @@ public class FollowingController {
                 .body(followingService.blockFollowedUser(accessToken , followingRequest.getToUserEmail()));
     }
 
-    @PatchMapping("/unblock")
+    @PatchMapping("/unblocks")
     public ResponseEntity<MessageResponse> unBlockFollow(@CookieValue String accessToken
             , @RequestBody FollowingRequest followingRequest) {
         return ResponseEntity.ok()

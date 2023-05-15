@@ -11,7 +11,7 @@ import javax.security.auth.login.AccountException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/favorite/artist")
+@RequestMapping("/favorites/artists")
 public class FavoriteArtistController {
 
     private final FavoriteArtistService favoriteArtistService;

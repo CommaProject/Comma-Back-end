@@ -12,7 +12,7 @@ import javax.security.auth.login.AccountException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/archive")
+@RequestMapping("/archives")
 public class ArchiveController {
 
     private final ArchiveService archiveService;
