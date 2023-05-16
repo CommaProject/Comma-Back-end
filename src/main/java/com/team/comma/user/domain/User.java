@@ -87,6 +87,7 @@ public class User implements UserDetails {
     public void addHistory(String history) {
         History historyEntity = History.builder()
                 .searchHistory(history)
+                .delFlag(false)
                 .user(this)
                 .build();
 

@@ -1,16 +1,12 @@
 package com.team.comma.spotify.favorite.repository;
 
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.spotify.favorite.artist.domain.FavoriteArtist;
 import com.team.comma.spotify.favorite.artist.repository.FavoriteArtistRepository;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;
-import com.team.comma.user.domain.QUser;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.config.TestConfig;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +16,6 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-import static com.team.comma.spotify.favorite.artist.domain.QFavoriteArtist.favoriteArtist;
-import static com.team.comma.user.domain.QUser.user;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
@@ -34,15 +28,8 @@ public class FavoriteArtistRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    EntityManager entityManager;
-
     private String userEmail = "email@naver.com";
     private String userPassword = "password";
-    QUser qUser = new QUser("user");
-
-    @Autowired
-    private JPAQueryFactory queryFactory;
 
     @Test
     @DisplayName("관심 아티스트 추가")
@@ -68,20 +55,10 @@ public class FavoriteArtistRepositoryTest {
         userEntity.addFavoriteArtist("artist");
 
         // when
-        queryFactory.delete(favoriteArtist)
-                .where(favoriteArtist.id.eq(
-                        JPAExpressions.select(favoriteArtist.id).from(favoriteArtist)
-                                .innerJoin(favoriteArtist.user , user).on(user.eq(userEntity))
-                                .where(favoriteArtist.artistName.eq("artist"))
-                ))
-                .execute();
-
-        entityManager.clear();
+        favoriteArtistRepository.deleteByUser(userEntity , "artist");
 
         // then
-        User result = queryFactory.select(user).from(user)
-                .innerJoin(user.favoriteArtist).fetchJoin()
-                .where(user.email.eq("email")).fetchOne();
+        FavoriteArtist result = favoriteArtistRepository.findFavoriteArtistByUser(userEntity , "artist").orElse(null);
 
         assertThat(result).isNull();
 
@@ -98,10 +75,7 @@ public class FavoriteArtistRepositoryTest {
         user.addFavoriteArtist("artist3");
 
         // when
-        List<String> result = queryFactory.select(favoriteArtist.artistName)
-                .from(favoriteArtist)
-                .where(favoriteArtist.user.eq(user))
-                .fetch();
+        List<String> result = favoriteArtistRepository.findFavoriteArtistListByUser(user);
 
         // then
         assertThat(result.size()).isEqualTo(3);
@@ -116,10 +90,7 @@ public class FavoriteArtistRepositoryTest {
         user.addFavoriteArtist("artist1");
 
         // when
-        FavoriteArtist result = queryFactory.select(favoriteArtist).from(favoriteArtist)
-                .innerJoin(favoriteArtist.user , qUser).on(qUser.eq(user))
-                .where(favoriteArtist.artistName.eq("artist1"))
-                .fetchOne();
+        FavoriteArtist result = favoriteArtistRepository.findFavoriteArtistByUser(user , "artist1").orElse(null);
 
         // then
         assertThat(result).isNotNull();
