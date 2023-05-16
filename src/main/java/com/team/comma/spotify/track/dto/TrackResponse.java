@@ -1,10 +1,7 @@
 package com.team.comma.spotify.track.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
@@ -13,7 +10,7 @@ import java.text.SimpleDateFormat;
 
 @Builder
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @Schema(description = "Spotify 트랙 탐색")
 public class TrackResponse {
