@@ -77,8 +77,11 @@ public class FavoriteArtistControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+                MockMvcRequestBuilders
+                        .post(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "token")));
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
@@ -116,8 +119,11 @@ public class FavoriteArtistControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+                MockMvcRequestBuilders
+                        .post(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "token")));
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
@@ -155,8 +161,11 @@ public class FavoriteArtistControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+                MockMvcRequestBuilders
+                        .post(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "token")));
 
         // then
         resultActions.andExpect(status().isCreated()).andDo(
@@ -194,8 +203,11 @@ public class FavoriteArtistControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.delete(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+                MockMvcRequestBuilders
+                        .delete(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "token")));
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
@@ -233,8 +245,11 @@ public class FavoriteArtistControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.delete(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+                MockMvcRequestBuilders
+                        .delete(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "token")));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
@@ -272,8 +287,11 @@ public class FavoriteArtistControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+                MockMvcRequestBuilders
+                        .get(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "token")));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
@@ -311,8 +329,11 @@ public class FavoriteArtistControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+                MockMvcRequestBuilders
+                        .get(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "token")));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(

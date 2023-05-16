@@ -73,10 +73,14 @@ public class FollowingControllerTest {
         final String api = "/followings";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         doThrow(new FollowingException("이미 팔로우중인 사용자입니다.")).when(followingService).addFollow("accessToken" , "toUserEmail");
+
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "accessToken")));
+                MockMvcRequestBuilders
+                        .post(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "accessToken")));
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
@@ -111,10 +115,14 @@ public class FollowingControllerTest {
         final String api = "/followings";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         doThrow(new AccountException("대상 사용자를 찾을 수 없습니다.")).when(followingService).addFollow("accessToken" , "toUserEmail");
+
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "accessToken")));
+                MockMvcRequestBuilders
+                        .post(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "accessToken")));
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
@@ -149,10 +157,14 @@ public class FollowingControllerTest {
         final String api = "/followings";
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         doThrow(new FollowingException("차단된 사용자입니다.")).when(followingService).addFollow("accessToken" , "toUserEmail");
+
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "accessToken")));
+                MockMvcRequestBuilders
+                        .post(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "accessToken")));
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
@@ -188,10 +200,14 @@ public class FollowingControllerTest {
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS);
         doReturn(message).when(followingService).addFollow("accessToken" , "toUserEmail");
+
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "accessToken")));
+                MockMvcRequestBuilders
+                        .post(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "accessToken")));
 
         // then
         resultActions.andExpect(status().isCreated()).andDo(
@@ -227,10 +243,14 @@ public class FollowingControllerTest {
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS);
         doReturn(message).when(followingService).blockFollowedUser("accessToken" , "toUserEmail");
+
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.delete(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "accessToken")));
+                MockMvcRequestBuilders
+                        .delete(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "accessToken")));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
@@ -266,10 +286,14 @@ public class FollowingControllerTest {
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS);
         doReturn(message).when(followingService).unblockFollowedUser("accessToken" , "toUserEmail");
+
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.patch(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "accessToken")));
+                MockMvcRequestBuilders
+                        .patch(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "accessToken")));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
@@ -305,10 +329,14 @@ public class FollowingControllerTest {
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , true);
         doReturn(message).when(followingService).isFollowedUser("accessToken" , "toUserEmail");
+
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "accessToken")));
+                MockMvcRequestBuilders
+                        .get(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "accessToken")));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
@@ -344,10 +372,14 @@ public class FollowingControllerTest {
         FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , false);
         doReturn(message).when(followingService).isFollowedUser("accessToken" , "toUserEmail");
+
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "accessToken")));
+                MockMvcRequestBuilders
+                        .get(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "accessToken")));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(

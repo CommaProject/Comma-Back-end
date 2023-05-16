@@ -71,12 +71,15 @@ public class ArchiveControllerTest {
         // given
         final String api = "/archives";
         ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).content("content").build();
-        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(archiveService).addArchive(any(String.class) , any(ArchiveRequest.class));
+        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(archiveService).addArchive(any(String.class), any(ArchiveRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+                MockMvcRequestBuilders
+                        .post(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken", "token")));
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
@@ -111,12 +114,15 @@ public class ArchiveControllerTest {
         // given
         final String api = "/archives";
         ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).content("content").build();
-        doThrow(new PlaylistException("Playlist를 찾을 수 없습니다.")).when(archiveService).addArchive(any(String.class) , any(ArchiveRequest.class));
+        doThrow(new PlaylistException("Playlist를 찾을 수 없습니다.")).when(archiveService).addArchive(any(String.class), any(ArchiveRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+                MockMvcRequestBuilders
+                        .post(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken", "token")));
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
@@ -151,12 +157,15 @@ public class ArchiveControllerTest {
         // given
         final String api = "/archives";
         ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).content("content").build();
-        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(archiveService).addArchive(any(String.class) , any(ArchiveRequest.class));
+        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(archiveService).addArchive(any(String.class), any(ArchiveRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(api).content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON).cookie(new Cookie("accessToken" , "token")));
+                MockMvcRequestBuilders
+                        .post(api)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken", "token")));
 
         // then
         resultActions.andExpect(status().isCreated()).andDo(
