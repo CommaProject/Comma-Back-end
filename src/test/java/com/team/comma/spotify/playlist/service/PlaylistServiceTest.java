@@ -2,16 +2,16 @@ package com.team.comma.spotify.playlist.service;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 
-import com.team.comma.common.constant.ResponseCodeEnum;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
+import com.team.comma.spotify.playlist.dto.PlaylistRequest;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
-import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.domain.TrackArtist;
@@ -40,46 +40,26 @@ class PlaylistServiceTest {
     private PlaylistRepository playlistRepository;
     @Mock
     private UserRepository userRepository;
-
     @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     private String userEmail = "email@naver.com";
-    private long playlistId = 123L;
-    private boolean flag = false;
     private String token = "accessToken";
 
     @Test
-    void 플레이리스트_조회() throws AccountException {
+    void 플레이리스트_조회_성공() throws AccountException {
         // given
-        final User user = User.builder()
-            .email(userEmail)
-            .type(UserType.GENERAL_USER)
-            .role(UserRole.USER)
-            .build();
-
+        final User user = buildUserWithEmail();
         Optional<User> optionalUser = Optional.of(user);
-        doReturn(optionalUser).when(userRepository).findByEmail(user.getEmail());
+        doReturn(optionalUser).when(userRepository).findByEmail(userEmail);
         doReturn(userEmail).when(jwtTokenProvider).getUserPk(token);
 
-        final List<TrackArtist> artistList = Arrays.asList(
-            TrackArtist.builder().id(123L).build()
+        final List<Playlist> userPlaylist = Arrays.asList(
+                buildUserPlaylist(),
+                buildUserPlaylist(),
+                buildUserPlaylist()
         );
-
-        final Track track = Track.builder()
-            .id(123L)
-            .trackArtistList(artistList)
-            .build();
-
-        final List<PlaylistTrack> playlistTrack = Arrays.asList(
-            PlaylistTrack.builder().track(track).trackAlarmFlag(true).build()
-        );
-
-        doReturn(Arrays.asList(
-            Playlist.builder().id(1L).alarmFlag(true).playlistTrackList(playlistTrack).build(),
-            Playlist.builder().id(2L).alarmFlag(true).playlistTrackList(playlistTrack).build(),
-            Playlist.builder().id(3L).alarmFlag(true).playlistTrackList(playlistTrack).build()
-        )).when(playlistRepository).findAllByUser(user);
+        doReturn(userPlaylist).when(playlistRepository).findAllByUser(user);
 
         // when
         final List<PlaylistResponse> result = playlistService.getPlaylists(token);
@@ -89,15 +69,61 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 플레이리스트_알림설정변경_성공() {
+    void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() {
         // given
 
         // when
-        final MessageResponse result = playlistService.updateAlarmFlag(playlistId, flag);
+        final Throwable thrown = catchThrowable(() -> playlistService.updateAlarmFlag(123L, false));
+
+        // then
+        assertThat(thrown.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
+    }
+
+    @Test
+    void 플레이리스트_알람설정변경_성공() {
+        // given
+        final Playlist userPlaylist = buildUserPlaylist();
+        Optional<Playlist> optionalPlaylist = Optional.of(userPlaylist);
+        doReturn(optionalPlaylist).when(playlistRepository).findById(userPlaylist.getId());
+
+        // when
+        final MessageResponse result = playlistService.updateAlarmFlag(userPlaylist.getId(), false);
 
         // then
         assertThat(result.getCode()).isEqualTo(2);
         assertThat(result.getMessage()).isEqualTo("알람 설정이 변경되었습니다.");
+    }
+
+    @Test
+    void 플레이리스트_삭제_실패_플레이리스트_찾을수없음() {
+        // given
+        List<PlaylistRequest> playlistRequests = Arrays.asList(
+                PlaylistRequest.builder().playlistId(123L).build(),
+                PlaylistRequest.builder().playlistId(124L).build());
+
+        // when
+        final Throwable thrown = catchThrowable(() -> playlistService.deletePlaylist(playlistRequests));
+
+        // then
+        assertThat(thrown.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
+    }
+
+    @Test
+    void 플레이리스트_삭제_성공() {
+        // given
+        final Playlist userPlaylist = buildUserPlaylist();
+        Optional<Playlist> optionalPlaylist = Optional.of(userPlaylist);
+        doReturn(optionalPlaylist).when(playlistRepository).findById(userPlaylist.getId());
+
+        List<PlaylistRequest> playlistRequests = Arrays.asList(
+                PlaylistRequest.builder().playlistId(userPlaylist.getId()).build());
+
+        // when
+        final MessageResponse result = playlistService.deletePlaylist(playlistRequests);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(2);
+        assertThat(result.getMessage()).isEqualTo("플레이리스트가 삭제되었습니다.");
     }
 
     @Test
@@ -146,6 +172,23 @@ class PlaylistServiceTest {
 
     private User buildUserWithEmail() {
         return User.builder().email(userEmail).build();
+    }
+
+    private Playlist buildUserPlaylist() {
+        final List<TrackArtist> artistList = Arrays.asList(
+                TrackArtist.builder().id(1L).build()
+        );
+
+        final Track track = Track.builder()
+                .id(1L)
+                .trackArtistList(artistList)
+                .build();
+
+        final List<PlaylistTrack> playlistTrack = Arrays.asList(
+                PlaylistTrack.builder().track(track).trackAlarmFlag(true).build()
+        );
+
+        return Playlist.builder().id(1L).alarmFlag(true).playlistTrackList(playlistTrack).build();
     }
 
 }

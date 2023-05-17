@@ -4,16 +4,14 @@ import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistRequest;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
-import com.team.comma.spotify.playlist.exception.PlaylistException;
+import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.playlist.service.PlaylistService;
-import com.team.comma.spotify.playlist.service.PlaylistTrackService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountException;
-import java.util.List;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -38,7 +36,14 @@ public class PlaylistController {
     public ResponseEntity<MessageResponse> modifyAlarmState(
         @RequestBody final PlaylistRequest request) throws PlaylistException {
         return ResponseEntity.ok()
-            .body(playlistService.updateAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
+            .body(playlistService.updateAlarmFlag(request.getPlaylistId(), request.getAlarmFlag()));
+    }
+
+    @PatchMapping("/remove")
+    public ResponseEntity<MessageResponse> removePlaylist(
+            @RequestBody final List<PlaylistRequest> requests) throws PlaylistException {
+        return ResponseEntity.ok()
+            .body(playlistService.deletePlaylist(requests));
     }
 
     @GetMapping("/all-duration-time/{id}")

@@ -1,16 +1,7 @@
 package com.team.comma.util.exception.handler;
 
-import static com.team.comma.common.constant.ResponseCodeEnum.AUTHORIZATION_ERROR;
-import static com.team.comma.common.constant.ResponseCodeEnum.OAUTH_NO_EXISTENT_EMAIL;
-import static com.team.comma.common.constant.ResponseCodeEnum.REFRESH_TOKEN_EXPIRED;
-import static com.team.comma.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
-import static com.team.comma.common.constant.ResponseCodeEnum.SPOTIFY_FAILURE;
-import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_ENTITY_NOT_FOUND;
-import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_TYPE_MISMATCH;
-
-import com.team.comma.common.constant.ResponseCode;
 import com.team.comma.common.dto.MessageResponse;
-import com.team.comma.spotify.playlist.exception.PlaylistException;
+import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.search.exception.TokenExpirationException;
 import com.team.comma.util.auth.exception.OAuth2EmailNotFoundException;
@@ -26,6 +17,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import se.michaelthelin.spotify.exceptions.detailed.UnauthorizedException;
+
+import static com.team.comma.common.constant.ResponseCodeEnum.*;
 
 
 @RestControllerAdvice
@@ -90,11 +83,12 @@ public class GeneralExceptionHandler {
      */
     @ExceptionHandler({PlaylistException.class})
     public ResponseEntity<MessageResponse> handlePlaylistNotFoundException(Exception e) {
-        MessageResponse message = MessageResponse.of(ResponseCode.ALARM_UPDATE_FAILURE,
-            e.getMessage());
+        MessageResponse message = MessageResponse.of(
+                PLAYLIST_NOT_FOUND.getCode(),
+                e.getMessage()
+        );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-
     }
 
     /**

@@ -13,9 +13,5 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long>,
 
     List<Playlist> findAllByUser(User user);
 
-    @Modifying
-    @Query("update Playlist p set p.alarmFlag = :alarmFlag where p.id = :id")
-    int updateAlarmFlag(@Param("id") long id, @Param("alarmFlag") boolean alarmFlag);
-
 
 }

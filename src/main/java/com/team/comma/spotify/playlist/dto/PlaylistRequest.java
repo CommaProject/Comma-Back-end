@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PlaylistRequest {
     private long playlistId;
-    private boolean alarmFlag;
+    private Boolean alarmFlag;
 }

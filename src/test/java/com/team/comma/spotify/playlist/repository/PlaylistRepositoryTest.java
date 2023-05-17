@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Import;
 @DataJpaTest
 @Import(TestConfig.class)
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class PlaylistRepositoryTest {
+class PlaylistRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -40,7 +40,7 @@ public class PlaylistRepositoryTest {
     private final String title = "test playlist";
 
     @Test
-    public void 플레이리스트_저장() {
+    void 플레이리스트_저장() {
         // given
         final User user = userRepository.save(buildUser());
 
@@ -53,7 +53,7 @@ public class PlaylistRepositoryTest {
     }
 
     @Test
-    public void 플레이리스트_조회_0개() {
+    void 플레이리스트_조회_0개() {
         // given
         final User user = userRepository.save(buildUser());
 
@@ -65,7 +65,7 @@ public class PlaylistRepositoryTest {
     }
 
     @Test
-    public void 플레이리스트_조회_2개() {
+    void 플레이리스트_조회_2개() {
         // given
         final User user = userRepository.save(buildUser());
         playlistRepository.save(buildPlaylist(user, title));
@@ -79,13 +79,26 @@ public class PlaylistRepositoryTest {
     }
 
     @Test
-    public void 플레이리스트_알람설정변경() {
+    void 플레이리스트_알람설정변경() {
         // given
         final User user = userRepository.save(buildUser());
         final Playlist playlist = playlistRepository.save(buildPlaylist(user, "test playlist"));
 
         // when
         int result = playlistRepository.updateAlarmFlag(playlist.getId(), false);
+
+        // then
+        assertThat(result).isEqualTo(1);
+    }
+
+    @Test
+    void 플레이리스트_삭제(){
+        // given
+        final User user = userRepository.save(buildUser());
+        final Playlist playlist = playlistRepository.save(buildPlaylist(user, "test playlist"));
+
+        // when
+        int result = playlistRepository.deletePlaylist(playlist.getId());
 
         // then
         assertThat(result).isEqualTo(1);

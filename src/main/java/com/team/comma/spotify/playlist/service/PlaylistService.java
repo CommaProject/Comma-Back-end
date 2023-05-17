@@ -1,17 +1,12 @@
 package com.team.comma.spotify.playlist.service;
 
-import static com.team.comma.common.constant.ResponseCode.PLAYLIST_ALARM_UPDATED;
-import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
-
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
-import com.team.comma.spotify.playlist.dto.PlaylistResponse;
-import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
-import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
-import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
-import com.team.comma.spotify.playlist.exception.PlaylistException;
+import com.team.comma.spotify.playlist.dto.*;
+import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
+import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.track.domain.TrackArtist;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
@@ -23,6 +18,8 @@ import javax.security.auth.login.AccountException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.team.comma.common.constant.ResponseCodeEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -73,13 +70,24 @@ public class PlaylistService {
     }
 
     @Transactional
-    public MessageResponse updateAlarmFlag(long playlistId, boolean alarmFlag)
-        throws PlaylistException {
+    public MessageResponse updateAlarmFlag(long playlistId, boolean alarmFlag) {
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
 
         playlistRepository.updateAlarmFlag(playlistId, alarmFlag);
-        return MessageResponse.of(PLAYLIST_ALARM_UPDATED, "알람 설정이 변경되었습니다.");
+        return MessageResponse.of(PLAYLIST_ALARM_UPDATED);
     }
 
+    @Transactional
+    public MessageResponse deletePlaylist(List<PlaylistRequest> playlistRequests) {
+        for(PlaylistRequest playlistRequest : playlistRequests){
+            Playlist playlist = playlistRepository.findById(playlistRequest.getPlaylistId())
+                    .orElseThrow(() -> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
+
+            playlistRepository.deletePlaylist(playlistRequest.getPlaylistId());
+        }
+        return MessageResponse.of(PLAYLIST_DELETED);
+    }
 
     public MessageResponse<Integer> getTotalDurationTimeMsByPlaylist(Long playlistId) {
         return MessageResponse.of(

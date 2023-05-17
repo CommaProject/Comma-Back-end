@@ -10,9 +10,9 @@
 
 link:main.html[main 화면]
 
-== Playlist API
+== 플레이리스트 API
 
-=== Playlist 조회
+=== 플레이리스트 조회
 
 ==== Request
 
@@ -24,7 +24,7 @@ include::{snippets}/spotify/getPlaylist/request-cookies.adoc[]
 include::{snippets}/spotify/getPlaylist/http-response.adoc[]
 include::{snippets}/spotify/getPlaylist/response-fields.adoc[]
 
-=== Playlist Update Alarm
+=== 플레이리스트 알람설정 변경
 
 ==== Request
 
@@ -35,6 +35,18 @@ include::{snippets}/spotify/modifyPlaylist/request-fields.adoc[]
 
 include::{snippets}/spotify/modifyPlaylist/http-response.adoc[]
 include::{snippets}/spotify/modifyPlaylist/response-fields.adoc[]
+
+=== 플레이리스트 삭제
+
+==== Request
+
+include::{snippets}/spotify/deletePlaylist/http-request.adoc[]
+include::{snippets}/spotify/deletePlaylist/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/spotify/deletePlaylist/http-response.adoc[]
+include::{snippets}/spotify/deletePlaylist/response-fields.adoc[]
 
 === 플레이리스트 총재생시간 리턴 API
 

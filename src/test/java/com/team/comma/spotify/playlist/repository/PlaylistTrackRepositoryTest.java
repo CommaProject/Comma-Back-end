@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @Import(TestConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class PlaylistTrackRepositoryTest {
+class PlaylistTrackRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -47,7 +47,7 @@ public class PlaylistTrackRepositoryTest {
     private final String trackTitle = "test track";
 
     @Test
-    public void 플레이리스트_곡_연관관계_저장() {
+    void 플레이리스트_곡_연관관계_저장() {
         // given
         final User user = userRepository.save(buildUser());
         final Playlist playlist = playlistRepository.save(buildPlaylist(user, title));
@@ -64,7 +64,7 @@ public class PlaylistTrackRepositoryTest {
     }
 
     @Test
-    public void 플레이리스트_곡_연관관계_조회_0개() {
+    void 플레이리스트_곡_연관관계_조회_0개() {
         // given
         final User user = userRepository.save(buildUser());
         final Playlist playlist = playlistRepository.save(buildPlaylist(user, title));
@@ -77,7 +77,7 @@ public class PlaylistTrackRepositoryTest {
     }
 
     @Test
-    public void 플레이리스트_곡_연관관계_조회_2개() {
+    void 플레이리스트_곡_연관관계_조회_2개() {
         // given
         final User user = userRepository.save(buildUser());
         final Playlist playlist = playlistRepository.save(buildPlaylist(user, title));

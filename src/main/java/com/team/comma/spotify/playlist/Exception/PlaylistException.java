@@ -1,4 +1,4 @@
-package com.team.comma.spotify.playlist.exception;
+package com.team.comma.spotify.playlist.Exception;
 
 public class PlaylistException extends RuntimeException {
 
