@@ -4,6 +4,7 @@ import static com.team.comma.common.constant.ResponseCodeEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 import com.team.comma.common.dto.MessageResponse;
@@ -11,10 +12,12 @@ import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.playlist.dto.PlaylistRequest;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
+import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.domain.TrackArtist;
+import com.team.comma.spotify.track.service.TrackService;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;
 import com.team.comma.user.domain.User;
@@ -37,6 +40,8 @@ class PlaylistServiceTest {
     @InjectMocks
     private PlaylistService playlistService;
     @Mock
+    private TrackService trackService;
+    @Mock
     private PlaylistRepository playlistRepository;
     @Mock
     private UserRepository userRepository;
@@ -54,12 +59,20 @@ class PlaylistServiceTest {
         doReturn(optionalUser).when(userRepository).findByEmail(userEmail);
         doReturn(userEmail).when(jwtTokenProvider).getUserPk(token);
 
+        final TrackArtist trackArtist = buildTrackArtist();
+        doReturn(Arrays.asList(
+                PlaylistTrackArtistResponse.of(buildTrackArtist())
+        )).when(trackService).createArtistResponse(any());
+
+        final Track track = buildTrack(Arrays.asList(trackArtist));
+        final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
         final List<Playlist> userPlaylist = Arrays.asList(
-                buildUserPlaylist(),
-                buildUserPlaylist(),
-                buildUserPlaylist()
+                buildUserPlaylist(Arrays.asList(playlistTrack)),
+                buildUserPlaylist(Arrays.asList(playlistTrack)),
+                buildUserPlaylist(Arrays.asList(playlistTrack))
         );
         doReturn(userPlaylist).when(playlistRepository).findAllByUser(user);
+
 
         // when
         final List<PlaylistResponse> result = playlistService.getPlaylists(token);
@@ -82,7 +95,10 @@ class PlaylistServiceTest {
     @Test
     void 플레이리스트_알람설정변경_성공() {
         // given
-        final Playlist userPlaylist = buildUserPlaylist();
+        final TrackArtist trackArtist = buildTrackArtist();
+        final Track track = buildTrack(Arrays.asList(trackArtist));
+        final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
+        final Playlist userPlaylist = buildUserPlaylist(Arrays.asList(playlistTrack));
         Optional<Playlist> optionalPlaylist = Optional.of(userPlaylist);
         doReturn(optionalPlaylist).when(playlistRepository).findById(userPlaylist.getId());
 
@@ -105,13 +121,16 @@ class PlaylistServiceTest {
         final Throwable thrown = catchThrowable(() -> playlistService.deletePlaylist(playlistRequests));
 
         // then
-        assertThat(thrown.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
+        assertThat(thrown.getMessage()).isEqualTo("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요.");
     }
 
     @Test
     void 플레이리스트_삭제_성공() {
         // given
-        final Playlist userPlaylist = buildUserPlaylist();
+        final TrackArtist trackArtist = buildTrackArtist();
+        final Track track = buildTrack(Arrays.asList(trackArtist));
+        final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
+        final Playlist userPlaylist = buildUserPlaylist(Arrays.asList(playlistTrack));
         Optional<Playlist> optionalPlaylist = Optional.of(userPlaylist);
         doReturn(optionalPlaylist).when(playlistRepository).findById(userPlaylist.getId());
 
@@ -174,21 +193,35 @@ class PlaylistServiceTest {
         return User.builder().email(userEmail).build();
     }
 
-    private Playlist buildUserPlaylist() {
-        final List<TrackArtist> artistList = Arrays.asList(
-                TrackArtist.builder().id(1L).build()
-        );
-
-        final Track track = Track.builder()
+    private Playlist buildUserPlaylist(List<PlaylistTrack> playlistTrackList) {
+        return Playlist.builder()
                 .id(1L)
-                .trackArtistList(artistList)
+                .alarmFlag(true)
+                .playlistTrackList(playlistTrackList)
                 .build();
-
-        final List<PlaylistTrack> playlistTrack = Arrays.asList(
-                PlaylistTrack.builder().track(track).trackAlarmFlag(true).build()
-        );
-
-        return Playlist.builder().id(1L).alarmFlag(true).playlistTrackList(playlistTrack).build();
     }
+
+    private PlaylistTrack buildPlaylistTrack(Track track) {
+        return PlaylistTrack.builder()
+                .track(track)
+                .trackAlarmFlag(true)
+                .build();
+    }
+
+    private Track buildTrack(List<TrackArtist> trackArtistList) {
+        return Track.builder()
+                .id(1L)
+                .trackArtistList(trackArtistList)
+                .build();
+    }
+
+
+    private TrackArtist buildTrackArtist(){
+        return TrackArtist.builder()
+                .id(1L)
+                .artistName("test artist")
+                .build();
+    }
+
 
 }

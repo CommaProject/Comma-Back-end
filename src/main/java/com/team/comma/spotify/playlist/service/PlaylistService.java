@@ -8,6 +8,7 @@ import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.track.domain.TrackArtist;
+import com.team.comma.spotify.track.service.TrackService;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
@@ -25,6 +26,8 @@ import static com.team.comma.common.constant.ResponseCodeEnum.*;
 @RequiredArgsConstructor
 public class PlaylistService {
 
+    private final TrackService trackService;
+
     private final PlaylistRepository playlistRepository;
 
     private final UserRepository userRepository;
@@ -36,7 +39,7 @@ public class PlaylistService {
         User user = userRepository.findByEmail(userName)
             .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
 
-        List<Playlist> playlists = playlistRepository.findAllByUser(user); // email로 playlist 조회
+        List<Playlist> playlists = playlistRepository.findAllByUser(user);
         return createPlaylistResponse(playlists);
     }
 
@@ -44,7 +47,7 @@ public class PlaylistService {
         List<PlaylistResponse> result = new ArrayList<>();
         for (Playlist playlist : playlists) {
             List<PlaylistTrackResponse> trackList = createTrackResponse(
-                playlist.getPlaylistTrackList()); // playlist의 track list
+                playlist.getPlaylistTrackList());
             result.add(PlaylistResponse.of(playlist, trackList));
         }
         return result;
@@ -53,18 +56,10 @@ public class PlaylistService {
     public List<PlaylistTrackResponse> createTrackResponse(List<PlaylistTrack> playlistTrackList) {
         List<PlaylistTrackResponse> result = new ArrayList<>();
         for (PlaylistTrack playlistTrack : playlistTrackList) {
-            List<PlaylistTrackArtistResponse> artistList = createArtistResponse(
+            List<PlaylistTrackArtistResponse> artistList = trackService.createArtistResponse(
                 playlistTrack.getTrack().getTrackArtistList());
             result.add(PlaylistTrackResponse.of(playlistTrack.getTrack(),
                 playlistTrack.getTrackAlarmFlag(), artistList));
-        }
-        return result;
-    }
-
-    public List<PlaylistTrackArtistResponse> createArtistResponse(List<TrackArtist> artistList) {
-        List<PlaylistTrackArtistResponse> result = new ArrayList<>();
-        for (TrackArtist artist : artistList) {
-            result.add(PlaylistTrackArtistResponse.of(artist));
         }
         return result;
     }
@@ -82,8 +77,9 @@ public class PlaylistService {
     public MessageResponse deletePlaylist(List<PlaylistRequest> playlistRequests) {
         for(PlaylistRequest playlistRequest : playlistRequests){
             Playlist playlist = playlistRepository.findById(playlistRequest.getPlaylistId())
-                    .orElseThrow(() -> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
-
+                    .orElseThrow(() -> new PlaylistException("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요."));
+        }
+        for(PlaylistRequest playlistRequest : playlistRequests){
             playlistRepository.deletePlaylist(playlistRequest.getPlaylistId());
         }
         return MessageResponse.of(PLAYLIST_DELETED);

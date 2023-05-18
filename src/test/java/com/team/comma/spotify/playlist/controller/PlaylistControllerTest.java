@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.dto.PlaylistRequest;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
@@ -120,7 +121,7 @@ class PlaylistControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-            document("spotify/getPlaylist",
+            document("spotify/selectPlaylist",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestCookies(
@@ -164,7 +165,7 @@ class PlaylistControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-            document("spotify/modifyPlaylist",
+            document("spotify/updatePlaylistAlert",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestFields(
@@ -181,12 +182,45 @@ class PlaylistControllerTest {
     }
 
     @Test
+    void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() throws Exception {
+        // given
+        final String url = "/playlist/alert";
+        doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
+                .when(playlistService).updateAlarmFlag(123L, false);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.patch(url)
+                        .content(gson.toJson(
+                                PlaylistRequest.builder().playlistId(123L).alarmFlag(false).build()))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest()).andDo(
+                document("spotify/updatePlaylistAlertFail",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("playlistId").description("플레이리스트 id"),
+                                fieldWithPath("alarmFlag").description("변경 될 알람 상태, true = on / false = off")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터")
+                        )
+                )
+        );
+    }
+
+    @Test
     void 플레이리스트_삭제_성공() throws Exception {
         // given
         final String url = "/playlist/remove";
         final List<PlaylistRequest> playlistRequests = Arrays.asList(
                 PlaylistRequest.builder().playlistId(123L).alarmFlag(null).build(),
-                PlaylistRequest.builder().playlistId(123L).alarmFlag(null).build()
+                PlaylistRequest.builder().playlistId(124L).alarmFlag(null).build()
         );
         doReturn(MessageResponse.of(PLAYLIST_DELETED)
         ).when(playlistService).deletePlaylist(playlistRequests);
@@ -201,6 +235,41 @@ class PlaylistControllerTest {
         // then
         resultActions.andExpect(status().isOk()).andDo(
                 document("spotify/deletePlaylist",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("[].playlistId").description("플레이리스트 id")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터")
+                        )
+                )
+        );
+    }
+
+    @Test
+    void 플레이리스트_삭제_실패_플레이리스트_찾을수없음() throws Exception {
+        // given
+        final String url = "/playlist/remove";
+        final List<PlaylistRequest> playlistRequests = Arrays.asList(
+                PlaylistRequest.builder().playlistId(123L).alarmFlag(null).build(),
+                PlaylistRequest.builder().playlistId(124L).alarmFlag(null).build()
+        );
+        doThrow(new PlaylistException("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요."))
+                .when(playlistService).deletePlaylist(playlistRequests);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.patch(url)
+                        .content(gson.toJson(playlistRequests))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isBadRequest()).andDo(
+                document("spotify/deletePlaylistFail",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
