@@ -4,7 +4,7 @@ import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistRequest;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
-import com.team.comma.spotify.playlist.exception.CommaPlaylistException;
+import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.service.PlaylistService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -44,14 +44,14 @@ public class PlaylistController {
 
     @PatchMapping("/alert")
     public ResponseEntity<MessageResponse> patchPlaylistAlert(
-            @RequestBody final PlaylistRequest request) throws CommaPlaylistException {
+            @RequestBody final PlaylistRequest request) throws PlaylistException {
         return ResponseEntity.ok()
                 .body(playlistService.updatePlaylistAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }
 
     @PatchMapping("/del-flag")
     public ResponseEntity<MessageResponse> patchPlaylistDelFlag(
-            @RequestBody final List<Long> playlistIdList) throws CommaPlaylistException {
+            @RequestBody final List<Long> playlistIdList) throws PlaylistException {
         return ResponseEntity.ok()
                 .body(playlistService.updatePlaylistsDelFlag(playlistIdList));
     }

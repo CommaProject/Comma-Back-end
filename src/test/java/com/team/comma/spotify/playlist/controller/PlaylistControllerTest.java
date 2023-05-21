@@ -33,7 +33,6 @@ import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
-import com.team.comma.spotify.playlist.exception.CommaPlaylistException;
 import com.team.comma.spotify.playlist.service.PlaylistService;
 import com.team.comma.spotify.playlist.service.PlaylistTrackService;
 import com.team.comma.spotify.track.domain.Track;

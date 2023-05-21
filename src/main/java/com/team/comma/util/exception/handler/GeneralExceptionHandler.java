@@ -1,7 +1,9 @@
 package com.team.comma.util.exception.handler;
 
 import com.team.comma.common.dto.MessageResponse;
-import com.team.comma.spotify.playlist.exception.CommaPlaylistException;
+import com.team.comma.follow.exception.FollowingException;
+import com.team.comma.spotify.favorite.artist.exception.FavoriteArtistException;
+import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.search.exception.TokenExpirationException;
 import com.team.comma.util.auth.exception.OAuth2EmailNotFoundException;
@@ -64,7 +66,7 @@ public class GeneralExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
     }
 
-    @ExceptionHandler({CommaPlaylistException.class})
+    @ExceptionHandler({PlaylistException.class})
     public ResponseEntity<MessageResponse> handlePlaylistNotFoundException(Exception e) {
         MessageResponse message = MessageResponse.of(
                 PLAYLIST_NOT_FOUND.getCode(),
