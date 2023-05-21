@@ -19,16 +19,21 @@ import com.team.comma.spotify.track.service.TrackService;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import javax.security.auth.login.AccountException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import javax.security.auth.login.AccountException;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 class PlaylistServiceTest {
