@@ -3,14 +3,12 @@ package com.team.comma.spotify.playlist.service;
 import static com.team.comma.common.constant.ResponseCodeEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
-import com.team.comma.spotify.playlist.dto.PlaylistRequest;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
@@ -18,8 +16,6 @@ import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.domain.TrackArtist;
 import com.team.comma.spotify.track.service.TrackService;
-import com.team.comma.user.constant.UserRole;
-import com.team.comma.user.constant.UserType;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
@@ -86,7 +82,7 @@ class PlaylistServiceTest {
         // given
 
         // when
-        final Throwable thrown = catchThrowable(() -> playlistService.updateAlarmFlag(123L, false));
+        final Throwable thrown = catchThrowable(() -> playlistService.updatePlaylistAlarmFlag(123L, false));
 
         // then
         assertThat(thrown.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
@@ -103,7 +99,7 @@ class PlaylistServiceTest {
         doReturn(optionalPlaylist).when(playlistRepository).findById(userPlaylist.getId());
 
         // when
-        final MessageResponse result = playlistService.updateAlarmFlag(userPlaylist.getId(), false);
+        final MessageResponse result = playlistService.updatePlaylistAlarmFlag(userPlaylist.getId(), false);
 
         // then
         assertThat(result.getCode()).isEqualTo(2);
@@ -113,12 +109,10 @@ class PlaylistServiceTest {
     @Test
     void 플레이리스트_삭제_실패_플레이리스트_찾을수없음() {
         // given
-        List<PlaylistRequest> playlistRequests = Arrays.asList(
-                PlaylistRequest.builder().playlistId(123L).build(),
-                PlaylistRequest.builder().playlistId(124L).build());
+        final List<Long> playlistIdList = Arrays.asList(123L, 124L);
 
         // when
-        final Throwable thrown = catchThrowable(() -> playlistService.deletePlaylist(playlistRequests));
+        final Throwable thrown = catchThrowable(() -> playlistService.updatePlaylistsDelFlag(playlistIdList));
 
         // then
         assertThat(thrown.getMessage()).isEqualTo("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요.");
@@ -134,11 +128,10 @@ class PlaylistServiceTest {
         Optional<Playlist> optionalPlaylist = Optional.of(userPlaylist);
         doReturn(optionalPlaylist).when(playlistRepository).findById(userPlaylist.getId());
 
-        List<PlaylistRequest> playlistRequests = Arrays.asList(
-                PlaylistRequest.builder().playlistId(userPlaylist.getId()).build());
+        final List<Long> playlistIdList = Arrays.asList(userPlaylist.getId());
 
         // when
-        final MessageResponse result = playlistService.deletePlaylist(playlistRequests);
+        final MessageResponse result = playlistService.updatePlaylistsDelFlag(playlistIdList);
 
         // then
         assertThat(result.getCode()).isEqualTo(2);

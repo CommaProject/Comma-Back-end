@@ -27,13 +27,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.team.comma.common.dto.MessageResponse;
-import com.team.comma.spotify.playlist.Exception.PlaylistException;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.dto.PlaylistRequest;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
+import com.team.comma.spotify.playlist.exception.CommaPlaylistException;
 import com.team.comma.spotify.playlist.service.PlaylistService;
 import com.team.comma.spotify.playlist.service.PlaylistTrackService;
 import com.team.comma.spotify.track.domain.Track;
@@ -42,7 +42,6 @@ import com.team.comma.util.gson.GsonUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 
-import java.lang.reflect.Array;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -153,7 +152,7 @@ class PlaylistControllerTest {
         // given
         final String url = "/playlist/alert";
         doReturn(MessageResponse.of(PLAYLIST_ALARM_UPDATED)
-        ).when(playlistService).updateAlarmFlag(123L, false);
+        ).when(playlistService).updatePlaylistAlarmFlag(123L, false);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -185,8 +184,8 @@ class PlaylistControllerTest {
     void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() throws Exception {
         // given
         final String url = "/playlist/alert";
-        doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
-                .when(playlistService).updateAlarmFlag(123L, false);
+        doThrow(new CommaPlaylistException("플레이리스트를 찾을 수 없습니다."))
+                .when(playlistService).updatePlaylistAlarmFlag(123L, false);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -217,18 +216,15 @@ class PlaylistControllerTest {
     @Test
     void 플레이리스트_삭제_성공() throws Exception {
         // given
-        final String url = "/playlist/remove";
-        final List<PlaylistRequest> playlistRequests = Arrays.asList(
-                PlaylistRequest.builder().playlistId(123L).alarmFlag(null).build(),
-                PlaylistRequest.builder().playlistId(124L).alarmFlag(null).build()
-        );
+        final String url = "/playlist/del-flag";
+        final List<Long> playlistIdList = Arrays.asList(123L, 124L);
         doReturn(MessageResponse.of(PLAYLIST_DELETED)
-        ).when(playlistService).deletePlaylist(playlistRequests);
+        ).when(playlistService).updatePlaylistsDelFlag(playlistIdList);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.patch(url)
-                        .content(gson.toJson(playlistRequests))
+                        .content(gson.toJson(playlistIdList))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -238,7 +234,7 @@ class PlaylistControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("[].playlistId").description("플레이리스트 id")
+                                fieldWithPath("[]").description("플레이리스트 id 리스트")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -252,18 +248,15 @@ class PlaylistControllerTest {
     @Test
     void 플레이리스트_삭제_실패_플레이리스트_찾을수없음() throws Exception {
         // given
-        final String url = "/playlist/remove";
-        final List<PlaylistRequest> playlistRequests = Arrays.asList(
-                PlaylistRequest.builder().playlistId(123L).alarmFlag(null).build(),
-                PlaylistRequest.builder().playlistId(124L).alarmFlag(null).build()
-        );
-        doThrow(new PlaylistException("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요."))
-                .when(playlistService).deletePlaylist(playlistRequests);
+        final String url = "/playlist/del-flag";
+        final List<Long> playlistIdList = Arrays.asList(123L, 124L);
+        doThrow(new CommaPlaylistException("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요."))
+                .when(playlistService).updatePlaylistsDelFlag(playlistIdList);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.patch(url)
-                        .content(gson.toJson(playlistRequests))
+                        .content(gson.toJson(playlistIdList))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -273,7 +266,7 @@ class PlaylistControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("[].playlistId").description("플레이리스트 id")
+                                fieldWithPath("[]").description("플레이리스트 id 리스트")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),

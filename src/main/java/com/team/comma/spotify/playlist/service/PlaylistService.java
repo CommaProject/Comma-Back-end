@@ -4,10 +4,8 @@ import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.playlist.dto.*;
-import com.team.comma.spotify.playlist.Exception.PlaylistException;
+import com.team.comma.spotify.playlist.exception.CommaPlaylistException;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
-import com.team.comma.spotify.search.exception.SpotifyException;
-import com.team.comma.spotify.track.domain.TrackArtist;
 import com.team.comma.spotify.track.service.TrackService;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
@@ -65,34 +63,6 @@ public class PlaylistService {
     }
 
     @Transactional
-    public MessageResponse updateAlarmFlag(long playlistId, boolean alarmFlag) {
-        Playlist playlist = playlistRepository.findById(playlistId)
-                .orElseThrow(() -> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
-
-        playlistRepository.updateAlarmFlag(playlistId, alarmFlag);
-        return MessageResponse.of(PLAYLIST_ALARM_UPDATED);
-    }
-
-    @Transactional
-    public MessageResponse deletePlaylist(List<PlaylistRequest> playlistRequests) {
-        for(PlaylistRequest playlistRequest : playlistRequests){
-            Playlist playlist = playlistRepository.findById(playlistRequest.getPlaylistId())
-                    .orElseThrow(() -> new PlaylistException("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요."));
-        }
-        for(PlaylistRequest playlistRequest : playlistRequests){
-            playlistRepository.deletePlaylist(playlistRequest.getPlaylistId());
-        }
-        return MessageResponse.of(PLAYLIST_DELETED);
-    }
-
-    public MessageResponse<Integer> getTotalDurationTimeMsByPlaylist(Long playlistId) {
-        return MessageResponse.of(
-            REQUEST_SUCCESS,
-            playlistRepository.getTotalDurationTimeMsWithPlaylistId(playlistId)
-        );
-    }
-
-    @Transactional
     public MessageResponse updatePlaylist(PlaylistUpdateRequest playlistUpdateRequest) {
 
         Playlist playlist = playlistRepository.findById(playlistUpdateRequest.getId()).orElseThrow(
@@ -100,6 +70,34 @@ public class PlaylistService {
         playlist.updatePlaylist(playlistUpdateRequest);
 
         return MessageResponse.of(REQUEST_SUCCESS);
+    }
+
+    @Transactional
+    public MessageResponse updatePlaylistAlarmFlag(long playlistId, boolean alarmFlag) {
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new CommaPlaylistException("플레이리스트를 찾을 수 없습니다."));
+
+        playlistRepository.updateAlarmFlag(playlistId, alarmFlag);
+        return MessageResponse.of(PLAYLIST_ALARM_UPDATED);
+    }
+
+    @Transactional
+    public MessageResponse updatePlaylistsDelFlag(List<Long> playlistIdList) {
+        for(Long playlistId : playlistIdList){
+            Playlist playlist = playlistRepository.findById(playlistId)
+                    .orElseThrow(() -> new CommaPlaylistException("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요."));
+        }
+        for(Long playlistId : playlistIdList){
+            playlistRepository.deletePlaylist(playlistId);
+        }
+        return MessageResponse.of(PLAYLIST_DELETED);
+    }
+
+    public MessageResponse<Integer> getTotalDurationTimeMsByPlaylist(Long playlistId) {
+        return MessageResponse.of(
+                REQUEST_SUCCESS,
+                playlistRepository.getTotalDurationTimeMsWithPlaylistId(playlistId)
+        );
     }
 
 }

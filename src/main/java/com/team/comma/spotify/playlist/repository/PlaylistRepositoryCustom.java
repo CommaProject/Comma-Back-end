@@ -8,7 +8,7 @@ public interface PlaylistRepositoryCustom {
 
     int findMaxListSequence();
 
-    int updateAlarmFlag(@Param("id") long id, @Param("alarmFlag") boolean alarmFlag);
+    long updateAlarmFlag(@Param("id") long id, @Param("alarmFlag") boolean alarmFlag);
 
-    int deletePlaylist(@Param("id") long id);
+    long deletePlaylist(@Param("id") long id);
 }

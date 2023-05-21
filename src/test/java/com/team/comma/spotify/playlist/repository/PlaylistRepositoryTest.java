@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Import;
 
 @DataJpaTest
 @Import(TestConfig.class)
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class PlaylistRepositoryTest {
 
     @Autowired
@@ -85,7 +84,7 @@ class PlaylistRepositoryTest {
         final Playlist playlist = playlistRepository.save(buildPlaylist(user, "test playlist"));
 
         // when
-        int result = playlistRepository.updateAlarmFlag(playlist.getId(), false);
+        long result = playlistRepository.updateAlarmFlag(playlist.getId(), false);
 
         // then
         assertThat(result).isEqualTo(1);
@@ -98,7 +97,7 @@ class PlaylistRepositoryTest {
         final Playlist playlist = playlistRepository.save(buildPlaylist(user, "test playlist"));
 
         // when
-        int result = playlistRepository.deletePlaylist(playlist.getId());
+        long result = playlistRepository.deletePlaylist(playlist.getId());
 
         // then
         assertThat(result).isEqualTo(1);

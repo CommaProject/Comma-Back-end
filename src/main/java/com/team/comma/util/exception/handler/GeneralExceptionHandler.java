@@ -1,7 +1,7 @@
 package com.team.comma.util.exception.handler;
 
 import com.team.comma.common.dto.MessageResponse;
-import com.team.comma.spotify.playlist.Exception.PlaylistException;
+import com.team.comma.spotify.playlist.exception.CommaPlaylistException;
 import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.search.exception.TokenExpirationException;
 import com.team.comma.util.auth.exception.OAuth2EmailNotFoundException;
@@ -81,7 +81,7 @@ public class GeneralExceptionHandler {
     /*
         알람 설정 변경 시 플레이리스트 찾을 수 없음
      */
-    @ExceptionHandler({PlaylistException.class})
+    @ExceptionHandler({CommaPlaylistException.class})
     public ResponseEntity<MessageResponse> handlePlaylistNotFoundException(Exception e) {
         MessageResponse message = MessageResponse.of(
                 PLAYLIST_NOT_FOUND.getCode(),

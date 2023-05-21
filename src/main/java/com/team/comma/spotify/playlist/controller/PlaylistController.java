@@ -4,7 +4,7 @@ import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistRequest;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
-import com.team.comma.spotify.playlist.Exception.PlaylistException;
+import com.team.comma.spotify.playlist.exception.CommaPlaylistException;
 import com.team.comma.spotify.playlist.service.PlaylistService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,21 +29,31 @@ public class PlaylistController {
     @GetMapping
     public ResponseEntity<List<PlaylistResponse>> getUserPlaylist(
         @CookieValue final String accessToken) throws AccountException {
-        return ResponseEntity.ok().body(playlistService.getPlaylists(accessToken));
+        return ResponseEntity.ok()
+                .body(playlistService.getPlaylists(accessToken));
+    }
+
+    @PatchMapping
+    public ResponseEntity<MessageResponse> patchPlaylist(
+            @RequestBody final PlaylistUpdateRequest playlistUpdateRequest
+    ) {
+        return ResponseEntity.ok(
+                playlistService.updatePlaylist(playlistUpdateRequest)
+        );
     }
 
     @PatchMapping("/alert")
-    public ResponseEntity<MessageResponse> modifyAlarmState(
-        @RequestBody final PlaylistRequest request) throws PlaylistException {
+    public ResponseEntity<MessageResponse> patchPlaylistAlert(
+            @RequestBody final PlaylistRequest request) throws CommaPlaylistException {
         return ResponseEntity.ok()
-            .body(playlistService.updateAlarmFlag(request.getPlaylistId(), request.getAlarmFlag()));
+                .body(playlistService.updatePlaylistAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }
 
-    @PatchMapping("/remove")
-    public ResponseEntity<MessageResponse> removePlaylist(
-            @RequestBody final List<PlaylistRequest> requests) throws PlaylistException {
+    @PatchMapping("/del-flag")
+    public ResponseEntity<MessageResponse> patchPlaylistDelFlag(
+            @RequestBody final List<Long> playlistIdList) throws CommaPlaylistException {
         return ResponseEntity.ok()
-            .body(playlistService.deletePlaylist(requests));
+                .body(playlistService.updatePlaylistsDelFlag(playlistIdList));
     }
 
     @GetMapping("/all-duration-time/{id}")
@@ -53,15 +63,5 @@ public class PlaylistController {
         return ResponseEntity.ok(
             playlistService.getTotalDurationTimeMsByPlaylist(id));
     }
-
-    @PatchMapping
-    public ResponseEntity<MessageResponse> patchPlaylist(
-        @RequestBody final PlaylistUpdateRequest playlistUpdateRequest
-    ) {
-        return ResponseEntity.ok(
-            playlistService.updatePlaylist(playlistUpdateRequest)
-        );
-    }
-
 
 }
