@@ -33,6 +33,7 @@ import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
+import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.service.PlaylistService;
 import com.team.comma.spotify.playlist.service.PlaylistTrackService;
 import com.team.comma.spotify.track.domain.Track;
@@ -183,7 +184,7 @@ class PlaylistControllerTest {
     void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() throws Exception {
         // given
         final String url = "/playlist/alert";
-        doThrow(new CommaPlaylistException("플레이리스트를 찾을 수 없습니다."))
+        doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
                 .when(playlistService).updatePlaylistAlarmFlag(123L, false);
 
         // when
@@ -249,7 +250,7 @@ class PlaylistControllerTest {
         // given
         final String url = "/playlist/del-flag";
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
-        doThrow(new CommaPlaylistException("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요."))
+        doThrow(new PlaylistException("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요."))
                 .when(playlistService).updatePlaylistsDelFlag(playlistIdList);
 
         // when
