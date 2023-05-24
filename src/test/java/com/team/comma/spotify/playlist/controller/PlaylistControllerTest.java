@@ -216,14 +216,14 @@ class PlaylistControllerTest {
     @Test
     void 플레이리스트_삭제_성공() throws Exception {
         // given
-        final String url = "/playlist/del-flag";
+        final String url = "/playlist";
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
         doReturn(MessageResponse.of(PLAYLIST_DELETED)
         ).when(playlistService).updatePlaylistsDelFlag(playlistIdList);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.patch(url)
+                MockMvcRequestBuilders.delete(url)
                         .content(gson.toJson(playlistIdList))
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -248,14 +248,14 @@ class PlaylistControllerTest {
     @Test
     void 플레이리스트_삭제_실패_플레이리스트_찾을수없음() throws Exception {
         // given
-        final String url = "/playlist/del-flag";
+        final String url = "/playlist";
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
         doThrow(new PlaylistException("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요."))
                 .when(playlistService).updatePlaylistsDelFlag(playlistIdList);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.patch(url)
+                MockMvcRequestBuilders.delete(url)
                         .content(gson.toJson(playlistIdList))
                         .contentType(MediaType.APPLICATION_JSON)
         );
