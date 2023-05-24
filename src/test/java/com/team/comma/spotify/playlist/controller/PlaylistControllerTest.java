@@ -163,7 +163,7 @@ class PlaylistControllerTest {
         );
 
         // then
-        resultActions.andExpect(status().isCreated()).andDo(
+        resultActions.andExpect(status().isOk()).andDo(
             document("spotify/updatePlaylistAlert",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
@@ -229,7 +229,7 @@ class PlaylistControllerTest {
         );
 
         // then
-        resultActions.andExpect(status().isCreated()).andDo(
+        resultActions.andExpect(status().isOk()).andDo(
                 document("spotify/deletePlaylist",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
