@@ -50,8 +50,8 @@ public class PlaylistController {
                 .body(playlistService.updatePlaylistAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }
 
-    @PatchMapping("/del-flag")
-    public ResponseEntity<MessageResponse> modifyPlaylistDelFlagWithPlaylistId(
+    @DeleteMapping
+    public ResponseEntity<MessageResponse> deletePlaylist(
             @RequestBody final List<Long> playlistIdList) throws PlaylistException {
         return ResponseEntity.ok()
                 .body(playlistService.updatePlaylistsDelFlag(playlistIdList));
