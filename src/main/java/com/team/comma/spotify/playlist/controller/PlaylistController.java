@@ -46,14 +46,14 @@ public class PlaylistController {
     @PatchMapping("/alert")
     public ResponseEntity<MessageResponse> modifyPlaylistAlert(
             @RequestBody final PlaylistRequest request) throws PlaylistException {
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.ok()
                 .body(playlistService.updatePlaylistAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }
 
     @PatchMapping("/del-flag")
     public ResponseEntity<MessageResponse> modifyPlaylistDelFlag(
             @RequestBody final List<Long> playlistIdList) throws PlaylistException {
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.ok()
                 .body(playlistService.updatePlaylistsDelFlag(playlistIdList));
     }
 
