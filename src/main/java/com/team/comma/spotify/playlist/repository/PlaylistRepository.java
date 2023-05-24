@@ -10,6 +10,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface PlaylistRepository extends JpaRepository<Playlist, Long>,
     PlaylistRepositoryCustom {
-    List<Playlist> findAllByUser(User user);
+    List<Playlist> findAllByUserAndDelFlag(User user, boolean flag);
 
 }

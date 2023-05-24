@@ -37,7 +37,7 @@ public class PlaylistService {
         User user = userRepository.findByEmail(userName)
             .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
 
-        List<Playlist> playlists = playlistRepository.findAllByUser(user);
+        List<Playlist> playlists = playlistRepository.findAllByUserAndDelFlag(user, false);
         return createPlaylistResponse(playlists);
     }
 
@@ -75,7 +75,7 @@ public class PlaylistService {
     @Transactional
     public MessageResponse updatePlaylistAlarmFlag(long playlistId, boolean alarmFlag) {
         Playlist playlist = playlistRepository.findById(playlistId)
-                .orElseThrow(() -> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
+                .orElseThrow(() -> new PlaylistException("플레이리스트가 존재하지 않습니다."));
 
         playlistRepository.updateAlarmFlag(playlistId, alarmFlag);
         return MessageResponse.of(PLAYLIST_ALARM_UPDATED);
@@ -85,7 +85,7 @@ public class PlaylistService {
     public MessageResponse updatePlaylistsDelFlag(List<Long> playlistIdList) {
         for(Long playlistId : playlistIdList){
             Playlist playlist = playlistRepository.findById(playlistId)
-                    .orElseThrow(() -> new PlaylistException("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요."));
+                    .orElseThrow(() -> new PlaylistException("플레이리스트가 존재하지 않습니다."));
         }
         for(Long playlistId : playlistIdList){
             playlistRepository.deletePlaylist(playlistId);

@@ -72,7 +72,7 @@ class PlaylistServiceTest {
                 buildUserPlaylist(Arrays.asList(playlistTrack)),
                 buildUserPlaylist(Arrays.asList(playlistTrack))
         );
-        doReturn(userPlaylist).when(playlistRepository).findAllByUser(user);
+        doReturn(userPlaylist).when(playlistRepository).findAllByUserAndDelFlag(user, false);
 
 
         // when
@@ -90,7 +90,7 @@ class PlaylistServiceTest {
         final Throwable thrown = catchThrowable(() -> playlistService.updatePlaylistAlarmFlag(123L, false));
 
         // then
-        assertThat(thrown.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
+        assertThat(thrown.getMessage()).isEqualTo("플레이리스트가 존재하지 않습니다.");
     }
 
     @Test
@@ -120,7 +120,7 @@ class PlaylistServiceTest {
         final Throwable thrown = catchThrowable(() -> playlistService.updatePlaylistsDelFlag(playlistIdList));
 
         // then
-        assertThat(thrown.getMessage()).isEqualTo("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요.");
+        assertThat(thrown.getMessage()).isEqualTo("플레이리스트가 존재하지 않습니다.");
     }
 
     @Test
@@ -213,13 +213,11 @@ class PlaylistServiceTest {
                 .build();
     }
 
-
     private TrackArtist buildTrackArtist(){
         return TrackArtist.builder()
                 .id(1L)
                 .artistName("test artist")
                 .build();
     }
-
 
 }

@@ -8,6 +8,7 @@ import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.service.PlaylistService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class PlaylistController {
     }
 
     @PatchMapping
-    public ResponseEntity<MessageResponse> patchPlaylist(
+    public ResponseEntity<MessageResponse> modifyPlaylist(
             @RequestBody final PlaylistUpdateRequest playlistUpdateRequest
     ) {
         return ResponseEntity.ok(
@@ -43,25 +44,25 @@ public class PlaylistController {
     }
 
     @PatchMapping("/alert")
-    public ResponseEntity<MessageResponse> patchPlaylistAlert(
+    public ResponseEntity<MessageResponse> modifyPlaylistAlert(
             @RequestBody final PlaylistRequest request) throws PlaylistException {
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(playlistService.updatePlaylistAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }
 
     @PatchMapping("/del-flag")
-    public ResponseEntity<MessageResponse> patchPlaylistDelFlag(
+    public ResponseEntity<MessageResponse> modifyPlaylistDelFlag(
             @RequestBody final List<Long> playlistIdList) throws PlaylistException {
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(playlistService.updatePlaylistsDelFlag(playlistIdList));
     }
 
     @GetMapping("/all-duration-time/{id}")
     public ResponseEntity<MessageResponse> getPlaylistAllDurationTime(
-        @PathVariable("id") final Long id
+            @PathVariable("id") final Long id
     ) {
         return ResponseEntity.ok(
-            playlistService.getTotalDurationTimeMsByPlaylist(id));
+                playlistService.getTotalDurationTimeMsByPlaylist(id));
     }
 
 }
