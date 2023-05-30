@@ -70,7 +70,7 @@ public class PlaylistTrackService {
             playlistRepository.save(playlist);
 
             for (TrackRequest trackRequest : dto.getTrackList()) {
-                savePlaylistTrackAndTrackRequested(playlist,trackRequest);
+                savePlaylistTrackRequested(playlist,trackRequest);
             }
         } else {
             for (Long playlistId : dto.getPlaylistIdList()){
@@ -78,7 +78,7 @@ public class PlaylistTrackService {
                         .orElseThrow(() -> new PlaylistException("플레이리스트가 존재하지 않습니다."));
 
                 for (TrackRequest trackRequest : dto.getTrackList()) {
-                    savePlaylistTrackAndTrackRequested(playlist,trackRequest);
+                    savePlaylistTrackRequested(playlist,trackRequest);
                 }
             }
         }
@@ -89,11 +89,9 @@ public class PlaylistTrackService {
         );
     }
 
-    public void savePlaylistTrackAndTrackRequested(Playlist playlist, TrackRequest trackRequest){
-        Optional<Track> optionalTrack = trackRepository.findBySpotifyTrackId(trackRequest.getSpotifyTrackId());
-
-        Track track = (optionalTrack.isPresent()) ?
-                optionalTrack.get() : trackRepository.save(trackRequest.toTrackEntity());
+    public void savePlaylistTrackRequested(Playlist playlist, TrackRequest trackRequest){
+        Track track = trackRepository.findBySpotifyTrackId(trackRequest.getSpotifyTrackId())
+                .orElse(trackRepository.save(trackRequest.toTrackEntity()));
 
         Integer maxPlaySequence = playlistTrackRepository.
                 findMaxPlaySequenceByPlaylistId(playlist.getId())
