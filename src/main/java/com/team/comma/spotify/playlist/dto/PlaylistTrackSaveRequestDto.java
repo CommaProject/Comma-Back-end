@@ -31,10 +31,6 @@ public class PlaylistTrackSaveRequestDto {
 
     private List<TrackRequest> trackList;
 
-    //
-//    private List<Long> trackIdList;
-    //
-
     @Setter
     @JsonIgnore
     private int listSequence;
@@ -48,12 +44,10 @@ public class PlaylistTrackSaveRequestDto {
         (
             @JsonProperty("playlistTitle") String playlistTitle,
             @JsonProperty("alarmStartTime") LocalTime alarmStartTime,
-//            @JsonProperty("trackIdList") List<Long> trackIdList
             @JsonProperty("trackList") List<TrackRequest> trackList
         ) {
         this.playlistTitle = playlistTitle;
         this.alarmStartTime = alarmStartTime;
-//        this.trackIdList = trackIdList;
         this.trackList = trackList;
     }
 
