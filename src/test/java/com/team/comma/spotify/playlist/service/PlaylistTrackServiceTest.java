@@ -101,78 +101,6 @@ class PlaylistTrackServiceTest {
 
     }
 
-//    @Test
-//    void 플레이리스트와_트랙들을_PlaylistTrackSaveRequestDto로_저장한다() throws AccountException {
-//        //given
-//        final String accessToken = "accessToken";
-//        final String userEmail = "test@email.com";
-//
-//        PlaylistTrackSaveRequestDto requestDto = PlaylistTrackSaveRequestDto.builder()
-//            .playlistTitle("플리 타이틀")
-//            .alarmStartTime(LocalTime.now())
-//            .listSequence(1)
-//            .trackList(List.of(TrackRequest.builder().build()))
-//            .build();
-//
-//        Playlist playlist = requestDto.toPlaylistEntity();
-//
-//        doReturn(userEmail)
-//            .when(jwtTokenProvider).getUserPk(accessToken);
-//
-//        doReturn(Optional.of(User.builder().email(userEmail).build()))
-//            .when(userRepository).findByEmail(userEmail);
-//
-//        doReturn(Optional.of(1))
-//            .when(playlistTrackRepository).findMaxPlaySequenceByPlaylistId(playlist.getId());
-//
-//        doReturn(playlist)
-//            .when(playlistRepository).save(any(Playlist.class));
-//
-//        doReturn(Optional.of(Track.builder().build()))
-//            .when(trackRepository).findById(anyLong());
-//
-//        doReturn(PlaylistTrack.builder().build())
-//            .when(playlistTrackRepository).save(any(PlaylistTrack.class));
-//
-//        //when
-//        MessageResponse messageResponse = playlistTrackService.savePlaylistTrackList(requestDto,
-//            accessToken);
-//
-//        //then
-//        assertThat(messageResponse.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-//        assertThat(messageResponse.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-//
-//    }
-
-//    @Test
-//    void 트랙이_존재하지않으면_EntityNotFoundException() throws AccountException {
-//        //given
-//        final String accessToken = "accessToken";
-//        final String userEmail = "test@email.com";
-//
-//        User user = User.builder().email(userEmail).build();
-//
-//        PlaylistTrackSaveRequestDto requestDto = PlaylistTrackSaveRequestDto.builder()
-//            .playlistTitle("플리 타이틀")
-//            .alarmStartTime(LocalTime.now())
-//            .listSequence(1)
-//            .trackIdList(List.of(1L, 2L, 3L))
-//            .build();
-//
-//        Playlist playlist = requestDto.toPlaylistEntity();
-//
-//        doReturn(userEmail)
-//            .when(jwtTokenProvider).getUserPk(accessToken);
-//        doReturn(Optional.of(user))
-//            .when(userRepository).findByEmail(userEmail);
-//
-//        //when
-//        //then
-//        assertThatThrownBy(
-//            () -> playlistTrackService.savePlaylistTrackList(requestDto, accessToken))
-//            .isInstanceOf(EntityNotFoundException.class);
-//    }
-
     @Test
     void 사용자가_존재하지않으면_UsernameNotFoundException() {
         //given
@@ -193,7 +121,7 @@ class PlaylistTrackServiceTest {
     }
 
     @Test
-    void 트랙_저장_성공_플레이리스트ID리스트가_비어있고_track이_존재하지않으면_트랙_신규_저장_및_플레이리스트_신규_저장() throws AccountException {
+    void 트랙_저장_성공_playlistIdList_비어있고_track_존재하지않으면_트랙_신규_저장_후_플레이리스트_신규_저장() throws AccountException {
         //given
         final String accessToken = "accessToken";
         final String userEmail = "test@email.com";
@@ -229,7 +157,7 @@ class PlaylistTrackServiceTest {
     }
 
     @Test
-    void 트랙_저장_성공_플레이리스트ID리스트가_비어있고_track이_존재하면_플레이리스트_신규_저장() throws AccountException {
+    void 트랙_저장_성공_playlistIdList_비어있고_track_존재하면_플레이리스트_신규_저장() throws AccountException {
         //given
         final String accessToken = "accessToken";
         final String userEmail = "test@email.com";
@@ -267,7 +195,7 @@ class PlaylistTrackServiceTest {
     }
 
     @Test
-    void 트랙_저장_성공_플레이리스트ID리스트가_비어있지않고_track이_존재하지않으면_트랙_신규_저장_및_플레이리스트_트랙_추가() throws AccountException {
+    void 트랙_저장_성공_playlistIdList_비어있지않고_track_존재하지않으면_트랙_신규_저장_후_플레이리스트_트랙_추가() throws AccountException {
         //given
         final String accessToken = "accessToken";
         final String userEmail = "test@email.com";
@@ -307,7 +235,7 @@ class PlaylistTrackServiceTest {
     }
 
     @Test
-    void 트랙_저장_성공_플레이리스트ID리스트가_비어있지않고_track이_존재하면_플레이리스트_트랙_추가() throws AccountException {
+    void 트랙_저장_성공_playlistIdList_비어있지않고_track_존재하면_플레이리스트_트랙_추가() throws AccountException {
         //given
         final String accessToken = "accessToken";
         final String userEmail = "test@email.com";
@@ -350,7 +278,7 @@ class PlaylistTrackServiceTest {
     }
 
     @Test
-    void 트랙_저장_실패_playlistIdList_중_존재하지않는_플레이리스트_포함됨() throws PlaylistException {
+    void 트랙_저장_실패_playlistIdList_존재하지않는_플레이리스트_포함() throws PlaylistException {
         final String accessToken = "accessToken";
         final String userEmail = "test@email.com";
         final User user = User.builder().email(userEmail).build();
