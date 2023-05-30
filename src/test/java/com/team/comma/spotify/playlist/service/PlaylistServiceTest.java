@@ -74,7 +74,6 @@ class PlaylistServiceTest {
         );
         doReturn(userPlaylist).when(playlistRepository).findAllByUserAndDelFlag(user, false);
 
-
         // when
         final List<PlaylistResponse> result = playlistService.getPlaylists(token);
 

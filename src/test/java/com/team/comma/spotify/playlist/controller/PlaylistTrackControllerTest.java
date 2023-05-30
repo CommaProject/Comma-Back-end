@@ -28,6 +28,7 @@ import com.team.comma.spotify.playlist.dto.PlaylistTrackRequest;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackSaveRequestDto;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
 import com.team.comma.spotify.playlist.service.PlaylistTrackService;
+import com.team.comma.spotify.track.dto.TrackRequest;
 import com.team.comma.user.domain.User;
 import com.team.comma.util.gson.GsonUtil;
 import jakarta.persistence.EntityNotFoundException;
@@ -197,10 +198,18 @@ class PlaylistTrackControllerTest {
                 REQUEST_SUCCESS.getMessage()
             );
 
+        TrackRequest trackRequest = TrackRequest.builder()
+                .trackTitle("test track")
+                .albumImageUrl("url/track")
+                .spotifyTrackId("input ISRC")
+                .spotifyTrackHref("input href")
+                .trackArtistList(List.of("artist","artist")).build();
+
         String body = objectMapper.writeValueAsString(PlaylistTrackSaveRequestDto.builder()
+            .playlistIdList(List.of(1L,2L,3L))
             .playlistTitle("test playlist")
             .alarmStartTime(LocalTime.of(10, 10))
-            .trackIdList(List.of(1L, 2L, 3L))
+            .trackList(List.of(trackRequest))
             .build());
 
         doReturn(messageResponse)
@@ -223,9 +232,15 @@ class PlaylistTrackControllerTest {
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     requestFields(
+                        fieldWithPath("playlistIdList").description("플레이리스트 ID 리스트, 신규 생성의 경우 입력받지 않음"),
                         fieldWithPath("playlistTitle").description("플레이리스트 제목"),
                         fieldWithPath("alarmStartTime").description("알람 시작 시간"),
-                        fieldWithPath("trackIdList").description("저장할 트랙 id 리스트")
+                        fieldWithPath("trackList").description("저장할 트랙 정보 리스트"),
+                        fieldWithPath("trackList.[].trackTitle").description("트랙 제목"),
+                        fieldWithPath("trackList.[].albumImageUrl").description("트랙 앨범 이미지 경로"),
+                        fieldWithPath("trackList.[].spotifyTrackId").description("트랙 ISRC 값"),
+                        fieldWithPath("trackList.[].spotifyTrackHref").description("트랙 href"),
+                        fieldWithPath("trackList.[].trackArtistList").description("트랙 아티스트 이름 리스트")
                     ),
                     responseFields(
                         fieldWithPath("code").description("응답 코드"),
