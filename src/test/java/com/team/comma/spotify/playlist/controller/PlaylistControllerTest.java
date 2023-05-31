@@ -278,7 +278,7 @@ class PlaylistControllerTest {
         final String url = "/playlist";
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
 
-        doThrow(new PlaylistException("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요."))
+        doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
                 .when(playlistService).updatePlaylistsDelFlag(playlistIdList);
 
         // when
