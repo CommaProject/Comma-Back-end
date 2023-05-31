@@ -92,7 +92,7 @@ public class PlaylistTrackService {
         Track track = trackRepository.findBySpotifyTrackId(trackRequest.getSpotifyTrackId())
                 .orElse(trackRepository.save(trackRequest.toTrackEntity()));
 
-        Integer maxPlaySequence = playlistTrackRepository.
+        int maxPlaySequence = playlistTrackRepository.
                 findMaxPlaySequenceByPlaylistId(playlist.getId())
                 .orElse(0);
 
