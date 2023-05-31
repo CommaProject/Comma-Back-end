@@ -33,7 +33,6 @@ public class PlaylistTrackService {
     private final PlaylistTrackRepository playlistTrackRepository;
     private final PlaylistRepository playlistRepository;
     private final TrackRepository trackRepository;
-    private final TrackArtistRepository trackArtistRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
@@ -65,20 +64,20 @@ public class PlaylistTrackService {
             throw new AccountException("사용자를 찾을 수 없습니다.");
         }
 
-        if (dto.getPlaylistIdList() == null){
+        if (dto.getPlaylistIdList().isEmpty()){
             Playlist playlist = dto.toPlaylistEntity();
             playlistRepository.save(playlist);
 
             for (TrackRequest trackRequest : dto.getTrackList()) {
-                savePlaylistTrackRequested(playlist,trackRequest);
+                addTrackToPlaylist(playlist,trackRequest);
             }
         } else {
             for (Long playlistId : dto.getPlaylistIdList()){
                 Playlist playlist = playlistRepository.findById(playlistId)
-                        .orElseThrow(() -> new PlaylistException("플레이리스트가 존재하지 않습니다."));
+                        .orElseThrow(() -> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
 
                 for (TrackRequest trackRequest : dto.getTrackList()) {
-                    savePlaylistTrackRequested(playlist,trackRequest);
+                    addTrackToPlaylist(playlist,trackRequest);
                 }
             }
         }
@@ -89,7 +88,7 @@ public class PlaylistTrackService {
         );
     }
 
-    public void savePlaylistTrackRequested(Playlist playlist, TrackRequest trackRequest){
+    public void addTrackToPlaylist(Playlist playlist, TrackRequest trackRequest){
         Track track = trackRepository.findBySpotifyTrackId(trackRequest.getSpotifyTrackId())
                 .orElse(trackRepository.save(trackRequest.toTrackEntity()));
 

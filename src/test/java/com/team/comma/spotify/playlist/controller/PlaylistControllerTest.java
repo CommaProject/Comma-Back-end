@@ -151,6 +151,7 @@ class PlaylistControllerTest {
     void 플레이리스트_알람설정변경_성공() throws Exception {
         // given
         final String url = "/playlist/alert";
+
         doReturn(MessageResponse.of(PLAYLIST_ALARM_UPDATED)
         ).when(playlistService).updatePlaylistAlarmFlag(123L, false);
 
@@ -184,6 +185,7 @@ class PlaylistControllerTest {
     void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() throws Exception {
         // given
         final String url = "/playlist/alert";
+
         doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
                 .when(playlistService).updatePlaylistAlarmFlag(123L, false);
 
@@ -218,6 +220,7 @@ class PlaylistControllerTest {
         // given
         final String url = "/playlist";
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
+
         doReturn(MessageResponse.of(PLAYLIST_DELETED)
         ).when(playlistService).updatePlaylistsDelFlag(playlistIdList);
 
@@ -250,6 +253,7 @@ class PlaylistControllerTest {
         // given
         final String url = "/playlist";
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
+
         doThrow(new PlaylistException("플레이리스트가 존재하지 않습니다. 다시 시도해 주세요."))
                 .when(playlistService).updatePlaylistsDelFlag(playlistIdList);
 

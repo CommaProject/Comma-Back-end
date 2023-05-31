@@ -136,6 +136,7 @@ class PlaylistTrackServiceTest {
                 .build();
 
         PlaylistTrackSaveRequestDto requestDto = PlaylistTrackSaveRequestDto.builder()
+                .playlistIdList(List.of())
                 .playlistTitle("플리 타이틀")
                 .alarmStartTime(LocalTime.now())
                 .listSequence(1)
@@ -173,6 +174,7 @@ class PlaylistTrackServiceTest {
         Track track = trackRequest.toTrackEntity();
 
         PlaylistTrackSaveRequestDto requestDto = PlaylistTrackSaveRequestDto.builder()
+                .playlistIdList(List.of())
                 .playlistTitle("플리 타이틀")
                 .alarmStartTime(LocalTime.now())
                 .listSequence(1)
@@ -308,7 +310,7 @@ class PlaylistTrackServiceTest {
         final Throwable thrown = catchThrowable(() -> playlistTrackService.savePlaylistTrackList(requestDto, accessToken));
 
         // then
-        assertThat(thrown.getMessage()).isEqualTo("플레이리스트가 존재하지 않습니다.");
+        assertThat(thrown.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
     }
 
 }
