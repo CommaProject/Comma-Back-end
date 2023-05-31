@@ -42,6 +42,7 @@ import com.team.comma.util.gson.GsonUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -116,7 +117,6 @@ class PlaylistControllerTest {
             RestDocumentationRequestBuilders.get(url)
                 .cookie(new Cookie("accessToken", "accessToken"))
                 .contentType(MediaType.APPLICATION_JSON));
-        final List<PlaylistResponse> result = playlistService.getPlaylists("accessToken");
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
@@ -144,6 +144,9 @@ class PlaylistControllerTest {
                 )
             )
         );
+
+        final List<PlaylistResponse> result = playlistService.getPlaylists("accessToken");
+
         assertThat(result).hasSize(1);
     }
 
@@ -179,6 +182,13 @@ class PlaylistControllerTest {
                 )
             )
         );
+
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(PLAYLIST_ALARM_UPDATED.getCode());
+        assertThat(result.getMessage()).isEqualTo(PLAYLIST_ALARM_UPDATED.getMessage());
     }
 
     @Test
@@ -213,6 +223,13 @@ class PlaylistControllerTest {
                         )
                 )
         );
+
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(PLAYLIST_NOT_FOUND.getCode());
+        assertThat(result.getMessage()).isEqualTo(PLAYLIST_NOT_FOUND.getMessage());
     }
 
     @Test
@@ -246,6 +263,13 @@ class PlaylistControllerTest {
                         )
                 )
         );
+
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(PLAYLIST_DELETED.getCode());
+        assertThat(result.getMessage()).isEqualTo(PLAYLIST_DELETED.getMessage());
     }
 
     @Test
@@ -279,6 +303,13 @@ class PlaylistControllerTest {
                         )
                 )
         );
+
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(PLAYLIST_NOT_FOUND.getCode());
+        assertThat(result.getMessage()).isEqualTo(PLAYLIST_NOT_FOUND.getMessage());
     }
 
     @Test
