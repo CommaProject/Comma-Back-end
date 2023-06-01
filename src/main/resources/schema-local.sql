@@ -213,4 +213,4 @@ CREATE TABLE refresh_token_tb
     PRIMARY KEY (id)
 );
 
-insert into user_tb (email , password , type , role) values ("testEmail" , "password" , "GENERAL_USER" , "ROLE_USER");
+insert into user_tb (email , password , type , role) values ('testEmail' , 'password' , 'GENERAL_USER' , 'USER');
