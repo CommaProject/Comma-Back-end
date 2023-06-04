@@ -72,7 +72,7 @@ class PlaylistServiceTest {
                 buildUserPlaylist(Arrays.asList(playlistTrack)),
                 buildUserPlaylist(Arrays.asList(playlistTrack))
         );
-        doReturn(userPlaylist).when(playlistRepository).findAllByUserAndDelFlag(user, false);
+        doReturn(userPlaylist).when(playlistRepository).findAllByUserAndDelFlagOrderByAlarmStartTime(user, false);
 
         // when
         final List<PlaylistResponse> result = playlistService.getPlaylists(token);

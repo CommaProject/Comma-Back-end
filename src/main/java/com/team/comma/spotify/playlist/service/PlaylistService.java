@@ -37,7 +37,7 @@ public class PlaylistService {
         User user = userRepository.findByEmail(userName)
             .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
 
-        List<Playlist> playlists = playlistRepository.findAllByUserAndDelFlag(user, false);
+        List<Playlist> playlists = playlistRepository.findAllByUserAndDelFlagOrderByAlarmStartTime(user, false);
         return createPlaylistResponse(playlists);
     }
 

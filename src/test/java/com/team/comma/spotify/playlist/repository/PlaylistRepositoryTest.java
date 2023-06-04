@@ -57,7 +57,7 @@ class PlaylistRepositoryTest {
         final User user = userRepository.save(buildUser());
 
         // when
-        final List<Playlist> result = playlistRepository.findAllByUserAndDelFlag(user, false);
+        final List<Playlist> result = playlistRepository.findAllByUserAndDelFlagOrderByAlarmStartTime(user, false);
 
         // then
         assertThat(result.size()).isEqualTo(0);
@@ -71,7 +71,7 @@ class PlaylistRepositoryTest {
         playlistRepository.save(buildPlaylist(user, title));
 
         // when
-        final List<Playlist> result = playlistRepository.findAllByUserAndDelFlag(user, false);
+        final List<Playlist> result = playlistRepository.findAllByUserAndDelFlagOrderByAlarmStartTime(user, false);
 
         // then
         assertThat(result.size()).isEqualTo(2);
