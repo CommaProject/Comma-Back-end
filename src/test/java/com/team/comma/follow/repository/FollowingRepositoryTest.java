@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -161,6 +163,46 @@ public class FollowingRepositoryTest {
 
         // then
         assertThat(result).isNotNull();
+    }
+
+    @Test
+    @DisplayName("팔로우 리스트 조회")
+    public void getFollowedMeUserListByUser() {
+        // given
+        User toUser1 = User.builder()
+                .email("toEmail")
+                .build();
+
+        User toUser2 = User.builder()
+                .email("toEmail")
+                .build();
+
+        User fromUser = User.builder()
+                .email("fromEmail")
+                .build();
+
+        Following follow1 = Following.builder()
+                .userTo(toUser1)
+                .blockFlag(true)
+                .userFrom(fromUser)
+                .build();
+
+        Following follow2 = Following.builder()
+                .userTo(toUser2)
+                .blockFlag(true)
+                .userFrom(fromUser)
+                .build();
+
+        followingRepository.save(follow1);
+        followingRepository.save(follow2);
+
+        // when
+        List<User> result = followingRepository.getFollowedMeUserListByUser(fromUser);
+
+        // then
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.get(0).getEmail()).isEqualTo("toEmail");
+
     }
 
 }

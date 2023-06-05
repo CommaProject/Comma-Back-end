@@ -7,6 +7,7 @@ import com.team.comma.user.domain.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.team.comma.follow.domain.QFollowing.following;
@@ -65,4 +66,13 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
                 ))
                 .execute();
     }
+
+    @Override
+    public List<User> getFollowedMeUserListByUser(User fromUser) {
+        return queryFactory.select(following.userTo)
+                .from(following)
+                .where(following.userFrom.eq(fromUser))
+                .fetch();
+    }
+
 }

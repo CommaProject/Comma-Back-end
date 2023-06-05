@@ -3,12 +3,14 @@ package com.team.comma.follow.controller;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.follow.dto.FollowingRequest;
 import com.team.comma.follow.service.FollowingService;
+import com.team.comma.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,6 +45,12 @@ public class FollowingController {
             , @RequestBody FollowingRequest followingRequest) {
         return ResponseEntity.ok()
                 .body(followingService.unblockFollowedUser(accessToken , followingRequest.getToUserEmail()));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<MessageResponse> followList(@CookieValue String accessToken) throws AccountException {
+        return ResponseEntity.ok()
+                .body(followingService.getFollowedMeUserList(accessToken));
     }
 
 }
