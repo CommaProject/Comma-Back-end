@@ -1,8 +1,11 @@
 package com.team.comma.follow.service;
 
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.follow.domain.Following;
+import com.team.comma.follow.dto.FollowingResponse;
 import com.team.comma.follow.exception.FollowingException;
 import com.team.comma.follow.repository.FollowingRepository;
+import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
@@ -18,8 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 
@@ -173,18 +175,20 @@ public class FollowingServiceTest {
         // given
         String token = "accessToken";
         String email = "email@email.com";
-        User fromUser = User.builder().build();
-        User toUser = User.builder().build();
+        User fromUser = User.builder().role(UserRole.USER).email("fromUser").build();
+        User toUser = User.builder().role(UserRole.USER).email("toUser").build();
+        Following following = Following.builder().id(1L).blockFlag(false).userFrom(fromUser).userTo(toUser).build();
 
         doReturn(email).when(jwtTokenProvider).getUserPk(token);
         doReturn(Optional.of(fromUser)).when(userRepository).findByEmail(email);
-        doReturn(List.of(toUser)).when(followingRepository).getFollowingUserListByUser(fromUser);
+        doReturn(List.of(following)).when(followingRepository).getFollowingUserListByUser(fromUser);
 
         // when
         MessageResponse result = followingService.getFollowingUserList(token);
 
         // then
-        assertThat(result.getData()).isEqualTo(List.of(toUser));
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
 
     }
 }

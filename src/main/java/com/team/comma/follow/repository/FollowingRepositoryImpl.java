@@ -2,6 +2,7 @@ package com.team.comma.follow.repository;
 
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.comma.follow.domain.Following;
 import com.team.comma.user.domain.QUser;
 import com.team.comma.user.domain.User;
 import jakarta.transaction.Transactional;
@@ -68,8 +69,8 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
     }
 
     @Override
-    public List<String> getFollowingUserListByUser(User fromUser) {
-        return queryFactory.select(following.userTo.email)
+    public List<Following> getFollowingUserListByUser(User fromUser) {
+        return queryFactory.select(following)
                 .from(following)
                 .where(following.userFrom.eq(fromUser))
                 .fetch();

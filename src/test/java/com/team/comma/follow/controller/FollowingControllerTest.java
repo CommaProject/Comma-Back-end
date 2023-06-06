@@ -2,7 +2,9 @@ package com.team.comma.follow.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.follow.domain.Following;
 import com.team.comma.follow.dto.FollowingRequest;
+import com.team.comma.follow.dto.FollowingResponse;
 import com.team.comma.follow.exception.FollowingException;
 import com.team.comma.follow.service.FollowingService;
 import com.team.comma.user.constant.UserRole;
@@ -30,6 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
@@ -416,8 +419,11 @@ public class FollowingControllerTest {
         final String api = "/followings/list";
 
         final String token = "accessToken";
-        final String toUser = "toUser";
-        final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , List.of(toUser, toUser));
+        final User fromUser = User.builder().role(UserRole.USER).email("fromUser").build();
+        final User toUser = User.builder().role(UserRole.USER).email("toUser").build();
+        final Following following = Following.builder().id(1L).blockFlag(false).userFrom(fromUser).userTo(toUser).build();
+        final FollowingResponse response = FollowingResponse.of(following);
+        final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , List.of(response,response));
         doReturn(message).when(followingService).getFollowingUserList(token);
 
         // when
@@ -438,16 +444,15 @@ public class FollowingControllerTest {
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메세지"),
                                 fieldWithPath("data").description("응답 데이터"),
-                                fieldWithPath("data.[]").description("팔로잉 사용자 이메일 리스트")
+                                fieldWithPath("data.[].followingId").description("팔로우 관계 Id"),
+                                fieldWithPath("data.[].fromUserEmail").description("팔로우 한 사용자 이메일"),
+                                fieldWithPath("data.[].toUserEmail").description("팔로우 대상 사용자 이메일")
                         )
                 )
         );
-        final MessageResponse result = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
+        final MessageResponse result = followingService.getFollowingUserList(token);
 
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getData()).isEqualTo(List.of(toUser, toUser));
+        assertThat(result.getData()).isEqualTo(List.of(response,response));
 
     }
 

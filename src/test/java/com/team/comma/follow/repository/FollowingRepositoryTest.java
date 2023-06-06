@@ -197,11 +197,11 @@ public class FollowingRepositoryTest {
         followingRepository.save(follow2);
 
         // when
-        List<String> result = followingRepository.getFollowingUserListByUser(fromUser);
+        List<Following> result = followingRepository.getFollowingUserListByUser(fromUser);
 
         // then
         assertThat(result.size()).isEqualTo(2);
-        assertThat(result.get(0)).isEqualTo("toUser");
+        assertThat(result.get(0).getUserTo()).isEqualTo(toUser1);
 
     }
 

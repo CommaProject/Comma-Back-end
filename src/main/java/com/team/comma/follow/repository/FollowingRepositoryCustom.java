@@ -1,5 +1,6 @@
 package com.team.comma.follow.repository;
 
+import com.team.comma.follow.domain.Following;
 import com.team.comma.user.domain.User;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface FollowingRepositoryCustom {
 
     void unblockFollowedUser(String toUserEmail , String fromUserEmail);
 
-    List<String> getFollowingUserListByUser(User fromUser);
+    List<Following> getFollowingUserListByUser(User fromUser);
 }
