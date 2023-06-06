@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.security.auth.login.AccountException;
+import java.util.List;
 import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
@@ -154,4 +155,36 @@ public class FollowingServiceTest {
         assertThat(result.getData()).isEqualTo(true);
     }
 
+    @Test
+    public void 팔로잉_리스트_조회_실패_사용자정보없음() throws AccountException {
+        // given
+        String token = "accessToken";
+
+        // when
+        Throwable thrown = catchThrowable(() -> followingService.getFollowingUserList(token));
+
+        // then
+        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("해당 사용자를 찾을 수 없습니다.");
+
+    }
+
+    @Test
+    public void 팔로잉_리스트_조회_성공() throws AccountException {
+        // given
+        String token = "accessToken";
+        String email = "email@email.com";
+        User fromUser = User.builder().build();
+        User toUser = User.builder().build();
+
+        doReturn(email).when(jwtTokenProvider).getUserPk(token);
+        doReturn(Optional.of(fromUser)).when(userRepository).findByEmail(email);
+        doReturn(List.of(toUser)).when(followingRepository).getFollowingUserListByUser(fromUser);
+
+        // when
+        MessageResponse result = followingService.getFollowingUserList(token);
+
+        // then
+        assertThat(result.getData()).isEqualTo(List.of(toUser));
+
+    }
 }

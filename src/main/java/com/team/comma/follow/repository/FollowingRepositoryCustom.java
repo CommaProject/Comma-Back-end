@@ -15,5 +15,5 @@ public interface FollowingRepositoryCustom {
 
     void unblockFollowedUser(String toUserEmail , String fromUserEmail);
 
-    List<User> getFollowedMeUserListByUser(User fromUser);
+    List<String> getFollowingUserListByUser(User fromUser);
 }

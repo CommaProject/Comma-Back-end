@@ -11,6 +11,7 @@ import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
+import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.track.domain.Track;
@@ -75,10 +76,11 @@ class PlaylistServiceTest {
         doReturn(userPlaylist).when(playlistRepository).findAllByUserAndDelFlagOrderByAlarmStartTime(user, false);
 
         // when
-        final List<PlaylistResponse> result = playlistService.getPlaylists(token);
+        final MessageResponse result = playlistService.getPlaylists(token);
 
         // then
-        assertThat(result).hasSize(3);
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
     @Test

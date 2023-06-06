@@ -32,13 +32,13 @@ public class PlaylistService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public List<PlaylistResponse> getPlaylists(final String accessToken) throws AccountException {
+    public MessageResponse getPlaylists(final String accessToken) throws AccountException {
         String userName = jwtTokenProvider.getUserPk(accessToken);
         User user = userRepository.findByEmail(userName)
             .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
 
         List<Playlist> playlists = playlistRepository.findAllByUserAndDelFlagOrderByAlarmStartTime(user, false);
-        return createPlaylistResponse(playlists);
+        return MessageResponse.of(REQUEST_SUCCESS, createPlaylistResponse(playlists));
     }
 
     public List<PlaylistResponse> createPlaylistResponse(List<Playlist> playlists) {

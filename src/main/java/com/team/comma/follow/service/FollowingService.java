@@ -13,9 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
 
-import java.util.List;
-import java.util.Optional;
-
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
@@ -91,11 +88,11 @@ public class FollowingService {
         return false;
     }
 
-    public MessageResponse getFollowedMeUserList(String token) throws AccountException {
+    public MessageResponse getFollowingUserList(String token) throws AccountException {
         String fromUserEmail = jwtTokenProvider.getUserPk(token);
         User fromUser = userRepository.findByEmail(fromUserEmail)
                 .orElseThrow(() -> new AccountException("해당 사용자를 찾을 수 없습니다."));
-        return MessageResponse.of(REQUEST_SUCCESS,followingRepository.getFollowedMeUserListByUser(fromUser));
+        return MessageResponse.of(REQUEST_SUCCESS, followingRepository.getFollowingUserListByUser(fromUser));
     }
 
 }

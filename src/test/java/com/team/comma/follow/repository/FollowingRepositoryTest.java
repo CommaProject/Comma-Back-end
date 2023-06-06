@@ -170,15 +170,15 @@ public class FollowingRepositoryTest {
     public void getFollowedMeUserListByUser() {
         // given
         User toUser1 = User.builder()
-                .email("toEmail")
+                .email("toUser")
                 .build();
 
         User toUser2 = User.builder()
-                .email("toEmail")
+                .email("toUser")
                 .build();
 
         User fromUser = User.builder()
-                .email("fromEmail")
+                .email("fromUser")
                 .build();
 
         Following follow1 = Following.builder()
@@ -197,11 +197,11 @@ public class FollowingRepositoryTest {
         followingRepository.save(follow2);
 
         // when
-        List<User> result = followingRepository.getFollowedMeUserListByUser(fromUser);
+        List<String> result = followingRepository.getFollowingUserListByUser(fromUser);
 
         // then
         assertThat(result.size()).isEqualTo(2);
-        assertThat(result.get(0).getEmail()).isEqualTo("toEmail");
+        assertThat(result.get(0)).isEqualTo("toUser");
 
     }
 

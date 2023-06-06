@@ -68,8 +68,8 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
     }
 
     @Override
-    public List<User> getFollowedMeUserListByUser(User fromUser) {
-        return queryFactory.select(following.userTo)
+    public List<String> getFollowingUserListByUser(User fromUser) {
+        return queryFactory.select(following.userTo.email)
                 .from(following)
                 .where(following.userFrom.eq(fromUser))
                 .fetch();
