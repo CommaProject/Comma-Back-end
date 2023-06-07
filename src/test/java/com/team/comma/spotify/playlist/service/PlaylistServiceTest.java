@@ -56,12 +56,7 @@ class PlaylistServiceTest {
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
 
-        final PlaylistTrackArtistResponse playlistTrackArtistResponse = PlaylistTrackArtistResponse.of(trackArtist);
-        final PlaylistTrackResponse playlistTrackResponse = PlaylistTrackResponse.of(track, true, List.of(playlistTrackArtistResponse));
-        final PlaylistResponse playlistResponse = PlaylistResponse.of(
-                buildUserPlaylist(Arrays.asList(playlistTrack)),
-                List.of(playlistTrackResponse));
-
+        final PlaylistResponse playlistResponse = PlaylistResponse.of(buildUserPlaylist(Arrays.asList(playlistTrack)), 3);
         final List<PlaylistResponse> playlistResponseList = List.of(playlistResponse);
 
         doReturn(optionalUser).when(userRepository).findByEmail(userEmail);
