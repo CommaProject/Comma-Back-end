@@ -32,7 +32,6 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;

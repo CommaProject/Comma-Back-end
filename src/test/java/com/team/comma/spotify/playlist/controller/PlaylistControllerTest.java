@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.team.comma.common.dto.MessageResponse;
-import com.team.comma.follow.dto.FollowingResponse;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.dto.PlaylistRequest;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;

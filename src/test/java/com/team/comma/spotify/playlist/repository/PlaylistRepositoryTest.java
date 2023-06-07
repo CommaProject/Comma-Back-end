@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
+import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
 import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.repository.TrackRepository;
@@ -57,7 +58,7 @@ class PlaylistRepositoryTest {
         final User user = userRepository.save(buildUser());
 
         // when
-        final List<Playlist> result = playlistRepository.findAllByUserAndDelFlagOrderByAlarmStartTime(user, false);
+        final List<PlaylistResponse> result = playlistRepository.getPlaylistByUser(user);
 
         // then
         assertThat(result.size()).isEqualTo(0);
@@ -71,7 +72,7 @@ class PlaylistRepositoryTest {
         playlistRepository.save(buildPlaylist(user, title));
 
         // when
-        final List<Playlist> result = playlistRepository.findAllByUserAndDelFlagOrderByAlarmStartTime(user, false);
+        final List<PlaylistResponse> result = playlistRepository.getPlaylistByUser(user);
 
         // then
         assertThat(result.size()).isEqualTo(2);

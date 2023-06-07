@@ -10,14 +10,11 @@ import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.playlist.repository.PlaylistTrackRepository;
 import com.team.comma.spotify.track.domain.Track;
-import com.team.comma.spotify.track.domain.TrackArtist;
 import com.team.comma.spotify.track.dto.TrackRequest;
-import com.team.comma.spotify.track.repository.TrackArtistRepository;
 import com.team.comma.spotify.track.repository.TrackRepository;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
-import jakarta.persistence.EntityNotFoundException;
 
 import java.util.Optional;
 import java.util.Set;
