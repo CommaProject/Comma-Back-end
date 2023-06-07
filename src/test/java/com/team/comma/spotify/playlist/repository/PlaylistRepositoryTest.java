@@ -58,7 +58,7 @@ class PlaylistRepositoryTest {
         final User user = userRepository.save(buildUser());
 
         // when
-        final List<PlaylistResponse> result = playlistRepository.getPlaylistByUser(user);
+        final List<PlaylistResponse> result = playlistRepository.getPlaylistsByUser(user);
 
         // then
         assertThat(result.size()).isEqualTo(0);
@@ -72,7 +72,7 @@ class PlaylistRepositoryTest {
         playlistRepository.save(buildPlaylist(user, title));
 
         // when
-        final List<PlaylistResponse> result = playlistRepository.getPlaylistByUser(user);
+        final List<PlaylistResponse> result = playlistRepository.getPlaylistsByUser(user);
 
         // then
         assertThat(result.size()).isEqualTo(2);

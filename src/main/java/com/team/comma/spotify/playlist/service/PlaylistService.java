@@ -36,7 +36,7 @@ public class PlaylistService {
             .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
 
         return MessageResponse.of(REQUEST_SUCCESS,
-                playlistRepository.getPlaylistByUser(user));
+                playlistRepository.getPlaylistsByUser(user));
     }
 
     @Transactional

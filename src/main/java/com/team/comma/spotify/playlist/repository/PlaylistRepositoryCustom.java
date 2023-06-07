@@ -15,5 +15,5 @@ public interface PlaylistRepositoryCustom {
 
     long deletePlaylist(long id);
 
-    List<PlaylistResponse> getPlaylistByUser(User user);
+    List<PlaylistResponse> getPlaylistsByUser(User user);
 }

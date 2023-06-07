@@ -57,7 +57,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
     }
 
     @Override
-    public List<PlaylistResponse> getPlaylistByUser(User user) {
+    public List<PlaylistResponse> getPlaylistsByUser(User user) {
         return queryFactory
                 .select(
                     Projections.constructor(

@@ -66,7 +66,7 @@ class PlaylistServiceTest {
 
         doReturn(optionalUser).when(userRepository).findByEmail(userEmail);
         doReturn(userEmail).when(jwtTokenProvider).getUserPk(token);
-        doReturn(playlistResponseList).when(playlistRepository).getPlaylistByUser(user);
+        doReturn(playlistResponseList).when(playlistRepository).getPlaylistsByUser(user);
 
         // when
         final MessageResponse result = playlistService.getPlaylists(token);
