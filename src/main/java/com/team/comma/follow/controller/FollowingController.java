@@ -47,7 +47,7 @@ public class FollowingController {
                 .body(followingService.unblockFollowedUser(accessToken , followingRequest.getToUserEmail()));
     }
 
-    @GetMapping("/list")
+    @GetMapping("/lists")
     public ResponseEntity<MessageResponse> getFollowingList(@CookieValue String accessToken) throws AccountException {
         return ResponseEntity.ok()
                 .body(followingService.getFollowingUserList(accessToken));

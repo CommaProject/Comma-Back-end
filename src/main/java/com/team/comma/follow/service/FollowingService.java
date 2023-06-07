@@ -97,16 +97,7 @@ public class FollowingService {
         User fromUser = userRepository.findByEmail(fromUserEmail)
                 .orElseThrow(() -> new AccountException("해당 사용자를 찾을 수 없습니다."));
 
-        List<Following> followingList = followingRepository.getFollowingUserListByUser(fromUser);
-        return MessageResponse.of(REQUEST_SUCCESS, createFollowingResponseList(followingList));
-    }
-
-    public List<FollowingResponse> createFollowingResponseList(List<Following> followingList) {
-        List<FollowingResponse> followingResponseList = new ArrayList<>();
-        for(Following following : followingList){
-            followingResponseList.add(FollowingResponse.of(following));
-        }
-        return followingResponseList;
+        return MessageResponse.of(REQUEST_SUCCESS, followingRepository.getFollowingUserListByUser(fromUser));
     }
 
 }

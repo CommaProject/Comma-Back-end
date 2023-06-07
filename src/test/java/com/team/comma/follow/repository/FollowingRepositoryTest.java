@@ -1,6 +1,7 @@
 package com.team.comma.follow.repository;
 
 import com.team.comma.follow.domain.Following;
+import com.team.comma.follow.dto.FollowingResponse;
 import com.team.comma.user.domain.User;
 import com.team.comma.util.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -170,11 +171,11 @@ public class FollowingRepositoryTest {
     public void getFollowedMeUserListByUser() {
         // given
         User toUser1 = User.builder()
-                .email("toUser")
+                .email("toUser1")
                 .build();
 
         User toUser2 = User.builder()
-                .email("toUser")
+                .email("toUser2")
                 .build();
 
         User fromUser = User.builder()
@@ -197,11 +198,12 @@ public class FollowingRepositoryTest {
         followingRepository.save(follow2);
 
         // when
-        List<Following> result = followingRepository.getFollowingUserListByUser(fromUser);
+        List<FollowingResponse> result = followingRepository.getFollowingUserListByUser(fromUser);
 
         // then
         assertThat(result.size()).isEqualTo(2);
-        assertThat(result.get(0).getUserTo()).isEqualTo(toUser1);
+        assertThat(result.get(0).getToUserEmail()).isEqualTo(toUser1.getEmail());
+        assertThat(result.get(1).getToUserEmail()).isEqualTo(toUser2.getEmail());
 
     }
 

@@ -416,7 +416,7 @@ public class FollowingControllerTest {
     @Test
     public void 팔로잉_리스트_조회_성공() throws Exception {
         // given
-        final String api = "/followings/list";
+        final String api = "/followings/lists";
 
         final String token = "accessToken";
         final User fromUser = User.builder().role(UserRole.USER).email("fromUser").build();
@@ -424,6 +424,7 @@ public class FollowingControllerTest {
         final Following following = Following.builder().id(1L).blockFlag(false).userFrom(fromUser).userTo(toUser).build();
         final FollowingResponse response = FollowingResponse.of(following);
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , List.of(response,response));
+
         doReturn(message).when(followingService).getFollowingUserList(token);
 
         // when
@@ -450,16 +451,18 @@ public class FollowingControllerTest {
                         )
                 )
         );
-        final MessageResponse result = followingService.getFollowingUserList(token);
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
 
-        assertThat(result.getData()).isEqualTo(List.of(response,response));
+        assertThat((List<FollowingResponse>) result.getData()).size().isEqualTo(2);
 
     }
 
     @Test
     public void 팔로잉_리스트_조회_실패_사용자찾을수없음() throws Exception {
         // given
-        final String api = "/followings/list";
+        final String api = "/followings/lists";
 
         final String token = "accessToken";
         doThrow(new AccountException("해당 사용자를 찾을 수 없습니다.")).when(followingService).getFollowingUserList(token);

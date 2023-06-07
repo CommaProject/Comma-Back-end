@@ -178,10 +178,11 @@ public class FollowingServiceTest {
         User fromUser = User.builder().role(UserRole.USER).email("fromUser").build();
         User toUser = User.builder().role(UserRole.USER).email("toUser").build();
         Following following = Following.builder().id(1L).blockFlag(false).userFrom(fromUser).userTo(toUser).build();
+        FollowingResponse followingResponse = FollowingResponse.of(following);
 
         doReturn(email).when(jwtTokenProvider).getUserPk(token);
         doReturn(Optional.of(fromUser)).when(userRepository).findByEmail(email);
-        doReturn(List.of(following)).when(followingRepository).getFollowingUserListByUser(fromUser);
+        doReturn(List.of(followingResponse)).when(followingRepository).getFollowingUserListByUser(fromUser);
 
         // when
         MessageResponse result = followingService.getFollowingUserList(token);
@@ -189,6 +190,7 @@ public class FollowingServiceTest {
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+        assertThat(result.getData()).isEqualTo(List.of(followingResponse));
 
     }
 }
