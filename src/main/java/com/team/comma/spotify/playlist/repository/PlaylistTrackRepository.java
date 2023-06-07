@@ -14,7 +14,6 @@ public interface PlaylistTrackRepository extends JpaRepository<PlaylistTrack, Lo
 
     int deletePlaylistTrackByTrackIdAndPlaylistId(Long trackId, Long playlistId);
 
-
     Optional<PlaylistTrack> findByTrackIdAndPlaylistId(Long trackId, Long playlistId);
 
     @Query("SELECT MAX(pt.playSequence) FROM PlaylistTrack pt WHERE pt.playlist.id = :playlistId")
