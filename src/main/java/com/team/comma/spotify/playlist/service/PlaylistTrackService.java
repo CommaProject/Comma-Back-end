@@ -101,4 +101,12 @@ public class PlaylistTrackService {
         playlistTrackRepository.save(eachPlaylistTrack);
     }
 
+    public MessageResponse getPlaylistTracks(long playlistId) {
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
+
+        return MessageResponse.of(REQUEST_SUCCESS,
+                playlistTrackRepository.getPlaylistTracksByPlaylist(playlist));
+    }
+
 }

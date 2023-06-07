@@ -6,7 +6,6 @@ import static com.team.comma.spotify.playlist.domain.QPlaylistTrack.playlistTrac
 import static com.team.comma.spotify.track.domain.QTrack.track;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.user.domain.User;
@@ -17,9 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
 
-
     private final JPAQueryFactory queryFactory;
-
 
     @Override
     public int getTotalDurationTimeMsWithPlaylistId(Long playlistId) {
@@ -56,25 +53,21 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
 
     @Override
     public List<PlaylistResponse> getPlaylistsByUser(User user) {
-        return queryFactory
-                .select(
-                    Projections.constructor(
-                        PlaylistResponse.class,
-                        playlist.id,
-                        playlist.playlistTitle,
-                        playlist.alarmFlag,
-                        playlist.alarmStartTime,
-                        select(playlistTrack.count())
-                        .from(playlistTrack)
-                        .where(playlistTrack.playlist.eq(playlist))
-                    )
-                )
+        return queryFactory.select(
+                Projections.constructor(
+                    PlaylistResponse.class,
+                    playlist.id,
+                    playlist.playlistTitle,
+                    playlist.alarmFlag,
+                    playlist.alarmStartTime,
+                    select(playlistTrack.count())
+                    .from(playlistTrack)
+                    .where(playlistTrack.playlist.eq(playlist))))
                 .from(playlist)
                 .where(playlist.delFlag.eq(false)
                         .and(playlist.user.eq(user)))
                 .orderBy(playlist.alarmStartTime.asc())
                 .fetch();
     }
-
 
 }
