@@ -124,7 +124,7 @@ include::{snippets}/following/listSuccess/request-cookies.adoc[]
 include::{snippets}/following/listSuccess/http-response.adoc[]
 include::{snippets}/following/listSuccess/response-fields.adoc[]
 
-=== 팔로잉 리스트 조회 성공
+=== 팔로잉 리스트 조회 실패 (사용자 없음)
 
 ==== request
 
