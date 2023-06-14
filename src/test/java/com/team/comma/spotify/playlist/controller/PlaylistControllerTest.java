@@ -30,14 +30,10 @@ import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.dto.PlaylistRequest;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
-import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
-import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
 import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.service.PlaylistService;
 import com.team.comma.spotify.playlist.service.PlaylistTrackService;
-import com.team.comma.spotify.track.domain.Track;
-import com.team.comma.spotify.track.domain.TrackArtist;
 import com.team.comma.util.gson.GsonUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
@@ -84,7 +80,6 @@ class PlaylistControllerTest {
 
     MockMvc mockMvc;
     Gson gson;
-    private String userEmail = "email@naver.com";
 
     @BeforeEach
     public void init(WebApplicationContext webApplicationContext,

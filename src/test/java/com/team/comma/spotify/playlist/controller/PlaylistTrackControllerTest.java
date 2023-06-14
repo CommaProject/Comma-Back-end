@@ -9,8 +9,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
-import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -29,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.team.comma.common.dto.MessageResponse;
-import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.dto.*;
 import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.service.PlaylistTrackService;
@@ -55,7 +52,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -202,7 +198,6 @@ class PlaylistTrackControllerTest {
     @Test
     void 플레이리스트트랙_저장_성공() throws Exception {
         Cookie accessToken = new Cookie("accessToken", "testToken");
-        User user = User.builder().email(userEmail).build();
 
         MessageResponse messageResponse = MessageResponse.of
             (
@@ -275,7 +270,6 @@ class PlaylistTrackControllerTest {
     void 플레이리스트트랙_저장_실패_존재하지않는_사용자() throws Exception {
         //given
         Cookie accessToken = new Cookie("accessToken", "testToken");
-        User user = User.builder().email(userEmail).build();
 
         String body = objectMapper.writeValueAsString(PlaylistUpdateRequest.builder()
             .playlistTitle("test playlist")
@@ -321,13 +315,6 @@ class PlaylistTrackControllerTest {
     void 플레이리스트트랙_저장_실패_존재하지않는_플레이리스트() throws Exception {
         //given
         Cookie accessToken = new Cookie("accessToken", "testToken");
-        User user = User.builder().email(userEmail).build();
-
-        MessageResponse messageResponse = MessageResponse.of
-            (
-                REQUEST_SUCCESS.getCode(),
-                REQUEST_SUCCESS.getMessage()
-            );
 
         TrackRequest trackRequest = TrackRequest.builder()
                 .trackTitle("test track")
@@ -383,7 +370,7 @@ class PlaylistTrackControllerTest {
         // given
         final String url = "/playlists/tracks/{playlistId}";
 
-        final List<PlaylistTrackArtistResponse> playlistTrackArtistResponseList = Arrays.asList(
+        final List<PlaylistTrackArtistResponse> playlistTrackArtistResponseList = List.of(
                 PlaylistTrackArtistResponse.of(buildTrackArtist()));
         final List<PlaylistTrackResponse> playlistTracks = Arrays.asList(
                 PlaylistTrackResponse.of(buildTrack(), true, playlistTrackArtistResponseList),
@@ -411,7 +398,7 @@ class PlaylistTrackControllerTest {
                                 fieldWithPath("data").description("응답 데이터"),
                                 fieldWithPath("data.[].trackId").description("트랙 id"),
                                 fieldWithPath("data.[].trackTitle").description("트랙 제목"),
-                                fieldWithPath("data.[].durationTimeMs").description("트랙 재샌 시간"),
+                                fieldWithPath("data.[].durationTimeMs").description("트랙 재생 시간"),
                                 fieldWithPath("data.[].albumImageUrl").description("트랙 앨범 이미지 URL"),
                                 fieldWithPath("data.[].trackAlarmFlag").description("트랙 알람 설정 여부"),
                                 fieldWithPath("data.[].trackArtistList").description("트랙 아티스트 리스트"),
@@ -425,6 +412,43 @@ class PlaylistTrackControllerTest {
                 MessageResponse.class);
 
         assertThat((List<PlaylistTrackResponse>) result.getData()).size().isEqualTo(2);
+    }
+
+    @Test
+    void 플레이리스트_트랙_상세_리스트_조회_실패_플레이리스트없음() throws Exception {
+        // given
+        final String url = "/playlists/tracks/{playlistId}";
+
+        doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
+                .when(playlistTrackService)
+                .getPlaylistTracks(anyLong());
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.get(url,1L));
+
+        // then
+        resultActions.andExpect(status().isBadRequest()).andDo(
+                document("spotify/selectPlaylistsTracksFailure",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("playlistId").description("플레이리스트 id")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터")
+                        )
+                )
+        );
+
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(PLAYLIST_NOT_FOUND.getCode());
+        assertThat(result.getMessage()).isEqualTo(PLAYLIST_NOT_FOUND.getMessage());
     }
 
     private Track buildTrack() {
