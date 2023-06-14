@@ -56,7 +56,7 @@ class PlaylistServiceTest {
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
 
-        final PlaylistResponse playlistResponse = PlaylistResponse.of(buildUserPlaylist(Arrays.asList(playlistTrack)), 3);
+        final PlaylistResponse playlistResponse = PlaylistResponse.of(buildUserPlaylist(Arrays.asList(playlistTrack)), 3, "representative album image url");
         final List<PlaylistResponse> playlistResponseList = List.of(playlistResponse);
 
         doReturn(optionalUser).when(userRepository).findByEmail(userEmail);

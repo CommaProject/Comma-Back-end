@@ -103,7 +103,8 @@ class PlaylistControllerTest {
         final String url = "/playlist";
 
         final List<PlaylistResponse> playlist = Arrays.asList(
-                PlaylistResponse.of(buildPlaylist(),3));
+                PlaylistResponse.of(buildPlaylist(),3, "representative album image url"),
+                PlaylistResponse.of(buildPlaylist(),3, "representative album image url"));
 
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlist);
 
@@ -131,7 +132,8 @@ class PlaylistControllerTest {
                     fieldWithPath("data.[].playlistTitle").description("플레이리스트 제목"),
                     fieldWithPath("data.[].alarmFlag").description("알람 설정 여부, true = on / false = off"),
                     fieldWithPath("data.[].alarmStartTime").description("알람 시작 시간"),
-                    fieldWithPath("data.[].trackCount").description("플레이리스트에 포함된 트랙 갯수")
+                    fieldWithPath("data.[].trackCount").description("플레이리스트에 포함된 트랙 갯수"),
+                    fieldWithPath("data.[].repAlbumImageUrl").description("플레이리스트 대표 앨범 이미지 url")
                 )
             )
         );
@@ -139,7 +141,7 @@ class PlaylistControllerTest {
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 MessageResponse.class);
 
-        assertThat((List<PlaylistResponse>) result.getData()).size().isEqualTo(1);
+        assertThat((List<PlaylistResponse>) result.getData()).size().isEqualTo(2);
 
     }
 
@@ -448,22 +450,6 @@ class PlaylistControllerTest {
                 )
             );
 
-    }
-
-    private TrackArtist buildTrackArtist() {
-        return TrackArtist.builder()
-            .id(123L)
-            .artistName("test artist")
-            .build();
-    }
-
-    private Track buildTrack() {
-        return Track.builder()
-            .id(123L)
-            .trackTitle("test track")
-            .durationTimeMs(3000)
-            .albumImageUrl("url/test/image")
-            .build();
     }
 
     private Playlist buildPlaylist() {

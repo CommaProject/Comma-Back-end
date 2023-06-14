@@ -220,19 +220,20 @@ class PlaylistRepositoryTest {
             playlistUpdateRequest.getListSequence());
     }
 
-    private Playlist buildPlaylistWithListSequence(int listSequence) {
-        return Playlist.builder()
-            .listSequence(listSequence)
-            .build();
+    private User buildUser() {
+        return User.builder()
+                .email(userEmail)
+                .type(UserType.GENERAL_USER)
+                .role(UserRole.USER)
+                .build();
     }
 
-    private PlaylistTrack buildPlaylistTrackWithPlaylistAndTrack(Playlist playlist,
-        Track track1) {
-        PlaylistTrack playlistTrack1 = PlaylistTrack.builder()
-            .playlist(playlist)
-            .track(track1)
-            .build();
-        return playlistTrack1;
+    private Playlist buildPlaylist(User user, String title) {
+        return Playlist.builder()
+                .playlistTitle(title)
+                .alarmFlag(true)
+                .user(user)
+                .build();
     }
 
     private Playlist buildPlaylist() {
@@ -243,41 +244,23 @@ class PlaylistRepositoryTest {
         return playlist;
     }
 
+    private Playlist buildPlaylistWithListSequence(int listSequence) {
+        return Playlist.builder()
+                .listSequence(listSequence)
+                .build();
+    }
+
     private Track buildTrackWithDurationTimeMs(int durationTimeMs) {
-        return Track.builder().durationTimeMs(durationTimeMs).build();
+        return Track.builder()
+                .durationTimeMs(durationTimeMs)
+                .build();
     }
 
-    private User buildGeneralUser() {
-        return User.builder()
-            .email(userEmail)
-            .type(UserType.GENERAL_USER)
-            .role(UserRole.USER)
-            .build();
+    private PlaylistTrack buildPlaylistTrackWithPlaylistAndTrack(Playlist playlist, Track track1) {
+        return PlaylistTrack.builder()
+                .playlist(playlist)
+                .track(track1)
+                .build();
     }
-
-    private Playlist buildPlaylist(User user, String title, List<Track> trackList) {
-        return Playlist.builder()
-            .playlistTitle(title)
-            .alarmFlag(true)
-            .user(user)
-            .build();
-    }
-
-    private User buildUser() {
-        return User.builder()
-            .email(userEmail)
-            .type(UserType.GENERAL_USER)
-            .role(UserRole.USER)
-            .build();
-    }
-
-    private Playlist buildPlaylist(User user, String title) {
-        return Playlist.builder()
-            .playlistTitle(title)
-            .alarmFlag(true)
-            .user(user)
-            .build();
-    }
-
 
 }

@@ -60,9 +60,15 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
                     playlist.playlistTitle,
                     playlist.alarmFlag,
                     playlist.alarmStartTime,
+                    select(playlistTrack.track.albumImageUrl)
+                            .from(playlistTrack)
+                            .where(playlistTrack.playlist.eq(playlist))
+                            .orderBy(playlistTrack.playSequence.asc())
+                            .limit(1),
                     select(playlistTrack.count())
-                    .from(playlistTrack)
-                    .where(playlistTrack.playlist.eq(playlist))))
+                        .from(playlistTrack)
+                        .where(playlistTrack.playlist.eq(playlist))
+                ))
                 .from(playlist)
                 .where(playlist.delFlag.eq(false)
                         .and(playlist.user.eq(user)))

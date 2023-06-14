@@ -11,7 +11,6 @@ import java.util.List;
 
 import static com.querydsl.core.types.Projections.list;
 import static com.team.comma.spotify.playlist.domain.QPlaylistTrack.playlistTrack;
-import static com.team.comma.spotify.track.domain.QTrack.track;
 import static com.team.comma.spotify.track.domain.QTrackArtist.trackArtist;
 
 @RequiredArgsConstructor
@@ -24,18 +23,17 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
         return queryFactory.select(
                 Projections.constructor(
                         PlaylistTrackResponse.class,
-                        track.id,
-                        track.trackTitle,
-                        track.durationTimeMs,
-                        track.albumImageUrl,
+                        playlistTrack.track.id,
+                        playlistTrack.track.trackTitle,
+                        playlistTrack.track.durationTimeMs,
+                        playlistTrack.track.albumImageUrl,
                         playlistTrack.trackAlarmFlag,
                         list(Projections.constructor(
                                 PlaylistTrackArtistResponse.class,
                                 trackArtist.id,
                                 trackArtist.artistName))))
                 .from(playlistTrack)
-                .leftJoin(playlistTrack.track, track)
-                .leftJoin(track.trackArtistList, trackArtist)
+                .leftJoin(trackArtist)
                 .where(playlistTrack.playlist.eq(playlist))
                 .orderBy(playlistTrack.playSequence.asc())
                 .fetch();

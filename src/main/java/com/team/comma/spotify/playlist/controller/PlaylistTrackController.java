@@ -38,9 +38,9 @@ public class PlaylistTrackController {
         );
     }
 
-    @GetMapping("/playlists/tracks")
+    @GetMapping("/playlists/tracks/{playlistId}")
     public ResponseEntity<MessageResponse> getPlaylistTracks(
-            @RequestBody final long playlistId) {
+            @PathVariable("playlistId") final long playlistId) {
         return ResponseEntity.ok().body(playlistTrackService.getPlaylistTracks(playlistId));
     }
 

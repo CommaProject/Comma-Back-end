@@ -17,6 +17,8 @@ import com.team.comma.spotify.playlist.repository.PlaylistTrackRepository;
 import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.dto.TrackRequest;
 import com.team.comma.spotify.track.repository.TrackRepository;
+import com.team.comma.user.constant.UserRole;
+import com.team.comma.user.constant.UserType;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
@@ -42,22 +44,16 @@ class PlaylistTrackServiceTest {
 
     @InjectMocks
     PlaylistTrackService playlistTrackService;
-
     @Mock
     PlaylistTrackRepository playlistTrackRepository;
-
     @Mock
     PlaylistRepository playlistRepository;
-
     @Mock
     TrackRepository trackRepository;
-
     @Mock
     JwtTokenProvider jwtTokenProvider;
-
     @Mock
     UserRepository userRepository;
-
 
     private String spotifyTrackId = "input ISRC of track";
 
@@ -309,6 +305,68 @@ class PlaylistTrackServiceTest {
 
         // then
         assertThat(thrown.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
+    }
+
+    @Test
+    void 플레이리스트_트랙_상세_리스트_조회_성공() throws PlaylistException {
+        // given
+        final long playlistId = 1L;
+        final User user = buildUser();
+        final Playlist playlist = buildPlaylist(user, "test playlist");
+        final Track track = buildTrack("test track");
+        final PlaylistTrack playlistTrack = buildPlaylistTrack(playlist, track);
+
+        doReturn(Optional.of(playlist)).when(playlistRepository).findById(playlistId);
+        doReturn(List.of(playlistTrack)).when(playlistTrackRepository).getPlaylistTracksByPlaylist(playlist);
+
+        // when
+        final MessageResponse result = playlistTrackService.getPlaylistTracks(playlistId);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+    }
+
+    @Test
+    void 플레이리스트_트랙_상세_리스트_조회_실패_플레이리스트없음()throws PlaylistException {
+        // given
+        final long playlistId = 1L;
+
+        // when
+        final Throwable thrown = catchThrowable(() ->  playlistTrackService.getPlaylistTracks(playlistId));
+
+        // then
+        assertThat(thrown.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
+
+    }
+
+    private User buildUser() {
+        return User.builder()
+                .email("email")
+                .type(UserType.GENERAL_USER)
+                .role(UserRole.USER)
+                .build();
+    }
+
+    private Playlist buildPlaylist(User user, String title) {
+        return Playlist.builder()
+                .playlistTitle(title)
+                .alarmFlag(true)
+                .user(user)
+                .build();
+    }
+
+    private Track buildTrack(String title) {
+        return Track.builder()
+                .trackTitle(title)
+                .build();
+    }
+
+    private PlaylistTrack buildPlaylistTrack(Playlist playlist, Track track) {
+        return PlaylistTrack.builder()
+                .playlist(playlist)
+                .track(track)
+                .build();
     }
 
 }

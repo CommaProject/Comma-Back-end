@@ -16,7 +16,6 @@ import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
 
-import java.util.Optional;
 import java.util.Set;
 import javax.security.auth.login.AccountException;
 import lombok.RequiredArgsConstructor;
