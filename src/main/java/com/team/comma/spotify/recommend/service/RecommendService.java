@@ -12,6 +12,7 @@ import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountException;
 
@@ -40,6 +41,7 @@ public class RecommendService {
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
+    @Transactional
     public Recommend createRecommend(final User fromUser, final RecommendRequest recommendRequest) throws AccountException, PlaylistException{
         User toUser = userRepository.findByEmail(recommendRequest.getRecommendToEmail())
                 .orElseThrow(() -> new AccountException("추천 대상 정보가 올바르지 않습니다."));
@@ -47,12 +49,6 @@ public class RecommendService {
         Playlist playlist = playlistRepository.findById(recommendRequest.getRecommendPlaylistId())
                 .orElseThrow(()-> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
 
-        return Recommend.builder()
-                .recommendTo(toUser)
-                .recommendFrom(fromUser)
-                .recommendType(recommendRequest.getRecommendType())
-                .comment(recommendRequest.getComment())
-                .playlist(playlist)
-                .build();
+        return recommendRequest.toRecommendEntity(toUser, fromUser, playlist);
     }
 }

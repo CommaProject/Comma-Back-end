@@ -132,6 +132,7 @@ class PlaylistTrackServiceTest {
                 .albumImageUrl("url/track")
                 .spotifyTrackId(spotifyTrackId)
                 .spotifyTrackHref("href string")
+                .durationTimeMs(0)
                 .trackArtistList(List.of("test artist"))
                 .build();
 
@@ -169,6 +170,7 @@ class PlaylistTrackServiceTest {
                 .albumImageUrl("url/track")
                 .spotifyTrackId(spotifyTrackId)
                 .spotifyTrackHref("href string")
+                .durationTimeMs(0)
                 .trackArtistList(List.of("test artist"))
                 .build();
         Track track = trackRequest.toTrackEntity();
@@ -208,6 +210,7 @@ class PlaylistTrackServiceTest {
                 .albumImageUrl("url/track")
                 .spotifyTrackId(spotifyTrackId)
                 .spotifyTrackHref("href string")
+                .durationTimeMs(0)
                 .trackArtistList(List.of("test artist"))
                 .build();
 
@@ -218,7 +221,7 @@ class PlaylistTrackServiceTest {
                 .listSequence(1)
                 .trackList(List.of(trackRequest))
                 .build();
-        Playlist playlist = requestDto.toPlaylistEntity();
+        Playlist playlist = requestDto.toPlaylistEntity(user);
 
         doReturn(userEmail)
                 .when(jwtTokenProvider).getUserPk(accessToken);
@@ -248,6 +251,7 @@ class PlaylistTrackServiceTest {
                 .albumImageUrl("url/track")
                 .spotifyTrackId(spotifyTrackId)
                 .spotifyTrackHref("href string")
+                .durationTimeMs(0)
                 .trackArtistList(List.of("test artist"))
                 .build();
         Track track = trackRequest.toTrackEntity();
@@ -259,7 +263,7 @@ class PlaylistTrackServiceTest {
                 .listSequence(1)
                 .trackList(List.of(trackRequest))
                 .build();
-        Playlist playlist = requestDto.toPlaylistEntity();
+        Playlist playlist = requestDto.toPlaylistEntity(user);
 
         doReturn(userEmail)
                 .when(jwtTokenProvider).getUserPk(accessToken);
@@ -290,6 +294,7 @@ class PlaylistTrackServiceTest {
                 .albumImageUrl("url/track")
                 .spotifyTrackId(spotifyTrackId)
                 .spotifyTrackHref("href string")
+                .durationTimeMs(0)
                 .trackArtistList(List.of("test artist"))
                 .build();
 

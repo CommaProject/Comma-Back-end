@@ -1,6 +1,9 @@
 package com.team.comma.spotify.recommend.dto;
 
+import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.recommend.constant.RecommendType;
+import com.team.comma.spotify.recommend.domain.Recommend;
+import com.team.comma.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +20,13 @@ public class RecommendRequest {
     private String recommendToEmail;
     private String comment;
 
+    public Recommend toRecommendEntity(User toUser, User fromUser, Playlist playlist){
+        return Recommend.builder()
+                .recommendTo(toUser)
+                .recommendFrom(fromUser)
+                .recommendType(recommendType)
+                .comment(comment)
+                .playlist(playlist)
+                .build();
+    }
 }

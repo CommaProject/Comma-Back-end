@@ -65,7 +65,7 @@ public class PlaylistTrackService {
         }
 
         if (dto.getPlaylistIdList().isEmpty()){
-            Playlist playlist = dto.toPlaylistEntity();
+            Playlist playlist = dto.toPlaylistEntity(findUser);
             playlistRepository.save(playlist);
 
             for (TrackRequest trackRequest : dto.getTrackList()) {
@@ -99,6 +99,7 @@ public class PlaylistTrackService {
         PlaylistTrack eachPlaylistTrack = PlaylistTrack.builder()
                 .playlist(playlist)
                 .track(track)
+                .trackAlarmFlag(true)
                 .playSequence(maxPlaySequence + 1)
                 .build();
         playlistTrackRepository.save(eachPlaylistTrack);
