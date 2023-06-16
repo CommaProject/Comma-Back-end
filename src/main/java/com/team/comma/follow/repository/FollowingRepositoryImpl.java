@@ -79,7 +79,8 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
                                     following.userFrom.email,
                                     following.userTo.email))
                             .from(following)
-                            .where(following.userFrom.eq(fromUser))
+                            .where(following.userFrom.eq(fromUser)
+                                    .and(following.blockFlag.eq(false)))
                             .fetch();
     }
 
