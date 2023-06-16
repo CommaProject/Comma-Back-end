@@ -182,17 +182,8 @@ public class FollowingRepositoryTest {
                 .email("fromUser")
                 .build();
 
-        Following follow1 = Following.builder()
-                .userTo(toUser1)
-                .blockFlag(true)
-                .userFrom(fromUser)
-                .build();
-
-        Following follow2 = Following.builder()
-                .userTo(toUser2)
-                .blockFlag(true)
-                .userFrom(fromUser)
-                .build();
+        Following follow1 = Following.createFollowing(toUser1,fromUser);
+        Following follow2 = Following.createFollowing(toUser2,fromUser);
 
         followingRepository.save(follow1);
         followingRepository.save(follow2);
