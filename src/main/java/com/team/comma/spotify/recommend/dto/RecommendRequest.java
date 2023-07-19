@@ -22,8 +22,8 @@ public class RecommendRequest {
 
     public Recommend toRecommendEntity(User toUser, User fromUser, Playlist playlist){
         return Recommend.builder()
-                .recommendTo(toUser)
-                .recommendFrom(fromUser)
+                .fromUser(fromUser)
+                .toUser(toUser)
                 .recommendType(recommendType)
                 .comment(comment)
                 .playlist(playlist)

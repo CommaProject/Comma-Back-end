@@ -30,25 +30,21 @@ public class RecommendService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    @Transactional
     public MessageResponse addRecommend(final String accessToken, final RecommendRequest recommendRequest) throws AccountException {
         String userName = jwtTokenProvider.getUserPk(accessToken);
         User fromUser = userRepository.findByEmail(userName)
-                .orElseThrow(() -> new AccountException("추천인 정보가 올바르지 않습니다."));
+                .orElseThrow(() -> new AccountException("사용자(추천인) 정보가 올바르지 않습니다."));
 
-        Recommend buildEntity = createRecommend(fromUser, recommendRequest);
-        recommendRepository.save(buildEntity);
-
-        return MessageResponse.of(REQUEST_SUCCESS);
-    }
-
-    @Transactional
-    public Recommend createRecommend(final User fromUser, final RecommendRequest recommendRequest) throws AccountException, PlaylistException{
         User toUser = userRepository.findByEmail(recommendRequest.getRecommendToEmail())
                 .orElseThrow(() -> new AccountException("추천 대상 정보가 올바르지 않습니다."));
 
         Playlist playlist = playlistRepository.findById(recommendRequest.getRecommendPlaylistId())
                 .orElseThrow(()-> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
 
-        return recommendRequest.toRecommendEntity(toUser, fromUser, playlist);
+        Recommend buildEntity = recommendRequest.toRecommendEntity(fromUser, toUser, playlist);
+        recommendRepository.save(buildEntity);
+
+        return MessageResponse.of(REQUEST_SUCCESS);
     }
 }
