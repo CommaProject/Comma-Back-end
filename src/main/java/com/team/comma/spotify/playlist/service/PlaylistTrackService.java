@@ -16,8 +16,11 @@ import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
 
+import java.util.Optional;
 import java.util.Set;
 import javax.security.auth.login.AccountException;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -55,12 +58,12 @@ public class PlaylistTrackService {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
         User findUser = userRepository.findByEmail(userEmail)
             .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
-
         if (findUser == null) {
             throw new AccountException("사용자를 찾을 수 없습니다.");
         }
 
         if (dto.getPlaylistIdList().isEmpty()){
+            // playlistIdList가 존재하지 않으면 신규 플레이리스트 생성
             Playlist playlist = dto.toPlaylistEntity(findUser);
             playlistRepository.save(playlist);
 
@@ -68,6 +71,7 @@ public class PlaylistTrackService {
                 addTrackToPlaylist(playlist,trackRequest);
             }
         } else {
+            // playlistIdList가 존재하면 기존 플레이리스트 수정
             for (Long playlistId : dto.getPlaylistIdList()){
                 Playlist playlist = playlistRepository.findById(playlistId)
                         .orElseThrow(() -> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
@@ -85,9 +89,8 @@ public class PlaylistTrackService {
     }
 
     public void addTrackToPlaylist(Playlist playlist, TrackRequest trackRequest){
-        Track track = trackRepository.findBySpotifyTrackId(trackRequest.getSpotifyTrackId())
-                .orElse(trackRepository.save(trackRequest.toTrackEntity()));
-
+        Optional<Track> optionalTrack = trackRepository.findBySpotifyTrackId(trackRequest.getSpotifyTrackId());
+        Track track = (optionalTrack.isEmpty() ? trackRepository.save(trackRequest.toTrackEntity()) : optionalTrack.get());
         int maxPlaySequence = playlistTrackRepository.
                 findMaxPlaySequenceByPlaylistId(playlist.getId())
                 .orElse(0);
