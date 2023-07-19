@@ -33,8 +33,8 @@ public class RecommendRepositoryTest {
 
     Recommend buildRecommend(RecommendType type) {
         return Recommend.builder()
-                .recommendFrom(User.builder().build())
-                .recommendTo(User.builder().build())
+                .fromUser(User.builder().build())
+                .toUser(User.builder().build())
                 .recommendType(type)
                 .comment("test recommend")
                 .playlist(Playlist.builder().build())

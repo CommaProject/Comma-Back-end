@@ -41,7 +41,7 @@ public class RecommendServiceTest {
 
     private String token = "accessToken";
     @Test
-    void 플레이리스트_추천_저장_실패_추천인정보찾을수없음() {
+    void 플레이리스트_추천_저장_실패_추천보낸사용자정보찾을수없음() {
         // given
         final RecommendRequest recommendRequest = buildRequest();
 
@@ -49,12 +49,12 @@ public class RecommendServiceTest {
         final Throwable thrown = catchThrowable(() -> recommendService.addRecommend(token, recommendRequest));
 
         // then
-        assertThat(thrown.getMessage()).isEqualTo("추천인 정보가 올바르지 않습니다.");
+        assertThat(thrown.getMessage()).isEqualTo("추천 보낸 사용자 정보가 올바르지 않습니다.");
 
     }
 
     @Test
-    void 플레이리스트_추천_저장_실패_추천대상정보찾을수없음() {
+    void 플레이리스트_추천_저장_실패_추천받는사용자정보찾을수없음() {
         // given
         final User fromUser = buildUserWithEmail("fromUser");
         final Optional<User> optionalUser = Optional.of(fromUser);
@@ -67,7 +67,7 @@ public class RecommendServiceTest {
         final Throwable thrown = catchThrowable(() -> recommendService.addRecommend(token, recommendRequest));
 
         // then
-        assertThat(thrown.getMessage()).isEqualTo("추천 대상 정보가 올바르지 않습니다.");
+        assertThat(thrown.getMessage()).isEqualTo("추천 받는 사용자 정보가 올바르지 않습니다.");
 
     }
 

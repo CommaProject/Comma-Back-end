@@ -34,10 +34,10 @@ public class RecommendService {
     public MessageResponse addRecommend(final String accessToken, final RecommendRequest recommendRequest) throws AccountException {
         String userName = jwtTokenProvider.getUserPk(accessToken);
         User fromUser = userRepository.findByEmail(userName)
-                .orElseThrow(() -> new AccountException("사용자(추천인) 정보가 올바르지 않습니다."));
+                .orElseThrow(() -> new AccountException("추천 보낸 사용자 정보가 올바르지 않습니다."));
 
         User toUser = userRepository.findByEmail(recommendRequest.getRecommendToEmail())
-                .orElseThrow(() -> new AccountException("추천 대상 정보가 올바르지 않습니다."));
+                .orElseThrow(() -> new AccountException("추천 받는 사용자 정보가 올바르지 않습니다."));
 
         Playlist playlist = playlistRepository.findById(recommendRequest.getRecommendPlaylistId())
                 .orElseThrow(()-> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
