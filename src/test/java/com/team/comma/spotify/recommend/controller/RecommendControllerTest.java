@@ -1,5 +1,7 @@
 package com.team.comma.spotify.recommend.controller;
 
+import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
@@ -13,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.team.comma.common.constant.ResponseCodeEnum;
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.recommend.constant.RecommendType;
 import com.team.comma.spotify.recommend.dto.RecommendRequest;
 import com.team.comma.spotify.recommend.service.RecommendService;
@@ -36,6 +39,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @AutoConfigureRestDocs
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
@@ -69,7 +75,7 @@ public class RecommendControllerTest {
         final String url = "/recommend";
 
         final RecommendRequest recommendRequest = buildRequest();
-        final MessageResponse messageResponse = MessageResponse.of(ResponseCodeEnum.REQUEST_SUCCESS);
+        final MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS);
         doReturn(messageResponse).when(recommendService).addRecommend("accessToken", recommendRequest);
 
         // when
@@ -101,6 +107,12 @@ public class RecommendControllerTest {
                         )
                 )
         );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
 
     }
 

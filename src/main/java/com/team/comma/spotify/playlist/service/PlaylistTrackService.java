@@ -63,7 +63,6 @@ public class PlaylistTrackService {
         }
 
         if (dto.getPlaylistIdList().isEmpty()){
-            // playlistIdList가 존재하지 않으면 신규 플레이리스트 생성
             Playlist playlist = dto.toPlaylistEntity(findUser);
             playlistRepository.save(playlist);
 
@@ -71,7 +70,6 @@ public class PlaylistTrackService {
                 addTrackToPlaylist(playlist,trackRequest);
             }
         } else {
-            // playlistIdList가 존재하면 기존 플레이리스트 수정
             for (Long playlistId : dto.getPlaylistIdList()){
                 Playlist playlist = playlistRepository.findById(playlistId)
                         .orElseThrow(() -> new PlaylistException("플레이리스트를 찾을 수 없습니다."));

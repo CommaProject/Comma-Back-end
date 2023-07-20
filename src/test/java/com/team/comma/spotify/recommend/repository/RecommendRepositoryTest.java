@@ -28,7 +28,7 @@ public class RecommendRepositoryTest {
         final Recommend result = recommendRepository.save(recommend);
 
         // then
-        assertThat(result).isNotNull();
+        assertThat(result.getComment()).isEqualTo("test recommend");
     }
 
     Recommend buildRecommend(RecommendType type) {
