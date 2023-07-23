@@ -7,7 +7,7 @@ import org.springframework.http.ResponseCookie;
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class CreationCookie {
 
-    @Value("${spring.server}")
+    @Value("${client.url}")
     private static String DOMAIN_URL;
 
     public static ResponseCookie createResponseAccessToken(String cookieName) {
