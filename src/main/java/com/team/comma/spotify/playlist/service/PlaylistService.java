@@ -22,8 +22,6 @@ import static com.team.comma.common.constant.ResponseCodeEnum.*;
 @RequiredArgsConstructor
 public class PlaylistService {
 
-    private final TrackService trackService;
-
     private final PlaylistRepository playlistRepository;
 
     private final UserRepository userRepository;
