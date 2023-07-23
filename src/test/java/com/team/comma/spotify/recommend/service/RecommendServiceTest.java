@@ -63,6 +63,10 @@ public class RecommendServiceTest {
 
         final RecommendRequest recommendRequest = buildRequest();
 
+        final Playlist playlist = buildPlaylistWithId(recommendRequest.getRecommendPlaylistId());
+        final Optional<Playlist> optionalPlaylist = Optional.of(playlist);
+        doReturn(optionalPlaylist).when(playlistRepository).findById(playlist.getId());
+
         // when
         final Throwable thrown = catchThrowable(() -> recommendService.addRecommend(token, recommendRequest));
 
@@ -80,10 +84,6 @@ public class RecommendServiceTest {
         doReturn(fromUser.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         final RecommendRequest recommendRequest = buildRequest();
-
-        final User toUser = buildUserWithEmail(recommendRequest.getRecommendToEmail());
-        final Optional<User> optionalToUser = Optional.of(toUser);
-        doReturn(optionalToUser).when(userRepository).findByEmail(toUser.getEmail());
 
         // when
         final Throwable thrown = catchThrowable(() -> recommendService.addRecommend(token, recommendRequest));
