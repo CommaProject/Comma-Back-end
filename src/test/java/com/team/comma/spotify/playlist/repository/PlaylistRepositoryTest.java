@@ -237,11 +237,10 @@ class PlaylistRepositoryTest {
     }
 
     private Playlist buildPlaylist() {
-        Playlist playlist = Playlist.builder()
+        return Playlist.builder()
             .playlistTitle("My Playlist")
             .alarmFlag(false)
             .build();
-        return playlist;
     }
 
     private Playlist buildPlaylistWithListSequence(int listSequence) {

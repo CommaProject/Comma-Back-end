@@ -1,7 +1,6 @@
 package com.team.comma.spotify.recommend.service;
 
-import static com.team.comma.common.constant.ResponseCodeEnum.PLAYLIST_NOT_FOUND;
-import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.common.constant.ResponseCodeEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.team.comma.common.dto.MessageResponse;
@@ -20,9 +19,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.security.auth.login.AccountException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +43,7 @@ public class RecommendServiceTest {
 
     private String token = "accessToken";
     @Test
-    void 플레이리스트_추천_저장_실패_추천보낸사용자정보찾을수없음() {
+    void 플레이리스트_추천_저장_실패_추천_보낸_사용자_정보_찾을수없음() {
         // given
         final RecommendRequest recommendRequest = buildRequest();
 
@@ -54,7 +56,7 @@ public class RecommendServiceTest {
     }
 
     @Test
-    void 플레이리스트_추천_저장_실패_추천받는사용자정보찾을수없음() {
+    void 플레이리스트_추천_저장_실패_추천_받는_사용자_정보_찾을수없음() {
         // given
         final User fromUser = buildUserWithEmail("fromUser");
         final Optional<User> optionalUser = Optional.of(fromUser);
@@ -76,7 +78,7 @@ public class RecommendServiceTest {
     }
 
     @Test
-    void 플레이리스트_추천_저장_실패_플레이리스트찾을수없음() {
+    void 플레이리스트_추천_저장_실패_플레이리스트_찾을수없음() {
         // given
         final User fromUser = buildUserWithEmail("fromUser");
         final Optional<User> optionalUser = Optional.of(fromUser);
@@ -90,6 +92,34 @@ public class RecommendServiceTest {
 
         // then
         assertThat(thrown.getMessage()).isEqualTo(PLAYLIST_NOT_FOUND.getMessage());
+
+    }
+
+    @Test
+    void 플레이리스트_추천_저장_실패_사용자에게_이미_추천한_플레이리스트() {
+        // given
+        final User fromUser = buildUserWithEmail("fromUser");
+        final Optional<User> optionalUser = Optional.of(fromUser);
+        doReturn(optionalUser).when(userRepository).findByEmail(fromUser.getEmail());
+        doReturn(fromUser.getEmail()).when(jwtTokenProvider).getUserPk(token);
+
+        final RecommendRequest recommendRequest = buildRequest();
+
+        final User toUser = buildUserWithEmail(recommendRequest.getRecommendToEmail());
+        final Optional<User> optionalToUser = Optional.of(toUser);
+        doReturn(optionalToUser).when(userRepository).findByEmail(toUser.getEmail());
+
+        final Playlist playlist = buildPlaylistWithId(recommendRequest.getRecommendPlaylistId());
+        final Optional<Playlist> optionalPlaylist = Optional.of(playlist);
+        doReturn(optionalPlaylist).when(playlistRepository).findById(playlist.getId());
+
+        doReturn(1L).when(recommendRepository).getRecommendCountByToUserAndPlaylist(any());
+
+        // when
+        final Throwable thrown = catchThrowable(() -> recommendService.addRecommend(token, recommendRequest));
+
+        // then
+        assertThat(thrown.getMessage()).isEqualTo("사용자에게 이미 추천한 플레이리스트 입니다.");
 
     }
 
@@ -120,6 +150,33 @@ public class RecommendServiceTest {
 
     }
 
+    @Test
+    void 추천_받았던_리스트_조회_실패_사용자정보_찾을수없음() {
+        // given
+
+        // when
+        final Throwable thrown = catchThrowable(() -> recommendService.getRecommendList(token));
+
+        // then
+        assertThat(thrown.getMessage()).isEqualTo("사용자 정보가 올바르지 않습니다.");
+    }
+
+    @Test
+    void 추천_받았던_리스트_조회_성공() throws AccountException {
+        // given
+        final User user = buildUserWithEmail("toUser");
+        final Optional<User> optionalUser = Optional.of(user);
+        doReturn(optionalUser).when(userRepository).findByEmail(user.getEmail());
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
+
+        // when
+        final MessageResponse result = recommendService.getRecommendList(token);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+    }
+
     private User buildUserWithEmail(String email) {
         return User.builder()
                 .email(email)
@@ -142,8 +199,4 @@ public class RecommendServiceTest {
                 .build();
     }
 
-    private Recommend buildRecommend() {
-        return Recommend.builder()
-                .build();
-    }
 }

@@ -9,7 +9,7 @@ link:main.html[main 화면]
 
 == 플레이리스트 추천 API
 
-=== 플레이리스트 추천(익명/팔로잉) 저장 성공
+=== 플레이리스트 추천(익명/팔로잉) 성공
 
 ==== Request
 
@@ -21,3 +21,29 @@ include::{snippets}/spotify/saveRecommend/request-fields.adoc[]
 
 include::{snippets}/spotify/saveRecommend/http-response.adoc[]
 include::{snippets}/spotify/saveRecommend/response-fields.adoc[]
+
+=== 플레이리스트 추천 실패 - 이미 추천한 사용자, 플레이리스트
+
+==== Request
+
+include::{snippets}/spotify/saveRecommendFailure/http-request.adoc[]
+include::{snippets}/spotify/saveRecommendFailure/request-cookies.adoc[]
+include::{snippets}/spotify/saveRecommendFailure/request-fields.adoc[]
+
+==== Response
+
+include::{snippets}/spotify/saveRecommendFailure/http-response.adoc[]
+include::{snippets}/spotify/saveRecommendFailure/response-fields.adoc[]
+
+=== 추천 받은 리스트 조회
+
+==== Request
+
+include::{snippets}/spotify/selectRecommendList/http-request.adoc[]
+include::{snippets}/spotify/selectRecommendList/request-cookies.adoc[]
+
+==== Response
+
+include::{snippets}/spotify/selectRecommendList/http-response.adoc[]
+include::{snippets}/spotify/selectRecommendList/response-fields.adoc[]
+

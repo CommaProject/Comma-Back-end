@@ -4,6 +4,7 @@ import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.follow.exception.FollowingException;
 import com.team.comma.spotify.favorite.artist.exception.FavoriteArtistException;
 import com.team.comma.spotify.playlist.exception.PlaylistException;
+import com.team.comma.spotify.recommend.exception.RecommendException;
 import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.search.exception.TokenExpirationException;
 import com.team.comma.util.auth.exception.OAuth2EmailNotFoundException;
@@ -106,5 +107,15 @@ public class GeneralExceptionHandler {
         );
 
         return ResponseEntity.badRequest().body(message);
+    }
+
+    @ExceptionHandler({RecommendException.class})
+    public ResponseEntity<MessageResponse> handleRecommendExistException(Exception e) {
+        MessageResponse message = MessageResponse.of(
+                RECOMMEND_ALREADY_EXIST.getCode(),
+                e.getMessage()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 }
