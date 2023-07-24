@@ -5,7 +5,6 @@ import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.recommend.constant.RecommendType;
-import com.team.comma.spotify.recommend.dto.RecommendResponse;
 import com.team.comma.spotify.recommend.exception.RecommendException;
 import com.team.comma.spotify.recommend.repository.RecommendRepository;
 import com.team.comma.spotify.recommend.domain.Recommend;
