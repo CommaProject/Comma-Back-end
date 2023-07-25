@@ -17,7 +17,6 @@ public class CreationCookie {
             .path("/")
             // .sameSite("None")
             .maxAge(30 * 60 * 1000L)
-            .domain(DOMAIN_URL)
             .build();
     }
 
@@ -28,7 +27,6 @@ public class CreationCookie {
             .path("/")
             // .sameSite("None")
             .maxAge(14 * 24 * 60 * 60 * 1000L)
-            .domain(DOMAIN_URL)
             .build();
     }
 
