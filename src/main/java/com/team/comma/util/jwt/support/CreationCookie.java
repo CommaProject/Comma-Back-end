@@ -12,7 +12,7 @@ public class CreationCookie {
 
     public static ResponseCookie createResponseAccessToken(String cookieName) {
         return ResponseCookie.from("accessToken", cookieName)
-                .httpOnly(true)
+                // .httpOnly(true)
                 // .secure(true)
                 .path("/")
                 .domain(DOMAIN_URL)
@@ -23,7 +23,7 @@ public class CreationCookie {
 
     public static ResponseCookie createResponseRefreshToken(String cookieName) {
         return ResponseCookie.from("refreshToken", cookieName)
-                .httpOnly(true)
+                // .httpOnly(true)
                 // .secure(true)
                 .path("/")
                 .domain(DOMAIN_URL)
