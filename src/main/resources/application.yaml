@@ -2,7 +2,7 @@ server:
   port: 8080
   url : http://15.165.85.78:8080
 client:
-  url: http://43.201.239.102:3000
+  url: localhost:3000
 
 #logging
 logging:
