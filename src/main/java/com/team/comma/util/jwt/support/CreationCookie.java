@@ -6,15 +6,15 @@ import org.springframework.http.ResponseCookie;
 
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class CreationCookie {
-  
-    @Value("${server.url}")
-    private static String DOMAIN_URL;
+
+    private static String DOMAIN_URL = "localhost";
 
     public static ResponseCookie createResponseAccessToken(String cookieName) {
         return ResponseCookie.from("accessToken", cookieName)
                 .httpOnly(true)
                 // .secure(true)
                 .path("/")
+                .domain(DOMAIN_URL)
                 // .sameSite("None")
                 .maxAge(30 * 60 * 1000L)
                 .build();
@@ -25,6 +25,7 @@ public class CreationCookie {
                 .httpOnly(true)
                 // .secure(true)
                 .path("/")
+                .domain(DOMAIN_URL)
                 // .sameSite("None")
                 .maxAge(14 * 24 * 60 * 60 * 1000L)
                 .build();
