@@ -179,7 +179,7 @@ public class RecommendControllerTest {
     @Test
     void 추천_받은_리스트_조회_성공() throws Exception {
         // given
-        final String url = "/recommend/list";
+        final String url = "/recommend";
 
         final User toUser = buildUser("toUserEmail");
         final User fromUser = buildUser("fromUserEmail");
