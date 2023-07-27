@@ -26,7 +26,7 @@ public class RecommendController {
                 recommendService.addRecommend(accessToken, recommendRequest));
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<MessageResponse> recommendedList(
             @CookieValue final String accessToken
     ) throws AccountException {
