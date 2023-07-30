@@ -13,6 +13,7 @@ import com.team.comma.user.service.UserService;
 import com.team.comma.util.gson.GsonUtil;
 import com.team.comma.util.jwt.exception.TokenForgeryException;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -94,7 +95,7 @@ class UserControllerTest {
         doReturn(ResponseEntity.ok()
                 .header(SET_COOKIE, cookie1.toString())
                 .header(SET_COOKIE, cookie2.toString())
-                .body(message)).when(userService).login(any(LoginRequest.class));
+                .body(message)).when(userService).login(any(LoginRequest.class) , any(HttpServletResponse.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -155,7 +156,7 @@ class UserControllerTest {
         // given
         String api = "/login";
         LoginRequest request = getLoginRequest();
-        doThrow(new AccountException("정보가 올바르지 않습니다.")).when(userService).login(any(LoginRequest.class));
+        doThrow(new AccountException("정보가 올바르지 않습니다.")).when(userService).login(any(LoginRequest.class) , any(HttpServletResponse.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(

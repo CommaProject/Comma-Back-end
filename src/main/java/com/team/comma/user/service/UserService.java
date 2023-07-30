@@ -16,6 +16,7 @@ import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.service.JwtService;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
 import com.team.comma.util.security.domain.Token;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,8 +30,7 @@ import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.*;
 import static com.team.comma.user.dto.UserResponse.createUserResponse;
-import static com.team.comma.util.jwt.support.CreationCookie.createResponseAccessToken;
-import static com.team.comma.util.jwt.support.CreationCookie.createResponseRefreshToken;
+import static com.team.comma.util.jwt.support.CreationCookie.*;
 import static org.apache.http.cookie.SM.SET_COOKIE;
 
 @Service
@@ -44,7 +44,7 @@ public class UserService {
     private final FavoriteGenreRepository favoriteGenreRepository;
     private final HistoryService historyService;
 
-    public ResponseEntity<MessageResponse> login(final LoginRequest loginRequest)
+    public ResponseEntity<MessageResponse> login(final LoginRequest loginRequest , HttpServletResponse response)
         throws AccountException {
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
@@ -57,13 +57,9 @@ public class UserService {
             throw new AccountException("정보가 올바르지 않습니다.");
         }
 
-        Token token = createJwtToken(user);
-        MessageResponse message = MessageResponse.of(LOGIN_SUCCESS , createUserResponse(user));
+        setCookieFromJwt(response , createJwtToken(user));
 
-        return ResponseEntity.status(HttpStatus.OK)
-            .header(SET_COOKIE, createResponseAccessToken(token.getAccessToken()).toString())
-            .header(SET_COOKIE, createResponseRefreshToken(token.getRefreshToken()).toString())
-            .body(message);
+        return ResponseEntity.status(HttpStatus.OK).body(MessageResponse.of(LOGIN_SUCCESS , createUserResponse(user)));
     }
 
     public MessageResponse register(final RegisterRequest registerRequest) throws AccountException {
