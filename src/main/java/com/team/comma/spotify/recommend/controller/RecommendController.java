@@ -2,6 +2,7 @@ package com.team.comma.spotify.recommend.controller;
 
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.recommend.dto.RecommendRequest;
+import com.team.comma.spotify.recommend.dto.RecommendResponse;
 import com.team.comma.spotify.recommend.service.RecommendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,14 @@ public class RecommendController {
             ) throws AccountException {
         return ResponseEntity.ok().body(
                 recommendService.addRecommend(accessToken, recommendRequest));
+    }
+
+    @GetMapping
+    public ResponseEntity<MessageResponse> recommendedList(
+            @CookieValue final String accessToken
+    ) throws AccountException {
+        return ResponseEntity.ok().body(
+                recommendService.getRecommendList(accessToken));
     }
 
 }

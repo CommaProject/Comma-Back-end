@@ -5,6 +5,7 @@ import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.recommend.constant.RecommendType;
+import com.team.comma.spotify.recommend.exception.RecommendException;
 import com.team.comma.spotify.recommend.repository.RecommendRepository;
 import com.team.comma.spotify.recommend.domain.Recommend;
 import com.team.comma.spotify.recommend.dto.RecommendRequest;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountException;
+
+import java.util.List;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
@@ -32,12 +35,13 @@ public class RecommendService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public MessageResponse addRecommend(final String accessToken, final RecommendRequest recommendRequest) throws AccountException {
-        String userName = jwtTokenProvider.getUserPk(accessToken);
-        User fromUser = userRepository.findByEmail(userName)
+    public MessageResponse addRecommend(final String accessToken, final RecommendRequest recommendRequest)
+            throws AccountException {
+        final String userName = jwtTokenProvider.getUserPk(accessToken);
+        final User fromUser = userRepository.findByEmail(userName)
                 .orElseThrow(() -> new AccountException("추천 보낸 사용자 정보가 올바르지 않습니다."));
 
-        Playlist playlist = playlistRepository.findById(recommendRequest.getRecommendPlaylistId())
+        final Playlist playlist = playlistRepository.findById(recommendRequest.getRecommendPlaylistId())
                 .orElseThrow(()-> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
 
         Recommend buildEntity;
@@ -47,12 +51,25 @@ public class RecommendService {
 
             buildEntity = recommendRequest.toRecommendEntity(fromUser, toUser, playlist);
         } else {
-
             buildEntity = recommendRequest.toRecommendEntity(fromUser, playlist);
+        }
+
+        final long isRecommended = recommendRepository.getRecommendCountByToUserAndPlaylist(buildEntity);
+        if(isRecommended > 0){
+            throw new RecommendException("사용자에게 이미 추천한 플레이리스트 입니다.");
         }
 
         recommendRepository.save(buildEntity);
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }
+
+    public MessageResponse getRecommendList(final String accessToken) throws AccountException {
+        final String userName = jwtTokenProvider.getUserPk(accessToken);
+        final User user = userRepository.findByEmail(userName)
+                .orElseThrow(() -> new AccountException("사용자 정보가 올바르지 않습니다."));
+
+        return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsByToUser(user));
+    }
+
 }

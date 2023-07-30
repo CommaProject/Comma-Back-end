@@ -19,9 +19,10 @@ public enum ResponseCodeEnum {
     REGISTER_SUCCESS("성공적으로 가입되었습니다." , 1) ,
     ACCESS_TOKEN_CREATE("AccessToken이 재발급되었습니다." , 7) ,
     LOGOUT_SUCCESS("로그아웃이 성공적으로 되었습니다." , 1),
-    PLAYLIST_ALARM_UPDATED("알람 설정이 변경되었습니다.", 2),
     PLAYLIST_NOT_FOUND("플레이리스트를 찾을 수 없습니다.", -5),
-    PLAYLIST_DELETED("플레이리스트가 삭제되었습니다.", 2);
+    PLAYLIST_ALARM_UPDATED("알람 설정이 변경되었습니다.", 2),
+    PLAYLIST_DELETED("플레이리스트가 삭제되었습니다.", 2),
+    RECOMMEND_ALREADY_EXIST("사용자에게 이미 추천한 플레이리스트 입니다.", -5);
 
     private final String message;
     private final int code;
