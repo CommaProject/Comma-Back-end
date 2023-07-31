@@ -47,3 +47,13 @@ include::{snippets}/spotify/selectRecommendList/request-cookies.adoc[]
 include::{snippets}/spotify/selectRecommendList/http-response.adoc[]
 include::{snippets}/spotify/selectRecommendList/response-fields.adoc[]
 
+=== 추천 정보 상세 조회
+
+==== Request
+
+include::{snippets}/spotify/selectRecommend/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/spotify/selectRecommend/http-response.adoc[]
+include::{snippets}/spotify/selectRecommend/response-fields.adoc[]

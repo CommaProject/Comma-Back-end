@@ -34,4 +34,12 @@ public class RecommendController {
                 recommendService.getRecommendList(accessToken));
     }
 
+    @GetMapping("/{recommendId}")
+    public ResponseEntity<MessageResponse> recommendedPlaylist(
+            @PathVariable final long recommendId
+    ) {
+        return ResponseEntity.ok().body(
+                recommendService.getRecommend(recommendId));
+    }
+
 }

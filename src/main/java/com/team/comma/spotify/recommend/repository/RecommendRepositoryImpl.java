@@ -26,6 +26,8 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
                         RecommendResponse.class,
                         recommend.id,
                         recommend.fromUser.email,
+                        recommend.fromUser.userDetail.profileImageUrl,
+                        recommend.comment,
                         recommend.playlist.id,
                         recommend.playlist.playlistTitle,
                         select(playlistTrack.track.albumImageUrl)

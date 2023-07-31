@@ -12,6 +12,7 @@ import com.team.comma.spotify.recommend.dto.RecommendResponse;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;
 import com.team.comma.user.domain.User;
+import com.team.comma.user.domain.UserDetail;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.config.TestConfig;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
+import java.util.Optional;
 
 @DataJpaTest
 @Import(TestConfig.class)
@@ -94,8 +96,23 @@ public class RecommendRepositoryTest {
         final List<RecommendResponse> result = recommendRepository.getRecommendsByToUser(toUser);
 
         // then
-        assertThat(result).size().isEqualTo(2);
+        assertThat(result.size()).isEqualTo(2);
 
+    }
+
+    @Test
+    void 추천_정보_id로_찾기() {
+        // given
+        final User toUser = userRepository.save(buildUser("toUserEmail"));
+        final User fromUser = userRepository.save(buildUser("fromUserEmail"));
+        final Playlist playlist = playlistRepository.save(buildPlaylist());
+        final Recommend recommend = recommendRepository.save(buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser));
+
+        // when
+        final Optional<Recommend> result = recommendRepository.findById(recommend.getId());
+
+        // then
+        assertThat(result.get().getId()).isEqualTo(recommend.getId());
     }
 
     Recommend buildRecommendToFollowing(RecommendType type, Playlist playlist, User fromUser, User toUser) {
@@ -122,6 +139,7 @@ public class RecommendRepositoryTest {
                 .email(toUserEmail)
                 .type(UserType.GENERAL_USER)
                 .role(UserRole.USER)
+                .userDetail(UserDetail.builder().profileImageUrl("test").build())
                 .build();
     }
 

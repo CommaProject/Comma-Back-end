@@ -5,6 +5,7 @@ import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.recommend.constant.RecommendType;
+import com.team.comma.spotify.recommend.dto.RecommendResponse;
 import com.team.comma.spotify.recommend.exception.RecommendException;
 import com.team.comma.spotify.recommend.repository.RecommendRepository;
 import com.team.comma.spotify.recommend.domain.Recommend;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.security.auth.login.AccountException;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
@@ -72,4 +74,12 @@ public class RecommendService {
         return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsByToUser(user));
     }
 
+    public MessageResponse getRecommend(final long recommendId) {
+        final Recommend recommend = recommendRepository.findById(recommendId)
+                .orElseThrow(() -> new RecommendException("추천 정보를 찾을 수 없습니다."));
+
+        final RecommendResponse recommendResponse = RecommendResponse.of(recommend);
+
+        return MessageResponse.of(REQUEST_SUCCESS, recommendResponse);
+    }
 }
