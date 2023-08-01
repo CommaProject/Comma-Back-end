@@ -115,6 +115,22 @@ public class RecommendRepositoryTest {
         assertThat(result.get().getId()).isEqualTo(recommend.getId());
     }
 
+    @Test
+    void 추천_플레이리스트_재생횟수_증가() {
+        // given
+        final User toUser = userRepository.save(buildUser("toUserEmail"));
+        final User fromUser = userRepository.save(buildUser("fromUserEmail"));
+        final Playlist playlist = playlistRepository.save(buildPlaylist());
+        final Recommend recommend = recommendRepository.save(buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser));
+
+        // when
+        final long result = recommendRepository.increasePlayCount(recommend.getId());
+
+        // then
+        assertThat(result).isEqualTo(1);
+
+    }
+
     Recommend buildRecommendToFollowing(RecommendType type, Playlist playlist, User fromUser, User toUser) {
         return Recommend.builder()
                 .fromUser(fromUser)

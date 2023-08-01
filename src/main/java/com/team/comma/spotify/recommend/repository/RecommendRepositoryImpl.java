@@ -11,6 +11,7 @@ import java.util.List;
 
 import static com.querydsl.core.types.dsl.Wildcard.count;
 import static com.querydsl.jpa.JPAExpressions.select;
+import static com.team.comma.spotify.history.domain.QHistory.history;
 import static com.team.comma.spotify.playlist.domain.QPlaylistTrack.playlistTrack;
 import static com.team.comma.spotify.recommend.domain.QRecommend.recommend;
 
@@ -53,5 +54,13 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
                 .where(recommend.toUser.eq(reco.getToUser())
                         .and(recommend.playlist.eq(reco.getPlaylist())))
                 .fetchFirst();
+    }
+
+    @Override
+    public long increasePlayCount(long recommendId) {
+        return queryFactory.update(recommend)
+                .set(recommend.playCount, recommend.playCount.add(1L))
+                .where(recommend.id.eq(recommendId))
+                .execute();
     }
 }

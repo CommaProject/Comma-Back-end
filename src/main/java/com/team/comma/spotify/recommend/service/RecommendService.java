@@ -78,8 +78,9 @@ public class RecommendService {
         final Recommend recommend = recommendRepository.findById(recommendId)
                 .orElseThrow(() -> new RecommendException("추천 정보를 찾을 수 없습니다."));
 
-        final RecommendResponse recommendResponse = RecommendResponse.of(recommend);
+        final long result = recommendRepository.increasePlayCount(recommendId);
 
-        return MessageResponse.of(REQUEST_SUCCESS, recommendResponse);
+        return MessageResponse.of(REQUEST_SUCCESS, RecommendResponse.of(recommend));
     }
+
 }

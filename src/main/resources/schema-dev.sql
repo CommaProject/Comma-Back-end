@@ -173,6 +173,7 @@ CREATE TABLE recommend_tb
     id             BIGINT NOT NULL AUTO_INCREMENT,
     recommend_type VARCHAR(15),
     comment        TEXT,
+    play_count     INTEGER DEFAULT 0,
     playlist_id    BIGINT,
     from_user_id BIGINT,
     to_user_id   BIGINT,

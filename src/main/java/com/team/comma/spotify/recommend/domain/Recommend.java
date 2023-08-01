@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -37,6 +38,9 @@ public class Recommend {
 
     @Column(columnDefinition = "TEXT")
     private String comment;
+
+    @ColumnDefault("0")
+    private Long playCount;
 
     @JoinColumn(name = "playlist_id")
     @ManyToOne(fetch = FetchType.LAZY)
