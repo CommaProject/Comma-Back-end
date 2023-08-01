@@ -5,6 +5,7 @@ import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
+import com.team.comma.spotify.recommend.constant.RecommendListType;
 import com.team.comma.spotify.recommend.constant.RecommendType;
 import com.team.comma.spotify.recommend.dto.RecommendResponse;
 import com.team.comma.spotify.recommend.exception.RecommendException;
@@ -67,12 +68,17 @@ public class RecommendService {
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
-    public MessageResponse getRecommendList(final String accessToken) throws AccountException {
+    public MessageResponse getRecommendList(final String accessToken, final RecommendListType listType) throws AccountException {
         final String userName = jwtTokenProvider.getUserPk(accessToken);
         final User user = userRepository.findByEmail(userName)
                 .orElseThrow(() -> new AccountException("사용자 정보가 올바르지 않습니다."));
 
-        return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsByToUser(user));
+        if(listType.equals(RecommendListType.RECIEVED)){
+            return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsByToUser(user));
+        } else {
+            return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsByFromUser(user));
+        }
+
     }
 
     public MessageResponse getRecommend(final long recommendId) {

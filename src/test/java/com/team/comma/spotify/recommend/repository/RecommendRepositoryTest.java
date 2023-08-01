@@ -82,7 +82,7 @@ public class RecommendRepositoryTest {
     }
 
     @Test
-    void 추천_받았던_리스트_조회_2개() {
+    void 추천_받은_리스트_조회() {
         // given
         final User toUser = userRepository.save(buildUser("toUserEmail"));
         final User fromUser = userRepository.save(buildUser("fromUserEmail"));
@@ -94,6 +94,25 @@ public class RecommendRepositoryTest {
 
         // when
         final List<RecommendResponse> result = recommendRepository.getRecommendsByToUser(toUser);
+
+        // then
+        assertThat(result.size()).isEqualTo(2);
+
+    }
+
+    @Test
+    void 추천_보낸_리스트_조회() {
+        // given
+        final User toUser = userRepository.save(buildUser("toUserEmail"));
+        final User fromUser = userRepository.save(buildUser("fromUserEmail"));
+        final Playlist playlist = playlistRepository.save(buildPlaylist());
+        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        final Recommend recommend2 = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        recommendRepository.save(recommend);
+        recommendRepository.save(recommend2);
+
+        // when
+        final List<RecommendResponse> result = recommendRepository.getRecommendsByFromUser(fromUser);
 
         // then
         assertThat(result.size()).isEqualTo(2);

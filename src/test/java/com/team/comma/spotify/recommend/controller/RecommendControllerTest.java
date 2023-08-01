@@ -16,12 +16,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.team.comma.common.constant.ResponseCodeEnum;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.domain.Playlist;
-import com.team.comma.spotify.playlist.domain.PlaylistTrack;
-import com.team.comma.spotify.playlist.dto.PlaylistResponse;
-import com.team.comma.spotify.playlist.exception.PlaylistException;
+import com.team.comma.spotify.recommend.constant.RecommendListType;
 import com.team.comma.spotify.recommend.constant.RecommendType;
 import com.team.comma.spotify.recommend.domain.Recommend;
 import com.team.comma.spotify.recommend.dto.RecommendRequest;
@@ -46,17 +43,14 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.util.List;
@@ -181,9 +175,9 @@ public class RecommendControllerTest {
     }
 
     @Test
-    void 추천_받은_리스트_조회_성공() throws Exception {
+    void 추천_리스트_조회_성공() throws Exception {
         // given
-        final String url = "/recommend";
+        final String url = "/recommend/list/{listType}";
 
         final User toUser = buildUser("toUserEmail");
         final User fromUser = buildUser("fromUserEmail");
@@ -198,11 +192,11 @@ public class RecommendControllerTest {
                 RecommendResponse.of(recommend, 1L));
 
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, recommendList);
-        doReturn(message).when(recommendService).getRecommendList("accessToken");
+        doReturn(message).when(recommendService).getRecommendList("accessToken", RecommendListType.RECIEVED);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(url)
+                MockMvcRequestBuilders.get(url, RecommendListType.RECIEVED)
                         .cookie(new Cookie("accessToken", "accessToken"))
                         .contentType(MediaType.APPLICATION_JSON)
         );

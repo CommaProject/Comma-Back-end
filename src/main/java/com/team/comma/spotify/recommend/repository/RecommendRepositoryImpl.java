@@ -23,28 +23,57 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
     @Override
     public List<RecommendResponse> getRecommendsByToUser(User user) {
         return queryFactory.select(
-                Projections.constructor(
-                        RecommendResponse.class,
-                        recommend.id,
-                        recommend.fromUser.userDetail.nickname,
-                        recommend.fromUser.userDetail.profileImageUrl,
-                        recommend.toUser.userDetail.nickname,
-                        recommend.toUser.userDetail.profileImageUrl,
-                        recommend.comment,
-                        recommend.playlist.id,
-                        recommend.playlist.playlistTitle,
-                        select(playlistTrack.track.albumImageUrl)
-                                .from(playlistTrack)
-                                .where(playlistTrack.playlist.eq(recommend.playlist))
-                                .orderBy(playlistTrack.playSequence.asc())
-                                .limit(1),
-                        select(playlistTrack.count())
-                                .from(playlistTrack)
-                                .where(playlistTrack.playlist.eq(recommend.playlist)),
-                        recommend.playCount
-                ))
+                        Projections.constructor(
+                                RecommendResponse.class,
+                                recommend.id,
+                                recommend.fromUser.userDetail.nickname,
+                                recommend.fromUser.userDetail.profileImageUrl,
+                                recommend.toUser.userDetail.nickname,
+                                recommend.toUser.userDetail.profileImageUrl,
+                                recommend.comment,
+                                recommend.playlist.id,
+                                recommend.playlist.playlistTitle,
+                                select(playlistTrack.track.albumImageUrl)
+                                        .from(playlistTrack)
+                                        .where(playlistTrack.playlist.eq(recommend.playlist))
+                                        .orderBy(playlistTrack.playSequence.asc())
+                                        .limit(1),
+                                select(playlistTrack.count())
+                                        .from(playlistTrack)
+                                        .where(playlistTrack.playlist.eq(recommend.playlist)),
+                                recommend.playCount
+                        ))
                 .from(recommend)
                 .where(recommend.toUser.eq(user))
+                .orderBy(recommend.id.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<RecommendResponse> getRecommendsByFromUser(User user) {
+        return queryFactory.select(
+                        Projections.constructor(
+                                RecommendResponse.class,
+                                recommend.id,
+                                recommend.fromUser.userDetail.nickname,
+                                recommend.fromUser.userDetail.profileImageUrl,
+                                recommend.toUser.userDetail.nickname,
+                                recommend.toUser.userDetail.profileImageUrl,
+                                recommend.comment,
+                                recommend.playlist.id,
+                                recommend.playlist.playlistTitle,
+                                select(playlistTrack.track.albumImageUrl)
+                                        .from(playlistTrack)
+                                        .where(playlistTrack.playlist.eq(recommend.playlist))
+                                        .orderBy(playlistTrack.playSequence.asc())
+                                        .limit(1),
+                                select(playlistTrack.count())
+                                        .from(playlistTrack)
+                                        .where(playlistTrack.playlist.eq(recommend.playlist)),
+                                recommend.playCount
+                        ))
+                .from(recommend)
+                .where(recommend.fromUser.eq(user))
                 .orderBy(recommend.id.desc())
                 .fetch();
     }

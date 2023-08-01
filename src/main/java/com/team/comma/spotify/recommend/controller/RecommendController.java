@@ -1,6 +1,7 @@
 package com.team.comma.spotify.recommend.controller;
 
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.spotify.recommend.constant.RecommendListType;
 import com.team.comma.spotify.recommend.dto.RecommendRequest;
 import com.team.comma.spotify.recommend.dto.RecommendResponse;
 import com.team.comma.spotify.recommend.service.RecommendService;
@@ -26,12 +27,13 @@ public class RecommendController {
                 recommendService.addRecommend(accessToken, recommendRequest));
     }
 
-    @GetMapping
+    @GetMapping("/list/{listType}")
     public ResponseEntity<MessageResponse> recommendList(
-            @CookieValue final String accessToken
+            @CookieValue final String accessToken,
+            @PathVariable final RecommendListType listType
     ) throws AccountException {
         return ResponseEntity.ok().body(
-                recommendService.getRecommendList(accessToken));
+                recommendService.getRecommendList(accessToken, listType));
     }
 
     @GetMapping("/{recommendId}")
