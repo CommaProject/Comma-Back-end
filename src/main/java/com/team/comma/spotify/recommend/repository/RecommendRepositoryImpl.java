@@ -26,8 +26,10 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
                 Projections.constructor(
                         RecommendResponse.class,
                         recommend.id,
-                        recommend.fromUser.email,
+                        recommend.fromUser.userDetail.nickname,
                         recommend.fromUser.userDetail.profileImageUrl,
+                        recommend.toUser.userDetail.nickname,
+                        recommend.toUser.userDetail.profileImageUrl,
                         recommend.comment,
                         recommend.playlist.id,
                         recommend.playlist.playlistTitle,
@@ -38,7 +40,8 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
                                 .limit(1),
                         select(playlistTrack.count())
                                 .from(playlistTrack)
-                                .where(playlistTrack.playlist.eq(recommend.playlist))
+                                .where(playlistTrack.playlist.eq(recommend.playlist)),
+                        recommend.playCount
                 ))
                 .from(recommend)
                 .where(recommend.toUser.eq(user))

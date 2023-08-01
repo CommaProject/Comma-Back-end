@@ -27,7 +27,7 @@ public class RecommendController {
     }
 
     @GetMapping
-    public ResponseEntity<MessageResponse> recommendedList(
+    public ResponseEntity<MessageResponse> recommendList(
             @CookieValue final String accessToken
     ) throws AccountException {
         return ResponseEntity.ok().body(
@@ -35,7 +35,7 @@ public class RecommendController {
     }
 
     @GetMapping("/{recommendId}")
-    public ResponseEntity<MessageResponse> recommendedPlaylist(
+    public ResponseEntity<MessageResponse> recommendDetail(
             @PathVariable final long recommendId
     ) {
         return ResponseEntity.ok().body(

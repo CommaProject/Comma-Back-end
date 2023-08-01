@@ -227,6 +227,7 @@ public class RecommendServiceTest {
                 .recommendType(RecommendType.FOLLOWING)
                 .comment("test recommend")
                 .playlist(playlist)
+                .playCount(0L)
                 .build();
     }
 

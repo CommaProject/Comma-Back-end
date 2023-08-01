@@ -2,6 +2,7 @@ package com.team.comma.spotify.recommend.service;
 
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.domain.Playlist;
+import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.recommend.constant.RecommendType;
@@ -78,9 +79,9 @@ public class RecommendService {
         final Recommend recommend = recommendRepository.findById(recommendId)
                 .orElseThrow(() -> new RecommendException("추천 정보를 찾을 수 없습니다."));
 
-        final long result = recommendRepository.increasePlayCount(recommendId);
+        recommendRepository.increasePlayCount(recommendId);
 
-        return MessageResponse.of(REQUEST_SUCCESS, RecommendResponse.of(recommend));
+        return MessageResponse.of(REQUEST_SUCCESS, RecommendResponse.of(recommend,0));
     }
 
 }
