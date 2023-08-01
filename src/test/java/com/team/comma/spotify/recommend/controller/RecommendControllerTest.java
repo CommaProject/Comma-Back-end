@@ -21,6 +21,7 @@ import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.recommend.constant.RecommendListType;
 import com.team.comma.spotify.recommend.constant.RecommendType;
 import com.team.comma.spotify.recommend.domain.Recommend;
+import com.team.comma.spotify.recommend.dto.RecommendListRequest;
 import com.team.comma.spotify.recommend.dto.RecommendRequest;
 import com.team.comma.spotify.recommend.dto.RecommendResponse;
 import com.team.comma.spotify.recommend.exception.RecommendException;
@@ -177,7 +178,7 @@ public class RecommendControllerTest {
     @Test
     void 추천_리스트_조회_성공() throws Exception {
         // given
-        final String url = "/recommend/list/{listType}";
+        final String url = "/recommend";
 
         final User toUser = buildUser("toUserEmail");
         final User fromUser = buildUser("fromUserEmail");
@@ -191,13 +192,15 @@ public class RecommendControllerTest {
                 RecommendResponse.of(recommend, 1L),
                 RecommendResponse.of(recommend, 1L));
 
-        final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, recommendList);
-        doReturn(message).when(recommendService).getRecommendList("accessToken", RecommendListType.RECIEVED);
+        final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.RECIEVED).build();
 
-        // when
+        final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, recommendList);
+        doReturn(message).when(recommendService).getRecommendList("accessToken", recommendListRequest);
+
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(url, RecommendListType.RECIEVED)
+                MockMvcRequestBuilders.get(url)
                         .cookie(new Cookie("accessToken", "accessToken"))
+                        .content(gson.toJson(recommendListRequest))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -208,6 +211,9 @@ public class RecommendControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 access token")
+                        ),
+                        requestFields(
+                                fieldWithPath("recommendListType").description("받은 추천 리스트: RECIEVED, 보낸 추천 리스트: SENDED")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),

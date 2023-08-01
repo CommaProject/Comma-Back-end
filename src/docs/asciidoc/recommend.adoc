@@ -35,12 +35,13 @@ include::{snippets}/spotify/saveRecommendFailure/request-fields.adoc[]
 include::{snippets}/spotify/saveRecommendFailure/http-response.adoc[]
 include::{snippets}/spotify/saveRecommendFailure/response-fields.adoc[]
 
-=== 추천 리스트 조회(RECIEVED: 받은 리스트, SENDED : 보낸 리스트)
+=== 추천 리스트 조회
 
 ==== Request
 
 include::{snippets}/spotify/selectRecommendList/http-request.adoc[]
 include::{snippets}/spotify/selectRecommendList/request-cookies.adoc[]
+include::{snippets}/spotify/selectRecommendList/request-fields.adoc[]
 
 ==== Response
 

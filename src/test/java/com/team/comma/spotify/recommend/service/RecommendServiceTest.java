@@ -10,6 +10,7 @@ import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.recommend.constant.RecommendListType;
 import com.team.comma.spotify.recommend.constant.RecommendType;
 import com.team.comma.spotify.recommend.domain.Recommend;
+import com.team.comma.spotify.recommend.dto.RecommendListRequest;
 import com.team.comma.spotify.recommend.dto.RecommendRequest;
 import com.team.comma.spotify.recommend.exception.RecommendException;
 import com.team.comma.spotify.recommend.repository.RecommendRepository;
@@ -150,9 +151,10 @@ public class RecommendServiceTest {
     @Test
     void 추천_받은_리스트_조회_실패_사용자정보_찾을수없음() {
         // given
+        final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.RECIEVED).build();
 
         // when
-        final Throwable thrown = catchThrowable(() -> recommendService.getRecommendList(token, RecommendListType.RECIEVED));
+        final Throwable thrown = catchThrowable(() -> recommendService.getRecommendList(token, recommendListRequest));
 
         // then
         assertThat(thrown.getMessage()).isEqualTo("사용자 정보가 올바르지 않습니다.");
@@ -165,8 +167,10 @@ public class RecommendServiceTest {
         doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
+        final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.RECIEVED).build();
+
         // when
-        final MessageResponse result = recommendService.getRecommendList(token, RecommendListType.RECIEVED);
+        final MessageResponse result = recommendService.getRecommendList(token, recommendListRequest);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -180,8 +184,10 @@ public class RecommendServiceTest {
         doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
+        final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.RECIEVED).build();
+
         // when
-        final MessageResponse result = recommendService.getRecommendList(token, RecommendListType.SENDED);
+        final MessageResponse result = recommendService.getRecommendList(token, recommendListRequest);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
