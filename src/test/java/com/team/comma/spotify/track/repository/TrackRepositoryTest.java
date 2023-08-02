@@ -1,6 +1,7 @@
 package com.team.comma.spotify.track.repository;
 
 import com.team.comma.spotify.track.domain.Track;
+import com.team.comma.spotify.track.repository.track.TrackRepository;
 import com.team.comma.util.config.TestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class TrackRepositoryTest {
 
     @Autowired
     private TrackRepository trackRepository;
+
 
     private String spotifyTrackId = "input ISRC of track";
     @Test
@@ -82,11 +84,14 @@ public class TrackRepositoryTest {
         assertThat(result).isEmpty();
     }
 
+
+
     private Track buildTrack(String title) {
         return Track.builder()
             .trackTitle(title)
             .spotifyTrackId(spotifyTrackId)
             .build();
     }
+
 
 }

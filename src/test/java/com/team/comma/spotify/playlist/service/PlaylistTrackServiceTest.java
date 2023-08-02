@@ -16,7 +16,7 @@ import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.playlist.repository.PlaylistTrackRepository;
 import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.dto.TrackRequest;
-import com.team.comma.spotify.track.repository.TrackRepository;
+import com.team.comma.spotify.track.repository.track.TrackRepository;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;
 import com.team.comma.user.domain.User;
