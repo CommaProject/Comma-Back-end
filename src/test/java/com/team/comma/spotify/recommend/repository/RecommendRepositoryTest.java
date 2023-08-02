@@ -15,6 +15,7 @@ import com.team.comma.user.domain.User;
 import com.team.comma.user.domain.UserDetail;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.config.TestConfig;
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -97,6 +98,9 @@ public class RecommendRepositoryTest {
 
         // then
         assertThat(result.size()).isEqualTo(2);
+        for (RecommendResponse recommendResponse : result) {
+            assertThat(Hibernate.isInitialized(recommendResponse)).isTrue();
+        }
 
     }
 
@@ -116,6 +120,9 @@ public class RecommendRepositoryTest {
 
         // then
         assertThat(result.size()).isEqualTo(2);
+        for (RecommendResponse recommendResponse : result) {
+            assertThat(Hibernate.isInitialized(recommendResponse)).isTrue();
+        }
 
     }
 
