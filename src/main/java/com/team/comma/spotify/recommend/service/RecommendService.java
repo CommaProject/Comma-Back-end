@@ -2,7 +2,6 @@ package com.team.comma.spotify.recommend.service;
 
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.domain.Playlist;
-import com.team.comma.spotify.playlist.dto.PlaylistResponse;
 import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.recommend.constant.RecommendListType;
@@ -21,9 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountException;
-
-import java.util.List;
-import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
@@ -82,13 +78,14 @@ public class RecommendService {
 
     }
 
+    @Transactional
     public MessageResponse getRecommend(final long recommendId) {
         final Recommend recommend = recommendRepository.findById(recommendId)
                 .orElseThrow(() -> new RecommendException("추천 정보를 찾을 수 없습니다."));
 
         recommendRepository.increasePlayCount(recommendId);
 
-        return MessageResponse.of(REQUEST_SUCCESS, RecommendResponse.of(recommend,0));
+        return MessageResponse.of(REQUEST_SUCCESS, RecommendResponse.of(recommend, recommend.getToUser(), 0));
     }
 
 }

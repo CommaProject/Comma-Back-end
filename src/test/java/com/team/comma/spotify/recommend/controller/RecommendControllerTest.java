@@ -189,8 +189,8 @@ public class RecommendControllerTest {
 
         final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
         final List<RecommendResponse> recommendList = List.of(
-                RecommendResponse.of(recommend, 1L),
-                RecommendResponse.of(recommend, 1L));
+                RecommendResponse.of(recommend, toUser, 1L),
+                RecommendResponse.of(recommend, toUser, 1L));
 
         final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.RECIEVED).build();
 
@@ -220,11 +220,9 @@ public class RecommendControllerTest {
                                 fieldWithPath("message").description("메세지"),
                                 fieldWithPath("data").description("데이터"),
                                 fieldWithPath("data.[].recommendId").description("recommend ID"),
-                                fieldWithPath("data.[].fromUserNickname").description("추천 보낸 사용자 닉네임"),
-                                fieldWithPath("data.[].fromUserProfileImage").description("추천 보낸 사용자 프로필 이미지 url"),
-                                fieldWithPath("data.[].toUserNickname").description("추천 받은 사용자 닉네임"),
-                                fieldWithPath("data.[].toUserProfileImage").description("추천 받은 사용자 프로필 이미지 url"),
                                 fieldWithPath("data.[].comment").description("추천 코멘트"),
+                                fieldWithPath("data.[].userNickname").description("사용자 닉네임"),
+                                fieldWithPath("data.[].userProfileImage").description("사용자 프로필 이미지 url"),
                                 fieldWithPath("data.[].playlistId").description("플레이리스트 ID"),
                                 fieldWithPath("data.[].playlistTitle").description("플레이리스트 제목"),
                                 fieldWithPath("data.[].repAlbumImageUrl").description("대표 이미지 URL"),
@@ -254,7 +252,7 @@ public class RecommendControllerTest {
         playlist.addPlaylistTrack(track);
 
         final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
-        final RecommendResponse recommendResponse = RecommendResponse.of(recommend, 0);
+        final RecommendResponse recommendResponse = RecommendResponse.of(recommend, toUser, 0);
 
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, recommendResponse);
         doReturn(message).when(recommendService).getRecommend(recommendResponse.getRecommendId());
@@ -276,10 +274,8 @@ public class RecommendControllerTest {
                                 fieldWithPath("message").description("메세지"),
                                 fieldWithPath("data").description("데이터"),
                                 fieldWithPath("data.recommendId").description("recommend ID"),
-                                fieldWithPath("data.fromUserNickname").description("추천 보낸 사용자 닉네임"),
-                                fieldWithPath("data.fromUserProfileImage").description("추천 보낸 사용자 프로필 이미지 url"),
-                                fieldWithPath("data.toUserNickname").description("추천 받은 사용자 닉네임"),
-                                fieldWithPath("data.toUserProfileImage").description("추천 받은 사용자 프로필 이미지 url"),
+                                fieldWithPath("data.userNickname").description("사용자 닉네임"),
+                                fieldWithPath("data.userProfileImage").description("사용자 프로필 이미지 url"),
                                 fieldWithPath("data.comment").description("추천 코멘트"),
                                 fieldWithPath("data.playlistId").description("플레이리스트 ID"),
                                 fieldWithPath("data.playlistTitle").description("플레이리스트 제목"),

@@ -157,6 +157,7 @@ public class RecommendRepositoryTest {
                 .recommendType(type)
                 .comment("test recommend")
                 .playlist(playlist)
+                .playCount(1L)
                 .build();
     }
 

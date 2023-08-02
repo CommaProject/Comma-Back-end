@@ -9,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.querydsl.core.types.dsl.Wildcard.count;
 import static com.querydsl.jpa.JPAExpressions.select;
-import static com.team.comma.spotify.history.domain.QHistory.history;
 import static com.team.comma.spotify.playlist.domain.QPlaylistTrack.playlistTrack;
 import static com.team.comma.spotify.recommend.domain.QRecommend.recommend;
 
@@ -21,16 +19,14 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<RecommendResponse> getRecommendsByToUser(User user) {
+    public List<RecommendResponse> getRecommendsByToUser(User requestUser) {
         return queryFactory.select(
                         Projections.constructor(
                                 RecommendResponse.class,
                                 recommend.id,
+                                recommend.comment,
                                 recommend.fromUser.userDetail.nickname,
                                 recommend.fromUser.userDetail.profileImageUrl,
-                                recommend.toUser.userDetail.nickname,
-                                recommend.toUser.userDetail.profileImageUrl,
-                                recommend.comment,
                                 recommend.playlist.id,
                                 recommend.playlist.playlistTitle,
                                 select(playlistTrack.track.albumImageUrl)
@@ -44,22 +40,20 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
                                 recommend.playCount
                         ))
                 .from(recommend)
-                .where(recommend.toUser.eq(user))
+                .where(recommend.toUser.eq(requestUser))
                 .orderBy(recommend.id.desc())
                 .fetch();
     }
 
     @Override
-    public List<RecommendResponse> getRecommendsByFromUser(User user) {
+    public List<RecommendResponse> getRecommendsByFromUser(User requestUser) {
         return queryFactory.select(
                         Projections.constructor(
                                 RecommendResponse.class,
                                 recommend.id,
-                                recommend.fromUser.userDetail.nickname,
-                                recommend.fromUser.userDetail.profileImageUrl,
+                                recommend.comment,
                                 recommend.toUser.userDetail.nickname,
                                 recommend.toUser.userDetail.profileImageUrl,
-                                recommend.comment,
                                 recommend.playlist.id,
                                 recommend.playlist.playlistTitle,
                                 select(playlistTrack.track.albumImageUrl)
@@ -73,7 +67,7 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
                                 recommend.playCount
                         ))
                 .from(recommend)
-                .where(recommend.fromUser.eq(user))
+                .where(recommend.fromUser.eq(requestUser))
                 .orderBy(recommend.id.desc())
                 .fetch();
     }
