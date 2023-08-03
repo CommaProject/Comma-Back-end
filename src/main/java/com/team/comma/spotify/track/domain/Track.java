@@ -18,18 +18,21 @@ public class Track {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 30)
+    @Column(length = 30 , nullable = false)
     private String trackTitle;
 
     private Integer durationTimeMs;
 
-    @Column(length = 50)
+    @Builder.Default
+    private Long recommendCount = 0L;
+
+    @Column(length = 50 , nullable = false)
     private String albumImageUrl;
 
-    @Column(length = 50)
+    @Column(length = 50 , nullable = false)
     private String spotifyTrackId;
 
-    @Column(length = 50)
+    @Column(length = 50 , nullable = false)
     private String spotifyTrackHref;
 
     @OneToMany(mappedBy = "track")
