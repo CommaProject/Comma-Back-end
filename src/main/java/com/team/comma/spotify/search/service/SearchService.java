@@ -2,20 +2,18 @@ package com.team.comma.spotify.search.service;
 
 import com.neovisionaries.i18n.CountryCode;
 import com.team.comma.common.dto.MessageResponse;
-import com.team.comma.spotify.favorite.artist.service.FavoriteArtistService;
 import com.team.comma.spotify.history.dto.HistoryRequest;
 import com.team.comma.spotify.history.service.HistoryService;
 import com.team.comma.spotify.search.dto.ArtistResponse;
-import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.search.support.SpotifyAuthorization;
 import com.team.comma.spotify.search.support.SpotifySearchCommand;
 import com.team.comma.spotify.track.dto.TrackResponse;
-import com.team.comma.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import se.michaelthelin.spotify.SpotifyApi;
-import se.michaelthelin.spotify.model_objects.specification.*;
-import se.michaelthelin.spotify.requests.data.browse.GetRecommendationsRequest;
+import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
+import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.data.browse.miscellaneous.GetAvailableGenreSeedsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchArtistsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchTracksRequest;
@@ -24,10 +22,9 @@ import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 import javax.security.auth.login.AccountException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.spotify.track.domain.Track.buildTrack;
 import static com.team.comma.spotify.track.dto.TrackResponse.createTrackResponse;
 
 @Service
@@ -36,9 +33,7 @@ public class SearchService {
 
     private final SpotifyAuthorization spotifyAuthorization;
     private final SpotifySearchCommand spotifySearchCommand;
-    private final FavoriteArtistService favoriteArtistService;
     private final HistoryService historyService;
-    private final UserService userService;
 
     public MessageResponse searchArtistList(String artistName , String token) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
@@ -79,6 +74,19 @@ public class SearchService {
         addHistory(trackName , token);
 
         return MessageResponse.of(REQUEST_SUCCESS , result);
+    }
+
+    public com.team.comma.spotify.track.domain.Track searchTrackByTrackId(String trackId) {
+        SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
+        GetTrackRequest getTrackRequest = spotifyApi.getTrack(trackId).build();
+
+        Object executeResult = spotifySearchCommand.executeCommand(getTrackRequest);
+        if(executeResult instanceof SpotifyApi) {
+            return searchTrackByTrackId(trackId);
+        }
+
+        Track track = (Track) executeResult;
+        return buildTrack(track);
     }
 
     public void addHistory(String history , String token) throws AccountException {

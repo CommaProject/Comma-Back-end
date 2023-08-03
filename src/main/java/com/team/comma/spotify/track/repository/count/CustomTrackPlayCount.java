@@ -11,4 +11,6 @@ public interface CustomTrackPlayCount {
 
     List<TrackPlayCount> findTrackPlayCountByFriend(String userEmail);
 
+    List<TrackPlayCount> findTrackPlayCountByMostListenedSong(String userEmail);
+
 }

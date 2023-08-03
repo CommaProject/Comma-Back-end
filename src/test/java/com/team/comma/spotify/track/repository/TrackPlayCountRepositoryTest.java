@@ -7,6 +7,7 @@ import com.team.comma.spotify.track.dto.TrackPlayCountRequest;
 import com.team.comma.spotify.track.repository.count.TrackPlayCountRepository;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.domain.User;
+import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ public class TrackPlayCountRepositoryTest {
 
     @Autowired
     public FollowingRepository followingRepository;
+
 
     @Test
     @DisplayName("유저 이메일과 트랙 Id 로 탐색")
@@ -78,6 +80,25 @@ public class TrackPlayCountRepositoryTest {
         assertThat(result.size()).isEqualTo(2);
     }
 
+    @Test
+    @DisplayName("내가 가장 많이 들은 곡")
+    public void findTrackPlayCountByMostListenedSong() {
+        // given
+        User user = buildUser();
+        trackPlayCountRepository.save(buildTrackPlayCount(4 , user));
+        trackPlayCountRepository.save(buildTrackPlayCount(3 , user));
+        trackPlayCountRepository.save(buildTrackPlayCount(1 , user));
+
+        // when
+        List<TrackPlayCount> result = trackPlayCountRepository.findTrackPlayCountByMostListenedSong("email");
+
+        // then
+        assertThat(result.size()).isEqualTo(3);
+        assertThat(result.get(0).getPlayCount()).isEqualTo(4);
+        assertThat(result.get(1).getPlayCount()).isEqualTo(3);
+        assertThat(result.get(2).getPlayCount()).isEqualTo(1);
+    }
+
     public TrackPlayCountRequest buildTrackPlayCount() {
         return TrackPlayCountRequest.builder()
                 .trackArtist("artist")
@@ -85,6 +106,17 @@ public class TrackPlayCountRepositoryTest {
                 .trackId("trackId")
                 .trackName("name")
                 .trackName("track")
+                .build();
+    }
+
+    public TrackPlayCount buildTrackPlayCount(int count , User user) {
+        return TrackPlayCount.builder()
+                .playCount(count)
+                .trackArtist("artist")
+                .trackName("name")
+                .trackId("id")
+                .user(user)
+                .trackImageUrl("url")
                 .build();
     }
 

@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
+import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 
 @Entity
 @Getter
@@ -30,5 +32,12 @@ public class TrackArtist {
     @JoinColumn(name = "track_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Track track;
+
+    public static TrackArtist createTrackArtist(ArtistSimplified artist, Track track) {
+        return TrackArtist.builder()
+                .artistName(artist.getName())
+                .track(track)
+                .build();
+    }
 
 }

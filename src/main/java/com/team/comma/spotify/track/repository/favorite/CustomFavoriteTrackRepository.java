@@ -1,11 +1,11 @@
 package com.team.comma.spotify.track.repository.favorite;
 
-import com.team.comma.spotify.track.domain.FavoriteTrack;
+import com.team.comma.spotify.track.domain.Track;
 
 import java.util.List;
 
 public interface CustomFavoriteTrackRepository {
 
-    List<FavoriteTrack> findFavoriteTrackByEmail(String userEmail);
+    List<Track> findFavoriteTrackByEmail(String userEmail);
 
 }

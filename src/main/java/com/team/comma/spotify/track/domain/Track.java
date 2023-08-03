@@ -3,8 +3,13 @@ package com.team.comma.spotify.track.domain;
 import jakarta.persistence.*;
 
 import lombok.*;
+import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static com.team.comma.spotify.track.domain.TrackArtist.createTrackArtist;
 
 @Entity
 @Getter
@@ -45,6 +50,24 @@ public class Track {
             .build();
 
         trackArtistList.add(trackArtist);
+    }
+
+    public static Track buildTrack(se.michaelthelin.spotify.model_objects.specification.Track track) {
+        List<TrackArtist> trackArtists = new ArrayList<>();
+        Track trackEntity = Track.builder()
+                .trackTitle(track.getName())
+                .durationTimeMs(track.getDurationMs())
+                .albumImageUrl(track.getAlbum().getImages()[0].getUrl())
+                .spotifyTrackId(track.getId())
+                .spotifyTrackHref(track.getHref())
+                .trackArtistList(trackArtists)
+                .build();
+
+        for(ArtistSimplified artistSimplified : track.getArtists()) {
+            trackArtists.add(createTrackArtist(artistSimplified , trackEntity));
+        }
+
+        return trackEntity;
     }
 
 }

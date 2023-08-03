@@ -49,4 +49,8 @@ public class TrackPlayCount {
                 .build();
     }
 
+    public void updatePlayCount() {
+        this.playCount += 1;
+    }
+
 }

@@ -2,6 +2,7 @@ package com.team.comma.spotify.track.repository.favorite;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.spotify.track.domain.FavoriteTrack;
+import com.team.comma.spotify.track.domain.Track;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -13,10 +14,9 @@ public class FavoriteTrackRepositoryImpl implements CustomFavoriteTrackRepositor
 
     private final JPAQueryFactory jpaQueryFactory;
 
-
     @Override
-    public List<FavoriteTrack> findFavoriteTrackByEmail(String userEmail) {
-        return jpaQueryFactory.select(favoriteTrack).from(favoriteTrack)
+    public List<Track> findFavoriteTrackByEmail(String userEmail) {
+        return jpaQueryFactory.select(favoriteTrack.track).from(favoriteTrack)
                 .join(favoriteTrack.user , user).on(user.email.eq(userEmail)).fetch();
     }
 }

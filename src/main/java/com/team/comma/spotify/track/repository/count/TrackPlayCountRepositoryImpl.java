@@ -42,4 +42,13 @@ public class TrackPlayCountRepositoryImpl implements CustomTrackPlayCount {
                 .limit(20)
                 .fetch();
     }
+
+    @Override
+    public List<TrackPlayCount> findTrackPlayCountByMostListenedSong(String userEmail) {
+        return queryFactory.select(trackPlayCount).from(trackPlayCount)
+                .join(trackPlayCount.user , user).on(user.email.eq(userEmail))
+                .limit(20)
+                .orderBy(trackPlayCount.playCount.desc())
+                .fetch();
+    }
 }

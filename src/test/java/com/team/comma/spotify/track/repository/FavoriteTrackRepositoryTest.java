@@ -42,7 +42,7 @@ public class FavoriteTrackRepositoryTest {
         favoriteTrackRepository.save(track3);
 
         // when
-        List<FavoriteTrack> result = favoriteTrackRepository.findFavoriteTrackByEmail("email");
+        List<Track> result = favoriteTrackRepository.findFavoriteTrackByEmail("email");
         
         // then
         assertThat(result.size()).isEqualTo(3);
@@ -65,6 +65,9 @@ public class FavoriteTrackRepositoryTest {
     private Track buildTrack(String title) {
         return Track.builder()
                 .trackTitle(title)
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
                 .spotifyTrackId(spotifyTrackId)
                 .build();
     }
