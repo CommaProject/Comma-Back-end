@@ -79,7 +79,7 @@ public class TrackControllerTest {
     }
 
     @Test
-    @DisplayName("트랙 조회 수 증가 실패 _ 트랙 탐색 실패")
+    @DisplayName("트랙 추천 수 증가 실패 _ 트랙 탐색 실패")
     public void countPlayCountFail_notFountTrack() throws Exception {
         // given
         final String url = "/tracks/{trackId}";
@@ -118,7 +118,7 @@ public class TrackControllerTest {
     }
 
     @Test
-    @DisplayName("트랙 조회 수 증가")
+    @DisplayName("트랙 추천 수 증가")
     public void countPlayCount() throws Exception {
         // given
         final String url = "/tracks/{trackId}";
@@ -181,7 +181,7 @@ public class TrackControllerTest {
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
-                document("track/favorite-track-fail-notFoundUser",
+                document("track/add-favorite-track-fail-notFoundUser",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
@@ -235,7 +235,7 @@ public class TrackControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("track/favorite-track",
+                document("track/add-favorite-track",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
@@ -284,7 +284,7 @@ public class TrackControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("track/mostListenTrack",
+                document("track/mostListenTrackByMe",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
@@ -330,7 +330,7 @@ public class TrackControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("track/mostListenTrack",
+                document("track/mostListenTrackByFriend",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
@@ -357,7 +357,7 @@ public class TrackControllerTest {
     }
 
     @Test
-    @DisplayName("유저가 좋아하는 최애 트랙")
+    @DisplayName("유저가 좋아요 누른 트랙 탐색")
     public void findTrackByFavoriteTrack() throws Exception {
         // given
         final String url = "/tracks/users/favorites";
@@ -376,7 +376,7 @@ public class TrackControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("track/mostListenTrackFromUser",
+                document("track/favoriteTrack",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
@@ -427,7 +427,7 @@ public class TrackControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("track/mostListenTrack",
+                document("track/mostListenTrackByRecommendTrack",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         responseFields(
@@ -481,13 +481,6 @@ public class TrackControllerTest {
         return TrackArtist.builder()
                 .artistName("artist")
                 .build();
-    }
-
-    private Optional<User> getUserEntity() {
-        User user = User.builder().id(0L).email("email").password("password")
-                .role(UserRole.USER).build();
-
-        return Optional.of(user);
     }
 
 }

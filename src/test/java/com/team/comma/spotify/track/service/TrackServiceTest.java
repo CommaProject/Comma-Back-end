@@ -108,7 +108,7 @@ public class TrackServiceTest {
         for (int i = 0; i < 5; i++) {
             trackPlayCounts.add(buildTrackPlayCountResponse());
         }
-        doReturn(trackPlayCounts).when(trackPlayCountRepository).findTrackPlayCountByMostListenedSong(any(String.class));
+        doReturn(trackPlayCounts).when(trackPlayCountRepository).findTrackPlayCountByFriend(any(String.class));
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
 
         // when
