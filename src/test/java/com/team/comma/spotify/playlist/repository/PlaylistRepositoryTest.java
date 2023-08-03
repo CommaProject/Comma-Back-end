@@ -251,6 +251,10 @@ class PlaylistRepositoryTest {
 
     private Track buildTrackWithDurationTimeMs(int durationTimeMs) {
         return Track.builder()
+                .trackTitle(title)
+                .albumImageUrl("url")
+                .spotifyTrackId("trackId")
+                .spotifyTrackHref("href")
                 .durationTimeMs(durationTimeMs)
                 .build();
     }

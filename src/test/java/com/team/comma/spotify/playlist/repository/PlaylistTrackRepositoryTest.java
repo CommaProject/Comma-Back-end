@@ -94,7 +94,7 @@ class PlaylistTrackRepositoryTest {
     @Test
     void 플리_트랙으로_TrackPlaylist_성공() {
         //given
-        Track track = Track.builder().build();
+        Track track = buildTrack("title");
         trackRepository.save(track);
 
         Playlist playlist = Playlist.builder().build();
@@ -118,7 +118,7 @@ class PlaylistTrackRepositoryTest {
     @Test
     void 플리_id_트랙_id로_삭제_성공() {
         //given
-        Track track = Track.builder().build();
+        Track track = buildTrack("title");
         trackRepository.save(track);
 
         Playlist playlist = Playlist.builder().build();
@@ -145,13 +145,13 @@ class PlaylistTrackRepositoryTest {
     @Test
     void 트랙들간의_순서중_제일_높은_값을_리턴한다() {
         //given
-        Track track1 = Track.builder().build();
+        Track track1 = buildTrack("title");
         trackRepository.save(track1);
 
-        Track track2 = Track.builder().build();
+        Track track2 = buildTrack("title");
         trackRepository.save(track2);
 
-        Track track3 = Track.builder().build();
+        Track track3 = buildTrack("title");
         trackRepository.save(track3);
 
         Playlist playlist = Playlist.builder().build();
@@ -229,6 +229,9 @@ class PlaylistTrackRepositoryTest {
     private Track buildTrack(String title) {
         return Track.builder()
             .trackTitle(title)
+                .albumImageUrl("url")
+                .spotifyTrackId("trackId")
+                .spotifyTrackHref("href")
             .build();
     }
 
