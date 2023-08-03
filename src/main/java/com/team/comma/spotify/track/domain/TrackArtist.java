@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 
@@ -23,6 +24,7 @@ public class TrackArtist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(length = 30)
@@ -31,6 +33,7 @@ public class TrackArtist {
     @Setter
     @JoinColumn(name = "track_id")
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Track track;
 
     public static TrackArtist createTrackArtist(ArtistSimplified artist, Track track) {

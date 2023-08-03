@@ -1,12 +1,13 @@
 package com.team.comma.spotify.track.service;
 
-import com.team.comma.common.constant.ResponseCodeEnum;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.search.service.SearchService;
 import com.team.comma.spotify.track.domain.FavoriteTrack;
 import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.domain.TrackPlayCount;
+import com.team.comma.spotify.track.dto.TrackPlayCountResponse;
 import com.team.comma.spotify.track.dto.TrackRequest;
+import com.team.comma.spotify.track.dto.TrackResponse;
 import com.team.comma.spotify.track.exception.TrackException;
 import com.team.comma.spotify.track.repository.count.TrackPlayCountRepository;
 import com.team.comma.spotify.track.repository.favorite.FavoriteTrackRepository;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountException;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
@@ -30,15 +31,10 @@ import static com.team.comma.spotify.track.domain.FavoriteTrack.createFavoriteTr
 public class TrackService {
 
     private final JwtTokenProvider jwtTokenProvider;
-
     private final TrackPlayCountRepository trackPlayCountRepository;
-
     private final FavoriteTrackRepository favoriteTrackRepository;
-
     private final UserRepository userRepository;
-
     private final TrackRepository trackRepository;
-
     private final SearchService searchService;
 
     @Transactional
@@ -54,14 +50,14 @@ public class TrackService {
 
     public MessageResponse findMostListenedSong(String accessToken) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        List<TrackPlayCount> result = trackPlayCountRepository.findTrackPlayCountByMostListenedSong(userEmail);
+        List<TrackPlayCountResponse> result = trackPlayCountRepository.findTrackPlayCountByMostListenedSong(userEmail);
 
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
     public MessageResponse findMostListenedSongByFriend(String accessToken) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        List<TrackPlayCount> result = trackPlayCountRepository.findTrackPlayCountByMostListenedSong(userEmail);
+        List<TrackPlayCountResponse> result = trackPlayCountRepository.findTrackPlayCountByFriend(userEmail);
 
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
@@ -85,8 +81,7 @@ public class TrackService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
 
-        Track track = findTrackOrElseSave(trackRequest);
-        FavoriteTrack result = createFavoriteTrack(user , null);
+        FavoriteTrack result = createFavoriteTrack(user , findTrackOrElseSave(trackRequest));
         favoriteTrackRepository.save(result);
 
         return MessageResponse.of(REQUEST_SUCCESS);

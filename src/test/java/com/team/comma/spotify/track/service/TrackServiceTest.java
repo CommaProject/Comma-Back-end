@@ -3,6 +3,7 @@ package com.team.comma.spotify.track.service;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.domain.TrackPlayCount;
+import com.team.comma.spotify.track.dto.TrackPlayCountResponse;
 import com.team.comma.spotify.track.dto.TrackRequest;
 import com.team.comma.spotify.track.exception.TrackException;
 import com.team.comma.spotify.track.repository.count.TrackPlayCountRepository;
@@ -83,9 +84,9 @@ public class TrackServiceTest {
     @DisplayName("내가 가장 많이 들은 곡")
     void findMostListenedSong() {
         // given
-        List<TrackPlayCount> trackPlayCounts = new ArrayList<>();
+        List<TrackPlayCountResponse> trackPlayCounts = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            trackPlayCounts.add(buildTrackPlayCount());
+            trackPlayCounts.add(buildTrackPlayCountResponse());
         }
         doReturn(trackPlayCounts).when(trackPlayCountRepository).findTrackPlayCountByMostListenedSong(any(String.class));
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
@@ -103,9 +104,9 @@ public class TrackServiceTest {
     @DisplayName("친구가 가장 많이 들은 곡")
     void findMostListenedSongByFriend() {
         // given
-        List<TrackPlayCount> trackPlayCounts = new ArrayList<>();
+        List<TrackPlayCountResponse> trackPlayCounts = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            trackPlayCounts.add(buildTrackPlayCount());
+            trackPlayCounts.add(buildTrackPlayCountResponse());
         }
         doReturn(trackPlayCounts).when(trackPlayCountRepository).findTrackPlayCountByMostListenedSong(any(String.class));
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
@@ -198,14 +199,23 @@ public class TrackServiceTest {
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
+    public TrackPlayCountResponse buildTrackPlayCountResponse() {
+        return TrackPlayCountResponse.builder()
+                .playCount(0)
+                .trackId("trackId")
+                .trackImageUrl("images")
+                .trackName("trackName")
+                .trackArtist("trackArtist")
+                .build();
+    }
+
     public TrackPlayCount buildTrackPlayCount() {
         return TrackPlayCount.builder()
-                .id(0L)
-                .trackId("trackId")
-                .trackArtist("artist")
                 .playCount(0)
+                .trackId("trackId")
+                .trackImageUrl("images")
                 .trackName("trackName")
-                .trackImageUrl("img")
+                .trackArtist("trackArtist")
                 .build();
     }
 

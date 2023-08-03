@@ -4,6 +4,7 @@ import com.team.comma.follow.domain.Following;
 import com.team.comma.follow.repository.FollowingRepository;
 import com.team.comma.spotify.track.domain.TrackPlayCount;
 import com.team.comma.spotify.track.dto.TrackPlayCountRequest;
+import com.team.comma.spotify.track.dto.TrackPlayCountResponse;
 import com.team.comma.spotify.track.repository.count.TrackPlayCountRepository;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.domain.User;
@@ -74,7 +75,7 @@ public class TrackPlayCountRepositoryTest {
         followingRepository.save(following2);
 
         // when
-        List<TrackPlayCount> result = trackPlayCountRepository.findTrackPlayCountByFriend("email");
+        List<TrackPlayCountResponse> result = trackPlayCountRepository.findTrackPlayCountByFriend("email");
 
         // then
         assertThat(result.size()).isEqualTo(2);
@@ -90,7 +91,7 @@ public class TrackPlayCountRepositoryTest {
         trackPlayCountRepository.save(buildTrackPlayCount(1 , user));
 
         // when
-        List<TrackPlayCount> result = trackPlayCountRepository.findTrackPlayCountByMostListenedSong("email");
+        List<TrackPlayCountResponse> result = trackPlayCountRepository.findTrackPlayCountByMostListenedSong("email");
 
         // then
         assertThat(result.size()).isEqualTo(3);

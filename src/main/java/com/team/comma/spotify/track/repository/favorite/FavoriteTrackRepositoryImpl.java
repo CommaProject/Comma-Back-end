@@ -14,6 +14,7 @@ public class FavoriteTrackRepositoryImpl implements CustomFavoriteTrackRepositor
 
     private final JPAQueryFactory jpaQueryFactory;
 
+
     @Override
     public List<Track> findFavoriteTrackByEmail(String userEmail) {
         return jpaQueryFactory.select(favoriteTrack.track).from(favoriteTrack)

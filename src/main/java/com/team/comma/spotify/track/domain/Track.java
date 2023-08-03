@@ -3,6 +3,7 @@ package com.team.comma.spotify.track.domain;
 import jakarta.persistence.*;
 
 import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class Track {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(length = 30 , nullable = false)
