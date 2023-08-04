@@ -15,7 +15,7 @@ public class CreationCookie {
                 .httpOnly(false)
                 .secure(true)
                 .path("/")
-                .domain("comma-project.p-e.kr")
+                .domain("localhost")
                 .sameSite(Cookie.SameSite.NONE.name())
                 .maxAge(30 * 60 * 1000L)
                 .build();
@@ -26,7 +26,7 @@ public class CreationCookie {
                 .httpOnly(false)
                 .secure(true)
                 .path("/")
-                .domain("comma-project.p-e.kr")
+                .domain("localhost")
                 .sameSite(Cookie.SameSite.NONE.name())
                 .maxAge(14 * 24 * 60 * 60 * 1000L)
                 .build();
