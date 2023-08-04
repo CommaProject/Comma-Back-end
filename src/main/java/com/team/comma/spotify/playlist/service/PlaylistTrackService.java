@@ -58,9 +58,6 @@ public class PlaylistTrackService {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
         User findUser = userRepository.findByEmail(userEmail)
             .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
-        if (findUser == null) {
-            throw new AccountException("사용자를 찾을 수 없습니다.");
-        }
 
         if (dto.getPlaylistIdList().isEmpty()){
             Playlist playlist = dto.toPlaylistEntity(findUser);

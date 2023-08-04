@@ -415,7 +415,7 @@ public class FollowingControllerTest {
     @Test
     public void 팔로잉_리스트_조회_성공() throws Exception {
         // given
-        final String api = "/followings/lists";
+        final String api = "/followings/list";
 
         final String token = "accessToken";
         final User fromUser = User.builder().role(UserRole.USER).email("fromUser").build();
@@ -461,7 +461,7 @@ public class FollowingControllerTest {
     @Test
     public void 팔로잉_리스트_조회_실패_사용자찾을수없음() throws Exception {
         // given
-        final String api = "/followings/lists";
+        final String api = "/followings/list";
 
         final String token = "accessToken";
         doThrow(new AccountException("해당 사용자를 찾을 수 없습니다.")).when(followingService).getFollowingUserList(token);

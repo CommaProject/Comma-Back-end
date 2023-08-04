@@ -1,8 +1,8 @@
 package com.team.comma.spotify.recommend.controller;
 
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.spotify.recommend.dto.RecommendListRequest;
 import com.team.comma.spotify.recommend.dto.RecommendRequest;
-import com.team.comma.spotify.recommend.dto.RecommendResponse;
 import com.team.comma.spotify.recommend.service.RecommendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +27,20 @@ public class RecommendController {
     }
 
     @GetMapping
-    public ResponseEntity<MessageResponse> recommendedList(
-            @CookieValue final String accessToken
+    public ResponseEntity<MessageResponse> recommendList(
+            @CookieValue final String accessToken,
+            @RequestBody final RecommendListRequest recommendListRequest
     ) throws AccountException {
         return ResponseEntity.ok().body(
-                recommendService.getRecommendList(accessToken));
+                recommendService.getRecommendList(accessToken, recommendListRequest));
+    }
+
+    @GetMapping("/{recommendId}")
+    public ResponseEntity<MessageResponse> recommendDetail(
+            @PathVariable final long recommendId
+    ) {
+        return ResponseEntity.ok().body(
+                recommendService.getRecommend(recommendId));
     }
 
 }
