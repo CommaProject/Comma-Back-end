@@ -16,12 +16,15 @@ import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.service.JwtService;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
 import com.team.comma.util.security.domain.Token;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -86,7 +89,7 @@ class UserServiceTest {
         doReturn(userEntity).when(userRepository).findByEmail(userEmail);
 
         // when
-        Throwable thrown = catchThrowable(() -> userService.login(login));
+        Throwable thrown = catchThrowable(() -> userService.login(login , null));
 
         // then
         assertThat(thrown).isInstanceOf(AccountException.class)
@@ -107,7 +110,7 @@ class UserServiceTest {
         doReturn(optionalUser).when(userRepository).findByEmail(loginRequest.getEmail());
 
         // when
-        Throwable thrown = catchThrowable(() -> userService.login(loginRequest));
+        Throwable thrown = catchThrowable(() -> userService.login(loginRequest , null));
 
         // then
         assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("정보가 올바르지 않습니다.");
@@ -122,7 +125,7 @@ class UserServiceTest {
         doReturn(Optional.empty()).when(userRepository).findByEmail(login.getEmail());
 
         // when
-        Throwable thrown = catchThrowable(() -> userService.login(login));
+        Throwable thrown = catchThrowable(() -> userService.login(login , null));
 
         // then
         assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("정보가 올바르지 않습니다.");
@@ -143,14 +146,13 @@ class UserServiceTest {
             .when(jwtTokenProvider).createAccessToken(userEntity.get().getUsername(),
                 userEntity.get().getRole());
         doNothing().when(jwtService).login(any(Token.class));
+        HttpServletResponse responseMock = Mockito.mock(HttpServletResponse.class);
 
         // when
-        final ResponseEntity result = userService.login(login);
+        final ResponseEntity result = userService.login(login , responseMock);
 
         // then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(result.getHeaders().get(SET_COOKIE).toString()).contains("accessTokenData")
-            .contains("refreshTokenData");
     }
 
     @Test

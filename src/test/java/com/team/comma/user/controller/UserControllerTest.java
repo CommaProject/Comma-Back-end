@@ -13,6 +13,7 @@ import com.team.comma.user.service.UserService;
 import com.team.comma.util.gson.GsonUtil;
 import com.team.comma.util.jwt.exception.TokenForgeryException;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -94,7 +95,7 @@ class UserControllerTest {
         doReturn(ResponseEntity.ok()
                 .header(SET_COOKIE, cookie1.toString())
                 .header(SET_COOKIE, cookie2.toString())
-                .body(message)).when(userService).login(any(LoginRequest.class));
+                .body(message)).when(userService).login(any(LoginRequest.class) , any(HttpServletResponse.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -127,6 +128,7 @@ class UserControllerTest {
                                 fieldWithPath("data.userId").description("사용자 Id 데이터"),
                                 fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
+                                fieldWithPath("data.joinDate").description("가입 날짜"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임"),
                                 fieldWithPath("data.age").description("사용자 연령"),
                                 fieldWithPath("data.sex").description("사용자 성별")
@@ -154,7 +156,7 @@ class UserControllerTest {
         // given
         String api = "/login";
         LoginRequest request = getLoginRequest();
-        doThrow(new AccountException("정보가 올바르지 않습니다.")).when(userService).login(any(LoginRequest.class));
+        doThrow(new AccountException("정보가 올바르지 않습니다.")).when(userService).login(any(LoginRequest.class) , any(HttpServletResponse.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -225,6 +227,7 @@ class UserControllerTest {
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임"),
                                 fieldWithPath("data.age").description("사용자 연령"),
+                                fieldWithPath("data.joinDate").description("가입 날짜"),
                                 fieldWithPath("data.sex").description("사용자 성별")
                         )
                 )
@@ -523,6 +526,7 @@ class UserControllerTest {
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임"),
                                 fieldWithPath("data.age").description("사용자 연령"),
+                                fieldWithPath("data.joinDate").description("가입 날짜"),
                                 fieldWithPath("data.sex").description("사용자 성별")
                         )
                 )
@@ -575,6 +579,7 @@ class UserControllerTest {
                                 fieldWithPath("data[].name").description("사용자 이름"),
                                 fieldWithPath("data[].nickName").description("사용자 닉네임"),
                                 fieldWithPath("data[].age").description("사용자 연령"),
+                                fieldWithPath("data[].joinDate").description("가입 날짜"),
                                 fieldWithPath("data[].sex").description("사용자 성별")
                         )
                 )

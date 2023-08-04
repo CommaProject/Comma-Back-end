@@ -5,6 +5,7 @@ import com.team.comma.user.dto.LoginRequest;
 import com.team.comma.user.dto.RegisterRequest;
 import com.team.comma.user.dto.UserDetailRequest;
 import com.team.comma.user.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<MessageResponse> loginUser(@RequestBody LoginRequest login) throws AccountException {
-        return userService.login(login);
+    public ResponseEntity<MessageResponse> loginUser(@RequestBody LoginRequest login , HttpServletResponse response) throws AccountException {
+        return userService.login(login , response);
     }
 
     @PostMapping("/register")
