@@ -13,10 +13,10 @@ public class CreationCookie {
     public static ResponseCookie createResponseAccessToken(String cookieName) {
         return ResponseCookie.from("accessToken", cookieName)
                 .httpOnly(true)
-                //.secure(true)
+                .secure(true)
                 .path("/")
-                .domain("localhost")
-                //.sameSite(Cookie.SameSite.NONE.name())
+                .domain("localhost:3000")
+                .sameSite(Cookie.SameSite.NONE.name())
                 .maxAge(30 * 60 * 1000L)
                 .build();
     }
@@ -24,10 +24,10 @@ public class CreationCookie {
     public static ResponseCookie createResponseRefreshToken(String cookieName) {
         return ResponseCookie.from("refreshToken", cookieName)
                 .httpOnly(true)
-                //.secure(true)
+                .secure(true)
                 .path("/")
-                .domain("localhost")
-                //.sameSite(Cookie.SameSite.NONE.name())
+                .domain("localhost:3000")
+                .sameSite(Cookie.SameSite.NONE.name())
                 .maxAge(14 * 24 * 60 * 60 * 1000L)
                 .build();
     }
