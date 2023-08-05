@@ -350,4 +350,13 @@ class UserServiceTest {
         return Optional.of(user);
     }
 
+    public User getGeneralUserEntity() {
+        return User.builder().id(0L).email(userEmail).type(UserType.GENERAL_USER).password(userPassword)
+            .build();
+    }
+
+    public RegisterRequest getRequestUser() {
+        return RegisterRequest.builder().email(userEmail).password(userPassword).build();
+    }
+
 }
