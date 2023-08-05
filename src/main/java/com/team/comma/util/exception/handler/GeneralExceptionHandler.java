@@ -7,7 +7,6 @@ import com.team.comma.spotify.playlist.exception.PlaylistException;
 import com.team.comma.spotify.recommend.exception.RecommendException;
 import com.team.comma.spotify.search.exception.SpotifyException;
 import com.team.comma.spotify.search.exception.TokenExpirationException;
-import com.team.comma.spotify.track.exception.TrackException;
 import com.team.comma.util.auth.exception.OAuth2EmailNotFoundException;
 import com.team.comma.util.jwt.exception.TokenForgeryException;
 import com.team.comma.util.s3.exception.S3Exception;
@@ -29,7 +28,7 @@ import static com.team.comma.common.constant.ResponseCodeEnum.*;
 public class GeneralExceptionHandler {
 
     @ExceptionHandler({UsernameNotFoundException.class, AccountException.class , S3Exception.class
-            , FollowingException.class , FavoriteArtistException.class , TrackException.class})
+            , FollowingException.class , FavoriteArtistException.class })
     public ResponseEntity<MessageResponse> handleBadRequest(Exception e) {
         MessageResponse message = MessageResponse.of(SIMPLE_REQUEST_FAILURE.getCode() ,
             e.getMessage());

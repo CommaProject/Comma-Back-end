@@ -66,5 +66,4 @@ public class TrackResponse {
                 .durationSecond(MillToSecond(track.getDurationMs()))
                 .build();
     }
-
 }
