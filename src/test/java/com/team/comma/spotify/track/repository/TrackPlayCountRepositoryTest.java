@@ -8,7 +8,6 @@ import com.team.comma.spotify.track.dto.TrackPlayCountResponse;
 import com.team.comma.spotify.track.repository.count.TrackPlayCountRepository;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.domain.User;
-import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -83,7 +82,7 @@ public class TrackPlayCountRepositoryTest {
 
     @Test
     @DisplayName("내가 가장 많이 들은 곡")
-    public void findTrackPlayCountByMostListenedSong() {
+    public void findTrackPlayCountByMostListenedTrack() {
         // given
         User user = buildUser();
         trackPlayCountRepository.save(buildTrackPlayCount(4 , user));
@@ -91,7 +90,7 @@ public class TrackPlayCountRepositoryTest {
         trackPlayCountRepository.save(buildTrackPlayCount(1 , user));
 
         // when
-        List<TrackPlayCountResponse> result = trackPlayCountRepository.findTrackPlayCountByMostListenedSong("email");
+        List<TrackPlayCountResponse> result = trackPlayCountRepository.findTrackPlayCountByMostListenedTrack("email");
 
         // then
         assertThat(result.size()).isEqualTo(3);

@@ -7,7 +7,6 @@ import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.spotify.track.domain.TrackPlayCount;
 import com.team.comma.spotify.track.dto.TrackPlayCountResponse;
 import com.team.comma.spotify.track.dto.TrackRequest;
-import com.team.comma.spotify.track.dto.TrackResponse;
 import com.team.comma.spotify.track.exception.TrackException;
 import com.team.comma.spotify.track.repository.count.TrackPlayCountRepository;
 import com.team.comma.spotify.track.repository.favorite.FavoriteTrackRepository;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
@@ -48,14 +46,14 @@ public class TrackService {
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
-    public MessageResponse findMostListenedSong(String accessToken) {
+    public MessageResponse findMostListenedTrack(String accessToken) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        List<TrackPlayCountResponse> result = trackPlayCountRepository.findTrackPlayCountByMostListenedSong(userEmail);
+        List<TrackPlayCountResponse> result = trackPlayCountRepository.findTrackPlayCountByMostListenedTrack(userEmail);
 
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
-    public MessageResponse findMostListenedSongByFriend(String accessToken) {
+    public MessageResponse findMostListenedTrackByFriend(String accessToken) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
         List<TrackPlayCountResponse> result = trackPlayCountRepository.findTrackPlayCountByFriend(userEmail);
 

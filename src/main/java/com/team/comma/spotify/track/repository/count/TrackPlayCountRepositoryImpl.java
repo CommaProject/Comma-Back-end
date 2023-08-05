@@ -54,7 +54,7 @@ public class TrackPlayCountRepositoryImpl implements CustomTrackPlayCount {
     }
 
     @Override
-    public List<TrackPlayCountResponse> findTrackPlayCountByMostListenedSong(String userEmail) {
+    public List<TrackPlayCountResponse> findTrackPlayCountByMostListenedTrack(String userEmail) {
         return queryFactory.select(Projections.constructor(
                         TrackPlayCountResponse.class,
                         trackPlayCount.playCount,

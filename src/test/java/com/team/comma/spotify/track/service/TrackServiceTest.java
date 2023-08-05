@@ -82,17 +82,17 @@ public class TrackServiceTest {
 
     @Test
     @DisplayName("내가 가장 많이 들은 곡")
-    void findMostListenedSong() {
+    void findMostListenedTrack() {
         // given
         List<TrackPlayCountResponse> trackPlayCounts = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             trackPlayCounts.add(buildTrackPlayCountResponse());
         }
-        doReturn(trackPlayCounts).when(trackPlayCountRepository).findTrackPlayCountByMostListenedSong(any(String.class));
+        doReturn(trackPlayCounts).when(trackPlayCountRepository).findTrackPlayCountByMostListenedTrack(any(String.class));
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
 
         // when
-        MessageResponse result = trackService.findMostListenedSong("token");
+        MessageResponse result = trackService.findMostListenedTrack("token");
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -102,7 +102,7 @@ public class TrackServiceTest {
 
     @Test
     @DisplayName("친구가 가장 많이 들은 곡")
-    void findMostListenedSongByFriend() {
+    void findMostListenedTrackByFriend() {
         // given
         List<TrackPlayCountResponse> trackPlayCounts = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
@@ -112,7 +112,7 @@ public class TrackServiceTest {
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
 
         // when
-        MessageResponse result = trackService.findMostListenedSongByFriend("token");
+        MessageResponse result = trackService.findMostListenedTrackByFriend("token");
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());

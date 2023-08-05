@@ -26,13 +26,13 @@ public class TrackController {
     }
 
     @GetMapping
-    public MessageResponse findMostListenedSong(@CookieValue String accessToken) {
-        return trackService.findMostListenedSong(accessToken);
+    public MessageResponse findMostListenedTrack(@CookieValue String accessToken) {
+        return trackService.findMostListenedTrack(accessToken);
     }
 
     @GetMapping("/friends")
-    public MessageResponse findMostListenedSongByFriend(@CookieValue String accessToken) {
-        return trackService.findMostListenedSongByFriend(accessToken);
+    public MessageResponse findMostListenedTrackByFriend(@CookieValue String accessToken) {
+        return trackService.findMostListenedTrackByFriend(accessToken);
     }
 
     @GetMapping("/users/favorites")

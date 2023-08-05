@@ -8,8 +8,6 @@ import com.team.comma.spotify.track.dto.TrackPlayCountResponse;
 import com.team.comma.spotify.track.dto.TrackRequest;
 import com.team.comma.spotify.track.exception.TrackException;
 import com.team.comma.spotify.track.service.TrackService;
-import com.team.comma.user.constant.UserRole;
-import com.team.comma.user.domain.User;
 import com.team.comma.util.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +35,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
@@ -266,7 +263,7 @@ public class TrackControllerTest {
 
     @Test
     @DisplayName("내가 가장 많이 들은 곡")
-    public void findMostListenedSong() throws Exception {
+    public void findMostListenedTrack() throws Exception {
         // given
         final String url = "/tracks";
         List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
@@ -274,7 +271,7 @@ public class TrackControllerTest {
             trackPlayCountResponses.add(buildTrackPlayCountResponse());
         }
 
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(trackService).findMostListenedSong(any(String.class));
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(trackService).findMostListenedTrack(any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -312,7 +309,7 @@ public class TrackControllerTest {
 
     @Test
     @DisplayName("친구가 가장 많이 들은 곡")
-    public void findMostListenedSongByFriend() throws Exception {
+    public void findMostListenedTrackByFriend() throws Exception {
         // given
         final String url = "/tracks/friends";
         List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
@@ -320,7 +317,7 @@ public class TrackControllerTest {
             trackPlayCountResponses.add(buildTrackPlayCountResponse());
         }
 
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(trackService).findMostListenedSongByFriend(any(String.class));
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(trackService).findMostListenedTrackByFriend(any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
