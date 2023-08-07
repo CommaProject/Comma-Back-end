@@ -10,5 +10,9 @@ public interface RecommendRepositoryCustom {
 
     List<RecommendResponse> getRecommendsByToUser(User user);
 
+    List<RecommendResponse> getRecommendsByFromUser(User user);
+
     long getRecommendCountByToUserAndPlaylist(Recommend reco);
+
+    long increasePlayCount(long recommendId);
 }

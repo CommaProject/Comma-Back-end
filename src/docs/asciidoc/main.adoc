@@ -35,4 +35,4 @@
 
 * link:playlist-track.html[Playlist-Track 문서]
 
-* link:recommend.adoc[플레이리스트 추천 문서]
+* link:recommend.adoc[Recommend 문서]

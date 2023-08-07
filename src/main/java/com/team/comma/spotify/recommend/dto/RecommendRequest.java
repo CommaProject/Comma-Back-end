@@ -27,6 +27,7 @@ public class RecommendRequest {
                 .recommendType(recommendType)
                 .comment(comment)
                 .playlist(playlist)
+                .playCount(0L)
                 .build();
     }
 
@@ -36,6 +37,7 @@ public class RecommendRequest {
                 .recommendType(recommendType)
                 .comment(comment)
                 .playlist(playlist)
+                .playCount(0L)
                 .build();
     }
 }

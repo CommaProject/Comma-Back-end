@@ -15,14 +15,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.team.comma.common.constant.ResponseCodeEnum;
+import com.google.gson.reflect.TypeToken;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.domain.Playlist;
-import com.team.comma.spotify.playlist.domain.PlaylistTrack;
-import com.team.comma.spotify.playlist.dto.PlaylistResponse;
-import com.team.comma.spotify.playlist.exception.PlaylistException;
+import com.team.comma.spotify.recommend.constant.RecommendListType;
 import com.team.comma.spotify.recommend.constant.RecommendType;
 import com.team.comma.spotify.recommend.domain.Recommend;
+import com.team.comma.spotify.recommend.dto.RecommendListRequest;
 import com.team.comma.spotify.recommend.dto.RecommendRequest;
 import com.team.comma.spotify.recommend.dto.RecommendResponse;
 import com.team.comma.spotify.recommend.exception.RecommendException;
@@ -31,6 +30,7 @@ import com.team.comma.spotify.track.domain.Track;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;
 import com.team.comma.user.domain.User;
+import com.team.comma.user.domain.UserDetail;
 import com.team.comma.util.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +52,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.util.List;
@@ -84,7 +83,7 @@ public class RecommendControllerTest {
     }
 
     @Test
-    void 플레이리스트_추천_저장_성공() throws Exception {
+    void 추천_저장_성공() throws Exception {
         // given
         final String url = "/recommend";
 
@@ -131,7 +130,7 @@ public class RecommendControllerTest {
     }
 
     @Test
-    void 플레이리스트_추천_저장_실패_사용자에게_이미_추천한_플레이리스트() throws Exception {
+    void 추천_저장_실패_사용자에게_이미_추천한_플레이리스트() throws Exception {
         // given
         final String url = "/recommend";
 
@@ -177,7 +176,7 @@ public class RecommendControllerTest {
     }
 
     @Test
-    void 추천_받은_리스트_조회_성공() throws Exception {
+    void 추천_리스트_조회_성공() throws Exception {
         // given
         final String url = "/recommend";
 
@@ -190,17 +189,18 @@ public class RecommendControllerTest {
 
         final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
         final List<RecommendResponse> recommendList = List.of(
-                RecommendResponse.of(recommend, 1L),
-                RecommendResponse.of(recommend, 1L));
+                RecommendResponse.of(recommend, toUser, 1L),
+                RecommendResponse.of(recommend, toUser, 1L));
+
+        final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.RECIEVED).build();
 
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, recommendList);
+        doReturn(message).when(recommendService).getRecommendList("accessToken", recommendListRequest);
 
-        doReturn(message).when(recommendService).getRecommendList("accessToken");
-
-        // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.get(url)
                         .cookie(new Cookie("accessToken", "accessToken"))
+                        .content(gson.toJson(recommendListRequest))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -212,16 +212,22 @@ public class RecommendControllerTest {
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 access token")
                         ),
+                        requestFields(
+                                fieldWithPath("recommendListType").description("받은 추천 리스트: RECIEVED, 보낸 추천 리스트: SENDED")
+                        ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("메세지"),
                                 fieldWithPath("data").description("데이터"),
                                 fieldWithPath("data.[].recommendId").description("recommend ID"),
-                                fieldWithPath("data.[].fromUserEmail").description("추천 보낸 사용자 이메일"),
+                                fieldWithPath("data.[].comment").description("추천 코멘트"),
+                                fieldWithPath("data.[].userNickname").description("사용자 닉네임"),
+                                fieldWithPath("data.[].userProfileImage").description("사용자 프로필 이미지 url"),
                                 fieldWithPath("data.[].playlistId").description("플레이리스트 ID"),
                                 fieldWithPath("data.[].playlistTitle").description("플레이리스트 제목"),
                                 fieldWithPath("data.[].repAlbumImageUrl").description("대표 이미지 URL"),
-                                fieldWithPath("data.[].trackCount").description("트랙 갯수")
+                                fieldWithPath("data.[].trackCount").description("트랙 갯수"),
+                                fieldWithPath("data.[].playCount").description("추천된 플레이리스트 재생 횟수")
                         )
                 )
         );
@@ -233,6 +239,62 @@ public class RecommendControllerTest {
         assertThat((List<RecommendResponse>) result.getData()).size().isEqualTo(2);
     }
 
+    @Test
+    void 추천_정보_조회_성공() throws Exception {
+        // given
+        final String url = "/recommend/{recommendId}";
+
+        final User toUser = buildUser("toUserEmail");
+        final User fromUser = buildUser("fromUserEmail");
+
+        final Playlist playlist = buildPlaylist();
+        final Track track = buildTrack();
+        playlist.addPlaylistTrack(track);
+
+        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        final RecommendResponse recommendResponse = RecommendResponse.of(recommend, toUser, 0);
+
+        final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, recommendResponse);
+        doReturn(message).when(recommendService).getRecommend(recommendResponse.getRecommendId());
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get(url, recommendResponse.getRecommendId())
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("spotify/selectRecommend",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터"),
+                                fieldWithPath("data.recommendId").description("recommend ID"),
+                                fieldWithPath("data.userNickname").description("사용자 닉네임"),
+                                fieldWithPath("data.userProfileImage").description("사용자 프로필 이미지 url"),
+                                fieldWithPath("data.comment").description("추천 코멘트"),
+                                fieldWithPath("data.playlistId").description("플레이리스트 ID"),
+                                fieldWithPath("data.playlistTitle").description("플레이리스트 제목"),
+                                fieldWithPath("data.repAlbumImageUrl").description("대표 이미지 URL"),
+                                fieldWithPath("data.trackCount").description("트랙 갯수"),
+                                fieldWithPath("data.playCount").description("추천된 플레이리스트 재생 횟수")
+                        )
+                )
+        );
+
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                new TypeToken<MessageResponse<RecommendResponse>>() {}.getType()
+        );
+
+        RecommendResponse recommendResult = (RecommendResponse) result.getData();
+        assertThat(recommendResult.getRecommendId()).isEqualTo(recommendResponse.getRecommendId());
+
+    }
 
     private User buildUser(String toUserEmail) {
         return User.builder()
@@ -240,6 +302,7 @@ public class RecommendControllerTest {
                 .email(toUserEmail)
                 .type(UserType.GENERAL_USER)
                 .role(UserRole.USER)
+                .userDetail(UserDetail.builder().profileImageUrl("test").build())
                 .build();
     }
 
@@ -256,13 +319,6 @@ public class RecommendControllerTest {
                 .playlistTitle("test playlist")
                 .alarmFlag(true)
                 .alarmStartTime(LocalTime.now())
-                .build();
-    }
-
-    private PlaylistTrack buildPlaylistTrack(Playlist playlist, Track track) {
-        return PlaylistTrack.builder()
-                .playlist(playlist)
-                .track(track)
                 .build();
     }
 
@@ -283,6 +339,7 @@ public class RecommendControllerTest {
                 .recommendType(type)
                 .comment("test recommend")
                 .playlist(playlist)
+                .playCount(0L)
                 .build();
     }
 }

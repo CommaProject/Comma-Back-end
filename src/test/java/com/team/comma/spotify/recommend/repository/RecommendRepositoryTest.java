@@ -12,14 +12,17 @@ import com.team.comma.spotify.recommend.dto.RecommendResponse;
 import com.team.comma.user.constant.UserRole;
 import com.team.comma.user.constant.UserType;
 import com.team.comma.user.domain.User;
+import com.team.comma.user.domain.UserDetail;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.config.TestConfig;
+import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
+import java.util.Optional;
 
 @DataJpaTest
 @Import(TestConfig.class)
@@ -80,7 +83,7 @@ public class RecommendRepositoryTest {
     }
 
     @Test
-    void 추천_받았던_리스트_조회_2개() {
+    void 추천_받은_리스트_조회() {
         // given
         final User toUser = userRepository.save(buildUser("toUserEmail"));
         final User fromUser = userRepository.save(buildUser("fromUserEmail"));
@@ -94,7 +97,63 @@ public class RecommendRepositoryTest {
         final List<RecommendResponse> result = recommendRepository.getRecommendsByToUser(toUser);
 
         // then
-        assertThat(result).size().isEqualTo(2);
+        assertThat(result.size()).isEqualTo(2);
+        for (RecommendResponse recommendResponse : result) {
+            assertThat(Hibernate.isInitialized(recommendResponse)).isTrue();
+        }
+
+    }
+
+    @Test
+    void 추천_보낸_리스트_조회() {
+        // given
+        final User toUser = userRepository.save(buildUser("toUserEmail"));
+        final User fromUser = userRepository.save(buildUser("fromUserEmail"));
+        final Playlist playlist = playlistRepository.save(buildPlaylist());
+        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        final Recommend recommend2 = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        recommendRepository.save(recommend);
+        recommendRepository.save(recommend2);
+
+        // when
+        final List<RecommendResponse> result = recommendRepository.getRecommendsByFromUser(fromUser);
+
+        // then
+        assertThat(result.size()).isEqualTo(2);
+        for (RecommendResponse recommendResponse : result) {
+            assertThat(Hibernate.isInitialized(recommendResponse)).isTrue();
+        }
+
+    }
+
+    @Test
+    void 추천_정보_id로_찾기() {
+        // given
+        final User toUser = userRepository.save(buildUser("toUserEmail"));
+        final User fromUser = userRepository.save(buildUser("fromUserEmail"));
+        final Playlist playlist = playlistRepository.save(buildPlaylist());
+        final Recommend recommend = recommendRepository.save(buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser));
+
+        // when
+        final Optional<Recommend> result = recommendRepository.findById(recommend.getId());
+
+        // then
+        assertThat(result.get().getId()).isEqualTo(recommend.getId());
+    }
+
+    @Test
+    void 추천_플레이리스트_재생횟수_증가() {
+        // given
+        final User toUser = userRepository.save(buildUser("toUserEmail"));
+        final User fromUser = userRepository.save(buildUser("fromUserEmail"));
+        final Playlist playlist = playlistRepository.save(buildPlaylist());
+        final Recommend recommend = recommendRepository.save(buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser));
+
+        // when
+        final long result = recommendRepository.increasePlayCount(recommend.getId());
+
+        // then
+        assertThat(result).isEqualTo(1);
 
     }
 
@@ -105,6 +164,7 @@ public class RecommendRepositoryTest {
                 .recommendType(type)
                 .comment("test recommend")
                 .playlist(playlist)
+                .playCount(1L)
                 .build();
     }
 
@@ -122,6 +182,7 @@ public class RecommendRepositoryTest {
                 .email(toUserEmail)
                 .type(UserType.GENERAL_USER)
                 .role(UserRole.USER)
+                .userDetail(UserDetail.builder().profileImageUrl("test").build())
                 .build();
     }
 
