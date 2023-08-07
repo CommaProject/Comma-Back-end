@@ -93,6 +93,7 @@ CREATE TABLE track_tb
     id                 BIGINT NOT NULL AUTO_INCREMENT,
     track_title        VARCHAR(30),
     duration_time_ms   INTEGER,
+    recommend_count BIGINT,
     album_image_url    VARCHAR(50),
     spotify_track_id   VARCHAR(50),
     spotify_track_href VARCHAR(50),
@@ -207,6 +208,10 @@ CREATE TABLE track_play_count_tb
     id               BIGINT NOT NULL AUTO_INCREMENT,
     play_count       INTEGER DEFAULT 1,
     spotify_track_id VARCHAR(255),
+    track_artist VARCHAR(255),
+    track_name VARCHAR(255),
+    track_image_url VARCHAR(255),
+    track_id VARCHAR(255),
     user_id          BIGINT,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES user_tb (id)

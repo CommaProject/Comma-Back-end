@@ -1,14 +1,8 @@
 package com.team.comma.spotify.track.domain;
 
+import com.team.comma.spotify.track.dto.TrackPlayCountRequest;
 import com.team.comma.user.domain.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,12 +24,33 @@ public class TrackPlayCount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ColumnDefault("1")
-    private Integer playCount;
+    @Builder.Default
+    private Integer playCount = 1;
 
-    private String spotifyTrackId;
+    private String trackId;
+
+    private String trackImageUrl;
+
+    private String trackName;
+
+    private String trackArtist;
 
     @JoinColumn(name = "user_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
     private User user;
+
+    public static TrackPlayCount createTrackPlayCount(TrackPlayCountRequest trackPlayCountRequest , User user) {
+        return TrackPlayCount.builder()
+                .trackId(trackPlayCountRequest.getTrackId())
+                .trackImageUrl(trackPlayCountRequest.getTrackImageUrl())
+                .trackName(trackPlayCountRequest.getTrackName())
+                .trackArtist(trackPlayCountRequest.getTrackArtist())
+                .user(user)
+                .build();
+    }
+
+    public void updatePlayCount() {
+        this.playCount += 1;
+    }
+
 }

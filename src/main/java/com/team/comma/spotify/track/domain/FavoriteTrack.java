@@ -1,14 +1,8 @@
-package com.team.comma.user.domain;
+package com.team.comma.spotify.track.domain;
 
 import com.team.comma.spotify.track.domain.Track;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.team.comma.user.domain.User;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,15 +21,22 @@ public class FavoriteTrack {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer playCount;
-
     private Boolean favoriteFlag;
 
     @JoinColumn(name = "user_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
     private User user;
 
     @JoinColumn(name = "track_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
     private Track track;
+
+    public static FavoriteTrack createFavoriteTrack(User user , Track track) {
+        return FavoriteTrack.builder()
+                .favoriteFlag(false)
+                .user(user)
+                .track(track)
+                .build();
+    }
+
 }
