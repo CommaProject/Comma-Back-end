@@ -2,6 +2,7 @@ package com.team.comma.util.exception.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.util.jwt.exception.RequireRefreshToken;
 import com.team.comma.util.jwt.exception.TokenForgeryException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,12 +10,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.AUTHORIZATION_ERROR;
+import static com.team.comma.util.jwt.support.CreationCookie.deleteAccessTokenCookie;
+import static com.team.comma.util.jwt.support.CreationCookie.deleteCookie;
 
 @Component
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
@@ -27,6 +31,16 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (TokenForgeryException e) {
+            deleteCookie(response);
+
+            setErrorResponse(response, AUTHORIZATION_ERROR.getCode() , e.getMessage());
+        } catch (UsernameNotFoundException e) {
+            deleteCookie(response);
+
+            setErrorResponse(response, AUTHORIZATION_ERROR.getCode() , e.getMessage());
+        } catch (RequireRefreshToken e) {
+            deleteAccessTokenCookie(response);
+
             setErrorResponse(response, AUTHORIZATION_ERROR.getCode() , e.getMessage());
         }
     }

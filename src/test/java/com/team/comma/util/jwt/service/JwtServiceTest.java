@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -59,12 +60,13 @@ class JwtServiceTest {
     void createAccessToken() {
         // given
         RefreshToken refreshToken = getRefreshToken();
+        MockHttpServletResponse response = new MockHttpServletResponse();
         Optional<RefreshToken> tokens = Optional.of(refreshToken);
         doReturn(tokens).when(refreshTokenRepository).findByToken(refreshToken.getToken());
         doReturn("Token").when(jwtTokenProvider).validateRefreshToken(any(RefreshToken.class));
 
         // when
-        ResponseEntity result = jwtService.validateRefreshToken(refreshToken.getToken());
+        ResponseEntity result = jwtService.validateRefreshToken(response , refreshToken.getToken());
 
         // then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -76,13 +78,14 @@ class JwtServiceTest {
     void expireToken() {
         // given
         RefreshToken refreshToken = getRefreshToken();
+        MockHttpServletResponse response = new MockHttpServletResponse();
         Optional<RefreshToken> tokens = Optional.of(refreshToken);
         doReturn(tokens).when(refreshTokenRepository).findByToken(refreshToken.getToken());
         doReturn(null).when(jwtTokenProvider).validateRefreshToken(any(RefreshToken.class));
 
         // when
         Throwable thrown = catchThrowable(
-            () -> jwtService.validateRefreshToken(refreshToken.getToken()));
+            () -> jwtService.validateRefreshToken(response , refreshToken.getToken()));
 
         // then
         assertThat(thrown).isInstanceOf(TokenExpirationException.class)
@@ -95,12 +98,13 @@ class JwtServiceTest {
     void falsifyToken() {
         // given
         RefreshToken refreshToken = getRefreshToken();
+        MockHttpServletResponse response = new MockHttpServletResponse();
         doThrow(NoSuchElementException.class).when(refreshTokenRepository)
             .findByToken(refreshToken.getToken());
 
         // when
         Throwable thrown = catchThrowable(
-            () -> jwtService.validateRefreshToken(refreshToken.getToken()));
+            () -> jwtService.validateRefreshToken(response , refreshToken.getToken()));
 
         // then
         assertThat(thrown).isInstanceOf(TokenForgeryException.class)

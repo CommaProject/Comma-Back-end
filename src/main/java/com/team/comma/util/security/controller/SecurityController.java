@@ -3,6 +3,7 @@ package com.team.comma.util.security.controller;
 import com.team.comma.common.constant.ResponseCodeEnum;
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.util.jwt.service.JwtService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,18 +18,18 @@ import static com.team.comma.common.constant.ResponseCodeEnum.AUTHORIZATION_ERRO
 @RequiredArgsConstructor
 public class SecurityController {
 
-    final private JwtService jwtService;
+    private final JwtService jwtService;
 
     @GetMapping(value = "/authentication/denied")
     public ResponseEntity<MessageResponse> informAuthenticationDenied(
-        @CookieValue(name = "refreshToken", required = false) String authorization) {
+            @CookieValue(name = "refreshToken", required = false) String authorization , HttpServletResponse response) {
         if (authorization == null) {
             MessageResponse message = MessageResponse.of(AUTHENTICATION_ERROR, "인증되지 않은 사용자입니다.");
 
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
         }
 
-        return jwtService.validateRefreshToken(authorization);
+        return jwtService.validateRefreshToken(response , authorization);
     }
 
     @GetMapping(value = "/authorization/denied")
@@ -36,12 +37,6 @@ public class SecurityController {
         MessageResponse message = MessageResponse.of(AUTHORIZATION_ERROR , "인가되지 않은 사용자입니다.");
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(message);
-    }
-
-
-    @GetMapping("/security")
-    public String getSecurity() {
-        return "Security";
     }
 
     @GetMapping(value = "/logout/message")
