@@ -29,7 +29,6 @@ public class JwtTokenProvider {
     private String secretKey = "secretKey";
     private String refreshKey = "refreshKey";
 
-    @Autowired
     private UserDetailsService userDetailsService;
 
     private long tokenValidTime = 30 * 60 * 1000L;
