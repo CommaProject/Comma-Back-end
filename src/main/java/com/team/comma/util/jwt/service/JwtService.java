@@ -7,6 +7,7 @@ import com.team.comma.util.jwt.support.JwtTokenProvider;
 import com.team.comma.util.security.domain.RefreshToken;
 import com.team.comma.util.security.domain.Token;
 import com.team.comma.util.security.repository.RefreshTokenRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.team.comma.common.constant.ResponseCodeEnum.ACCESS_TOKEN_CREATE;
+import static com.team.comma.util.jwt.support.CreationCookie.deleteRefreshTokenCookie;
 import static org.apache.http.cookie.SM.SET_COOKIE;
 
 @Service
@@ -30,13 +32,12 @@ public class JwtService {
 
     @Transactional
     public void login(Token tokenEntity) {
-
         RefreshToken refreshToken = RefreshToken.builder().keyEmail(tokenEntity.getKey())
             .token(tokenEntity.getRefreshToken()).build();
         String loginUserEmail = refreshToken.getKeyEmail();
 
         RefreshToken token = refreshTokenRepository.existsByKeyEmail(loginUserEmail);
-        if (token != null) { // 기존 존재하는 토큰 제거
+        if (token != null) {
             refreshTokenRepository.deleteByKeyEmail(loginUserEmail);
         }
         refreshTokenRepository.save(refreshToken);
@@ -44,17 +45,18 @@ public class JwtService {
     }
 
     public Optional<RefreshToken> getRefreshToken(String refreshToken) {
-
         return refreshTokenRepository.findByToken(refreshToken);
     }
 
-    public ResponseEntity validateRefreshToken(String refreshToken) {
+    public ResponseEntity validateRefreshToken(HttpServletResponse response , String refreshToken) {
         try {
             RefreshToken refreshToken1 = getRefreshToken(refreshToken).get();
             String createdAccessToken = jwtTokenProvider.validateRefreshToken(refreshToken1);
 
             return createRefreshJson(createdAccessToken);
         } catch (NoSuchElementException e) {
+            deleteRefreshTokenCookie(response);
+
             throw new TokenForgeryException("변조되거나, 알 수 없는 RefreshToken 입니다.");
         }
     }

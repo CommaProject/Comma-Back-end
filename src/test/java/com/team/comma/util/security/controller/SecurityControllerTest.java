@@ -16,6 +16,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -31,6 +32,8 @@ import java.nio.charset.StandardCharsets;
 import static com.team.comma.common.constant.ResponseCodeEnum.*;
 import static org.apache.http.cookie.SM.SET_COOKIE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.cookies.CookieDocumentation.*;
@@ -100,8 +103,9 @@ public class SecurityControllerTest {
     public void createAccessTokenFail_falsifiedToken() throws Exception {
         // given
         final String api = "/authentication/denied";
+        MockHttpServletResponse response = new MockHttpServletResponse();
         doThrow(new TokenForgeryException("변조되거나, 알 수 없는 RefreshToken 입니다."))
-                .when(jwtService).validateRefreshToken("token");
+                .when(jwtService).validateRefreshToken(any() , eq("token"));
 
         // when
         final ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
@@ -136,10 +140,10 @@ public class SecurityControllerTest {
     public void createNewAccessToken() throws Exception {
         // given
         final String api = "/authentication/denied";
-        ResponseCookie responseCookieData = ResponseCookie.from("accessToken", "newAccessToken")
-                .build();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        ResponseCookie responseCookieData = ResponseCookie.from("accessToken", "newAccessToken").build();
         doReturn(ResponseEntity.status(HttpStatus.OK).header(SET_COOKIE, responseCookieData.toString())
-                        .body(MessageResponse.of(ACCESS_TOKEN_CREATE))).when(jwtService).validateRefreshToken("token");
+                        .body(MessageResponse.of(ACCESS_TOKEN_CREATE))).when(jwtService).validateRefreshToken(any() , eq("token"));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
