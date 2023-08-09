@@ -70,7 +70,6 @@ class UserServiceTest {
 
     private final String userEmail = "email@naver.com";
     private final String userPassword = "password";
-    private final String userName = "userName";
 
     private MockHttpServletRequest request; // request mock
 

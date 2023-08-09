@@ -11,6 +11,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,13 +24,13 @@ import java.util.Base64;
 import java.util.Date;
 
 @Component
-@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     private String secretKey = "secretKey";
     private String refreshKey = "refreshKey";
 
-    private final UserDetailsService userDetailsService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     private long tokenValidTime = 30 * 60 * 1000L;
     private long refreshTokenValidTime = 14 * 24 * 60 * 60 * 1000L;
