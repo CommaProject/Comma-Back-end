@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -21,22 +22,31 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
     @Override
     public List<PlaylistTrackResponse> getPlaylistTracksByPlaylist(Playlist playlist) {
         return queryFactory.select(
-                Projections.constructor(
-                        PlaylistTrackResponse.class,
-                        playlistTrack.track.id,
-                        playlistTrack.track.trackTitle,
-                        playlistTrack.track.durationTimeMs,
-                        playlistTrack.track.albumImageUrl,
-                        playlistTrack.trackAlarmFlag,
-                        list(Projections.constructor(
-                                PlaylistTrackArtistResponse.class,
-                                trackArtist.id,
-                                trackArtist.artistName))))
+                        Projections.constructor(
+                                PlaylistTrackResponse.class,
+                                playlistTrack.track.id,
+                                playlistTrack.track.trackTitle,
+                                playlistTrack.track.durationTimeMs,
+                                playlistTrack.track.albumImageUrl,
+                                playlistTrack.trackAlarmFlag,
+                                list(Projections.constructor(
+                                        PlaylistTrackArtistResponse.class,
+                                        trackArtist.id,
+                                        trackArtist.artistName))))
                 .from(playlistTrack)
                 .leftJoin(trackArtist)
                 .where(playlistTrack.playlist.eq(playlist))
                 .orderBy(playlistTrack.playSequence.asc())
                 .fetch();
+    }
+
+    @Override
+    @Transactional
+    public long changeAlarmFlagWithTrackId(Long trackId) {
+        return queryFactory.update(playlistTrack)
+            .set(playlistTrack.trackAlarmFlag, playlistTrack.trackAlarmFlag.not())
+            .where(playlistTrack.track.id.eq(trackId))
+            .execute();
     }
 
 }

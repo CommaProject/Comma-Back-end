@@ -19,9 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountException;
+import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+
+import com.team.comma.spotify.playlist.repository.PlaylistTrackRepository;
+import jakarta.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.spotify.track.domain.FavoriteTrack.createFavoriteTrack;
 
 @Service
@@ -32,6 +36,7 @@ public class TrackService {
     private final TrackPlayCountRepository trackPlayCountRepository;
     private final FavoriteTrackRepository favoriteTrackRepository;
     private final UserRepository userRepository;
+    private final PlaylistTrackRepository playlistTrackRepository;
     private final TrackRepository trackRepository;
     private final SearchService searchService;
 
@@ -57,7 +62,7 @@ public class TrackService {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
         List<TrackPlayCountResponse> result = trackPlayCountRepository.findTrackPlayCountByFriend(userEmail);
 
-        return MessageResponse.of(REQUEST_SUCCESS , result);
+        return MessageResponse.of(REQUEST_SUCCESS, result);
     }
 
     public MessageResponse findTrackByFavoriteTrack(String accessToken) {
@@ -92,6 +97,20 @@ public class TrackService {
 
     public Track saveNewTrack(String trackId) {
         return trackRepository.save(searchService.searchTrackByTrackId(trackId));
+    }
+
+    public MessageResponse updateAlarmFlag(Long trackId) {
+
+        validateIsTrackExists(trackId);
+
+        long updatedCount = playlistTrackRepository.changeAlarmFlagWithTrackId(trackId);
+
+        return MessageResponse.of(REQUEST_SUCCESS);
+    }
+
+    private void validateIsTrackExists(Long trackId) {
+        trackRepository.findById(trackId)
+            .orElseThrow(EntityNotFoundException::new);
     }
 
 }

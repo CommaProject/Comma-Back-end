@@ -100,10 +100,7 @@ class PlaylistTrackRepositoryTest {
         Playlist playlist = Playlist.builder().build();
         playlistRepository.save(playlist);
 
-        PlaylistTrack playlistTrack = PlaylistTrack.builder()
-            .playlist(playlist)
-            .track(track)
-            .build();
+        PlaylistTrack playlistTrack = buildPlaylistTrack(playlist, track);
         playlistTrackRepository.save(playlistTrack);
 
         //when
@@ -124,10 +121,7 @@ class PlaylistTrackRepositoryTest {
         Playlist playlist = Playlist.builder().build();
         playlistRepository.save(playlist);
 
-        PlaylistTrack playlistTrack = PlaylistTrack.builder()
-            .playlist(playlist)
-            .track(track)
-            .build();
+        PlaylistTrack playlistTrack = buildPlaylistTrack(playlist, track);
         playlistTrackRepository.save(playlistTrack);
         //when
         int deleteCount = playlistTrackRepository.deletePlaylistTrackByTrackIdAndPlaylistId(
@@ -192,8 +186,8 @@ class PlaylistTrackRepositoryTest {
         final Playlist playlist = buildPlaylist(user, "test playlist");
         final Track track1 = buildTrack("test track");
         final Track track2 = buildTrack("test track");
-        final PlaylistTrack playlistTrack1 = buildPlaylistTrack(playlist,track1);
-        final PlaylistTrack playlistTrack2 = buildPlaylistTrack(playlist,track2);
+        final PlaylistTrack playlistTrack1 = buildPlaylistTrack(playlist, track1);
+        final PlaylistTrack playlistTrack2 = buildPlaylistTrack(playlist, track2);
 
         userRepository.save(user);
         playlistRepository.save(playlist);
@@ -207,7 +201,54 @@ class PlaylistTrackRepositoryTest {
 
         // then
         assertThat(result.size()).isEqualTo(2);
+    }
 
+    @Test
+    void 트랙의_알림설정값을_트랙ID로_가져온다(){
+        //given
+        Track track = buildTrack("title");
+        trackRepository.save(track);
+
+        Playlist playlist = Playlist.builder().build();
+        playlistRepository.save(playlist);
+
+        PlaylistTrack playlistTrack = buildPlaylistTrack(playlist, track);
+        playlistTrackRepository.save(playlistTrack);
+
+        //when
+        Boolean trackAlarmFlag = playlistTrackRepository.findTrackAlarmFlagByTrackId(track.getId()).get();
+
+        //then
+        assertThat(trackAlarmFlag).isFalse();
+
+    }
+
+    @Test
+    void 트랙의_알림설정을_변경한다(){
+        //given
+        Track track = buildTrack("title");
+        trackRepository.save(track);
+
+        Playlist playlist = Playlist.builder().build();
+        playlistRepository.save(playlist);
+
+        PlaylistTrack playlistTrack = buildPlaylistTrack(playlist, track);
+        playlistTrackRepository.save(playlistTrack);
+
+        //when
+        boolean primaryAlarmState = playlistTrackRepository
+            .findTrackAlarmFlagByTrackId(track.getId())
+            .get();
+
+        long updateCount = playlistTrackRepository.changeAlarmFlagWithTrackId(track.getId());
+
+        boolean afterAlarmState = playlistTrackRepository
+            .findTrackAlarmFlagByTrackId(track.getId())
+            .get();
+
+        //then
+        assertThat(updateCount).isEqualTo(1);
+        assertThat(primaryAlarmState).isNotEqualTo(afterAlarmState);
     }
 
     private User buildUser() {
@@ -229,9 +270,9 @@ class PlaylistTrackRepositoryTest {
     private Track buildTrack(String title) {
         return Track.builder()
             .trackTitle(title)
-                .albumImageUrl("url")
-                .spotifyTrackId("trackId")
-                .spotifyTrackHref("href")
+            .albumImageUrl("url")
+            .spotifyTrackId("trackId")
+            .spotifyTrackHref("href")
             .build();
     }
 

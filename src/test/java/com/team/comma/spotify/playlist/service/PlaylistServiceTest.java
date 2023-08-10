@@ -4,12 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.doReturn;
 
+import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+
 import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.playlist.domain.Playlist;
 import com.team.comma.spotify.playlist.domain.PlaylistTrack;
 import com.team.comma.spotify.playlist.dto.PlaylistResponse;
-import com.team.comma.spotify.playlist.dto.PlaylistTrackArtistResponse;
-import com.team.comma.spotify.playlist.dto.PlaylistTrackResponse;
 import com.team.comma.spotify.playlist.dto.PlaylistUpdateRequest;
 import com.team.comma.spotify.playlist.repository.PlaylistRepository;
 import com.team.comma.spotify.track.domain.Track;
@@ -17,19 +17,16 @@ import com.team.comma.spotify.track.domain.TrackArtist;
 import com.team.comma.user.domain.User;
 import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import javax.security.auth.login.AccountException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.security.auth.login.AccountException;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @ExtendWith(MockitoExtension.class)
 class PlaylistServiceTest {
