@@ -205,6 +205,36 @@ public class TrackServiceTest {
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
+    @Test
+    void 트랙의_알람설정을_바꾼다() {
+        //given
+        doReturn(Optional.of(Track.class))
+                .when(trackRepository).findById(anyLong());
+        doReturn(1L)
+                .when(playlistTrackRepository).changeAlarmFlagWithTrackId(anyLong());
+
+        //when
+        MessageResponse messageResponse = trackService.updateAlarmFlag(anyLong());
+
+        //then
+        assertThat(messageResponse).isNotNull();
+        assertThat(messageResponse.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(messageResponse.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+
+    }
+
+    @Test
+    void 트랙의_알림설정을_바꾼다_실패() {
+        //given
+        doThrow(EntityNotFoundException.class)
+                .when(trackRepository).findById(anyLong());
+
+        //when //then
+        assertThatThrownBy(() -> trackService.updateAlarmFlag(anyLong()))
+                .isInstanceOf(EntityNotFoundException.class);
+
+    }
+
     public TrackPlayCountResponse buildTrackPlayCountResponse() {
         return TrackPlayCountResponse.builder()
                 .playCount(0)
@@ -240,34 +270,5 @@ public class TrackServiceTest {
                 .role(UserRole.USER).build();
 
         return Optional.of(user);
-    }
-
-    void 트랙의_알람설정을_바꾼다() {
-        //given
-        doReturn(Optional.of(Track.class))
-                .when(trackRepository).findById(anyLong());
-        doReturn(1L)
-                .when(playlistTrackRepository).changeAlarmFlagWithTrackId(anyLong());
-
-        //when
-        MessageResponse messageResponse = trackService.updateAlarmFlag(anyLong());
-
-        //then
-        assertThat(messageResponse).isNotNull();
-        assertThat(messageResponse.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(messageResponse.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-
-    }
-
-    @Test
-    void 트랙의_알림설정을_바꾼다_실패() {
-        //given
-        doThrow(EntityNotFoundException.class)
-                .when(trackRepository).findById(anyLong());
-
-        //when //then
-        assertThatThrownBy(() -> trackService.updateAlarmFlag(anyLong()))
-                .isInstanceOf(EntityNotFoundException.class);
-
     }
 }

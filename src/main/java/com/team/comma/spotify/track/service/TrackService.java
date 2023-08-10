@@ -19,12 +19,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountException;
+import javax.swing.text.html.Option;
+
 import static com.team.comma.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 import com.team.comma.spotify.playlist.repository.PlaylistTrackRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.team.comma.spotify.track.domain.FavoriteTrack.createFavoriteTrack;
 
@@ -100,12 +103,16 @@ public class TrackService {
     }
 
     public MessageResponse updateAlarmFlag(Long trackId) {
-        trackRepository.findById(trackId)
-                .orElseThrow(() -> new EntityNotFoundException());
+        validateIsTrackExists(trackId);
 
         long updatedCount = playlistTrackRepository.changeAlarmFlagWithTrackId(trackId);
 
         return MessageResponse.of(REQUEST_SUCCESS);
+    }
+
+    private void validateIsTrackExists(Long trackId) {
+        trackRepository.findById(trackId)
+                .orElseThrow(() -> new EntityNotFoundException());
     }
 
 }
