@@ -24,12 +24,13 @@ import java.util.Base64;
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     private String secretKey = "secretKey";
     private String refreshKey = "refreshKey";
 
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     private long tokenValidTime = 30 * 60 * 1000L;
     private long refreshTokenValidTime = 14 * 24 * 60 * 60 * 1000L;
