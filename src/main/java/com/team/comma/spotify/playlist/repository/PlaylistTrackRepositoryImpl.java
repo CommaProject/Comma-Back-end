@@ -43,10 +43,11 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
     @Override
     @Transactional
     public long changeAlarmFlagWithTrackId(Long trackId) {
-        return queryFactory.update(playlistTrack)
-            .set(playlistTrack.trackAlarmFlag, playlistTrack.trackAlarmFlag.not())
-            .where(playlistTrack.track.id.eq(trackId))
-            .execute();
+        return queryFactory
+                .update(playlistTrack)
+                .set(playlistTrack.trackAlarmFlag, playlistTrack.trackAlarmFlag.not())
+                .where(playlistTrack.track.id.eq(trackId))
+                .execute();
     }
 
 }

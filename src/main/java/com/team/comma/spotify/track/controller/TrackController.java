@@ -4,7 +4,10 @@ import com.team.comma.common.dto.MessageResponse;
 import com.team.comma.spotify.track.dto.TrackRequest;
 import com.team.comma.spotify.track.service.TrackService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.security.auth.login.AccountException;
 
 @RestController
 @RequiredArgsConstructor
@@ -12,8 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class TrackController {
 
     private final TrackService trackService;
-
-    private final PlayerService playerService;
 
     @PatchMapping("/{trackId}")
     public MessageResponse countPlayCount(@CookieValue String accessToken , @PathVariable String trackId) {
@@ -45,17 +46,9 @@ public class TrackController {
         return trackService.findTrackByMostFavorite();
     }
 
-
     @PatchMapping("/alarms/{trackId}")
     public ResponseEntity<MessageResponse> modifyAlarmState(@PathVariable Long trackId) {
         return ResponseEntity.ok().body(trackService.updateAlarmFlag(trackId));
-    }
-
-    @GetMapping("/start/{trackId}")
-    public ResponseEntity<MessageResponse> startAndResumePlayer(
-        @PathVariable long trackId
-    ) throws AccountException {
-        return ResponseEntity.ok(playerService.startAndResumePlayer(trackId));
     }
 
 }

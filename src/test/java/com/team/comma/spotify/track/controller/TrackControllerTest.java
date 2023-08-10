@@ -21,7 +21,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -76,9 +75,6 @@ public class TrackControllerTest {
 
     @MockBean
     TrackService trackService;
-
-    @MockBean
-    PlayerService playerService;
 
     MockMvc mockMvc;
     Gson gson;
@@ -498,9 +494,6 @@ public class TrackControllerTest {
                 .build();
     }
 
-}
-
-
     @Test
     void 트랙의_알림상태_변경_성공() throws Exception {
         //given
@@ -563,71 +556,6 @@ public class TrackControllerTest {
                         fieldWithPath("message").description("응답 메시지"),
                         fieldWithPath("data").ignored()
                     )
-                )
-            );
-    }
-
-    @Test
-    void TrackId로_플레이어에_곡을_재생_성공() throws Exception {
-        //given
-        String accessToken = "accessToken";
-        String spotifyTrackId = "spotifyTrackId";
-
-        doReturn(MessageResponse.of(REQUEST_SUCCESS,  PlayerResponse.of(accessToken, spotifyTrackId)))
-            .when(playerService).startAndResumePlayer(anyLong());
-
-        //when
-        ResultActions resultActions = mockMvc.perform(
-            get("/tracks/start/{trackId}", 1L)
-                .contentType(APPLICATION_JSON)
-        ).andDo(print());
-
-        //then
-        resultActions.andExpect(status().isOk())
-            .andDo(
-                document("spotify/track/start/success",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    pathParameters(
-                        parameterWithName("trackId").description("재생할 곡의 ID")
-                    ),
-                    responseFields(
-                        fieldWithPath("code").description("응답 코드"),
-                        fieldWithPath("message").description("응답 메시지"),
-                        fieldWithPath("data.spotifyAccessToken").description("스포티파이 AccessToken"),
-                        fieldWithPath("data.trackUri").description("재생할 곡의 URI")
-                    )
-                )
-            );
-    }
-
-    @Test
-    void TrackId로_플레이어에_곡을_재생_실패__존재하지않는_트랙() throws Exception {
-        //given
-        doThrow(new EntityNotFoundException())
-            .when(playerService).startAndResumePlayer(anyLong());
-
-        //when
-        ResultActions resultActions = mockMvc.perform(
-            get("/tracks/start/{trackId}", 1L)
-                .contentType(APPLICATION_JSON)
-        ).andDo(print());
-
-        //then
-        resultActions.andExpect(status().isBadRequest())
-            .andDo(
-                document("spotify/track/start/fail2",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    pathParameters(
-                        parameterWithName("trackId").description("재생할 곡의 ID")
-                    ),
-                    responseFields(
-                        fieldWithPath("code").description("응답 코드"),
-                        fieldWithPath("message").description("응답 메시지"),
-                        fieldWithPath("data").ignored()
-                    )
-
                 )
             );
     }

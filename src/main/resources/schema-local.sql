@@ -90,7 +90,7 @@ CREATE TABLE track_tb
     recommend_count BIGINT,
     album_image_url    VARCHAR(50),
     spotify_track_id   VARCHAR(50),
-    spotify_track_uri VARCHAR(50),
+    spotify_track_href VARCHAR(50),
     PRIMARY KEY (id)
 );
 

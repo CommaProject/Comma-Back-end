@@ -100,17 +100,12 @@ public class TrackService {
     }
 
     public MessageResponse updateAlarmFlag(Long trackId) {
-
-        validateIsTrackExists(trackId);
+        trackRepository.findById(trackId)
+                .orElseThrow(() -> new EntityNotFoundException());
 
         long updatedCount = playlistTrackRepository.changeAlarmFlagWithTrackId(trackId);
 
         return MessageResponse.of(REQUEST_SUCCESS);
-    }
-
-    private void validateIsTrackExists(Long trackId) {
-        trackRepository.findById(trackId)
-            .orElseThrow(EntityNotFoundException::new);
     }
 
 }
