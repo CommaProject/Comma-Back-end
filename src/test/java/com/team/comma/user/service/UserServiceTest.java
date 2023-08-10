@@ -16,7 +16,6 @@ import com.team.comma.user.repository.UserRepository;
 import com.team.comma.util.jwt.service.JwtService;
 import com.team.comma.util.jwt.support.JwtTokenProvider;
 import com.team.comma.util.security.domain.Token;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +24,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +42,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -61,7 +58,7 @@ class UserServiceTest {
     @Mock
     private FavoriteGenreRepository favoriteGenreRepository;
 
-    @Spy
+    @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     @Mock
@@ -194,11 +191,19 @@ class UserServiceTest {
     @DisplayName("AccessToken 쿠키로 사용자 정보 가져오기 실패 _ 존재하지 않은 사용자")
     void getUserInfoByCookieButNotExistendUser() {
         // given
+        Token token = Token.builder().accessToken("accessToken").refreshToken("refreshToken").build();
+        doReturn(token).when(jwtTokenProvider).createAccessToken(any() , any());
+
+        doNothing().when(jwtService).login(token);
+        doReturn("token").when(jwtTokenProvider).getUserPk(any(String.class));
+
         Optional<User> user = getUserEntity();
         String accessToken = userService.createJwtToken(user.get()).getAccessToken();
         doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
+
         // when
         Throwable thrown = catchThrowable(() -> userService.getUserByCookie(accessToken));
+
         // then
         assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
     }
@@ -207,11 +212,19 @@ class UserServiceTest {
     @DisplayName("AccessToken 쿠키로 사용자 정보 가져오기")
     void getUserInfoByCookie() throws AccountException {
         // given
+        Token token = Token.builder().accessToken("accessToken").refreshToken("refreshToken").build();
+        doReturn(token).when(jwtTokenProvider).createAccessToken(any() , any());
+
+        doNothing().when(jwtService).login(token);
+        doReturn("token").when(jwtTokenProvider).getUserPk(any(String.class));
+
         User user = getUserEntity().get();
         String accessToken = userService.createJwtToken(user).getAccessToken();
         doReturn(getUserEntity()).when(userRepository).findByEmail(any(String.class));
+
         // when
         MessageResponse result = userService.getUserByCookie(accessToken);
+
         // then
         assertThat(result).isNotNull();
         assertThat(((UserResponse) result.getData()).getEmail()).isEqualTo(userEmail);
@@ -233,6 +246,12 @@ class UserServiceTest {
     @DisplayName("사용자 정보 저장 실패 _ 존재하지 않는 사용자")
     void saveUserInfomationFail_notExistUser() {
         // given
+        Token token = Token.builder().accessToken("accessToken").refreshToken("refreshToken").build();
+        doReturn(token).when(jwtTokenProvider).createAccessToken(any() , any());
+
+        doNothing().when(jwtService).login(token);
+        doReturn("token").when(jwtTokenProvider).getUserPk(any(String.class));
+
         UserDetailRequest userDetail = getUserDetailRequest();
         Optional<User> user = getUserEntity();
         String accessToken = userService.createJwtToken(user.get()).getAccessToken();
@@ -249,12 +268,20 @@ class UserServiceTest {
     @DisplayName("사용자 정보 저장 성공")
     void saveUserInfomation() throws AccountException {
         // given
+        Token token = Token.builder().accessToken("accessToken").refreshToken("refreshToken").build();
+        doReturn(token).when(jwtTokenProvider).createAccessToken(any() , any());
+
+        doNothing().when(jwtService).login(token);
+        doReturn("token").when(jwtTokenProvider).getUserPk(any(String.class));
+
         UserDetailRequest userDetail = getUserDetailRequest();
         Optional<User> user = getUserEntity();
         String accessToken = userService.createJwtToken(user.get()).getAccessToken();
         doReturn(user).when(userRepository).findByEmail(any(String.class));
+
         // when
         MessageResponse result = userService.createUserInformation(userDetail, accessToken);
+
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
@@ -317,7 +344,7 @@ class UserServiceTest {
 
     private Optional<User> getUserEntity() {
         User user = User.builder().id(0L).email(userEmail).password(userPassword).userDetail(createUserDetail())
-            .role(UserRole.USER).build();
+                .role(UserRole.USER).build();
 
         return Optional.of(user);
     }
