@@ -1,4 +1,4 @@
-# Comma
+# Comma ( 2023 - 2 ~ 2023 - 8 )
 > 다른 사람과 음악을 공유하고 감정을 기록하는 웹 서비스
 
 <img src="https://github.com/5tr1ker/5tr1ker/assets/49367338/66009156-8935-4a61-8c9c-e41c6c41c627" width="25%"> 
