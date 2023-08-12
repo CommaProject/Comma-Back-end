@@ -18,7 +18,7 @@ Comma는 누군가가 추천해준 음악을 재생할 수 있으며 , 누군가
 
 <h2>Project Structure</h2>
 
-> React ( SPA ) + Spring Boot ( Gradle ) 의 어플리케이션 구조
+> React + Spring Boot 의 어플리케이션 구조
 
 - Front-End
   - Typescript (Programming Language)
@@ -70,9 +70,9 @@ Comma는 누군가가 추천해준 음악을 재생할 수 있으며 , 누군가
 
 <h2>OAuth2.0 & JWT</h2>
 
-> 구글 & 네이버 & 카카오 소셜 서버를 이용해 불필요한 회원가입을 줄이고 , JWT Token을 이용해 인증 시스템을 구현했습니다.
+> 구글 & 네이버 & 카카오 소셜 서버를 이용해 불필요한 회원가입을 줄이고 , JWT을 이용해 사용자 인증 정보를 클라이언트에 보관합니다.
 
-- Access Token과 Refresh Token은 클라이언트에 httpOnly , Secure 옵션으로 보안처리 했습니다
+- Access Token과 Refresh Token은 웹 브라우저 쿠키에 저장하며 httpOnly , Secure 옵션으로 보안처리 했습니다
 
 <h2>CI / CD</h2>
 
@@ -89,7 +89,7 @@ Comma는 누군가가 추천해준 음악을 재생할 수 있으며 , 누군가
 
 - Route 53 도메인으로 오는 요청을 ELB 에게 전달합니다.
 - SSL 인증서를 이용해 https 보안설정을 했습니다.
-- ELB ( Application Load Balance ) 를 활용해 OAuth2.0 을 처리하기 위해 경로 기반 포워딩을 했습니다.
+- ELB ( Application Load Balance ) 경로 기반 포트포워딩을 활용해 OAuth2.0 서버와 클라이언트 서버의 트래픽 분산 처리를 했습니다. 
   - OAuth2.0 요청으로 오는 /oauth2/authorization/* 과 /login/oauth2/code/* 로 오는 요청은 직접 백엔드 서버와 연결됩니다.
   - 그 외 요청은 모두 클라이언트 서버 로 연결됩니다. [상세히](https://velog.io/@tjseocld/AWS-AWS-EC2-ALB-%ED%99%9C%EC%9A%A9)
  
@@ -100,7 +100,7 @@ Comma는 누군가가 추천해준 음악을 재생할 수 있으며 , 누군가
  <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/ded146d5-9a1e-4247-aceb-b40d36d8707d" width="25%">
 
 - OAuth 2.0 를 통해 회원가입 과정을 생략할 수 있습니다.
-- 로그인 후 발급되는 Access Token 과 Refresh Token은 클라이언트에서 다음과 같이 보관합니다. 
+- 로그인 후 발급되는 Access Token 과 Refresh Token 은 다음과 같이 보관합니다. 
   - AccessToken과 RefreshToken은 쿠키에 보관하나 Security , HTTPOnly 옵션을 추가해서 서버와 클라이언트 간 https 통신 및 자바스크립트로 쿠키 접근을 제한합니다. 
   - 로그아웃시 Access Token, Refresh Token 쿠키 삭제합니다.
  
@@ -119,7 +119,7 @@ Comma는 누군가가 추천해준 음악을 재생할 수 있으며 , 누군가
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/fd32dc64-7a59-4568-bc04-fb397e15313b" width="25%">
 
 - 사용자를 탐색하고 팔로우할 수 있습니다.
-- 사용자의 플레이리스트와 아카이브 , 좋아하는 장르 및 가수를 조회할 수 있습니다. 
+- 조회된 사용자의 플레이리스트와 아카이브 , 좋아하는 장르 및 가수를 조회할 수 있습니다. 
 
 <h2>4 . 음악 재생 </h2>
 
