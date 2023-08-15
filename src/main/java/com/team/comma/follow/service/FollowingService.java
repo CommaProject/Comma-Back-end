@@ -1,6 +1,7 @@
 package com.team.comma.follow.service;
 
 import com.team.comma.common.dto.MessageResponse;
+import com.team.comma.follow.constant.FollowingType;
 import com.team.comma.follow.domain.Following;
 import com.team.comma.follow.dto.FollowingResponse;
 import com.team.comma.follow.exception.FollowingException;
@@ -92,12 +93,49 @@ public class FollowingService {
         return false;
     }
 
-    public MessageResponse getFollowingUserList(String token) throws AccountException {
-        String fromUserEmail = jwtTokenProvider.getUserPk(token);
-        User fromUser = userRepository.findByEmail(fromUserEmail)
+    public MessageResponse getFollowingUserList(String token, FollowingType followingType) throws AccountException {
+        String userEmail = jwtTokenProvider.getUserPk(token);
+        User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("해당 사용자를 찾을 수 없습니다."));
 
-        return MessageResponse.of(REQUEST_SUCCESS, followingRepository.getFollowingUserListByUser(fromUser));
+        if(followingType.equals(FollowingType.FOLLOWING)){
+            return MessageResponse.of(REQUEST_SUCCESS,
+                    followingRepository.getFollowingUserListByUser(user));
+        } else if(followingType.equals(FollowingType.FOLLOWED)){
+            return MessageResponse.of(REQUEST_SUCCESS,
+                    followingRepository.getFollowedUserListByUser(user));
+        } else {
+            List<FollowingResponse> followingList = followingRepository.getFollowingUserListByUser(user);
+
+            List<FollowingResponse> followedList = followingRepository.getFollowedUserListByUser(user);
+            List<String> followedUserNicknameList = getFollowedUserNicknameList(followedList);
+            for(String followed : followedUserNicknameList) {
+                if(followingList.contains(followed)){
+
+                }
+            }
+
+            return MessageResponse.of(REQUEST_SUCCESS);
+        }
+
     }
+
+    public List<String> getFollowingUserNicknameList(List<FollowingResponse> followingList){
+        List<String> followingUserNicknameList = new ArrayList<>();
+        for(FollowingResponse following : followingList){
+            followingUserNicknameList.add(following.getToUserNickname());
+        }
+        return followingUserNicknameList;
+    }
+
+    public List<String> getFollowedUserNicknameList(List<FollowingResponse> followedList){
+        List<String> followedUserNicknameList = new ArrayList<>();
+        for(FollowingResponse followed : followedList) {
+            followedUserNicknameList.add(followed.getFromUserNickname());
+        }
+        return followedUserNicknameList;
+    }
+
+
 
 }

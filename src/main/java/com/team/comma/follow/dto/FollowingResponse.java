@@ -9,13 +9,13 @@ import lombok.RequiredArgsConstructor;
 public class FollowingResponse {
 
     private final long followingId;
-    private final String fromUserEmail;
-    private final String toUserEmail;
+    private final String fromUserNickname;
+    private final String toUserNickname;
 
     private FollowingResponse(Following following) {
         this.followingId = following.getId();
-        this.fromUserEmail = following.getUserFrom().getEmail();
-        this.toUserEmail = following.getUserTo().getEmail();
+        this.fromUserNickname = following.getUserFrom().getUserDetail().getNickname();
+        this.toUserNickname = following.getUserTo().getUserDetail().getNickname();
     }
 
     public static FollowingResponse of(Following following){

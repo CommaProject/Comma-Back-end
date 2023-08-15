@@ -1,5 +1,6 @@
 package com.team.comma.follow.dto;
 
+import com.team.comma.follow.constant.FollowingType;
 import lombok.*;
 
 @Builder
@@ -8,4 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 public class FollowingRequest {
     private String toUserEmail;
+
+    private FollowingType followingType;
 }
