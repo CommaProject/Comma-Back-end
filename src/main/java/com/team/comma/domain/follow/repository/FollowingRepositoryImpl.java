@@ -1,12 +1,10 @@
 package com.team.comma.domain.follow.repository;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.comma.follow.domain.QFollowing;
-import com.team.comma.follow.dto.FollowingResponse;
-import com.team.comma.user.domain.QUser;
-import com.team.comma.user.domain.User;
+import com.team.comma.domain.follow.dto.FollowingResponse;
+import com.team.comma.domain.user.domain.QUser;
+import com.team.comma.domain.user.domain.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.querydsl.jpa.JPAExpressions.select;
-import static com.team.comma.follow.domain.QFollowing.following;
+import static com.team.comma.domain.follow.domain.QFollowing.following;
 
 @RequiredArgsConstructor
 public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
@@ -72,13 +70,13 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
     }
 
     @Override
-    public List<FollowingResponse> getFollowingUserListByUser(User user) {
+    public List<FollowingResponse> getFollowingToUserListByFromUser(User user) {
         return queryFactory.select(
                                 Projections.constructor(
                                     FollowingResponse.class,
                                     following.id,
-                                    following.userFrom.email,
-                                    following.userTo.email))
+                                    following.userTo.id,
+                                    following.userTo.userDetail.nickname))
                             .from(following)
                             .where(following.userFrom.eq(user)
                                     .and(following.blockFlag.eq(false)))
@@ -86,13 +84,13 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
     }
 
     @Override
-    public List<FollowingResponse> getFollowedUserListByUser(User user) {
+    public List<FollowingResponse> getFollowingFromUserListByToUser(User user) {
         return queryFactory.select(
                                 Projections.constructor(
                                         FollowingResponse.class,
                                         following.id,
-                                        following.userFrom.userDetail.nickname,
-                                        following.userTo.userDetail.nickname))
+                                        following.userFrom.id,
+                                        following.userFrom.userDetail.nickname))
                             .from(following)
                             .where(following.userTo.eq(user)
                                     .and(following.blockFlag.eq(false)))

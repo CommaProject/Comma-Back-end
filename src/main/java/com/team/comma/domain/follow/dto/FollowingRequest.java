@@ -1,6 +1,6 @@
 package com.team.comma.domain.follow.dto;
 
-import com.team.comma.follow.constant.FollowingType;
+import com.team.comma.domain.follow.constant.FollowingType;
 import lombok.*;
 
 @Builder

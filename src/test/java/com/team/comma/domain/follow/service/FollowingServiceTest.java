@@ -1,6 +1,14 @@
 package com.team.comma.domain.follow.service;
 
+import com.team.comma.domain.follow.constant.FollowingType;
+import com.team.comma.domain.follow.dto.FollowingRequest;
 import com.team.comma.domain.follow.service.FollowingService;
+import com.team.comma.domain.spotify.playlist.domain.Playlist;
+import com.team.comma.domain.spotify.playlist.domain.PlaylistTrack;
+import com.team.comma.domain.spotify.playlist.dto.PlaylistResponse;
+import com.team.comma.domain.spotify.track.domain.Track;
+import com.team.comma.domain.spotify.track.domain.TrackArtist;
+import com.team.comma.domain.user.domain.UserDetail;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.follow.domain.Following;
 import com.team.comma.domain.follow.dto.FollowingResponse;
@@ -18,11 +26,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.security.auth.login.AccountException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 
@@ -157,41 +167,114 @@ public class FollowingServiceTest {
         // then
         assertThat(result.getData()).isEqualTo(true);
     }
-
     @Test
-    public void 팔로잉_리스트_조회_실패_사용자정보없음() throws AccountException {
+    public void 팔로잉_리스트_조회_실패_사용자_찾을수없음() throws AccountException {
         // given
         String token = "accessToken";
 
         // when
-        Throwable thrown = catchThrowable(() -> followingService.getFollowingUserList(token));
+        Throwable thrown = catchThrowable(() -> followingService.getFollowingUserList(token, FollowingType.FOLLOWING));
 
         // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("해당 사용자를 찾을 수 없습니다.");
+        assertThat(thrown.getMessage()).isEqualTo("사용자 정보를 찾을 수 없습니다.");
 
     }
 
     @Test
-    public void 팔로잉_리스트_조회_성공() throws AccountException {
+    public void 팔로잉_리스트_조회() throws AccountException {
         // given
         String token = "accessToken";
-        String email = "email@email.com";
-        User fromUser = User.builder().role(UserRole.USER).email("fromUser").build();
-        User toUser = User.builder().role(UserRole.USER).email("toUser").build();
-        Following following = Following.builder().id(1L).blockFlag(false).userFrom(fromUser).userTo(toUser).build();
-        FollowingResponse followingResponse = FollowingResponse.of(following);
 
-        doReturn(email).when(jwtTokenProvider).getUserPk(token);
-        doReturn(Optional.of(fromUser)).when(userRepository).findByEmail(email);
-        doReturn(List.of(followingResponse)).when(followingRepository).getFollowingUserListByUser(fromUser);
+        User user = buildUserWithIdAndEmail(1L, "user");
+        User targetUser = buildUserWithIdAndEmail(2L, "targetUser");
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
+
+        Following following = buildFollowingWithIdAndUserFromTo(1L, user, targetUser);
+        FollowingResponse followingResponse = FollowingResponse.of(following, FollowingType.FOLLOWING);
+        doReturn(List.of(followingResponse)).when(followingRepository).getFollowingToUserListByFromUser(user);
 
         // when
-        MessageResponse result = followingService.getFollowingUserList(token);
+        MessageResponse result = followingService.getFollowingUserList(token, FollowingType.FOLLOWING);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
         assertThat(result.getData()).isEqualTo(List.of(followingResponse));
 
     }
+
+    @Test
+    public void 팔로워_리스트_조회() throws AccountException {
+        // given
+        String token = "accessToken";
+
+        User user = buildUserWithIdAndEmail(1L, "user");
+        User targetUser = buildUserWithIdAndEmail(2L, "targetUser");
+
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
+
+        Following followed = buildFollowingWithIdAndUserFromTo(1L, targetUser, user);
+        FollowingResponse followedResponse = FollowingResponse.of(followed, FollowingType.FOLLOWED);
+        doReturn(List.of(followedResponse)).when(followingRepository).getFollowingFromUserListByToUser(user);
+
+        // when
+        MessageResponse result = followingService.getFollowingUserList(token, FollowingType.FOLLOWED);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getData()).isEqualTo(List.of(followedResponse));
+
+    }
+
+    @Test
+    public void 맞팔로우_리스트_조회() throws AccountException {
+        // given
+        String token = "accessToken";
+
+        User user = buildUserWithIdAndEmail(1L, "user");
+        User targetUser = buildUserWithIdAndEmail(2L, "targetUser");
+
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
+
+        Following following = buildFollowingWithIdAndUserFromTo(1L, user, targetUser);
+        FollowingResponse followingResponse = FollowingResponse.of(following, FollowingType.FOLLOWING);
+        doReturn(List.of(followingResponse)).when(followingRepository).getFollowingToUserListByFromUser(user);
+
+        Following followed = buildFollowingWithIdAndUserFromTo(2L, targetUser, user);
+        FollowingResponse followedResponse = FollowingResponse.of(followed, FollowingType.FOLLOWED);
+        doReturn(List.of(followedResponse)).when(followingRepository).getFollowingFromUserListByToUser(user);
+
+        // when
+        MessageResponse result = followingService.getFollowingUserList(token, FollowingType.BOTH);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getData()).isEqualTo(List.of(followingResponse));
+
+    }
+
+    public User buildUserWithIdAndEmail(long id, String email){
+        UserDetail userDetail = UserDetail.builder()
+                .id(id)
+                .nickname(email)
+                .build();
+        User user = User.builder()
+                .id(id)
+                .email(email)
+                .userDetail(userDetail)
+                .build();
+        return user;
+    }
+
+    public Following buildFollowingWithIdAndUserFromTo(long id, User userFrom, User userTo) {
+        return Following.builder()
+                .id(id)
+                .userFrom(userFrom)
+                .userTo(userTo)
+                .blockFlag(false)
+                .build();
+    }
+
 }
