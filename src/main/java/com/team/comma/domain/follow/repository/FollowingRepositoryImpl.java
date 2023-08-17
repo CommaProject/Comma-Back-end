@@ -1,19 +1,18 @@
 package com.team.comma.domain.follow.repository;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.comma.domain.follow.dto.FollowingResponse;
 import com.team.comma.domain.user.domain.QUser;
 import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.follow.dto.FollowingResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 
+import static com.querydsl.jpa.JPAExpressions.select;
 import static com.team.comma.domain.follow.domain.QFollowing.following;
-
 
 @RequiredArgsConstructor
 public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
@@ -50,7 +49,7 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
         queryFactory.update(following)
                 .set(following.blockFlag , true)
                 .where(following.id.eq(
-                        JPAExpressions.select(following.id).from(following)
+                        select(following.id).from(following)
                                 .innerJoin(following.userTo , user1).on(user1.email.eq(toUserEmail))
                                 .innerJoin(following.userFrom , user2).on(user2.email.eq(fromUserEmail))
                 ))
@@ -63,7 +62,7 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
         queryFactory.update(following)
                 .set(following.blockFlag , false)
                 .where(following.id.eq(
-                        JPAExpressions.select(following.id).from(following)
+                        select(following.id).from(following)
                                 .innerJoin(following.userTo , user1).on(user1.email.eq(toUserEmail))
                                 .innerJoin(following.userFrom , user2).on(user2.email.eq(fromUserEmail))
                 ))
@@ -71,15 +70,29 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
     }
 
     @Override
-    public List<FollowingResponse> getFollowingUserListByUser(User fromUser) {
+    public List<FollowingResponse> getFollowingToUserListByFromUser(User user) {
         return queryFactory.select(
                                 Projections.constructor(
                                     FollowingResponse.class,
                                     following.id,
-                                    following.userFrom.email,
-                                    following.userTo.email))
+                                    following.userTo.id,
+                                    following.userTo.userDetail.nickname))
                             .from(following)
-                            .where(following.userFrom.eq(fromUser)
+                            .where(following.userFrom.eq(user)
+                                    .and(following.blockFlag.eq(false)))
+                            .fetch();
+    }
+
+    @Override
+    public List<FollowingResponse> getFollowingFromUserListByToUser(User user) {
+        return queryFactory.select(
+                                Projections.constructor(
+                                        FollowingResponse.class,
+                                        following.id,
+                                        following.userFrom.id,
+                                        following.userFrom.userDetail.nickname))
+                            .from(following)
+                            .where(following.userTo.eq(user)
                                     .and(following.blockFlag.eq(false)))
                             .fetch();
     }

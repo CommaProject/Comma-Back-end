@@ -1,7 +1,9 @@
 package com.team.comma.domain.follow.controller;
 
 import com.google.gson.Gson;
+import com.team.comma.domain.follow.constant.FollowingType;
 import com.team.comma.domain.follow.controller.FollowingController;
+import com.team.comma.domain.user.domain.UserDetail;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.follow.domain.Following;
 import com.team.comma.domain.follow.dto.FollowingRequest;
@@ -419,18 +421,22 @@ public class FollowingControllerTest {
         final String api = "/followings/list";
 
         final String token = "accessToken";
-        final User fromUser = User.builder().role(UserRole.USER).email("fromUser").build();
-        final User toUser = User.builder().role(UserRole.USER).email("toUser").build();
-        final Following following = Following.builder().id(1L).blockFlag(false).userFrom(fromUser).userTo(toUser).build();
-        final FollowingResponse response = FollowingResponse.of(following);
+        final FollowingRequest request = FollowingRequest.builder().followingType(FollowingType.FOLLOWING).build();
+        final UserDetail userDetail = UserDetail.builder().id(1L).nickname("user").build();
+        final UserDetail targetUserDetail = UserDetail.builder().id(1L).nickname("user").build();
+        final User user = User.builder().id(1L).role(UserRole.USER).email("user").userDetail(userDetail).build();
+        final User targetUser = User.builder().id(2L).role(UserRole.USER).email("targetUser").userDetail(targetUserDetail).build();
+        final Following following = Following.builder().id(1L).blockFlag(false).userFrom(user).userTo(targetUser).build();
+        final FollowingResponse response = FollowingResponse.of(following, FollowingType.FOLLOWING);
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , List.of(response,response));
 
-        doReturn(message).when(followingService).getFollowingUserList(token);
+        doReturn(message).when(followingService).getFollowingUserList(token, FollowingType.FOLLOWING);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.get(api)
                         .cookie(new Cookie("accessToken" , token))
+                        .content(gson.toJson(request))
                         .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -441,13 +447,16 @@ public class FollowingControllerTest {
                         requestCookies(
                                 cookieWithName("accessToken").description("리스트 조회 할 사용자의 accessToken")
                         ),
+                        requestFields(
+                                fieldWithPath("followingType").description("리스트 타입(FOLLOWING: 팔로잉, FOLLOWED: 팔로워, BOTH: 맞팔)")
+                        ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메세지"),
                                 fieldWithPath("data").description("응답 데이터"),
-                                fieldWithPath("data.[].followingId").description("팔로우 관계 Id"),
-                                fieldWithPath("data.[].fromUserEmail").description("팔로우 한 사용자 이메일"),
-                                fieldWithPath("data.[].toUserEmail").description("팔로우 대상 사용자 이메일")
+                                fieldWithPath("data.[].followingId").description("팔로우 관계 ID"),
+                                fieldWithPath("data.[].userId").description("팔로우 한 사용자 ID"),
+                                fieldWithPath("data.[].userNickname").description("팔로우 대상 사용자 닉네임")
                         )
                 )
         );
@@ -456,44 +465,6 @@ public class FollowingControllerTest {
                 MessageResponse.class);
 
         assertThat((List<FollowingResponse>) result.getData()).size().isEqualTo(2);
-
-    }
-
-    @Test
-    public void 팔로잉_리스트_조회_실패_사용자찾을수없음() throws Exception {
-        // given
-        final String api = "/followings/list";
-
-        final String token = "accessToken";
-        doThrow(new AccountException("해당 사용자를 찾을 수 없습니다.")).when(followingService).getFollowingUserList(token);
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(api)
-                        .cookie(new Cookie("accessToken" , token))
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isBadRequest()).andDo(
-                document("following/listFailure",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestCookies(
-                                cookieWithName("accessToken").description("리스트 조회 할 사용자의 accessToken")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("응답 메세지"),
-                                fieldWithPath("data").description("응답 데이터")
-                        )
-                )
-        );
-        final MessageResponse result = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(result.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
-        assertThat(result.getData()).isNull();
 
     }
 

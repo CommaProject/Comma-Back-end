@@ -46,9 +46,10 @@ public class FollowingController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<MessageResponse> getFollowingList(@CookieValue String accessToken) throws AccountException {
+    public ResponseEntity<MessageResponse> getFollowingList(@CookieValue String accessToken
+            , @RequestBody FollowingRequest followingRequest) throws AccountException {
         return ResponseEntity.ok()
-                .body(followingService.getFollowingUserList(accessToken));
+                .body(followingService.getFollowingUserList(accessToken, followingRequest.getFollowingType()));
     }
 
 }

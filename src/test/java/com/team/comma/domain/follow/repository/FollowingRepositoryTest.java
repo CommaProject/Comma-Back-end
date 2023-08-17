@@ -2,8 +2,9 @@ package com.team.comma.domain.follow.repository;
 
 import com.team.comma.domain.follow.domain.Following;
 import com.team.comma.domain.follow.dto.FollowingResponse;
-import com.team.comma.domain.follow.repository.FollowingRepository;
 import com.team.comma.domain.user.domain.User;
+import com.team.comma.domain.user.domain.UserDetail;
+import com.team.comma.domain.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,8 +22,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(TestConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class FollowingRepositoryTest {
+
     @Autowired
     private FollowingRepository followingRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("나를 팔로우한 사용자 탐색")
@@ -168,34 +174,71 @@ public class FollowingRepositoryTest {
     }
 
     @Test
-    @DisplayName("팔로우 리스트 조회")
-    public void getFollowedMeUserListByUser() {
+    public void 팔로우_저장 () {
         // given
-        User toUser1 = User.builder()
+        User toUser = User.builder()
                 .email("toUser1")
                 .build();
-
-        User toUser2 = User.builder()
-                .email("toUser2")
-                .build();
-
         User fromUser = User.builder()
                 .email("fromUser")
                 .build();
 
-        Following follow1 = Following.createFollowing(toUser1,fromUser);
-        Following follow2 = Following.createFollowing(toUser2,fromUser);
-
-        followingRepository.save(follow1);
-        followingRepository.save(follow2);
+        Following follow = Following.createFollowingToFrom(toUser,fromUser);
 
         // when
-        List<FollowingResponse> result = followingRepository.getFollowingUserListByUser(fromUser);
+        Following result = followingRepository.save(follow);
 
         // then
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result.get(0).getToUserEmail()).isEqualTo(toUser1.getEmail());
-        assertThat(result.get(1).getToUserEmail()).isEqualTo(toUser2.getEmail());
+        assertThat(result.getUserTo()).isEqualTo(follow.getUserTo());
+    }
+
+    @Test
+    public void 팔로잉_리스트_조회() {
+        // given
+        User user = User.builder()
+                .email("user")
+                .userDetail(UserDetail.builder().nickname("userNickname").build())
+                .build();
+        User targetUser = User.builder()
+                .email("targetUser")
+                .userDetail(UserDetail.builder().nickname("targetUserNickname").build())
+                .build();
+
+        Following follow = Following.createFollowingToFrom(targetUser, user);
+        followingRepository.save(follow);
+
+        // when
+        List<FollowingResponse> result = followingRepository.getFollowingToUserListByFromUser(user);
+
+        // then
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getUserId()).isEqualTo(targetUser.getId());
+        assertThat(result.get(0).getUserNickname()).isEqualTo(targetUser.getUserDetail().getNickname());
+
+    }
+
+    @Test
+    public void 팔로워_리스트_조회() {
+        // given
+        User user = User.builder()
+                .email("user")
+                .userDetail(UserDetail.builder().nickname("userNickname").build())
+                .build();
+        User targetUser = User.builder()
+                .email("targetUser")
+                .userDetail(UserDetail.builder().nickname("targetUserNickname").build())
+                .build();
+
+        Following follow = Following.createFollowingToFrom(user, targetUser);
+        followingRepository.save(follow);
+
+        // when
+        List<FollowingResponse> result = followingRepository.getFollowingFromUserListByToUser(user);
+
+        // then
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0).getUserId()).isEqualTo(targetUser.getId());
+        assertThat(result.get(0).getUserNickname()).isEqualTo(targetUser.getUserDetail().getNickname());
 
     }
 
