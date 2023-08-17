@@ -27,11 +27,11 @@ public class Following {
     @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
     private User userTo;
 
-    public static Following createFollowingFromTo(User userFrom, User userTo) {
+    public static Following createFollowingToFrom(User userTo, User userFrom) {
         return Following.builder()
                 .blockFlag(false)
-                .userFrom(userFrom)
                 .userTo(userTo)
+                .userFrom(userFrom)
                 .build();
     }
 

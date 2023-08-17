@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
+import static com.team.comma.domain.follow.domain.Following.createFollowingToFrom;
 import static com.team.comma.domain.spotify.track.domain.TrackPlayCount.createTrackPlayCount;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -67,8 +68,8 @@ public class TrackPlayCountRepositoryTest {
         trackPlayCountRepository.save(trackPlayCount1);
         trackPlayCountRepository.save(trackPlayCount2);
 
-        Following following1 = Following.createFollowingFromTo(friend1 , user);
-        Following following2 = Following.createFollowingFromTo(friend2 , user);
+        Following following1 = createFollowingToFrom(friend1 , user);
+        Following following2 = createFollowingToFrom(friend2 , user);
         followingRepository.save(following1);
         followingRepository.save(following2);
 

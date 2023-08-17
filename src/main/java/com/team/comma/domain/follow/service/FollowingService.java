@@ -65,7 +65,7 @@ public class FollowingService {
         User userFrom = userRepository.findByEmail(fromUserEmail)
                 .orElseThrow(() -> new AccountException("대상 사용자를 찾을 수 없습니다."));
 
-        Following following = Following.createFollowingFromTo(userTo , userFrom);
+        Following following = Following.createFollowingToFrom(userTo , userFrom);
         followingRepository.save(following);
     }
 

@@ -183,7 +183,7 @@ public class FollowingRepositoryTest {
                 .email("fromUser")
                 .build();
 
-        Following follow = Following.createFollowingFromTo(toUser,fromUser);
+        Following follow = Following.createFollowingToFrom(toUser,fromUser);
 
         // when
         Following result = followingRepository.save(follow);
@@ -204,7 +204,7 @@ public class FollowingRepositoryTest {
                 .userDetail(UserDetail.builder().nickname("targetUserNickname").build())
                 .build();
 
-        Following follow = Following.createFollowingFromTo(user,targetUser);
+        Following follow = Following.createFollowingToFrom(targetUser, user);
         followingRepository.save(follow);
 
         // when
@@ -229,7 +229,7 @@ public class FollowingRepositoryTest {
                 .userDetail(UserDetail.builder().nickname("targetUserNickname").build())
                 .build();
 
-        Following follow = Following.createFollowingFromTo(targetUser,user);
+        Following follow = Following.createFollowingToFrom(user, targetUser);
         followingRepository.save(follow);
 
         // when
