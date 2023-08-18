@@ -42,7 +42,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         Token token = jwtTokenProvider.createAccessToken(user.getEmail(), UserRole.USER);
 
-        response.addHeader("Set-Cookie" , CreationCookie.createResponseAccessToken(token.getAccessToken() , 30 * 60 * 1000L).toString());
+        response.addHeader("Set-Cookie" , CreationCookie.createResponseAccessToken(token.getAccessToken() , 2 * 60 * 60 * 1000L).toString());
         response.addHeader("Set-Cookie" , CreationCookie.createResponseRefreshToken(token.getRefreshToken() , 14 * 24 * 60 * 60 * 1000L).toString());
 
         httpSession.removeAttribute("user");

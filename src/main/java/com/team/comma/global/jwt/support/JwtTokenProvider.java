@@ -29,7 +29,7 @@ public class JwtTokenProvider {
 
     private final UserDetailsService userDetailsService;
 
-    private long tokenValidTime = 30 * 60 * 1000L;
+    private long tokenValidTime = 2 * 60 * 60 * 1000L;
     private long refreshTokenValidTime = 14 * 24 * 60 * 60 * 1000L;
 
     @PostConstruct
