@@ -54,25 +54,21 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
     @Override
     public List<PlaylistResponse> getPlaylistsByUser(User user) {
         return queryFactory.select(
-                Projections.constructor(
-                    PlaylistResponse.class,
-                    playlist.id,
-                    playlist.playlistTitle,
-                    playlist.alarmFlag,
-                    playlist.alarmStartTime,
-                    select(playlistTrack.track.albumImageUrl)
-                            .from(playlistTrack)
-                            .where(playlistTrack.playlist.eq(playlist))
-                            .orderBy(playlistTrack.playSequence.asc())
-                            .limit(1),
-                    select(playlistTrack.count())
-                        .from(playlistTrack)
-                        .where(playlistTrack.playlist.eq(playlist))
-                ))
-                .from(playlist)
-                .where(playlist.delFlag.eq(false)
-                        .and(playlist.user.eq(user)))
-                .orderBy(playlist.alarmStartTime.asc())
+                        Projections.constructor(
+                                PlaylistResponse.class,
+                                playlistTrack.playlist.id,
+                                playlistTrack.playlist.playlistTitle,
+                                playlistTrack.playlist.alarmFlag,
+                                playlistTrack.playlist.alarmStartTime,
+                                playlistTrack.track.albumImageUrl,
+                                select(playlistTrack.count())
+                                        .from(playlistTrack)
+                                        .where(playlistTrack.playlist.eq(playlist))
+                        ))
+                .from(playlistTrack)
+                .where(playlistTrack.playlist.delFlag.eq(false)
+                        .and(playlistTrack.playlist.user.eq(user)))
+                .orderBy(playlistTrack.playlist.alarmStartTime.asc())
                 .fetch();
     }
 
