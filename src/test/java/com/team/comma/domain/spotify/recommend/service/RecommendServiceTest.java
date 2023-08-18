@@ -193,6 +193,23 @@ public class RecommendServiceTest {
     }
 
     @Test
+    void 익명_추천_리스트_조회_성공() throws AccountException {
+        // given
+        final User user = buildUserWithEmailAndDetail("toUser");
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
+
+        final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.ANONYMOUS).build();
+
+        // when
+        final MessageResponse result = recommendService.getRecommendList(token, recommendListRequest);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+    }
+
+    @Test
     void 추천_정보_조회_실패_사용자정보_찾을수없음() {
         // given
 

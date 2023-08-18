@@ -51,18 +51,22 @@ public class RecommendService {
                     .orElseThrow(() -> new AccountException("추천 받는 사용자 정보가 올바르지 않습니다."));
 
             buildEntity = recommendRequest.toRecommendEntity(fromUser, toUser, playlist);
+            getRecommendCountByToUserAndPlaylist(buildEntity);
         } else {
             buildEntity = recommendRequest.toRecommendEntity(fromUser, playlist);
-        }
-
-        final long isRecommended = recommendRepository.getRecommendCountByToUserAndPlaylist(buildEntity);
-        if(isRecommended > 0){
-            throw new RecommendException("사용자에게 이미 추천한 플레이리스트 입니다.");
         }
 
         recommendRepository.save(buildEntity);
 
         return MessageResponse.of(REQUEST_SUCCESS);
+    }
+
+    public long getRecommendCountByToUserAndPlaylist(Recommend recommend) {
+        final long isRecommended = recommendRepository.getRecommendCountByToUserAndPlaylist(recommend);
+        if(isRecommended > 0){
+            throw new RecommendException("사용자에게 이미 추천한 플레이리스트 입니다.");
+        }
+        return isRecommended;
     }
 
     public MessageResponse getRecommendList(final String accessToken, final RecommendListRequest recommendListRequest) throws AccountException {
@@ -72,8 +76,10 @@ public class RecommendService {
 
         if(recommendListRequest.getRecommendListType().equals(RecommendListType.RECIEVED)){
             return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsByToUser(user));
-        } else {
+        } else if(recommendListRequest.getRecommendListType().equals(RecommendListType.SENDED)){
             return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsByFromUser(user));
+        } else {
+            return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsToAnonymous());
         }
 
     }

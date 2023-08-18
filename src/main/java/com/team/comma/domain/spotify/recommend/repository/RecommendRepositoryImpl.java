@@ -11,6 +11,7 @@ import java.util.List;
 
 import static com.querydsl.jpa.JPAExpressions.select;
 import static com.team.comma.domain.spotify.playlist.domain.QPlaylistTrack.playlistTrack;
+import static com.team.comma.domain.spotify.recommend.constant.RecommendType.ANONYMOUS;
 import static com.team.comma.domain.spotify.recommend.domain.QRecommend.recommend;
 
 @RequiredArgsConstructor
@@ -68,6 +69,33 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
                         ))
                 .from(recommend)
                 .where(recommend.fromUser.eq(requestUser))
+                .orderBy(recommend.id.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<RecommendResponse> getRecommendsToAnonymous() {
+        return queryFactory.select(
+                        Projections.constructor(
+                                RecommendResponse.class,
+                                recommend.id,
+                                recommend.comment,
+                                recommend.fromUser.userDetail.nickname,
+                                recommend.fromUser.userDetail.profileImageUrl,
+                                recommend.playlist.id,
+                                recommend.playlist.playlistTitle,
+                                select(playlistTrack.track.albumImageUrl)
+                                        .from(playlistTrack)
+                                        .where(playlistTrack.playlist.eq(recommend.playlist))
+                                        .orderBy(playlistTrack.playSequence.asc())
+                                        .limit(1),
+                                select(playlistTrack.count())
+                                        .from(playlistTrack)
+                                        .where(playlistTrack.playlist.eq(recommend.playlist)),
+                                recommend.playCount
+                        ))
+                .from(recommend)
+                .where(recommend.recommendType.eq(ANONYMOUS))
                 .orderBy(recommend.id.desc())
                 .fetch();
     }

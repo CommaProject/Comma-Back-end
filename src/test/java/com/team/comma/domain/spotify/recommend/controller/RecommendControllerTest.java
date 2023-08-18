@@ -215,7 +215,7 @@ public class RecommendControllerTest {
                                 cookieWithName("accessToken").description("사용자 access token")
                         ),
                         requestFields(
-                                fieldWithPath("recommendListType").description("받은 추천 리스트: RECIEVED, 보낸 추천 리스트: SENDED")
+                                fieldWithPath("recommendListType").description("받은 추천 리스트: RECIEVED, 보낸 추천 리스트: SENDED, 익명 추천 리스트: ANONYMOUS")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),

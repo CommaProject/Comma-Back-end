@@ -12,6 +12,8 @@ public interface RecommendRepositoryCustom {
 
     List<RecommendResponse> getRecommendsByFromUser(User user);
 
+    List<RecommendResponse> getRecommendsToAnonymous();
+
     long getRecommendCountByToUserAndPlaylist(Recommend reco);
 
     long increasePlayCount(long recommendId);
