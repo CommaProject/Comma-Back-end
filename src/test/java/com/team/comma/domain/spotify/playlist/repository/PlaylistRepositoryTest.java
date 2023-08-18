@@ -70,8 +70,21 @@ class PlaylistRepositoryTest {
     void 플레이리스트_조회_2개() {
         // given
         final User user = userRepository.save(buildUser());
-        playlistRepository.save(buildPlaylist(user, title));
-        playlistRepository.save(buildPlaylist(user, title));
+
+        Playlist playlist1 = buildPlaylist(user, title);
+        Playlist playlist2 = buildPlaylist(user, title);
+        playlistRepository.save(playlist1);
+        playlistRepository.save(playlist2);
+
+        Track track1 = buildTrackWithDurationTimeMs(1000);
+        Track track2 = buildTrackWithDurationTimeMs(2000);
+        trackRepository.save(track1);
+        trackRepository.save(track2);
+
+        PlaylistTrack playlistTrack1 = buildPlaylistTrackWithPlaylistAndTrack(playlist1, track1);
+        PlaylistTrack playlistTrack2 = buildPlaylistTrackWithPlaylistAndTrack(playlist2, track2);
+        playlistTrackRepository.save(playlistTrack1);
+        playlistTrackRepository.save(playlistTrack2);
 
         // when
         final List<PlaylistResponse> result = playlistRepository.getPlaylistsByUser(user);
