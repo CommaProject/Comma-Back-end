@@ -46,9 +46,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/*
- * https://developer.spotify.com/documentation/web-api/reference/get-an-artist
- */
 
 @AutoConfigureRestDocs
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
@@ -87,7 +84,7 @@ public class SearchControllerTest {
         // when
         final ResultActions resultActions = mockMvc.perform(
                 RestDocumentationRequestBuilders
-                        .get(api, "{artistName}")
+                        .get(api, "artistName")
                         .cookie(new Cookie("accessToken", "token")));
 
         // then
@@ -138,7 +135,7 @@ public class SearchControllerTest {
         // when
         final ResultActions resultActions = mockMvc.perform(
                 RestDocumentationRequestBuilders
-                        .get(api, "{trackName}")
+                        .get(api, "trackNameOrArtistName")
                         .cookie(new Cookie("accessToken", "token")));
 
         // then
