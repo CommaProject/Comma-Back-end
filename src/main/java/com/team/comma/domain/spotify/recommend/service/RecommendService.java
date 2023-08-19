@@ -38,9 +38,7 @@ public class RecommendService {
     @Transactional
     public MessageResponse addRecommend(final String accessToken, final RecommendRequest recommendRequest)
             throws AccountException {
-        final String userName = jwtTokenProvider.getUserPk(accessToken);
-        final User fromUser = userRepository.findByEmail(userName)
-                .orElseThrow(() -> new AccountException("추천 보낸 사용자 정보가 올바르지 않습니다."));
+        final User fromUser = findUserByToken(accessToken);
 
         final Playlist playlist = playlistRepository.findById(recommendRequest.getRecommendPlaylistId())
                 .orElseThrow(()-> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
@@ -61,7 +59,7 @@ public class RecommendService {
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
-    public long getRecommendCountByToUserAndPlaylist(Recommend recommend) {
+    public long getRecommendCountByToUserAndPlaylist(final Recommend recommend) {
         final long isRecommended = recommendRepository.getRecommendCountByToUserAndPlaylist(recommend);
         if(isRecommended > 0){
             throw new RecommendException("사용자에게 이미 추천한 플레이리스트 입니다.");
@@ -70,18 +68,34 @@ public class RecommendService {
     }
 
     public MessageResponse getRecommendList(final String accessToken, final RecommendListRequest recommendListRequest) throws AccountException {
+        final User user = findUserByToken(accessToken);
+
+        if(recommendListRequest.getRecommendListType().equals(RecommendListType.RECIEVED)){
+            return getRecommendsByToUser(user);
+        } else if(recommendListRequest.getRecommendListType().equals(RecommendListType.SENDED)){
+            return getRecommendsByFromUser(user);
+        } else {
+            return getRecommendsToAnonymous();
+        }
+    }
+
+    public User findUserByToken(final String accessToken) throws AccountException {
         final String userName = jwtTokenProvider.getUserPk(accessToken);
         final User user = userRepository.findByEmail(userName)
                 .orElseThrow(() -> new AccountException("사용자 정보가 올바르지 않습니다."));
+        return user;
+    }
 
-        if(recommendListRequest.getRecommendListType().equals(RecommendListType.RECIEVED)){
-            return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsByToUser(user));
-        } else if(recommendListRequest.getRecommendListType().equals(RecommendListType.SENDED)){
-            return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsByFromUser(user));
-        } else {
-            return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsToAnonymous());
-        }
+    public MessageResponse getRecommendsByToUser(final User user){
+        return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsByToUser(user));
+    }
 
+    public MessageResponse getRecommendsByFromUser(final User user){
+        return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsByFromUser(user));
+    }
+
+    public MessageResponse getRecommendsToAnonymous(){
+        return MessageResponse.of(REQUEST_SUCCESS, recommendRepository.getRecommendsToAnonymous());
     }
 
     @Transactional

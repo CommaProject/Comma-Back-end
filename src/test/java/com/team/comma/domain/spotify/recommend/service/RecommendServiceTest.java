@@ -56,7 +56,7 @@ public class RecommendServiceTest {
         final Throwable thrown = catchThrowable(() -> recommendService.addRecommend(token, recommendRequest));
 
         // then
-        assertThat(thrown.getMessage()).isEqualTo("추천 보낸 사용자 정보가 올바르지 않습니다.");
+        assertThat(thrown.getMessage()).isEqualTo("사용자 정보가 올바르지 않습니다.");
 
     }
 
