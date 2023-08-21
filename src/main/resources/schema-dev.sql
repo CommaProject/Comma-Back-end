@@ -254,7 +254,7 @@ VALUES
 INSERT INTO playlist_tb
 (playlist_title, alarm_start_time, alarm_flag, list_sequence, del_flag, user_id)
 VALUES
-    ('test playlist', '12:00:00', 1, 1, '0', 1);
+    ('test playlist', '12:00:00', 1, 1, 'N', 1);
 
 INSERT INTO playlist_track_tb
 (play_sequence, play_flag, track_alarm_flag, playlist_id, track_id)
