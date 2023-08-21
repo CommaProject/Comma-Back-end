@@ -56,7 +56,7 @@ public class RecommendServiceTest {
         final Throwable thrown = catchThrowable(() -> recommendService.addRecommend(token, recommendRequest));
 
         // then
-        assertThat(thrown.getMessage()).isEqualTo("추천 보낸 사용자 정보가 올바르지 않습니다.");
+        assertThat(thrown.getMessage()).isEqualTo("사용자 정보가 올바르지 않습니다.");
 
     }
 
@@ -183,6 +183,23 @@ public class RecommendServiceTest {
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.RECIEVED).build();
+
+        // when
+        final MessageResponse result = recommendService.getRecommendList(token, recommendListRequest);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+    }
+
+    @Test
+    void 익명_추천_리스트_조회_성공() throws AccountException {
+        // given
+        final User user = buildUserWithEmailAndDetail("toUser");
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
+
+        final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.ANONYMOUS).build();
 
         // when
         final MessageResponse result = recommendService.getRecommendList(token, recommendListRequest);

@@ -128,6 +128,28 @@ public class RecommendRepositoryTest {
     }
 
     @Test
+    void 익명_추천_리스트_조회() {
+        // given
+        final User toUser = userRepository.save(buildUser("toUserEmail"));
+        final User fromUser = userRepository.save(buildUser("fromUserEmail"));
+        final Playlist playlist = playlistRepository.save(buildPlaylist());
+        final Recommend recommend = buildRecommendToFollowing(ANONYMOUS, playlist, fromUser, toUser);
+        final Recommend recommend2 = buildRecommendToFollowing(ANONYMOUS, playlist, fromUser, toUser);
+        recommendRepository.save(recommend);
+        recommendRepository.save(recommend2);
+
+        // when
+        final List<RecommendResponse> result = recommendRepository.getRecommendsToAnonymous();
+
+        // then
+        assertThat(result.size()).isEqualTo(2);
+        for (RecommendResponse recommendResponse : result) {
+            assertThat(Hibernate.isInitialized(recommendResponse)).isTrue();
+        }
+
+    }
+
+    @Test
     void 추천_정보_id로_찾기() {
         // given
         final User toUser = userRepository.save(buildUser("toUserEmail"));
