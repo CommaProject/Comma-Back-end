@@ -232,7 +232,7 @@ VALUES
     ('male', 20, NULL, 'name', 'nickname', 'url', 'Y', 'Y', 'Y', 'Y');
 
 INSERT INTO user_tb
-(email, password, `role`, `type`, del_flag, join_date, user_detail_id)
+(email, password, role, type, del_flag, join_date, user_detail_id)
 VALUES
     ('testEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-21', 1);
 
