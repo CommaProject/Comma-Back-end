@@ -20,11 +20,6 @@ public class TrackController {
         return trackService.countPlayCount(accessToken , trackId);
     }
 
-    @PostMapping("/favorites")
-    public MessageResponse addFavoriteTrack(@CookieValue String accessToken , @RequestBody TrackRequest trackRequest) throws AccountException {
-        return trackService.addFavoriteTrack(accessToken , trackRequest);
-    }
-
     @GetMapping
     public MessageResponse findMostListenedTrack(@CookieValue String accessToken) {
         return trackService.findMostListenedTrack(accessToken);
