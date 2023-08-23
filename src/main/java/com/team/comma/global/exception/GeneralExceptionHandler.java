@@ -1,13 +1,13 @@
 package com.team.comma.global.exception;
 
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.user.following.exception.FollowingException;
-import com.team.comma.domain.artist.favoriteArtist.exception.FavoriteArtistException;
-import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
-import com.team.comma.domain.playlist.recommend.exception.RecommendException;
+import com.team.comma.domain.user.exception.FollowingException;
+import com.team.comma.domain.favorite.exception.FavoriteArtistException;
+import com.team.comma.domain.playlist.exception.PlaylistException;
+import com.team.comma.domain.playlist.exception.RecommendException;
 import com.team.comma.spotify.exception.SpotifyException;
 import com.team.comma.spotify.exception.TokenExpirationException;
-import com.team.comma.domain.track.track.exception.TrackException;
+import com.team.comma.domain.track.exception.TrackException;
 import com.team.comma.global.auth.exception.OAuth2EmailNotFoundException;
 import com.team.comma.global.jwt.exception.TokenForgeryException;
 import com.team.comma.global.s3.exception.S3Exception;

@@ -1,7 +1,7 @@
 package com.team.comma.global.security.config;
 
 import com.team.comma.global.exception.ExceptionHandlerFilter;
-import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.constant.UserRole;
 import com.team.comma.global.auth.service.CustomOAuth2UserService;
 import com.team.comma.global.auth.support.OAuth2AuthenticationSuccessHandler;
 import com.team.comma.global.jwt.support.JwtAuthenticationFilter;
