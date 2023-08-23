@@ -2,7 +2,7 @@ package com.team.comma.domain.user.user.domain;
 
 import com.team.comma.domain.artist.favoriteArtist.domain.FavoriteArtist;
 import com.team.comma.domain.user.favoriteGenre.FavoriteGenre;
-import com.team.comma.domain.user.searchHistory.domain.History;
+import com.team.comma.domain.user.history.domain.History;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.userDetail.UserDetail;

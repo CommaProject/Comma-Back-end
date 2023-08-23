@@ -2,8 +2,8 @@ package com.team.comma.spotify.service;
 
 import com.neovisionaries.i18n.CountryCode;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.user.searchHistory.dto.HistoryRequest;
-import com.team.comma.domain.user.searchHistory.service.HistoryService;
+import com.team.comma.domain.user.history.dto.HistoryRequest;
+import com.team.comma.domain.user.history.service.HistoryService;
 import com.team.comma.spotify.dto.ArtistResponse;
 import com.team.comma.spotify.support.SpotifyAuthorization;
 import com.team.comma.spotify.support.SpotifySearchCommand;

@@ -1,7 +1,7 @@
 package com.team.comma.global.exception;
 
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.user.followship.exception.FollowingException;
+import com.team.comma.domain.user.following.exception.FollowingException;
 import com.team.comma.domain.artist.favoriteArtist.exception.FavoriteArtistException;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
 import com.team.comma.domain.playlist.recommend.exception.RecommendException;

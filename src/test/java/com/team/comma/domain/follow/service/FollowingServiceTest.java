@@ -1,13 +1,13 @@
 package com.team.comma.domain.follow.service;
 
-import com.team.comma.domain.user.followship.constant.FollowingType;
+import com.team.comma.domain.user.following.constant.FollowingType;
 import com.team.comma.domain.user.userDetail.UserDetail;
-import com.team.comma.domain.user.followship.service.FollowingService;
+import com.team.comma.domain.user.following.service.FollowingService;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.user.followship.domain.Following;
-import com.team.comma.domain.user.followship.dto.FollowingResponse;
-import com.team.comma.domain.user.followship.exception.FollowingException;
-import com.team.comma.domain.user.followship.repository.FollowingRepository;
+import com.team.comma.domain.user.following.domain.Following;
+import com.team.comma.domain.user.following.dto.FollowingResponse;
+import com.team.comma.domain.user.following.exception.FollowingException;
+import com.team.comma.domain.user.following.repository.FollowingRepository;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;

@@ -1,15 +1,15 @@
 package com.team.comma.domain.follow.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.user.followship.constant.FollowingType;
-import com.team.comma.domain.user.followship.controller.FollowingController;
+import com.team.comma.domain.user.following.constant.FollowingType;
+import com.team.comma.domain.user.following.controller.FollowingController;
 import com.team.comma.domain.user.userDetail.UserDetail;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.user.followship.domain.Following;
-import com.team.comma.domain.user.followship.dto.FollowingRequest;
-import com.team.comma.domain.user.followship.dto.FollowingResponse;
-import com.team.comma.domain.user.followship.exception.FollowingException;
-import com.team.comma.domain.user.followship.service.FollowingService;
+import com.team.comma.domain.user.following.domain.Following;
+import com.team.comma.domain.user.following.dto.FollowingRequest;
+import com.team.comma.domain.user.following.dto.FollowingResponse;
+import com.team.comma.domain.user.following.exception.FollowingException;
+import com.team.comma.domain.user.following.service.FollowingService;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
 import jakarta.servlet.http.Cookie;

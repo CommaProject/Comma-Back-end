@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-import static com.team.comma.domain.user.domain.QFavoriteGenre.favoriteGenre;
+import static com.team.comma.domain.user.favoriteGenre.QFavoriteGenre.favoriteGenre;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest

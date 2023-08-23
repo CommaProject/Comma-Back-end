@@ -1,7 +1,7 @@
 package com.team.comma.domain.user.user.service;
 
-import com.team.comma.domain.user.searchHistory.dto.HistoryRequest;
-import com.team.comma.domain.user.searchHistory.service.HistoryService;
+import com.team.comma.domain.user.history.dto.HistoryRequest;
+import com.team.comma.domain.user.history.service.HistoryService;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;

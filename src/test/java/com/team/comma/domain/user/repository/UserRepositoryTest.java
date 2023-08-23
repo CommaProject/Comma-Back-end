@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-import static com.team.comma.domain.user.domain.QUser.user;
-import static com.team.comma.domain.user.domain.QUserDetail.userDetail;
+import static com.team.comma.domain.user.user.domain.QUser.user;
+import static com.team.comma.domain.user.userDetail.QUserDetail.userDetail;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest

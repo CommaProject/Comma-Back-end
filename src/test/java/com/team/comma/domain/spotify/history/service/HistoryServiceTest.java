@@ -1,9 +1,9 @@
 package com.team.comma.domain.spotify.history.service;
 
-import com.team.comma.domain.user.searchHistory.service.HistoryService;
+import com.team.comma.domain.user.history.service.HistoryService;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.user.searchHistory.dto.HistoryRequest;
-import com.team.comma.domain.user.searchHistory.repository.HistoryRepository;
+import com.team.comma.domain.user.history.dto.HistoryRequest;
+import com.team.comma.domain.user.history.repository.HistoryRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.repository.UserRepository;

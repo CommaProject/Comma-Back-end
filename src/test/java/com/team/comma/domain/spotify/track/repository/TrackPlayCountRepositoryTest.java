@@ -1,7 +1,7 @@
 package com.team.comma.domain.spotify.track.repository;
 
-import com.team.comma.domain.user.followship.domain.Following;
-import com.team.comma.domain.user.followship.repository.FollowingRepository;
+import com.team.comma.domain.user.following.domain.Following;
+import com.team.comma.domain.user.following.repository.FollowingRepository;
 import com.team.comma.domain.track.trackPlayCount.TrackPlayCount;
 import com.team.comma.domain.track.track.dto.TrackPlayCountRequest;
 import com.team.comma.domain.track.track.dto.TrackPlayCountResponse;
@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-import static com.team.comma.domain.user.followship.domain.Following.createFollowingToFrom;
+import static com.team.comma.domain.user.following.domain.Following.createFollowingToFrom;
 import static com.team.comma.domain.track.trackPlayCount.TrackPlayCount.createTrackPlayCount;
 import static org.assertj.core.api.Assertions.assertThat;
 

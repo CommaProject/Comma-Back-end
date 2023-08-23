@@ -5,7 +5,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.track.trackPlayCount.TrackPlayCount;
 import com.team.comma.domain.track.track.dto.TrackPlayCountResponse;
-import com.team.comma.domain.user.followship.domain.QFollowing;
+import com.team.comma.domain.user.following.domain.QFollowing;
 import com.team.comma.domain.user.user.domain.QUser;
 import lombok.RequiredArgsConstructor;
 
