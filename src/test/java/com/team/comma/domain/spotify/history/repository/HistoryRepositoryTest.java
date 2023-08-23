@@ -1,10 +1,10 @@
 package com.team.comma.domain.spotify.history.repository;
 
-import com.team.comma.domain.spotify.history.dto.HistoryResponse;
-import com.team.comma.domain.spotify.history.repository.HistoryRepository;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.repository.UserRepository;
+import com.team.comma.domain.user.searchHistory.dto.HistoryResponse;
+import com.team.comma.domain.user.searchHistory.repository.HistoryRepository;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

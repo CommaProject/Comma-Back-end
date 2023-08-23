@@ -1,7 +1,6 @@
 package com.team.comma.global.jwt.service;
 
-import com.team.comma.global.jwt.service.JwtService;
-import com.team.comma.domain.spotify.search.exception.TokenExpirationException;
+import com.team.comma.spotify.exception.TokenExpirationException;
 import com.team.comma.global.jwt.exception.TokenForgeryException;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import com.team.comma.global.security.domain.RefreshToken;

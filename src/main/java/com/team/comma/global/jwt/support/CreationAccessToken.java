@@ -1,6 +1,6 @@
 package com.team.comma.global.jwt.support;
 
-import com.team.comma.domain.spotify.search.exception.SpotifyException;
+import com.team.comma.spotify.exception.SpotifyException;
 import org.apache.hc.core5.http.ParseException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;

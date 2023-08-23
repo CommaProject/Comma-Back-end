@@ -1,22 +1,15 @@
 package com.team.comma.domain.follow.service;
 
-import com.team.comma.domain.follow.constant.FollowingType;
-import com.team.comma.domain.follow.dto.FollowingRequest;
-import com.team.comma.domain.follow.service.FollowingService;
-import com.team.comma.domain.spotify.playlist.domain.Playlist;
-import com.team.comma.domain.spotify.playlist.domain.PlaylistTrack;
-import com.team.comma.domain.spotify.playlist.dto.PlaylistResponse;
-import com.team.comma.domain.spotify.track.domain.Track;
-import com.team.comma.domain.spotify.track.domain.TrackArtist;
-import com.team.comma.domain.user.domain.UserDetail;
+import com.team.comma.domain.user.followship.constant.FollowingType;
+import com.team.comma.domain.user.userDetail.UserDetail;
+import com.team.comma.domain.user.followship.service.FollowingService;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.follow.domain.Following;
-import com.team.comma.domain.follow.dto.FollowingResponse;
-import com.team.comma.domain.follow.exception.FollowingException;
-import com.team.comma.domain.follow.repository.FollowingRepository;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.repository.UserRepository;
+import com.team.comma.domain.user.followship.domain.Following;
+import com.team.comma.domain.user.followship.dto.FollowingResponse;
+import com.team.comma.domain.user.followship.exception.FollowingException;
+import com.team.comma.domain.user.followship.repository.FollowingRepository;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.security.auth.login.AccountException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

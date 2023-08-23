@@ -1,14 +1,14 @@
 package com.team.comma.domain.spotify.track.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.spotify.track.controller.TrackController;
+import com.team.comma.domain.track.track.controller.TrackController;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.spotify.track.domain.Track;
-import com.team.comma.domain.spotify.track.domain.TrackArtist;
-import com.team.comma.domain.spotify.track.dto.TrackPlayCountResponse;
-import com.team.comma.domain.spotify.track.dto.TrackRequest;
-import com.team.comma.domain.spotify.track.exception.TrackException;
-import com.team.comma.domain.spotify.track.service.TrackService;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.trackArtist.TrackArtist;
+import com.team.comma.domain.track.track.dto.TrackPlayCountResponse;
+import com.team.comma.domain.track.track.dto.TrackRequest;
+import com.team.comma.domain.track.track.exception.TrackException;
+import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;

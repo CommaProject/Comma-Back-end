@@ -1,10 +1,11 @@
 package com.team.comma.domain.follow.repository;
 
-import com.team.comma.domain.follow.domain.Following;
-import com.team.comma.domain.follow.dto.FollowingResponse;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.domain.UserDetail;
-import com.team.comma.domain.user.repository.UserRepository;
+import com.team.comma.domain.user.followship.domain.Following;
+import com.team.comma.domain.user.followship.dto.FollowingResponse;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.userDetail.UserDetail;
+import com.team.comma.domain.user.followship.repository.FollowingRepository;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,11 +1,11 @@
 package com.team.comma.domain.spotify.favorite.repository;
 
-import com.team.comma.domain.spotify.favorite.artist.domain.FavoriteArtist;
-import com.team.comma.domain.spotify.favorite.artist.repository.FavoriteArtistRepository;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.constant.UserType;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.repository.UserRepository;
+import com.team.comma.domain.artist.favoriteArtist.domain.FavoriteArtist;
+import com.team.comma.domain.artist.favoriteArtist.repository.FavoriteArtistRepository;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.constant.UserType;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

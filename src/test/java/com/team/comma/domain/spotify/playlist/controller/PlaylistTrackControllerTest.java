@@ -26,14 +26,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.team.comma.domain.spotify.playlist.controller.PlaylistTrackController;
-import com.team.comma.domain.spotify.playlist.dto.*;
+import com.team.comma.domain.playlist.playlistTrack.controller.PlaylistTrackController;
+import com.team.comma.domain.playlist.dto.*;
+import com.team.comma.domain.playlist.playlist.dto.*;
+import com.team.comma.domain.playlist.playlistTrack.dto.PlaylistTrackArtistResponse;
+import com.team.comma.domain.playlist.playlistTrack.dto.PlaylistTrackRequest;
+import com.team.comma.domain.playlist.playlistTrack.dto.PlaylistTrackResponse;
+import com.team.comma.domain.playlist.playlistTrack.dto.PlaylistTrackSaveRequestDto;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.spotify.playlist.exception.PlaylistException;
-import com.team.comma.domain.spotify.playlist.service.PlaylistTrackService;
-import com.team.comma.domain.spotify.track.domain.Track;
-import com.team.comma.domain.spotify.track.domain.TrackArtist;
-import com.team.comma.domain.spotify.track.dto.TrackRequest;
+import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
+import com.team.comma.domain.playlist.playlistTrack.service.PlaylistTrackService;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.trackArtist.TrackArtist;
+import com.team.comma.domain.track.track.dto.TrackRequest;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;

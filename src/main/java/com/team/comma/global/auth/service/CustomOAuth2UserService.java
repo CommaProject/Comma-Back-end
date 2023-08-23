@@ -2,11 +2,11 @@ package com.team.comma.global.auth.service;
 
 import com.team.comma.global.auth.exception.OAuth2EmailNotFoundException;
 import com.team.comma.global.auth.support.OAuthAttributes;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.constant.UserType;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.dto.UserSession;
-import com.team.comma.domain.user.repository.UserRepository;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.constant.UserType;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.dto.UserSession;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

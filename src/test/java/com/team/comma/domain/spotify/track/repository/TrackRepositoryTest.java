@@ -1,7 +1,7 @@
 package com.team.comma.domain.spotify.track.repository;
 
-import com.team.comma.domain.spotify.track.domain.Track;
-import com.team.comma.domain.spotify.track.repository.track.TrackRepository;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.repository.track.TrackRepository;
 import com.team.comma.global.config.TestConfig;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;

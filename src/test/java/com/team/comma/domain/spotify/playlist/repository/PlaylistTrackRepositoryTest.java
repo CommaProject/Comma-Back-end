@@ -3,17 +3,17 @@ package com.team.comma.domain.spotify.playlist.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.team.comma.domain.spotify.playlist.domain.Playlist;
-import com.team.comma.domain.spotify.playlist.domain.PlaylistTrack;
-import com.team.comma.domain.spotify.playlist.dto.PlaylistTrackResponse;
-import com.team.comma.domain.spotify.playlist.repository.PlaylistRepository;
-import com.team.comma.domain.spotify.playlist.repository.PlaylistTrackRepository;
-import com.team.comma.domain.spotify.track.domain.Track;
-import com.team.comma.domain.spotify.track.repository.track.TrackRepository;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.constant.UserType;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.repository.UserRepository;
+import com.team.comma.domain.playlist.playlist.domain.Playlist;
+import com.team.comma.domain.playlist.playlistTrack.domain.PlaylistTrack;
+import com.team.comma.domain.playlist.playlistTrack.dto.PlaylistTrackResponse;
+import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
+import com.team.comma.domain.playlist.playlistTrack.repository.PlaylistTrackRepository;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.repository.track.TrackRepository;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.constant.UserType;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import com.team.comma.global.config.TestConfig;

@@ -6,7 +6,7 @@ import com.team.comma.global.jwt.support.CreationCookie;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import com.team.comma.global.security.domain.RefreshToken;
 import com.team.comma.global.security.domain.Token;
-import com.team.comma.domain.spotify.search.exception.TokenExpirationException;
+import com.team.comma.spotify.exception.TokenExpirationException;
 import com.team.comma.global.security.repository.RefreshTokenRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;

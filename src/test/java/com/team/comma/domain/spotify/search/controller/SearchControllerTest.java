@@ -1,11 +1,11 @@
 package com.team.comma.domain.spotify.search.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.spotify.search.controller.SearchController;
+import com.team.comma.spotify.controller.SearchController;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.spotify.search.dto.ArtistResponse;
-import com.team.comma.domain.spotify.search.service.SearchService;
-import com.team.comma.domain.spotify.track.dto.TrackResponse;
+import com.team.comma.spotify.dto.ArtistResponse;
+import com.team.comma.spotify.service.SearchService;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -26,15 +26,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.team.comma.domain.spotify.playlist.controller.PlaylistController;
+import com.team.comma.domain.playlist.playlist.controller.PlaylistController;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.spotify.playlist.domain.Playlist;
-import com.team.comma.domain.spotify.playlist.dto.PlaylistRequest;
-import com.team.comma.domain.spotify.playlist.dto.PlaylistResponse;
-import com.team.comma.domain.spotify.playlist.dto.PlaylistUpdateRequest;
-import com.team.comma.domain.spotify.playlist.exception.PlaylistException;
-import com.team.comma.domain.spotify.playlist.service.PlaylistService;
-import com.team.comma.domain.spotify.playlist.service.PlaylistTrackService;
+import com.team.comma.domain.playlist.playlist.domain.Playlist;
+import com.team.comma.domain.playlist.playlist.dto.PlaylistRequest;
+import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
+import com.team.comma.domain.playlist.playlist.dto.PlaylistUpdateRequest;
+import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
+import com.team.comma.domain.playlist.playlist.service.PlaylistService;
+import com.team.comma.domain.playlist.playlistTrack.service.PlaylistTrackService;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;

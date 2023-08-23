@@ -1,20 +1,20 @@
 package com.team.comma.domain.spotify.recommend.repository;
 
-import static com.team.comma.domain.spotify.recommend.constant.RecommendType.ANONYMOUS;
-import static com.team.comma.domain.spotify.recommend.constant.RecommendType.FOLLOWING;
+import static com.team.comma.domain.playlist.recommend.constant.RecommendType.ANONYMOUS;
+import static com.team.comma.domain.playlist.recommend.constant.RecommendType.FOLLOWING;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.team.comma.domain.spotify.playlist.domain.Playlist;
-import com.team.comma.domain.spotify.playlist.repository.PlaylistRepository;
-import com.team.comma.domain.spotify.recommend.constant.RecommendType;
-import com.team.comma.domain.spotify.recommend.domain.Recommend;
-import com.team.comma.domain.spotify.recommend.dto.RecommendResponse;
-import com.team.comma.domain.spotify.recommend.repository.RecommendRepository;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.constant.UserType;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.domain.UserDetail;
-import com.team.comma.domain.user.repository.UserRepository;
+import com.team.comma.domain.playlist.playlist.domain.Playlist;
+import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
+import com.team.comma.domain.playlist.recommend.constant.RecommendType;
+import com.team.comma.domain.playlist.recommend.domain.Recommend;
+import com.team.comma.domain.playlist.recommend.dto.RecommendResponse;
+import com.team.comma.domain.playlist.recommend.repository.RecommendRepository;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.constant.UserType;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.userDetail.UserDetail;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;

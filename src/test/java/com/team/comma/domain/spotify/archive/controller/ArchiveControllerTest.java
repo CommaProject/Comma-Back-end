@@ -2,11 +2,11 @@ package com.team.comma.domain.spotify.archive.controller;
 
 
 import com.google.gson.Gson;
-import com.team.comma.domain.spotify.archive.controller.ArchiveController;
+import com.team.comma.domain.playlist.archive.controller.ArchiveController;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.spotify.archive.dto.ArchiveRequest;
-import com.team.comma.domain.spotify.archive.service.ArchiveService;
-import com.team.comma.domain.spotify.playlist.exception.PlaylistException;
+import com.team.comma.domain.playlist.archive.dto.ArchiveRequest;
+import com.team.comma.domain.playlist.archive.service.ArchiveService;
+import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
