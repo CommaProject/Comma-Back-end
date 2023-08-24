@@ -16,8 +16,10 @@ public class FavoriteTrackController {
     private final FavoriteTrackService favoriteTrackService;
 
     @PostMapping
-    public MessageResponse createFavoriteTrack(@CookieValue String accessToken , @RequestBody TrackRequest trackRequest) throws AccountException {
-        return favoriteTrackService.createFavoriteTrack(accessToken , trackRequest);
+    public MessageResponse createFavoriteTrack(
+            @CookieValue String accessToken,
+            @RequestBody TrackRequest trackRequest) throws AccountException {
+        return favoriteTrackService.createFavoriteTrack(accessToken, trackRequest);
     }
 
 }

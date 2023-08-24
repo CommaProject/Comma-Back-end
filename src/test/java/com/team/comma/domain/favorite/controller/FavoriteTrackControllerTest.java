@@ -2,7 +2,6 @@ package com.team.comma.domain.favorite.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.favorite.service.FavoriteTrackService;
-import com.team.comma.domain.track.controller.TrackController;
 import com.team.comma.domain.track.dto.TrackRequest;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
@@ -70,7 +69,7 @@ public class FavoriteTrackControllerTest {
     }
     @Test
     @DisplayName("트랙 좋아요 추가 실패 _ 사용자 정보를 찾을 수 없음")
-    public void createFavoriteTrackFail_NotFoundUser() throws Exception {
+    public void createFavoriteTrackFail_UserNotFound() throws Exception {
         // given
         final String url = "/favorite/track";
         TrackRequest trackRequest = TrackRequest.builder()
@@ -93,7 +92,7 @@ public class FavoriteTrackControllerTest {
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
-                document("track/add-favorite-track-fail-notFoundUser",
+                document("favorite/create-favorite-track-fail",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
@@ -147,7 +146,7 @@ public class FavoriteTrackControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("track/add-favorite-track",
+                document("favorite/create-favorite-track",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(

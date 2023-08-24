@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
-import com.team.comma.domain.playlist.service.PlaylistTrackService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.domain.PlaylistTrack;

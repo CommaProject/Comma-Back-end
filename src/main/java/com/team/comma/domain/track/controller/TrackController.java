@@ -1,12 +1,9 @@
 package com.team.comma.domain.track.controller;
 
-import com.team.comma.domain.track.dto.TrackRequest;
 import com.team.comma.domain.track.service.TrackService;
 import com.team.comma.global.common.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import javax.security.auth.login.AccountException;
 
 @RequestMapping(value = "/tracks")
 @RestController
@@ -41,5 +38,3 @@ public class TrackController {
     }
 
 }
-
-

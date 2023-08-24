@@ -73,7 +73,7 @@ public class FavoriteTrackServiceTest {
 
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
         doReturn(Optional.of(buildUser())).when(userRepository).findByEmail(any(String.class));
-        doReturn(buildTrack("title" , "spotifyAPI")).when(trackService).findTrackOrElseSave(trackRequest);
+        doReturn(buildTrack("title" , "spotifyAPI")).when(trackService).findTrackOrElseSave(trackRequest.getSpotifyTrackId());
 
         // when
         MessageResponse result = favoriteTrackService.createFavoriteTrack("token", trackRequest);

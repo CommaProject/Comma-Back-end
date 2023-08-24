@@ -31,7 +31,7 @@ public class FavoriteTrackService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
 
-        FavoriteTrack result = FavoriteTrack.createFavoriteTrack(user , trackService.findTrackOrElseSave(trackRequest));
+        FavoriteTrack result = FavoriteTrack.createFavoriteTrack(user , trackService.findTrackOrElseSave(trackRequest.getSpotifyTrackId()));
         favoriteTrackRepository.save(result);
 
         return MessageResponse.of(REQUEST_SUCCESS);

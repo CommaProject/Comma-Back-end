@@ -1,12 +1,10 @@
 package com.team.comma.domain.track.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.track.controller.TrackController;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.track.domain.Track;
 import com.team.comma.domain.track.domain.TrackArtist;
 import com.team.comma.domain.track.dto.TrackPlayCountResponse;
-import com.team.comma.domain.track.dto.TrackRequest;
 import com.team.comma.domain.track.exception.TrackException;
 import com.team.comma.domain.track.service.TrackService;
 import com.team.comma.global.gson.GsonUtil;
@@ -19,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -31,7 +28,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.team.comma.domain.playlist.dto.playlist.PlaylistUpdateRequest;
-import com.team.comma.domain.playlist.controller.PlaylistTrackController;
 import com.team.comma.domain.playlist.dto.track.PlaylistTrackArtistResponse;
 import com.team.comma.domain.playlist.dto.track.PlaylistTrackRequest;
 import com.team.comma.domain.playlist.dto.track.PlaylistTrackResponse;

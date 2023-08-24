@@ -21,6 +21,7 @@ public class FavoriteTrack {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 삭제 플래그 없이 delete 시 그냥 데이터 삭제
     private Boolean favoriteFlag;
 
     @JoinColumn(name = "user_id")

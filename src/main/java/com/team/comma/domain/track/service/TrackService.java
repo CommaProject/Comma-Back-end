@@ -2,7 +2,6 @@ package com.team.comma.domain.track.service;
 
 import com.team.comma.domain.track.domain.Track;
 import com.team.comma.domain.track.dto.TrackPlayCountResponse;
-import com.team.comma.domain.track.dto.TrackRequest;
 import com.team.comma.domain.track.repository.TrackPlayCountRepository;
 import com.team.comma.domain.favorite.repository.FavoriteTrackRepository;
 import com.team.comma.domain.track.repository.TrackRepository;
@@ -67,13 +66,13 @@ public class TrackService {
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
-    public Track findTrackOrElseSave(TrackRequest trackRequest) {
-        return trackRepository.findBySpotifyTrackId(trackRequest.getSpotifyTrackId())
-                .orElseGet(() -> saveNewTrack(trackRequest.getSpotifyTrackId()));
+    public Track findTrackOrElseSave(final String spotifyTrackId) {
+        return trackRepository.findBySpotifyTrackId(spotifyTrackId)
+                .orElseGet(() -> saveNewTrack(spotifyTrackId));
     }
 
-    public Track saveNewTrack(String trackId) {
-        return trackRepository.save(searchService.searchTrackByTrackId(trackId));
+    public Track saveNewTrack(final String spotifyTrackId) {
+        return trackRepository.save(searchService.searchTrackByTrackId(spotifyTrackId));
     }
 
 }
