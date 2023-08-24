@@ -1,12 +1,12 @@
 package com.team.comma.domain.favorite.service;
 
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.favorite.domain.FavoriteArtist;
-import com.team.comma.domain.favorite.exception.FavoriteArtistException;
-import com.team.comma.domain.favorite.repository.FavoriteArtistRepository;
-import com.team.comma.domain.favorite.service.FavoriteArtistService;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.repository.user.UserRepository;
+import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
+import com.team.comma.domain.favorite.artist.exception.FavoriteArtistException;
+import com.team.comma.domain.favorite.artist.repository.FavoriteArtistRepository;
+import com.team.comma.domain.favorite.artist.service.FavoriteArtistService;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

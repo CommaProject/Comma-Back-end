@@ -1,9 +1,9 @@
 package com.team.comma.domain.playlist.repository;
 
-import com.team.comma.domain.playlist.domain.Archive;
-import com.team.comma.domain.playlist.repository.archive.ArchiveRepository;
-import com.team.comma.domain.playlist.domain.Playlist;
-import com.team.comma.domain.user.domain.User;
+import com.team.comma.domain.playlist.archive.domain.Archive;
+import com.team.comma.domain.playlist.archive.repository.ArchiveRepository;
+import com.team.comma.domain.playlist.playlist.domain.Playlist;
+import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

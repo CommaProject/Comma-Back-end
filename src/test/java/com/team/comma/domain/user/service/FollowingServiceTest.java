@@ -1,15 +1,15 @@
 package com.team.comma.domain.user.service;
 
-import com.team.comma.domain.user.constant.FollowingType;
-import com.team.comma.domain.user.domain.UserDetail;
-import com.team.comma.domain.user.service.FollowingService;
+import com.team.comma.domain.user.following.constant.FollowingType;
+import com.team.comma.domain.user.user.domain.UserDetail;
+import com.team.comma.domain.user.following.service.FollowingService;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.user.domain.Following;
-import com.team.comma.domain.user.dto.following.FollowingResponse;
-import com.team.comma.domain.user.exception.FollowingException;
-import com.team.comma.domain.user.repository.following.FollowingRepository;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.repository.user.UserRepository;
+import com.team.comma.domain.user.following.domain.Following;
+import com.team.comma.domain.user.following.dto.FollowingResponse;
+import com.team.comma.domain.user.following.exception.FollowingException;
+import com.team.comma.domain.user.following.repository.FollowingRepository;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

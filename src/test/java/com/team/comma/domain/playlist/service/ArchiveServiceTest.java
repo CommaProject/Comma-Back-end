@@ -1,14 +1,14 @@
 package com.team.comma.domain.playlist.service;
 
-import com.team.comma.domain.playlist.service.ArchiveService;
+import com.team.comma.domain.playlist.archive.service.ArchiveService;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.playlist.dto.archive.ArchiveRequest;
-import com.team.comma.domain.playlist.repository.archive.ArchiveRepository;
-import com.team.comma.domain.playlist.domain.Playlist;
-import com.team.comma.domain.playlist.exception.PlaylistException;
-import com.team.comma.domain.playlist.repository.playlist.PlaylistRepository;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.repository.user.UserRepository;
+import com.team.comma.domain.playlist.archive.dto.ArchiveRequest;
+import com.team.comma.domain.playlist.archive.repository.ArchiveRepository;
+import com.team.comma.domain.playlist.playlist.domain.Playlist;
+import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
+import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
