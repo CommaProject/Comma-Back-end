@@ -1,11 +1,9 @@
 package com.team.comma.domain.favorite.artist.service;
 
+import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
 import com.team.comma.domain.favorite.artist.repository.FavoriteArtistRepository;
 import com.team.comma.domain.favorite.artist.exception.FavoriteArtistException;
-import com.team.comma.domain.favorite.domain.FavoriteArtist;
-import com.team.comma.domain.favorite.dto.FavoriteArtistResponse;
-import com.team.comma.domain.favorite.repository.FavoriteArtistRepository;
-import com.team.comma.domain.favorite.exception.FavoriteArtistException;
+import com.team.comma.domain.favorite.artist.dto.FavoriteArtistResponse;
 import com.team.comma.global.common.constant.ResponseCodeEnum;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.user.domain.User;

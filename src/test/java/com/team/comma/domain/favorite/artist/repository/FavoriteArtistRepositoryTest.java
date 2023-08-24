@@ -1,16 +1,10 @@
 package com.team.comma.domain.favorite.artist.repository;
 
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
-import com.team.comma.domain.favorite.artist.repository.FavoriteArtistRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.repository.UserRepository;
-import com.team.comma.domain.favorite.domain.FavoriteArtist;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.constant.UserType;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.repository.user.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

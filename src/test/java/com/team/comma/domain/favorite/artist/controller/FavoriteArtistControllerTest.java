@@ -1,13 +1,12 @@
 package com.team.comma.domain.favorite.artist.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.favorite.domain.FavoriteArtist;
-import com.team.comma.domain.favorite.dto.FavoriteArtistResponse;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.constant.UserType;
-import com.team.comma.domain.user.domain.User;
+import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
+import com.team.comma.domain.favorite.artist.dto.FavoriteArtistResponse;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.constant.UserType;
+import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.favorite.artist.controller.FavoriteArtistController;
 import com.team.comma.domain.favorite.artist.dto.FavoriteArtistRequest;
 import com.team.comma.domain.favorite.artist.exception.FavoriteArtistException;
 import com.team.comma.domain.favorite.artist.service.FavoriteArtistService;
