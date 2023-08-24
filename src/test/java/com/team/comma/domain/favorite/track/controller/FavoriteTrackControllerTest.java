@@ -1,4 +1,4 @@
-package com.team.comma.domain.favorite.controller;
+package com.team.comma.domain.favorite.track.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.favorite.domain.FavoriteTrack;

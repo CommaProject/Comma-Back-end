@@ -1,7 +1,7 @@
-package com.team.comma.domain.favorite.dto;
+package com.team.comma.domain.favorite.track.dto;
 
-import com.team.comma.domain.favorite.domain.FavoriteTrack;
-import com.team.comma.domain.track.domain.TrackArtist;
+import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
+import com.team.comma.domain.track.artist.TrackArtist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

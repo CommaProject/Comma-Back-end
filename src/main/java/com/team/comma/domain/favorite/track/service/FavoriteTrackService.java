@@ -1,12 +1,12 @@
-package com.team.comma.domain.favorite.service;
+package com.team.comma.domain.favorite.track.service;
 
-import com.team.comma.domain.favorite.domain.FavoriteTrack;
-import com.team.comma.domain.favorite.dto.FavoriteTrackResponse;
-import com.team.comma.domain.favorite.repository.FavoriteTrackRepository;
-import com.team.comma.domain.track.dto.TrackRequest;
-import com.team.comma.domain.track.service.TrackService;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.repository.user.UserRepository;
+import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
+import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
+import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
+import com.team.comma.domain.track.track.dto.TrackRequest;
+import com.team.comma.domain.track.track.service.TrackService;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;

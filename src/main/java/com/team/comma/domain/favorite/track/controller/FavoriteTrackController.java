@@ -1,7 +1,7 @@
-package com.team.comma.domain.favorite.controller;
+package com.team.comma.domain.favorite.track.controller;
 
-import com.team.comma.domain.favorite.service.FavoriteTrackService;
-import com.team.comma.domain.track.dto.TrackRequest;
+import com.team.comma.domain.favorite.track.service.FavoriteTrackService;
+import com.team.comma.domain.track.track.dto.TrackRequest;
 import com.team.comma.global.common.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

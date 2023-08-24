@@ -2,24 +2,13 @@ package com.team.comma.domain.track.track.service;
 
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
-import com.team.comma.domain.track.track.dto.TrackRequest;
 import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
-import com.team.comma.domain.track.domain.Track;
-import com.team.comma.domain.track.dto.TrackPlayCountResponse;
-import com.team.comma.domain.track.repository.TrackPlayCountRepository;
-import com.team.comma.domain.favorite.repository.FavoriteTrackRepository;
-import com.team.comma.domain.track.repository.TrackRepository;
-import com.team.comma.domain.track.domain.TrackPlayCount;
 import com.team.comma.spotify.service.SearchService;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.track.track.exception.TrackException;
-import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.repository.UserRepository;
-import com.team.comma.domain.track.exception.TrackException;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
-import static com.team.comma.domain.favorite.track.domain.FavoriteTrack.createFavoriteTrack;
 
 @Service
 @RequiredArgsConstructor

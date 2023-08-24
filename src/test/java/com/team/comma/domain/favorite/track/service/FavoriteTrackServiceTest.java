@@ -1,4 +1,4 @@
-package com.team.comma.domain.favorite.service;
+package com.team.comma.domain.favorite.track.service;
 
 import com.team.comma.domain.favorite.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.repository.FavoriteTrackRepository;

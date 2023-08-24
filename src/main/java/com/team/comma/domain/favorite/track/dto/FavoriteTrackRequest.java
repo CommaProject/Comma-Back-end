@@ -1,4 +1,4 @@
-package com.team.comma.domain.favorite.dto;
+package com.team.comma.domain.favorite.track.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

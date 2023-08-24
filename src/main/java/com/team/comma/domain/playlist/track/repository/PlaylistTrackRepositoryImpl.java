@@ -12,6 +12,7 @@ import java.util.List;
 import static com.team.comma.domain.playlist.track.domain.QPlaylistTrack.playlistTrack;
 import static com.team.comma.domain.track.artist.QTrackArtist.trackArtist;
 
+
 @RequiredArgsConstructor
 public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCustom{
 
