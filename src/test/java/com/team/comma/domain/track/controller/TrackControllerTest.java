@@ -1,14 +1,14 @@
 package com.team.comma.domain.track.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.track.controller.TrackController;
+import com.team.comma.domain.track.track.controller.TrackController;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.track.domain.Track;
-import com.team.comma.domain.track.domain.TrackArtist;
-import com.team.comma.domain.track.dto.TrackPlayCountResponse;
-import com.team.comma.domain.track.dto.TrackRequest;
-import com.team.comma.domain.track.exception.TrackException;
-import com.team.comma.domain.track.service.TrackService;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.artist.TrackArtist;
+import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
+import com.team.comma.domain.track.track.dto.TrackRequest;
+import com.team.comma.domain.track.track.exception.TrackException;
+import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;

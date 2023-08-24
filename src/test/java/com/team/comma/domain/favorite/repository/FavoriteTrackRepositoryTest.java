@@ -1,10 +1,10 @@
 package com.team.comma.domain.favorite.repository;
 
-import com.team.comma.domain.favorite.domain.FavoriteTrack;
-import com.team.comma.domain.track.domain.Track;
-import com.team.comma.domain.favorite.repository.FavoriteTrackRepository;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.domain.User;
+import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-import static com.team.comma.domain.favorite.domain.FavoriteTrack.createFavoriteTrack;
+import static com.team.comma.domain.favorite.track.domain.FavoriteTrack.createFavoriteTrack;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest

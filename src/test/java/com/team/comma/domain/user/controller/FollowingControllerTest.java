@@ -1,17 +1,17 @@
 package com.team.comma.domain.user.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.user.constant.FollowingType;
-import com.team.comma.domain.user.controller.FollowingController;
-import com.team.comma.domain.user.domain.UserDetail;
+import com.team.comma.domain.user.following.constant.FollowingType;
+import com.team.comma.domain.user.following.controller.FollowingController;
+import com.team.comma.domain.user.user.domain.UserDetail;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.user.domain.Following;
-import com.team.comma.domain.user.dto.following.FollowingRequest;
-import com.team.comma.domain.user.dto.following.FollowingResponse;
-import com.team.comma.domain.user.exception.FollowingException;
-import com.team.comma.domain.user.service.FollowingService;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.domain.User;
+import com.team.comma.domain.user.following.domain.Following;
+import com.team.comma.domain.user.following.dto.FollowingRequest;
+import com.team.comma.domain.user.following.dto.FollowingResponse;
+import com.team.comma.domain.user.following.exception.FollowingException;
+import com.team.comma.domain.user.following.service.FollowingService;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.domain.User;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

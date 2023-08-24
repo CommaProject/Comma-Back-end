@@ -1,12 +1,12 @@
 package com.team.comma.domain.user.service;
 
-import com.team.comma.domain.user.service.HistoryService;
+import com.team.comma.domain.user.history.service.HistoryService;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.user.dto.history.HistoryRequest;
-import com.team.comma.domain.user.repository.history.HistoryRepository;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.repository.user.UserRepository;
+import com.team.comma.domain.user.history.dto.HistoryRequest;
+import com.team.comma.domain.user.history.repository.HistoryRepository;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,11 +1,11 @@
 package com.team.comma.domain.user.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.user.controller.HistoryController;
+import com.team.comma.domain.user.history.controller.HistoryController;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.user.dto.history.HistoryRequest;
-import com.team.comma.domain.user.dto.history.HistoryResponse;
-import com.team.comma.domain.user.service.HistoryService;
+import com.team.comma.domain.user.history.dto.HistoryRequest;
+import com.team.comma.domain.user.history.dto.HistoryResponse;
+import com.team.comma.domain.user.history.service.HistoryService;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

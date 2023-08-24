@@ -2,11 +2,11 @@ package com.team.comma.domain.playlist.controller;
 
 
 import com.google.gson.Gson;
-import com.team.comma.domain.playlist.controller.ArchiveController;
+import com.team.comma.domain.playlist.archive.controller.ArchiveController;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.playlist.dto.archive.ArchiveRequest;
-import com.team.comma.domain.playlist.service.ArchiveService;
-import com.team.comma.domain.playlist.exception.PlaylistException;
+import com.team.comma.domain.playlist.archive.dto.ArchiveRequest;
+import com.team.comma.domain.playlist.archive.service.ArchiveService;
+import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

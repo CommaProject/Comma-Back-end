@@ -1,11 +1,11 @@
 package com.team.comma.domain.user.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.constant.UserType;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.domain.UserDetail;
-import com.team.comma.domain.user.repository.user.UserRepository;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.constant.UserType;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.domain.UserDetail;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-import static com.team.comma.domain.user.domain.QUser.user;
-import static com.team.comma.domain.user.domain.QUserDetail.userDetail;
+import static com.team.comma.domain.user.user.domain.QUser.user;
+import static com.team.comma.domain.user.user.domain.QUserDetail.userDetail;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest

@@ -2,10 +2,10 @@ package com.team.comma.domain.favorite.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.favorite.controller.FavoriteArtistController;
-import com.team.comma.domain.favorite.dto.FavoriteArtistRequest;
-import com.team.comma.domain.favorite.exception.FavoriteArtistException;
-import com.team.comma.domain.favorite.service.FavoriteArtistService;
+import com.team.comma.domain.favorite.artist.controller.FavoriteArtistController;
+import com.team.comma.domain.favorite.artist.dto.FavoriteArtistRequest;
+import com.team.comma.domain.favorite.artist.exception.FavoriteArtistException;
+import com.team.comma.domain.favorite.artist.service.FavoriteArtistService;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;

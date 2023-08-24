@@ -1,11 +1,11 @@
 package com.team.comma.domain.user.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.constant.UserType;
-import com.team.comma.domain.user.domain.User;
-import com.team.comma.domain.user.repository.genre.FavoriteGenreRepository;
-import com.team.comma.domain.user.repository.user.UserRepository;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.constant.UserType;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.favorite.genre.repository.FavoriteGenreRepository;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-import static com.team.comma.domain.user.domain.QFavoriteGenre.favoriteGenre;
+import static com.team.comma.domain.favorite.genre.domain.QFavoriteGenre.favoriteGenre;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest

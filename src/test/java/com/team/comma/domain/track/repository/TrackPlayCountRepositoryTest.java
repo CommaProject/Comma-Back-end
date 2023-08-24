@@ -1,13 +1,13 @@
 package com.team.comma.domain.track.repository;
 
-import com.team.comma.domain.user.domain.Following;
-import com.team.comma.domain.user.repository.following.FollowingRepository;
-import com.team.comma.domain.track.domain.TrackPlayCount;
-import com.team.comma.domain.track.dto.TrackPlayCountRequest;
-import com.team.comma.domain.track.dto.TrackPlayCountResponse;
-import com.team.comma.domain.track.repository.TrackPlayCountRepository;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.domain.User;
+import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
+import com.team.comma.domain.user.following.domain.Following;
+import com.team.comma.domain.user.following.repository.FollowingRepository;
+import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
+import com.team.comma.domain.track.playcount.dto.TrackPlayCountRequest;
+import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,8 +18,8 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-import static com.team.comma.domain.user.domain.Following.createFollowingToFrom;
-import static com.team.comma.domain.track.domain.TrackPlayCount.createTrackPlayCount;
+import static com.team.comma.domain.user.following.domain.Following.createFollowingToFrom;
+import static com.team.comma.domain.track.playcount.domain.TrackPlayCount.createTrackPlayCount;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest

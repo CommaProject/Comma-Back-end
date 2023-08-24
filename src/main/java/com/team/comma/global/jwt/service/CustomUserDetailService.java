@@ -1,6 +1,6 @@
 package com.team.comma.global.jwt.service;
 
-import com.team.comma.domain.user.repository.user.UserRepository;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
