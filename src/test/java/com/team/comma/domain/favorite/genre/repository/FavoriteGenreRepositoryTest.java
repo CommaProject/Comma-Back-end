@@ -1,4 +1,4 @@
-package com.team.comma.domain.favorite.genre;
+package com.team.comma.domain.favorite.genre.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.user.user.constant.UserRole;
