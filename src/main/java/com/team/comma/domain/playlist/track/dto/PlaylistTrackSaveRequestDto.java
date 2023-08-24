@@ -13,9 +13,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * @author: wan2daaa
- */
 @Getter
 @Builder
 @AllArgsConstructor

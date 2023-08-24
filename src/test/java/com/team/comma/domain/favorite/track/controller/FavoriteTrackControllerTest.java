@@ -1,13 +1,13 @@
 package com.team.comma.domain.favorite.track.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.favorite.domain.FavoriteTrack;
-import com.team.comma.domain.favorite.dto.FavoriteTrackResponse;
-import com.team.comma.domain.favorite.service.FavoriteTrackService;
-import com.team.comma.domain.track.domain.Track;
-import com.team.comma.domain.track.dto.TrackRequest;
-import com.team.comma.domain.user.constant.UserRole;
-import com.team.comma.domain.user.domain.User;
+import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
+import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
+import com.team.comma.domain.favorite.track.service.FavoriteTrackService;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackRequest;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
