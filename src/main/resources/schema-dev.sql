@@ -228,35 +228,33 @@ CREATE TABLE refresh_token_tb
 
 INSERT INTO user_detail_tb
 (sex, age, recommend_time, name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag)
-VALUES
-    ('male', 20, NULL, 'name', 'nickname', 'url', 'Y', 'Y', 'Y', 'Y');
+VALUES('male', 20, NULL, 'name', 'nickname', 'url', 'Y', 'Y', 'Y', 'Y');
 
 INSERT INTO user_tb
 (email, password, role, type, del_flag, join_date, user_detail_id)
-VALUES
-    ('testEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-21', 1);
+VALUES('testEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-21', 1);
 
 INSERT INTO track_tb
 (track_title, duration_time_ms, recommend_count, album_image_url, spotify_track_id, spotify_track_href)
-VALUES
-    ('test track', 210000, 0, 'url', 'id123', 'href');
+VALUES('test track', 210000, 0, 'url', 'id123', 'href');
 
 INSERT INTO track_play_count_tb
 (play_count, spotify_track_id, track_artist, track_name, track_image_url, track_id, user_id)
-VALUES
-    (1, 'id123', NULL, NULL, NULL, '1', 1);
+VALUES(1, 'id123', NULL, NULL, NULL, '1', 1);
 
 INSERT INTO track_artist_tb
 (artist_name, track_id)
-VALUES
-    ('test artist', 1);
+VALUES('test artist', 1);
 
 INSERT INTO playlist_tb
 (playlist_title, alarm_start_time, alarm_flag, list_sequence, del_flag, user_id)
-VALUES
-    ('test playlist', '12:00:00', 1, 1, 'N', 1);
+VALUES('test playlist', '12:00:00', 1, 1, 'N', 1);
 
 INSERT INTO playlist_track_tb
 (play_sequence, play_flag, track_alarm_flag, playlist_id, track_id)
-VALUES
-    (1, 1, 1, 1, 1);
+VALUES(1, 1, 1, 1, 1);
+
+INSERT INTO favorite_track_tb
+(play_count, favorite_flag, user_id, track_id)
+VALUES(0, 1, 1, 1);
+
