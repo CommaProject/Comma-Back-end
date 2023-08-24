@@ -4,7 +4,7 @@ import com.team.comma.global.jwt.exception.RequireRefreshToken;
 import com.team.comma.global.jwt.exception.TokenForgeryException;
 import com.team.comma.global.security.domain.RefreshToken;
 import com.team.comma.global.security.dto.Token;
-import com.team.comma.domain.user.constant.UserRole;
+import com.team.comma.domain.user.user.constant.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
