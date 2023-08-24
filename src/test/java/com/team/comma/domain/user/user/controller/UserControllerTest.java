@@ -2,13 +2,12 @@ package com.team.comma.domain.user.user.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.team.comma.domain.user.user.controller.UserController;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.dto.LoginRequest;
 import com.team.comma.domain.user.user.dto.RegisterRequest;
-import com.team.comma.domain.user.user.dto.UserDetailRequest;
+import com.team.comma.domain.user.profile.dto.UserDetailRequest;
 import com.team.comma.domain.user.user.dto.UserResponse;
 import com.team.comma.domain.user.user.service.UserService;
 import com.team.comma.global.gson.GsonUtil;

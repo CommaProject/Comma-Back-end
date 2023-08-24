@@ -4,7 +4,6 @@ import static com.team.comma.global.common.constant.ResponseCodeEnum.PLAYLIST_NO
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.team.comma.domain.playlist.recommend.service.RecommendService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
@@ -16,7 +15,7 @@ import com.team.comma.domain.playlist.recommend.dto.RecommendRequest;
 import com.team.comma.domain.playlist.recommend.repository.RecommendRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.domain.UserDetail;
+import com.team.comma.domain.user.profile.domain.UserDetail;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import org.junit.jupiter.api.Test;

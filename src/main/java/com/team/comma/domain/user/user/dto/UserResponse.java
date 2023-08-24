@@ -3,7 +3,7 @@ package com.team.comma.domain.user.user.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.domain.UserDetail;
+import com.team.comma.domain.user.profile.domain.UserDetail;
 import lombok.*;
 
 import java.util.Date;
