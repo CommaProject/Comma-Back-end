@@ -33,7 +33,6 @@ public class SearchService {
 
     private final SpotifyAuthorization spotifyAuthorization;
     private final SpotifySearchCommand spotifySearchCommand;
-    private final HistoryService historyService;
 
     public MessageResponse searchArtistList(String artistName , String token) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
@@ -50,8 +49,6 @@ public class SearchService {
         for (Artist artist : artistsPaging.getItems()) {
             result.add(ArtistResponse.createArtistResponse(artist));
         }
-
-        addHistory(artistName , token);
 
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
@@ -71,8 +68,6 @@ public class SearchService {
             result.add(createTrackResponse(track));
         }
 
-        addHistory(trackName , token);
-
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
@@ -87,12 +82,6 @@ public class SearchService {
 
         Track track = (Track) executeResult;
         return buildTrack(track);
-    }
-
-    public void addHistory(String history , String token) throws AccountException {
-        HistoryRequest request = HistoryRequest.builder().searchHistory(history).build();
-
-        historyService.addHistory(request , token);
     }
 
     public MessageResponse searchGenreList() {

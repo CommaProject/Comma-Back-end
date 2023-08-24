@@ -1,7 +1,6 @@
 package com.team.comma.domain.favorite.repository;
 
 import com.team.comma.domain.favorite.domain.FavoriteArtist;
-import com.team.comma.domain.favorite.repository.FavoriteArtistRepository;
 import com.team.comma.domain.user.constant.UserRole;
 import com.team.comma.domain.user.constant.UserType;
 import com.team.comma.domain.user.domain.User;
@@ -22,6 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @Import(TestConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class FavoriteArtistRepositoryTest {
+
     @Autowired
     FavoriteArtistRepository favoriteArtistRepository;
 
@@ -68,7 +68,7 @@ public class FavoriteArtistRepositoryTest {
     @DisplayName("사용자 관심 아티스트 가져오기")
     public void getFavoriteArtistRepository() {
         // given
-        User user = getUserEntity();
+        User user = buildUser();
         userRepository.save(user);
         user.addFavoriteArtist("artist1");
         user.addFavoriteArtist("artist2");
@@ -85,7 +85,7 @@ public class FavoriteArtistRepositoryTest {
     @DisplayName("유저가 추가한 하나의 아티스트 가져오기")
     public void getFavoriteArtistByUser() {
         // given
-        User user = getUserEntity();
+        User user = buildUser();
         userRepository.save(user);
         user.addFavoriteArtist("artist1");
 
@@ -96,9 +96,30 @@ public class FavoriteArtistRepositoryTest {
         assertThat(result).isNotNull();
     }
 
-    private User getUserEntity() {
-        return User.builder().email(userEmail).password(userPassword).type(UserType.GENERAL_USER)
-                .role(UserRole.USER).build();
+    @Test
+    @DisplayName("아티스트 좋아요 리스트 조회")
+    public void findAllByUser() {
+        // given
+        User user = buildUser();
+        FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, "artist name");
+        userRepository.save(user);
+        favoriteArtistRepository.save(favoriteArtist);
+
+        // when
+        List<FavoriteArtist> result = favoriteArtistRepository.findAllByUser(user);
+
+        // then
+        assertThat(result).isNotNull();
+
+    }
+
+    private User buildUser() {
+        return User.builder()
+                .email(userEmail)
+                .password(userPassword)
+                .type(UserType.GENERAL_USER)
+                .role(UserRole.USER)
+                .build();
     }
 
 }

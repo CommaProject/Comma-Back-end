@@ -31,11 +31,19 @@ public class FavoriteArtist {
     @Column(length = 50)
     private String artistName;
 
-    @Column(length = 50)
+    @Column(length = 100)
     private String artistImageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
+    public static FavoriteArtist buildFavoriteArtist(User user, String artistName) {
+        return FavoriteArtist.builder()
+                .id(1L)
+                .artistName(artistName)
+                .artistImageUrl("url")
+                .user(user)
+                .build();
+    }
 }

@@ -1,6 +1,11 @@
 package com.team.comma.domain.favorite.controller;
 
 import com.google.gson.Gson;
+import com.team.comma.domain.favorite.domain.FavoriteArtist;
+import com.team.comma.domain.favorite.dto.FavoriteArtistResponse;
+import com.team.comma.domain.user.constant.UserRole;
+import com.team.comma.domain.user.constant.UserType;
+import com.team.comma.domain.user.domain.User;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.favorite.controller.FavoriteArtistController;
 import com.team.comma.domain.favorite.dto.FavoriteArtistRequest;
@@ -30,6 +35,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.security.auth.login.AccountException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
@@ -73,7 +79,7 @@ public class FavoriteArtistControllerTest {
         // given
         final String api = "/favorite/artist";
         FavoriteArtistRequest request = FavoriteArtistRequest.builder().artistName("artistName").build();
-        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(favoriteArtistService).addFavoriteArtist("token" , "artistName");
+        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(favoriteArtistService).createFavoriteArtist("token" , "artistName");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -115,7 +121,7 @@ public class FavoriteArtistControllerTest {
         // given
         final String api = "/favorite/artist";
         FavoriteArtistRequest request = FavoriteArtistRequest.builder().artistName("artistName").build();
-        doThrow(new FavoriteArtistException("이미 추가된 관심 아티스트입니다.")).when(favoriteArtistService).addFavoriteArtist("token" , "artistName");
+        doThrow(new FavoriteArtistException("이미 추가된 관심 아티스트입니다.")).when(favoriteArtistService).createFavoriteArtist("token" , "artistName");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -157,7 +163,7 @@ public class FavoriteArtistControllerTest {
         // given
         final String api = "/favorite/artist";
         FavoriteArtistRequest request = FavoriteArtistRequest.builder().artistName("artistName").build();
-        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(favoriteArtistService).addFavoriteArtist("token" , "artistName");
+        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(favoriteArtistService).createFavoriteArtist("token" , "artistName");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -281,15 +287,13 @@ public class FavoriteArtistControllerTest {
     @DisplayName("아티스트 추가 여부 확인 _ 참")
     public void isAddedFavoriteArtist_true() throws Exception {
         // given
-        final String api = "/favorite/artist";
-        FavoriteArtistRequest request = FavoriteArtistRequest.builder().artistName("artistName").build();
+        final String api = "/favorite/artist/{artistName}";
         doReturn(MessageResponse.of(REQUEST_SUCCESS , true)).when(favoriteArtistService).isFavoriteArtist("token" , "artistName");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get(api)
-                        .content(gson.toJson(request))
+                        .get(api, "artistName")
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken" , "token")));
 
@@ -300,9 +304,6 @@ public class FavoriteArtistControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
-                        ),
-                        requestFields(
-                                fieldWithPath("artistName").description("artist 이름")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -323,15 +324,13 @@ public class FavoriteArtistControllerTest {
     @DisplayName("아티스트 추가 여부 확인 _ 거짓")
     public void isAddedFavoriteArtist_false() throws Exception {
         // given
-        final String api = "/favorite/artist";
-        FavoriteArtistRequest request = FavoriteArtistRequest.builder().artistName("artistName").build();
+        final String api = "/favorite/artist/{artistName}";
         doReturn(MessageResponse.of(REQUEST_SUCCESS , false)).when(favoriteArtistService).isFavoriteArtist("token" , "artistName");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get(api)
-                        .content(gson.toJson(request))
+                        .get(api, "artistName")
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken" , "token")));
 
@@ -342,9 +341,6 @@ public class FavoriteArtistControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
-                        ),
-                        requestFields(
-                                fieldWithPath("artistName").description("artist 이름")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -359,5 +355,55 @@ public class FavoriteArtistControllerTest {
 
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getData()).isEqualTo(false);
+    }
+
+    @Test
+    @DisplayName("아티스트 좋아요 리스트 조회")
+    public void findAllFavoriteArtist() throws Exception {
+        // given
+        final String api = "/favorite/artist";
+        User user = buildUser();
+        FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, "artistName");
+        FavoriteArtistResponse favoriteArtistResponse = FavoriteArtistResponse.of(favoriteArtist);
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , List.of(favoriteArtistResponse))).when(favoriteArtistService).findALlFavoriteArtist("accessToken");
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get(api)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "token")));
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("favorite/findAllFavoriteArtist",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getData()).isEqualTo(false);
+    }
+
+
+    private User buildUser() {
+        return User.builder()
+                .email("userEmail")
+                .password("userPassword")
+                .type(UserType.GENERAL_USER)
+                .role(UserRole.USER)
+                .build();
     }
 }

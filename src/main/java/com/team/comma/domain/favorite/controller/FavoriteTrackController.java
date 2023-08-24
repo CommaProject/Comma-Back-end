@@ -9,18 +9,19 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountException;
 
-@RequestMapping(value = "/favorite/track")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping(value = "/favorite/track")
 public class FavoriteTrackController {
 
     private final FavoriteTrackService favoriteTrackService;
 
     @PostMapping
-    public MessageResponse createFavoriteTrack(
+    public ResponseEntity createFavoriteTrack(
             @CookieValue String accessToken,
             @RequestBody TrackRequest trackRequest) throws AccountException {
-        return favoriteTrackService.createFavoriteTrack(accessToken, trackRequest);
+        return ResponseEntity.ok()
+                .body(favoriteTrackService.createFavoriteTrack(accessToken, trackRequest));
     }
 
     @GetMapping

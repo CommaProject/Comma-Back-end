@@ -1,10 +1,12 @@
 package com.team.comma.domain.favorite.service;
 
+import com.team.comma.domain.user.constant.UserRole;
+import com.team.comma.domain.user.constant.UserType;
+import com.team.comma.global.common.constant.ResponseCodeEnum;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.favorite.domain.FavoriteArtist;
 import com.team.comma.domain.favorite.exception.FavoriteArtistException;
 import com.team.comma.domain.favorite.repository.FavoriteArtistRepository;
-import com.team.comma.domain.favorite.service.FavoriteArtistService;
 import com.team.comma.domain.user.domain.User;
 import com.team.comma.domain.user.repository.user.UserRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
@@ -19,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.security.auth.login.AccountException;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -49,7 +52,7 @@ public class FavoriteArtistServiceTest {
         doReturn(Optional.empty()).when(userRepository).findByEmail("userEmail");
 
         // when
-        Throwable thrown = catchThrowable(() -> favoriteArtistService.addFavoriteArtist("token" , "artistName"));
+        Throwable thrown = catchThrowable(() -> favoriteArtistService.createFavoriteArtist("token" , "artistName"));
 
         // then
         assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
@@ -64,7 +67,7 @@ public class FavoriteArtistServiceTest {
         doReturn(Optional.of(FavoriteArtist.builder().build())).when(favoriteArtistRepository).findFavoriteArtistByUser(any(User.class) , any(String.class));
 
         // when
-        Throwable thrown = catchThrowable(() -> favoriteArtistService.addFavoriteArtist("token" , "artistName"));
+        Throwable thrown = catchThrowable(() -> favoriteArtistService.createFavoriteArtist("token" , "artistName"));
 
         // then
         assertThat(thrown).isInstanceOf(FavoriteArtistException.class).hasMessage("이미 추가된 관심 아티스트입니다.");
@@ -79,7 +82,7 @@ public class FavoriteArtistServiceTest {
         doReturn(Optional.empty()).when(favoriteArtistRepository).findFavoriteArtistByUser(any(User.class) , any(String.class));
 
         // when
-        MessageResponse result = favoriteArtistService.addFavoriteArtist("token" , "artistName");
+        MessageResponse result = favoriteArtistService.createFavoriteArtist("token" , "artistName");
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -130,10 +133,55 @@ public class FavoriteArtistServiceTest {
         assertThat(result.getData()).isEqualTo(isAdded);
     }
 
+    @Test
+    @DisplayName("아티스트 좋아요 리스트 조회")
+    public void findAllByUser() {
+        // given
+        User user = buildUser();
+        FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, "artistName");
+        doReturn(List.of(favoriteArtist)).when(favoriteArtistRepository).findAllByUser(user);
+
+        // when
+        List<FavoriteArtist> result = favoriteArtistService.findAllByUser(user);
+
+        // then
+        assertThat(result.size()).isEqualTo(1);
+
+    }
+
+    @Test
+    @DisplayName("아티스트 좋아요 Response 리스트 조회")
+    public void findALlFavoriteArtist() throws AccountException {
+        // given
+        User user = buildUser();
+        FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, "artistName");
+
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk("accessToken");
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(List.of(favoriteArtist)).when(favoriteArtistRepository).findAllByUser(user);
+
+        // when
+        MessageResponse result = favoriteArtistService.findALlFavoriteArtist("accessToken");
+
+        // then
+        assertThat(result.getCode()).isEqualTo(ResponseCodeEnum.REQUEST_SUCCESS.getCode());
+
+    }
+
+    private User buildUser() {
+        return User.builder()
+                .email("userEmail")
+                .password("userPassword")
+                .type(UserType.GENERAL_USER)
+                .role(UserRole.USER)
+                .build();
+    }
+
     private static Stream<Arguments> isAddedArtist() {
         return Stream.of(
                 Arguments.of(Optional.empty(), false),
                 Arguments.of(Optional.of(FavoriteArtist.builder().build()), true)
         );
     }
+
 }

@@ -16,24 +16,35 @@ public class FavoriteArtistController {
 
     private final FavoriteArtistService favoriteArtistService;
 
-    @GetMapping
-    public ResponseEntity isFavoriteArtist(@CookieValue String accessToken
-            , @RequestBody FavoriteArtistRequest favoriteArtistRequest) throws AccountException {
-        return ResponseEntity.ok()
-                .body(favoriteArtistService.isFavoriteArtist(accessToken , favoriteArtistRequest.getArtistName()));
+    @PostMapping
+    public ResponseEntity createFavoriteArtist(
+            @CookieValue String accessToken,
+            @RequestBody FavoriteArtistRequest favoriteArtistRequest) throws AccountException {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(favoriteArtistService.createFavoriteArtist(accessToken, favoriteArtistRequest.getArtistName()));
     }
 
-    @PostMapping
-    public ResponseEntity addFavoriteArtist(@CookieValue String accessToken
-            , @RequestBody FavoriteArtistRequest favoriteArtistRequest) throws AccountException {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(favoriteArtistService.addFavoriteArtist(accessToken, favoriteArtistRequest.getArtistName()));
+    @GetMapping
+    public ResponseEntity findAllFavoriteArtist(
+            @CookieValue String accessToken) throws AccountException {
+        return ResponseEntity.ok()
+                .body(favoriteArtistService.findALlFavoriteArtist(accessToken));
+    }
+
+    @GetMapping("/{artistName}") // artist 테이블 생성 후 수정 필요
+    public ResponseEntity isFavoriteArtist(
+            @CookieValue String accessToken,
+            @PathVariable String artistName) throws AccountException {
+        return ResponseEntity.ok()
+                .body(favoriteArtistService.isFavoriteArtist(accessToken , artistName));
     }
 
     @DeleteMapping
-    public ResponseEntity deleteFavoriteArtist(@CookieValue String accessToken
-            , @RequestBody FavoriteArtistRequest favoriteArtistRequest) throws AccountException {
+    public ResponseEntity deleteFavoriteArtist(
+            @CookieValue String accessToken,
+            @RequestBody FavoriteArtistRequest favoriteArtistRequest) throws AccountException {
         return ResponseEntity.ok()
                 .body(favoriteArtistService.deleteFavoriteArtist(accessToken , favoriteArtistRequest.getArtistName()));
     }
+
 }

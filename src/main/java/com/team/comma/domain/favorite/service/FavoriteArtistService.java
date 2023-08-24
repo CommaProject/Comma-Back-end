@@ -1,5 +1,7 @@
 package com.team.comma.domain.favorite.service;
 
+import com.team.comma.domain.favorite.domain.FavoriteArtist;
+import com.team.comma.domain.favorite.dto.FavoriteArtistResponse;
 import com.team.comma.domain.favorite.repository.FavoriteArtistRepository;
 import com.team.comma.domain.favorite.exception.FavoriteArtistException;
 import com.team.comma.global.common.constant.ResponseCodeEnum;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,7 +46,7 @@ public class FavoriteArtistService {
     }
 
     @Transactional
-    public MessageResponse addFavoriteArtist(String token , String artistName) throws AccountException {
+    public MessageResponse createFavoriteArtist(String token , String artistName) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(token);
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
@@ -66,6 +69,24 @@ public class FavoriteArtistService {
         favoriteArtistRepository.deleteByUser(user , artistName);
 
         return MessageResponse.of(ResponseCodeEnum.REQUEST_SUCCESS);
+    }
+
+    public MessageResponse findALlFavoriteArtist(final String accessToken) throws AccountException{
+        String userEmail = jwtTokenProvider.getUserPk(accessToken);
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
+
+        List<FavoriteArtist> favoriteArtists = findAllByUser(user);
+        List<FavoriteArtistResponse> favoriteArtistResponses = new ArrayList<>();
+        for(FavoriteArtist favoriteArtist : favoriteArtists) {
+            favoriteArtistResponses.add(FavoriteArtistResponse.of(favoriteArtist));
+        }
+
+        return MessageResponse.of(ResponseCodeEnum.REQUEST_SUCCESS, favoriteArtistResponses);
+    }
+
+    public List<FavoriteArtist> findAllByUser(final User user) {
+        return favoriteArtistRepository.findAllByUser(user);
     }
 
     public List<String> getFavoriteArtistList(String token) throws AccountException {
