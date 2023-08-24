@@ -54,7 +54,6 @@ public class Playlist {
     private List<PlaylistTrack> playlistTrackList = new ArrayList<>();
 
     public void addPlaylistTrack(Track track) {
-
         PlaylistTrack playlistTrack = PlaylistTrack.builder()
             .playlist(this)
             .track(track)

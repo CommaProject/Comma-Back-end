@@ -1,0 +1,43 @@
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== 메인 화면
+
+link:main.html[main 화면]
+
+== 트랙 좋아요 API
+
+=== 트랙 좋아요 추가
+
+==== request
+
+include::{snippets}/favorite/create-favorite-track/http-request.adoc[]
+include::{snippets}/favorite/create-favorite-track/request-cookies.adoc[]
+include::{snippets}/favorite/create-favorite-track/request-fields.adoc[]
+
+==== response
+
+include::{snippets}/favorite/create-favorite-track/http-response.adoc[]
+include::{snippets}/favorite/create-favorite-track/response-fields.adoc[]
+
+=== 트랙 좋아요 추가 - 실패
+
+==== response
+
+include::{snippets}/favorite/create-favorite-track-fail/http-response.adoc[]
+include::{snippets}/favorite/create-favorite-track-fail/response-fields.adoc[]
+
+=== 트랙 좋아요 리스트 조회
+
+==== request
+
+include::{snippets}/favorite/find-all-favorite-track/http-request.adoc[]
+include::{snippets}/favorite/find-all-favorite-track/request-cookies.adoc[]
+
+==== response
+
+include::{snippets}/favorite/find-all-favorite-track/http-response.adoc[]
+include::{snippets}/favorite/find-all-favorite-track/response-fields.adoc[]

@@ -32,7 +32,7 @@ public class FavoriteTrack {
     @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
     private Track track;
 
-    public static FavoriteTrack createFavoriteTrack(User user , Track track) {
+    public static FavoriteTrack buildFavoriteTrack(User user , Track track) {
         return FavoriteTrack.builder()
                 .favoriteFlag(false)
                 .user(user)

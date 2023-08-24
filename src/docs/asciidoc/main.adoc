@@ -7,32 +7,34 @@
 
 == GitHub 주소
 
-* link:https://github.com/CommaProject[GitHub 주소]
+* link:https://github.com/CommaProject[]
 
-== Login 문서
+== API
 
-* link:login.html[Login 문서]
+=== User 문서
 
-== Security 문서
+* link:login.html[User]
+* link:follow.html[Follow]
+* link:spotifyHistory.html[History]
 
-* link:security.html[Security 문서]
+=== Playlist 문서
 
-== Follow 문서
+* link:playlist.html[Playlist]
+* link:archive.html[Archive]
+* link:recommend.adoc[Recommend]
+* link:playlist-track.html[Playlist-Track]
 
-* link:follow.html[Follow 문서]
+=== Favorite 문서
 
-== Spotify 문서
+* link:favoriteArtist.html[Favorite-Artist]
+* link:favorite-track.html[Fasvorite-Track]
 
-* link:spotifySearch.html[Search 탐색 문서]
 
-* link:spotifyHistory.html[History 문서]
+=== Spotify 문서
 
-* link:playlist.html[Playlist 문서]
+* link:spotifySearch.html[Search]
 
-* link:archive.html[Archive 문서]
 
-* link:favoriteArtist.html[관심 아티스트 문서]
+=== Security 문서
 
-* link:playlist-track.html[Playlist-Track 문서]
-
-* link:recommend.adoc[Recommend 문서]
+* link:security.html[Security]

@@ -2,9 +2,9 @@ package com.team.comma.domain.favorite.repository;
 
 import com.team.comma.domain.favorite.domain.FavoriteTrack;
 import com.team.comma.domain.track.domain.Track;
-import com.team.comma.domain.favorite.repository.FavoriteTrackRepository;
 import com.team.comma.domain.user.constant.UserRole;
 import com.team.comma.domain.user.domain.User;
+import com.team.comma.domain.user.repository.user.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-import static com.team.comma.domain.favorite.domain.FavoriteTrack.createFavoriteTrack;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -28,17 +27,34 @@ public class FavoriteTrackRepositoryTest {
     @Autowired
     FavoriteTrackRepository favoriteTrackRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
+    @Test
+    @DisplayName("트랙 좋아요 추가")
+    void saveFavoriteTrack() {
+        // given
+        FavoriteTrack track1 = FavoriteTrack.buildFavoriteTrack(buildUser() , buildTrack("title1"));
+
+        // when
+        FavoriteTrack result = favoriteTrackRepository.save(track1);
+
+        // then
+        assertThat(result.getTrack().getTrackTitle()).isEqualTo("title1");
+
+    }
+
     @Test
     @DisplayName("좋아하는 트랙을 이메일로 조회")
-    void findTrackByEmail() {
+    void findFavoriteTrackByEmail() {
         // given
-        FavoriteTrack track1 = createFavoriteTrack(buildUser() , buildTrack("title1"));
-        FavoriteTrack track2 = createFavoriteTrack(buildUser() , buildTrack("title2"));
-        FavoriteTrack track3 = createFavoriteTrack(buildUser() , buildTrack("title3"));
+        FavoriteTrack favoriteTrack1 = FavoriteTrack.buildFavoriteTrack(buildUser() , buildTrack("title1"));
+        FavoriteTrack favoriteTrack2 = FavoriteTrack.buildFavoriteTrack(buildUser() , buildTrack("title2"));
+        FavoriteTrack favoriteTrack3 = FavoriteTrack.buildFavoriteTrack(buildUser() , buildTrack("title3"));
 
-        favoriteTrackRepository.save(track1);
-        favoriteTrackRepository.save(track2);
-        favoriteTrackRepository.save(track3);
+        favoriteTrackRepository.save(favoriteTrack1);
+        favoriteTrackRepository.save(favoriteTrack2);
+        favoriteTrackRepository.save(favoriteTrack3);
 
         // when
         List<Track> result = favoriteTrackRepository.findFavoriteTrackByEmail("email");
@@ -48,18 +64,25 @@ public class FavoriteTrackRepositoryTest {
     }
 
     @Test
-    @DisplayName("트랙 좋아요")
-    void favoriteTrack() {
+    @DisplayName("트랙 좋아요 리스트 조회")
+    void findAllByUser() {
         // given
-        FavoriteTrack track1 = createFavoriteTrack(buildUser() , buildTrack("title1"));
+        User user = userRepository.save(buildUser());
+
+        FavoriteTrack favoriteTrack1 = FavoriteTrack.buildFavoriteTrack(user, buildTrack("title1"));
+        FavoriteTrack favoriteTrack2 = FavoriteTrack.buildFavoriteTrack(user, buildTrack("title2"));
+        FavoriteTrack favoriteTrack3 = FavoriteTrack.buildFavoriteTrack(user, buildTrack("title3"));
+        favoriteTrackRepository.save(favoriteTrack1);
+        favoriteTrackRepository.save(favoriteTrack2);
+        favoriteTrackRepository.save(favoriteTrack3);
 
         // when
-        FavoriteTrack result = favoriteTrackRepository.save(track1);
+        List<FavoriteTrack> result = favoriteTrackRepository.findAllByUser(user);
 
         // then
-        assertThat(result.getTrack().getTrackTitle()).isEqualTo("title1");
-
+        assertThat(result.size()).isEqualTo(3);
     }
+
 
     private Track buildTrack(String title) {
         return Track.builder()

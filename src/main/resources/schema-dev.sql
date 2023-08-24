@@ -94,7 +94,7 @@ CREATE TABLE track_tb
     track_title        VARCHAR(30),
     duration_time_ms   INTEGER,
     recommend_count BIGINT,
-    album_image_url    VARCHAR(50),
+    album_image_url    VARCHAR(100),
     spotify_track_id   VARCHAR(50),
     spotify_track_href VARCHAR(50),
     PRIMARY KEY (id)
@@ -236,7 +236,7 @@ VALUES('testEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-21', 1);
 
 INSERT INTO track_tb
 (track_title, duration_time_ms, recommend_count, album_image_url, spotify_track_id, spotify_track_href)
-VALUES('test track', 210000, 0, 'url', 'id123', 'href');
+VALUES('test track', 210000, 0, 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228', 'id123', 'href');
 
 INSERT INTO track_play_count_tb
 (play_count, spotify_track_id, track_artist, track_name, track_image_url, track_id, user_id)

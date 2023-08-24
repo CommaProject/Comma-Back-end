@@ -1,8 +1,13 @@
 package com.team.comma.domain.favorite.controller;
 
 import com.google.gson.Gson;
+import com.team.comma.domain.favorite.domain.FavoriteTrack;
+import com.team.comma.domain.favorite.dto.FavoriteTrackResponse;
 import com.team.comma.domain.favorite.service.FavoriteTrackService;
+import com.team.comma.domain.track.domain.Track;
 import com.team.comma.domain.track.dto.TrackRequest;
+import com.team.comma.domain.user.constant.UserRole;
+import com.team.comma.domain.user.domain.User;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
@@ -28,6 +33,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
@@ -174,4 +180,83 @@ public class FavoriteTrackControllerTest {
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
+
+    @Test
+    @DisplayName("트랙 좋아요 리스트 조회")
+    public void findAllFavoriteTrack() throws Exception {
+        // given
+        final String url = "/favorite/track";
+
+        User user = buildUser();
+        Track track = buildTrack("track title", "spotifyId");
+        FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
+        FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack);
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS, List.of(favoriteTrackResponse))).when(favoriteTrackService).findAllFavoriteTrack("accessToken");
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.get(url)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken", "accessToken"))
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("favorite/find-all-favorite-track",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 access token")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터"),
+                                fieldWithPath("data.[].favoriteTrackId").description("트랙 좋아요 Id"),
+                                fieldWithPath("data.[].trackId").description("트랙 Id"),
+                                fieldWithPath("data.[].trackTitle").description("트랙 제목"),
+                                fieldWithPath("data.[].trackAlbumImageUrl").description("트랙 앨범 이미지 url"),
+                                fieldWithPath("data.[].spotifyTrackId").description("트랙 스포티파이 Id"),
+                                fieldWithPath("data.[].trackArtistIdList.[]").description("트랙 아티스트 Id 리스트"),
+                                fieldWithPath("data.[].trackArtistNameList.[]").description("트랙 아티스트 이름 리스트")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+    }
+
+    private FavoriteTrack buildFavoriteTrackWithTrackAndUser(Track track, User user){
+        return FavoriteTrack.builder()
+                .id(1L)
+                .track(track)
+                .user(user)
+                .build();
+    }
+
+    private Track buildTrack(String title, String spotifyId) {
+        return Track.builder()
+                .id(1L)
+                .trackTitle(title)
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId(spotifyId)
+                .build();
+    }
+
+    private User buildUser() {
+        return User.builder()
+                .id(1L)
+                .email("email")
+                .password("password")
+                .role(UserRole.USER)
+                .build();
+    }
+
 }

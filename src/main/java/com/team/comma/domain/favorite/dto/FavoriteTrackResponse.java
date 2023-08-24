@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class FavoriteTrackResponse {
-    private long favoriteTrackid;
+    private long favoriteTrackId;
 
     private long trackId;
     private String trackTitle;
@@ -26,7 +26,7 @@ public class FavoriteTrackResponse {
     private List<String> trackArtistNameList;
 
     private FavoriteTrackResponse(FavoriteTrack favoriteTrack) {
-        this.favoriteTrackid = favoriteTrack.getId();
+        this.favoriteTrackId = favoriteTrack.getId();
         this.trackId = favoriteTrack.getTrack().getId();
         this.trackTitle = favoriteTrack.getTrack().getTrackTitle();
         this.trackAlbumImageUrl = favoriteTrack.getTrack().getAlbumImageUrl();
