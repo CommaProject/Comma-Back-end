@@ -16,7 +16,9 @@ import org.springframework.stereotype.Service;
 import javax.security.auth.login.AccountException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
@@ -136,4 +138,15 @@ public class FollowingService {
         return returnResponses;
     }
 
+    public MessageResponse countFollowings(final String accessToken) throws AccountException {
+        String userEmail = jwtTokenProvider.getUserPk(accessToken);
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
+
+        Map<String, Long> response = new HashMap<>();
+        response.put("followings", (long) getFollowingToUserListByFromUser(user).size());
+        response.put("followers", (long) getFollowingFromUserListByToUser(user).size());
+
+        return MessageResponse.of(REQUEST_SUCCESS, response);
+    }
 }

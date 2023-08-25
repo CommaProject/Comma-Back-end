@@ -124,3 +124,15 @@ include::{snippets}/following/listSuccess/request-fields.adoc[]
 
 include::{snippets}/following/listSuccess/http-response.adoc[]
 include::{snippets}/following/listSuccess/response-fields.adoc[]
+
+=== 팔로잉, 팔로워 수 조회
+
+==== request
+
+include::{snippets}/following/count-followings/http-request.adoc[]
+include::{snippets}/following/count-followings/request-cookies.adoc[]
+
+==== response
+
+include::{snippets}/following/count-followings/http-response.adoc[]
+include::{snippets}/following/count-followings/response-fields.adoc[]

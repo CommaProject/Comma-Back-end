@@ -26,8 +26,8 @@
 
 === Favorite 문서
 
-* link:favoriteArtist.html[Favorite-Artist]
-* link:favorite-track.html[Fasvorite-Track]
+* link:favoriteArtist.html[Artist]
+* link:favorite-track.html[Track]
 
 
 === Spotify 문서

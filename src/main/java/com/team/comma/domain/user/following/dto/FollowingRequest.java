@@ -9,6 +9,4 @@ import lombok.*;
 @AllArgsConstructor
 public class FollowingRequest {
     private String toUserEmail;
-
-    private FollowingType followingType;
 }

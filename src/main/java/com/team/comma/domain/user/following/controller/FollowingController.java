@@ -1,5 +1,6 @@
 package com.team.comma.domain.user.following.controller;
 
+import com.team.comma.domain.user.following.constant.FollowingType;
 import com.team.comma.domain.user.following.service.FollowingService;
 import com.team.comma.domain.user.following.dto.FollowingRequest;
 import com.team.comma.global.common.dto.MessageResponse;
@@ -25,15 +26,22 @@ public class FollowingController {
                 .body(followingService.addFollow(accessToken , followingRequest.getToUserEmail()));
     }
 
-    @GetMapping("/list")
+    @GetMapping("/{followingType}")
     public ResponseEntity<MessageResponse> getFollowingList(
             @CookieValue String accessToken,
-            @RequestBody FollowingRequest followingRequest) throws AccountException {
+            @PathVariable FollowingType followingType) throws AccountException {
         return ResponseEntity.ok()
-                .body(followingService.getFollowingUserList(accessToken, followingRequest.getFollowingType()));
+                .body(followingService.getFollowingUserList(accessToken, followingType));
     }
 
-    @GetMapping
+    @GetMapping("/count")
+    public ResponseEntity<MessageResponse> countFollowings(
+            @CookieValue String accessToken) throws AccountException {
+        return ResponseEntity.ok()
+                .body(followingService.countFollowings(accessToken));
+    }
+
+    @GetMapping // user id로 조회 하도록 수정 필요
     public ResponseEntity<MessageResponse> isFollow(
             @CookieValue String accessToken,
             @RequestBody FollowingRequest followingRequest) {

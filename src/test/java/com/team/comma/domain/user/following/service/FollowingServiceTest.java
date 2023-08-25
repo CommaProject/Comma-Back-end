@@ -19,7 +19,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.security.auth.login.AccountException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
@@ -244,6 +246,34 @@ public class FollowingServiceTest {
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getData()).isEqualTo(List.of(followingResponse));
+
+    }
+
+    @Test
+    public void 팔로잉_팔로워_카운트_조회() throws AccountException {
+        // given
+        String token = "accessToken";
+
+        User user = buildUserWithIdAndEmail(1L, "user");
+        User targetUser = buildUserWithIdAndEmail(2L, "targetUser");
+
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
+
+        Following followed = buildFollowingWithIdAndUserFromTo(1L, targetUser, user);
+        FollowingResponse followedResponse = FollowingResponse.of(followed, FollowingType.FOLLOWED);
+        doReturn(List.of(followedResponse)).when(followingRepository).getFollowingFromUserListByToUser(user);
+
+        // when
+        MessageResponse result = followingService.countFollowings(token);
+
+        // then
+        Map<String, Long> response = new HashMap<>();
+        response.put("followings", 0L);
+        response.put("followers", 1L);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getData()).isEqualTo(response);
 
     }
 
