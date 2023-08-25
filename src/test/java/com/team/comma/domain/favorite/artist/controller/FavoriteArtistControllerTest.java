@@ -371,11 +371,11 @@ public class FavoriteArtistControllerTest {
                 MockMvcRequestBuilders
                         .get(api)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie("accessToken" , "token")));
+                        .cookie(new Cookie("accessToken" , "accessToken")));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("favorite/findAllFavoriteArtist",
+                document("favorite/find-all-favorite-artist",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
@@ -384,7 +384,10 @@ public class FavoriteArtistControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메세지"),
-                                fieldWithPath("data").description("응답 데이터")
+                                fieldWithPath("data").description("응답 데이터"),
+                                fieldWithPath("data.[].favoriteArtistId").description("아티스트 좋아요 Id"),
+                                fieldWithPath("data.[].artistName").description("아티스트 이름"),
+                                fieldWithPath("data.[].artistImageUrl").description("아티스트 이미지 url")
                         )
                 )
         );
@@ -393,7 +396,7 @@ public class FavoriteArtistControllerTest {
                 MessageResponse.class);
 
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getData()).isEqualTo(false);
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
 
