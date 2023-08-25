@@ -1,6 +1,6 @@
 package com.team.comma.global.jwt.support;
 
-import com.team.comma.global.security.domain.Token;
+import com.team.comma.global.security.dto.Token;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseCookie;
