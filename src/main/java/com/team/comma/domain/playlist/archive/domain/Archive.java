@@ -29,6 +29,7 @@ public class Archive {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    // user 삭제 필요 - 이미 playlist에 user와 연관관계가 있음
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -37,7 +38,7 @@ public class Archive {
     @JoinColumn(name = "playlist_id")
     private Playlist playlist;
 
-    public static Archive createArchive(User user , String context , Playlist playlist) {
+    public static Archive buildArchive(User user, String context, Playlist playlist) {
         return Archive.builder()
                 .content(context)
                 .publicFlag(true)
@@ -45,6 +46,5 @@ public class Archive {
                 .playlist(playlist)
                 .build();
     }
-
 
 }

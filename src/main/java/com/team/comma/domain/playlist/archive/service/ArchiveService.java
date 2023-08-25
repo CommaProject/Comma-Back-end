@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
 
+import java.util.List;
+
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
@@ -28,15 +30,26 @@ public class ArchiveService {
     private final UserRepository userRepository;
 
     @Transactional
-    public MessageResponse addArchive(String token , ArchiveRequest archiveRequest) throws AccountException {
-        String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail)
+    public MessageResponse createArchive(final String token , final ArchiveRequest archiveRequest) throws AccountException {
+        final String userEmail = jwtTokenProvider.getUserPk(token);
+        final User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
-        Playlist playlist = playlistRepository.findById(archiveRequest.getPlaylistId())
+        final Playlist playlist = playlistRepository.findById(archiveRequest.getPlaylistId())
                 .orElseThrow(() -> new PlaylistException("Playlist를 찾을 수 없습니다."));
 
-        Archive archive = Archive.createArchive(user , archiveRequest.getContent() , playlist);
+        final Archive archive = Archive.buildArchive(user , archiveRequest.getContent() , playlist);
         archiveRepository.save(archive);
+
+        return MessageResponse.of(REQUEST_SUCCESS);
+    }
+
+    public MessageResponse findAllArchive(final String token) throws AccountException {
+        final String userEmail = jwtTokenProvider.getUserPk(token);
+        final User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
+
+        List<Archive> archives = archiveRepository.findAllByUser(user);
+
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }

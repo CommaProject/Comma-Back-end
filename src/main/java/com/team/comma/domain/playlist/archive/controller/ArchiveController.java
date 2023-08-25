@@ -18,8 +18,18 @@ public class ArchiveController {
     private final ArchiveService archiveService;
 
     @PostMapping
-    public ResponseEntity<MessageResponse> addArchive(@CookieValue String accessToken
-            , @RequestBody ArchiveRequest archiveRequest) throws AccountException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(archiveService.addArchive(accessToken , archiveRequest));
+    public ResponseEntity<MessageResponse> createArchive(
+            @CookieValue String accessToken,
+            @RequestBody ArchiveRequest archiveRequest) throws AccountException {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(archiveService.createArchive(accessToken, archiveRequest));
     }
+
+    @GetMapping
+    public ResponseEntity<MessageResponse> findAllArchive(
+            @CookieValue String accessToken) throws AccountException {
+        return ResponseEntity.ok()
+                .body(archiveService.findAllArchive(accessToken));
+    }
+
 }

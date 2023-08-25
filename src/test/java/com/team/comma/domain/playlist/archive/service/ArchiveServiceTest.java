@@ -51,7 +51,7 @@ public class ArchiveServiceTest {
         doReturn(Optional.empty()).when(userRepository).findByEmail("userEmail");
 
         // when
-        Throwable thrown = catchThrowable(() -> archiveService.addArchive("token" , null));
+        Throwable thrown = catchThrowable(() -> archiveService.createArchive("token" , null));
 
         // then
         assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
@@ -67,7 +67,7 @@ public class ArchiveServiceTest {
         ArchiveRequest archiveRequest = ArchiveRequest.builder().playlistId(0L).build();
 
         // when
-        Throwable thrown = catchThrowable(() -> archiveService.addArchive("token" , archiveRequest));
+        Throwable thrown = catchThrowable(() -> archiveService.createArchive("token" , archiveRequest));
 
         // then
         assertThat(thrown).isInstanceOf(PlaylistException.class).hasMessage("Playlist를 찾을 수 없습니다.");
@@ -83,7 +83,7 @@ public class ArchiveServiceTest {
         ArchiveRequest archiveRequest = ArchiveRequest.builder().playlistId(0L).build();
 
         // when
-        MessageResponse messageResponse = archiveService.addArchive("token" , archiveRequest);
+        MessageResponse messageResponse = archiveService.createArchive("token" , archiveRequest);
 
         // then
         assertThat(messageResponse.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());

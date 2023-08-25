@@ -72,7 +72,7 @@ public class ArchiveControllerTest {
         // given
         final String api = "/archives";
         ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).content("content").build();
-        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(archiveService).addArchive(any(String.class), any(ArchiveRequest.class));
+        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(archiveService).createArchive(any(String.class), any(ArchiveRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -115,7 +115,7 @@ public class ArchiveControllerTest {
         // given
         final String api = "/archives";
         ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).content("content").build();
-        doThrow(new PlaylistException("Playlist를 찾을 수 없습니다.")).when(archiveService).addArchive(any(String.class), any(ArchiveRequest.class));
+        doThrow(new PlaylistException("Playlist를 찾을 수 없습니다.")).when(archiveService).createArchive(any(String.class), any(ArchiveRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -158,7 +158,7 @@ public class ArchiveControllerTest {
         // given
         final String api = "/archives";
         ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).content("content").build();
-        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(archiveService).addArchive(any(String.class), any(ArchiveRequest.class));
+        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(archiveService).createArchive(any(String.class), any(ArchiveRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(

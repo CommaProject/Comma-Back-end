@@ -28,7 +28,7 @@ public class ArchiveRepositoryTest {
         // given
         User user = User.builder().build();
         Playlist playlist = Playlist.builder().build();
-        Archive archive = Archive.createArchive(user , "content" , playlist);
+        Archive archive = Archive.buildArchive(user , "content" , playlist);
 
         // when
         Archive result = archiveRepository.save(archive);
