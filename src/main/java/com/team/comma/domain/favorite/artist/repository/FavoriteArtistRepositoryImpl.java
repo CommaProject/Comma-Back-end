@@ -2,6 +2,7 @@ package com.team.comma.domain.favorite.artist.repository;
 
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
 import com.team.comma.domain.user.user.domain.QUser;
 import com.team.comma.domain.user.user.domain.User;

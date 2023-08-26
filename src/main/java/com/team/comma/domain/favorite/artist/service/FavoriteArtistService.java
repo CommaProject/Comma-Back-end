@@ -1,5 +1,7 @@
 package com.team.comma.domain.favorite.artist.service;
 
+import com.team.comma.domain.favorite.artist.repository.FavoriteArtistRepository;
+import com.team.comma.domain.favorite.artist.exception.FavoriteArtistException;
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
 import com.team.comma.domain.favorite.artist.repository.FavoriteArtistRepository;
 import com.team.comma.domain.favorite.artist.exception.FavoriteArtistException;

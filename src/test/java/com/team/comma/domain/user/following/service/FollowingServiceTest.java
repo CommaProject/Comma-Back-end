@@ -1,8 +1,7 @@
 package com.team.comma.domain.user.following.service;
 
 import com.team.comma.domain.user.following.constant.FollowingType;
-import com.team.comma.domain.user.user.domain.UserDetail;
-import com.team.comma.domain.user.following.service.FollowingService;
+import com.team.comma.domain.user.profile.domain.UserDetail;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.following.domain.Following;
 import com.team.comma.domain.user.following.dto.FollowingResponse;

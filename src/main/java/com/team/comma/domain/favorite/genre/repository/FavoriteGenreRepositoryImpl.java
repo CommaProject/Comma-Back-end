@@ -8,6 +8,7 @@ import java.util.List;
 
 import static com.team.comma.domain.favorite.genre.domain.QFavoriteGenre.favoriteGenre;
 
+
 @RequiredArgsConstructor
 public class FavoriteGenreRepositoryImpl implements FavoriteGenreRepositoryCustom {
 

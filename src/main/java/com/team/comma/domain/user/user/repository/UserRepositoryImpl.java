@@ -7,8 +7,9 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
+import static com.team.comma.domain.user.profile.domain.QUserDetail.userDetail;
 import static com.team.comma.domain.user.user.domain.QUser.user;
-import static com.team.comma.domain.user.user.domain.QUserDetail.userDetail;
+
 
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepositoryCustom {
