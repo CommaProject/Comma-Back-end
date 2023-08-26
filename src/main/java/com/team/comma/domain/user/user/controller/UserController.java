@@ -2,7 +2,7 @@ package com.team.comma.domain.user.user.controller;
 
 import com.team.comma.domain.user.user.dto.LoginRequest;
 import com.team.comma.domain.user.user.dto.RegisterRequest;
-import com.team.comma.domain.user.user.dto.UserDetailRequest;
+import com.team.comma.domain.user.profile.dto.UserDetailRequest;
 import com.team.comma.domain.user.user.service.UserService;
 import com.team.comma.global.common.dto.MessageResponse;
 import jakarta.servlet.http.HttpServletResponse;

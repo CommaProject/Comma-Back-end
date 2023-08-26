@@ -1,16 +1,17 @@
 package com.team.comma.domain.user.user.service;
 
 import com.team.comma.domain.user.history.service.HistoryService;
+import com.team.comma.domain.user.history.service.HistoryService;
 import com.team.comma.domain.user.user.service.UserService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.history.dto.HistoryRequest;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.domain.UserDetail;
+import com.team.comma.domain.user.profile.domain.UserDetail;
 import com.team.comma.domain.user.user.dto.LoginRequest;
 import com.team.comma.domain.user.user.dto.RegisterRequest;
-import com.team.comma.domain.user.user.dto.UserDetailRequest;
+import com.team.comma.domain.user.profile.dto.UserDetailRequest;
 import com.team.comma.domain.user.user.dto.UserResponse;
 import com.team.comma.domain.favorite.genre.repository.FavoriteGenreRepository;
 import com.team.comma.domain.user.user.repository.UserRepository;
