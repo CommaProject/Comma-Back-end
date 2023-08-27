@@ -2,6 +2,7 @@ package com.team.comma.domain.favorite.track.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
+import com.team.comma.domain.favorite.track.dto.FavoriteTrackRequest;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.favorite.track.service.FavoriteTrackService;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackArtistResponse;
@@ -80,20 +81,15 @@ public class FavoriteTrackControllerTest {
     public void createFavoriteTrackFail_UserNotFound() throws Exception {
         // given
         final String url = "/favorite/track";
-        TrackRequest trackRequest = TrackRequest.builder()
-                .trackTitle("title")
-                .albumImageUrl("imageUrl")
+        FavoriteTrackRequest favoriteTrackRequest = FavoriteTrackRequest.builder()
                 .spotifyTrackId("trackId")
-                .spotifyTrackHref("trackHref")
-                .durationTimeMs(0)
-                .trackArtistList(Arrays.asList("artist1", "artist2"))
                 .build();
-        doThrow(new AccountException("사용자 정보를 찾을 수 없습니다.")).when(favoriteTrackService).createFavoriteTrack(any(String.class) , any(TrackRequest.class));
+        doThrow(new AccountException("사용자 정보를 찾을 수 없습니다.")).when(favoriteTrackService).createFavoriteTrack(any(String.class) , any(FavoriteTrackRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 RestDocumentationRequestBuilders.post(url)
-                        .content(gson.toJson(trackRequest))
+                        .content(gson.toJson(favoriteTrackRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken", "accessToken"))
         );
@@ -107,12 +103,7 @@ public class FavoriteTrackControllerTest {
                                 cookieWithName("accessToken").description("사용자 access token")
                         ),
                         requestFields(
-                                fieldWithPath("trackTitle").description("트랙 제목"),
-                                fieldWithPath("albumImageUrl").description("트랙 이미지 URL"),
-                                fieldWithPath("spotifyTrackId").description("스포티파이 트랙 ID"),
-                                fieldWithPath("spotifyTrackHref").description("스포티 파이 재생 주소"),
-                                fieldWithPath("durationTimeMs").description("재생 시간"),
-                                fieldWithPath("trackArtistList[]").description("아티스트 명")
+                                fieldWithPath("spotifyTrackId").description("스포티파이 트랙 ID")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -134,20 +125,15 @@ public class FavoriteTrackControllerTest {
     public void createFavoriteTrack() throws Exception {
         // given
         final String url = "/favorite/track";
-        TrackRequest trackRequest = TrackRequest.builder()
-                .trackTitle("title")
-                .albumImageUrl("imageUrl")
+        FavoriteTrackRequest favoriteTrackRequest = FavoriteTrackRequest.builder()
                 .spotifyTrackId("trackId")
-                .spotifyTrackHref("trackHref")
-                .durationTimeMs(0)
-                .trackArtistList(Arrays.asList("artist1", "artist2"))
                 .build();
-        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(favoriteTrackService).createFavoriteTrack(any(String.class) , any(TrackRequest.class));
+        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(favoriteTrackService).createFavoriteTrack(any(String.class) , any(FavoriteTrackRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 RestDocumentationRequestBuilders.post(url)
-                        .content(gson.toJson(trackRequest))
+                        .content(gson.toJson(favoriteTrackRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken", "accessToken"))
         );
@@ -161,12 +147,7 @@ public class FavoriteTrackControllerTest {
                                 cookieWithName("accessToken").description("사용자 access token")
                         ),
                         requestFields(
-                                fieldWithPath("trackTitle").description("트랙 제목"),
-                                fieldWithPath("albumImageUrl").description("트랙 이미지 URL"),
-                                fieldWithPath("spotifyTrackId").description("스포티파이 트랙 ID"),
-                                fieldWithPath("spotifyTrackHref").description("스포티 파이 재생 주소"),
-                                fieldWithPath("durationTimeMs").description("재생 시간"),
-                                fieldWithPath("trackArtistList[]").description("아티스트 명")
+                                fieldWithPath("spotifyTrackId").description("스포티파이 트랙 ID")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),

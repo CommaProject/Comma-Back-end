@@ -10,6 +10,7 @@ import java.util.Optional;
 import static com.team.comma.domain.user.profile.domain.QUserDetail.userDetail;
 import static com.team.comma.domain.user.user.domain.QUser.user;
 
+
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepositoryCustom {
     private final JPAQueryFactory queryFactory;

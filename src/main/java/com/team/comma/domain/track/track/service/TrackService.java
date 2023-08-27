@@ -2,7 +2,6 @@ package com.team.comma.domain.track.track.service;
 
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
-import com.team.comma.domain.track.track.dto.TrackRequest;
 import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
 import com.team.comma.domain.track.track.repository.TrackRepository;
@@ -16,7 +15,6 @@ import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
 import com.team.comma.spotify.service.SearchService;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.track.track.exception.TrackException;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.repository.UserRepository;

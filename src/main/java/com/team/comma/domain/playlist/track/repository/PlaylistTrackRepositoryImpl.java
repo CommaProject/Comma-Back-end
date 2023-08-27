@@ -13,6 +13,7 @@ import static com.team.comma.domain.playlist.track.domain.QPlaylistTrack.playlis
 import static com.team.comma.domain.track.artist.domain.QTrackArtist.trackArtist;
 
 
+
 @RequiredArgsConstructor
 public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCustom{
 

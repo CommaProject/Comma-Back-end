@@ -1,6 +1,7 @@
 package com.team.comma.domain.favorite.track.service;
 
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
+import com.team.comma.domain.favorite.track.dto.FavoriteTrackRequest;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackArtistResponse;
@@ -66,21 +67,16 @@ public class FavoriteTrackServiceTest {
     @DisplayName("좋아요 트랙 저장")
     void createFavoriteTrack() throws AccountException {
         // given
-        TrackRequest trackRequest = TrackRequest.builder()
-                .trackTitle("title")
-                .trackArtistList(null)
+        FavoriteTrackRequest favoriteTrackRequest = FavoriteTrackRequest.builder()
                 .spotifyTrackId("id")
-                .spotifyTrackHref("href")
-                .albumImageUrl("img")
-                .durationTimeMs(0)
                 .build();
 
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
         doReturn(Optional.of(buildUser())).when(userRepository).findByEmail(any(String.class));
-        doReturn(buildTrack("title" , "spotifyAPI")).when(trackService).findTrackOrSave(trackRequest.getSpotifyTrackId());
+        doReturn(buildTrack("title" , "spotifyAPI")).when(trackService).findTrackOrSave(favoriteTrackRequest.getSpotifyTrackId());
 
         // when
-        MessageResponse result = favoriteTrackService.createFavoriteTrack("token", trackRequest);
+        MessageResponse result = favoriteTrackService.createFavoriteTrack("token", favoriteTrackRequest);
 
         // then
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());

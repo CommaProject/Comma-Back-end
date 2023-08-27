@@ -98,3 +98,15 @@ include::{snippets}/favoriteArtist/isAddedArtist-false/request-cookies.adoc[]
 
 include::{snippets}/favoriteArtist/isAddedArtist-false/http-response.adoc[]
 include::{snippets}/favoriteArtist/isAddedArtist-false/response-fields.adoc[]
+
+=== 아티스트 좋아요 리스트 조회
+
+==== request
+
+include::{snippets}/favorite/find-all-favorite-artist/http-request.adoc[]
+include::{snippets}/favorite/find-all-favorite-artist/request-cookies.adoc[]
+
+==== response
+
+include::{snippets}/favorite/find-all-favorite-artist/http-response.adoc[]
+include::{snippets}/favorite/find-all-favorite-artist/response-fields.adoc[]

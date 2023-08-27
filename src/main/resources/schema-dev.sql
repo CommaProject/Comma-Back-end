@@ -130,7 +130,7 @@ CREATE TABLE favorite_artist_tb
 (
     id               BIGINT NOT NULL AUTO_INCREMENT,
     artist_name      VARCHAR(50),
-    artist_image_url VARCHAR(50),
+    artist_image_url VARCHAR(100),
     user_id          BIGINT,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES user_tb (id)
@@ -258,3 +258,16 @@ INSERT INTO favorite_track_tb
 (play_count, favorite_flag, user_id, track_id)
 VALUES(0, 1, 1, 1);
 
+VALUES(1, 1, 1, 1, 1);
+
+INSERT INTO favorite_track_tb
+(play_count, favorite_flag, user_id, track_id)
+VALUES(0, 1, 1, 1);
+
+INSERT INTO favorite_artist_tb
+(artist_name, artist_image_url, user_id)
+VALUES('New Jeans', 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228', 1);
+
+INSERT INTO favorite_artist_tb
+(artist_name, artist_image_url, user_id)
+VALUES('BTS', 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228', 1);
