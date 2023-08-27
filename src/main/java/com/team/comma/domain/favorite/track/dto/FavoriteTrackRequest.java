@@ -1,14 +1,13 @@
 package com.team.comma.domain.favorite.track.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
-@Getter
 @Builder
+@Data
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class FavoriteTrackRequest {
 
-
+    private String spotifyTrackId;
 
 }

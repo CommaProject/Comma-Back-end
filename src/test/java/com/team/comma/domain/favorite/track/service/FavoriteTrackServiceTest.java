@@ -1,7 +1,11 @@
 package com.team.comma.domain.favorite.track.service;
 
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
+import com.team.comma.domain.favorite.track.dto.FavoriteTrackRequest;
+import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackArtistResponse;
+import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.dto.TrackRequest;
 import com.team.comma.domain.track.track.service.TrackService;
@@ -63,21 +67,16 @@ public class FavoriteTrackServiceTest {
     @DisplayName("좋아요 트랙 저장")
     void createFavoriteTrack() throws AccountException {
         // given
-        TrackRequest trackRequest = TrackRequest.builder()
-                .trackTitle("title")
-                .trackArtistList(null)
+        FavoriteTrackRequest favoriteTrackRequest = FavoriteTrackRequest.builder()
                 .spotifyTrackId("id")
-                .spotifyTrackHref("href")
-                .albumImageUrl("img")
-                .durationTimeMs(0)
                 .build();
 
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
         doReturn(Optional.of(buildUser())).when(userRepository).findByEmail(any(String.class));
-        doReturn(buildTrack("title" , "spotifyAPI")).when(trackService).findTrackOrElseSave(trackRequest.getSpotifyTrackId());
+        doReturn(buildTrack("title" , "spotifyAPI")).when(trackService).findTrackOrSave(favoriteTrackRequest.getSpotifyTrackId());
 
         // when
-        MessageResponse result = favoriteTrackService.createFavoriteTrack("token", trackRequest);
+        MessageResponse result = favoriteTrackService.createFavoriteTrack("token", favoriteTrackRequest);
 
         // then
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
@@ -89,15 +88,18 @@ public class FavoriteTrackServiceTest {
         // given
         User user = buildUser();
         Track track = buildTrack("track title", "spotify id");
-        FavoriteTrack favoriteTrack = FavoriteTrack.buildFavoriteTrack(user, track);
+        FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
+        TrackArtist trackArtist = buildTrackArtist(track);
+        PlaylistTrackArtistResponse trackArtistResponse = PlaylistTrackArtistResponse.of(trackArtist);
+        FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
-        doReturn(List.of(favoriteTrack)).when(favoriteTrackRepository).findAllByUser(user);
+        doReturn(List.of(favoriteTrackResponse)).when(favoriteTrackRepository).findAllFavoriteTrackByUser(user);
 
         // when
-        List<FavoriteTrack> result = favoriteTrackService.findAllByUser(user);
+        List<FavoriteTrackResponse> result = favoriteTrackService.findAllFavoriteTrackByUser(user);
 
         // then
-        assertThat(result).isEqualTo(List.of(favoriteTrack));
+        assertThat(result).isEqualTo(List.of(favoriteTrackResponse));
 
     }
 
@@ -110,10 +112,13 @@ public class FavoriteTrackServiceTest {
         Track track = buildTrack("track title", "spotify id");
         track.addTrackArtistList("artist name");
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
+        TrackArtist trackArtist = buildTrackArtist(track);
+        PlaylistTrackArtistResponse trackArtistResponse = PlaylistTrackArtistResponse.of(trackArtist);
+        FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(accessToken);
         doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
-        doReturn(List.of(favoriteTrack)).when(favoriteTrackRepository).findAllByUser(user);
+        doReturn(List.of(favoriteTrackResponse)).when(favoriteTrackRepository).findAllFavoriteTrackByUser(user);
 
         // when
         MessageResponse result = favoriteTrackService.findAllFavoriteTrack(accessToken);
@@ -139,6 +144,14 @@ public class FavoriteTrackServiceTest {
                 .albumImageUrl("url")
                 .spotifyTrackHref("spotifyTrackHref")
                 .spotifyTrackId(spotifyId)
+                .build();
+    }
+
+    public TrackArtist buildTrackArtist(Track track) {
+        return TrackArtist.builder()
+                .id(1L)
+                .track(track)
+                .artistName("artist name")
                 .build();
     }
 

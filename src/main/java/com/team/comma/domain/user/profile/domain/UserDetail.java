@@ -1,6 +1,6 @@
-package com.team.comma.domain.user.user.domain;
+package com.team.comma.domain.user.profile.domain;
 
-import com.team.comma.domain.user.user.dto.UserDetailRequest;
+import com.team.comma.domain.user.profile.dto.UserDetailRequest;
 import com.team.comma.global.converter.BooleanConverter;
 import jakarta.persistence.*;
 import lombok.*;

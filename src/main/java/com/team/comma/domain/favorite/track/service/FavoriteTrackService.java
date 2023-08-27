@@ -1,5 +1,6 @@
 package com.team.comma.domain.favorite.track.service;
 
+import com.team.comma.domain.favorite.track.dto.FavoriteTrackRequest;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
@@ -30,12 +31,12 @@ public class FavoriteTrackService {
     private final FavoriteTrackRepository favoriteTrackRepository;
 
     @Transactional
-    public MessageResponse createFavoriteTrack(String accessToken , TrackRequest trackRequest) throws AccountException {
+    public MessageResponse createFavoriteTrack(String accessToken , FavoriteTrackRequest favoriteTrackRequest) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
 
-        FavoriteTrack result = FavoriteTrack.buildFavoriteTrack(user , trackService.findTrackOrElseSave(trackRequest.getSpotifyTrackId()));
+        FavoriteTrack result = FavoriteTrack.buildFavoriteTrack(user , trackService.findTrackOrSave(favoriteTrackRequest.getSpotifyTrackId()));
         favoriteTrackRepository.save(result);
 
         return MessageResponse.of(REQUEST_SUCCESS);
@@ -46,17 +47,13 @@ public class FavoriteTrackService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
 
-        List<FavoriteTrack> favoriteTracks = findAllByUser(user);
-        List<FavoriteTrackResponse> favoriteTrackResponses = new ArrayList<>();
-        for(FavoriteTrack favoriteTrack : favoriteTracks) {
-            favoriteTrackResponses.add(FavoriteTrackResponse.of(favoriteTrack));
-        }
+        List<FavoriteTrackResponse> favoriteTrackResponses = findAllFavoriteTrackByUser(user);
 
         return MessageResponse.of(REQUEST_SUCCESS, favoriteTrackResponses);
     }
 
-    public List<FavoriteTrack> findAllByUser(final User user) {
-        return favoriteTrackRepository.findAllByUser(user);
+    public List<FavoriteTrackResponse> findAllFavoriteTrackByUser(final User user) {
+        return favoriteTrackRepository.findAllFavoriteTrackByUser(user);
     }
 
 }

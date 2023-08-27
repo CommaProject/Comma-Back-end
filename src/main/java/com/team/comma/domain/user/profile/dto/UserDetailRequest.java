@@ -1,4 +1,4 @@
-package com.team.comma.domain.user.user.dto;
+package com.team.comma.domain.user.profile.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;

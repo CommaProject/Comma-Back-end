@@ -34,7 +34,7 @@ public class FavoriteTrack {
 
     public static FavoriteTrack buildFavoriteTrack(User user , Track track) {
         return FavoriteTrack.builder()
-                .favoriteFlag(false)
+                .favoriteFlag(true)
                 .user(user)
                 .track(track)
                 .build();
