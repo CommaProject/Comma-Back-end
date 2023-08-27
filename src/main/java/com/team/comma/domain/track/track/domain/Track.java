@@ -1,6 +1,6 @@
 package com.team.comma.domain.track.track.domain;
 
-import com.team.comma.domain.track.artist.TrackArtist;
+import com.team.comma.domain.track.artist.domain.TrackArtist;
 import jakarta.persistence.*;
 
 import lombok.*;

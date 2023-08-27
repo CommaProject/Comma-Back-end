@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface ArchiveRepository extends JpaRepository<Archive, Long> {
 
-    List<Archive> findAllByUser(User user);
 }

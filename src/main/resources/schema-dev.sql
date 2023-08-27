@@ -116,7 +116,7 @@ CREATE TABLE playlist_track_tb
 CREATE TABLE archive_tb
 (
     id          BIGINT NOT NULL AUTO_INCREMENT,
-    content     TEXT,
+    comment     TEXT,
     public_flag BOOLEAN,
     created_at  DATETIME,
     user_id     BIGINT,

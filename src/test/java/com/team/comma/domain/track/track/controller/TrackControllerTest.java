@@ -3,7 +3,7 @@ package com.team.comma.domain.track.track.controller;
 import com.google.gson.Gson;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.artist.TrackArtist;
+import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.track.exception.TrackException;
 import com.team.comma.domain.track.track.service.TrackService;

@@ -1,6 +1,7 @@
 package com.team.comma.domain.playlist.archive.service;
 
 import com.team.comma.domain.playlist.archive.domain.Archive;
+import com.team.comma.domain.playlist.archive.dto.ArchiveResponse;
 import com.team.comma.domain.playlist.archive.repository.ArchiveRepository;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
@@ -48,10 +49,12 @@ public class ArchiveService {
         final User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
 
-        List<Archive> archives = archiveRepository.findAllByUser(user);
+//        List<Archive> archives = archiveRepository.findAllArchiveByUser(user);
 
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }
+
+//    public List<ArchiveResponse>
 
 }

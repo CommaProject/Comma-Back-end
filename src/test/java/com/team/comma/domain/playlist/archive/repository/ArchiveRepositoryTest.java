@@ -35,6 +35,6 @@ public class ArchiveRepositoryTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getContent()).isEqualTo("content");
+        assertThat(result.getComment()).isEqualTo("content");
     }
 }

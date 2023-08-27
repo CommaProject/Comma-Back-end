@@ -11,5 +11,5 @@ public final class ArchiveResponse {
     private final String comment;
 
     private final long playlistId;
-    private final String playlist;
+    private final String albumImageUrl;
 }

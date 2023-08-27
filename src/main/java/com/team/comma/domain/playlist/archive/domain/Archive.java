@@ -21,7 +21,7 @@ public class Archive {
     private Long id;
 
     @Column(columnDefinition = "TEXT")
-    private String content;
+    private String comment;
 
     private Boolean publicFlag;
 
@@ -40,7 +40,7 @@ public class Archive {
 
     public static Archive buildArchive(User user, String context, Playlist playlist) {
         return Archive.builder()
-                .content(context)
+                .comment(context)
                 .publicFlag(true)
                 .user(user)
                 .playlist(playlist)
