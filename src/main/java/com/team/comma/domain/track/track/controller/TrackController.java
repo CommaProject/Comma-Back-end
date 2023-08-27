@@ -2,11 +2,10 @@ package com.team.comma.domain.track.track.controller;
 
 import com.team.comma.domain.track.track.dto.TrackRequest;
 import com.team.comma.domain.track.track.service.TrackService;
+import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.common.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import javax.security.auth.login.AccountException;
 
 @RequestMapping(value = "/tracks")
 @RestController
@@ -18,11 +17,6 @@ public class TrackController {
     @PatchMapping("/{trackId}")
     public MessageResponse countPlayCount(@CookieValue String accessToken , @PathVariable String trackId) {
         return trackService.countPlayCount(accessToken , trackId);
-    }
-
-    @PostMapping("/favorites")
-    public MessageResponse addFavoriteTrack(@CookieValue String accessToken , @RequestBody TrackRequest trackRequest) throws AccountException {
-        return trackService.addFavoriteTrack(accessToken , trackRequest);
     }
 
     @GetMapping

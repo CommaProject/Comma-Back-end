@@ -36,10 +36,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-/**
- * @author: wan2daaa
- */
-
 @ExtendWith(MockitoExtension.class)
 class PlaylistTrackServiceTest {
 

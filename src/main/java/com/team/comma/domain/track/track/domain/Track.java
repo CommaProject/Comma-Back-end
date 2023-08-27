@@ -1,6 +1,6 @@
 package com.team.comma.domain.track.track.domain;
 
-import com.team.comma.domain.track.artist.TrackArtist;
+import com.team.comma.domain.track.artist.domain.TrackArtist;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -31,7 +31,7 @@ public class Track {
     @Builder.Default
     private Long recommendCount = 0L;
 
-    @Column(length = 50 , nullable = false)
+    @Column(length = 100 , nullable = false)
     private String albumImageUrl;
 
     @Column(length = 50 , nullable = false)
@@ -41,7 +41,8 @@ public class Track {
     private String spotifyTrackHref;
 
     @OneToMany(mappedBy = "track")
-    private List<TrackArtist> trackArtistList;
+    @Builder.Default
+    private List<TrackArtist> trackArtistList = new ArrayList<>();
 
     public void addTrackArtistList(String artistName) {
         TrackArtist trackArtist = TrackArtist.builder()

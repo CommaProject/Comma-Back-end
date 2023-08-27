@@ -21,6 +21,7 @@ public class FavoriteTrack {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 삭제 플래그 없이 delete 시 그냥 데이터 삭제
     private Boolean favoriteFlag;
 
     @JoinColumn(name = "user_id")
@@ -31,7 +32,7 @@ public class FavoriteTrack {
     @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
     private Track track;
 
-    public static FavoriteTrack createFavoriteTrack(User user , Track track) {
+    public static FavoriteTrack buildFavoriteTrack(User user , Track track) {
         return FavoriteTrack.builder()
                 .favoriteFlag(false)
                 .user(user)
