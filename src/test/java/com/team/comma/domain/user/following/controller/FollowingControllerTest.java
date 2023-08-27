@@ -35,6 +35,7 @@ import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import static com.team.comma.domain.user.following.constant.FollowingType.FOLLOWING;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -332,16 +333,14 @@ public class FollowingControllerTest {
     @DisplayName("Follow 여부 _ 참")
     public void isFollow_true() throws Exception {
         // given
-        final String api = "/followings";
-        FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
+        final String api = "/followings/{toUserEmail}";
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , true);
         doReturn(message).when(followingService).isFollowedUser("accessToken" , "toUserEmail");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get(api)
-                        .content(gson.toJson(request))
+                        .get(api, "toUserEmail")
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken" , "accessToken")));
 
@@ -352,9 +351,6 @@ public class FollowingControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
-                        ),
-                        requestFields(
-                                fieldWithPath("toUserEmail").description("follow 여부를 확인할 대상")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -375,16 +371,14 @@ public class FollowingControllerTest {
     @DisplayName("Follow 여부 _ 거짓")
     public void isFollow_false() throws Exception {
         // given
-        final String api = "/followings";
-        FollowingRequest request = FollowingRequest.builder().toUserEmail("toUserEmail").build();
+        final String api = "/followings/{toUserEmail}";
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , false);
         doReturn(message).when(followingService).isFollowedUser("accessToken" , "toUserEmail");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
-                        .get(api)
-                        .content(gson.toJson(request))
+                        .get(api, "toUserEmail")
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken" , "accessToken")));
 
@@ -395,9 +389,6 @@ public class FollowingControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
-                        ),
-                        requestFields(
-                                fieldWithPath("toUserEmail").description("follow 여부를 확인할 대상")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -417,25 +408,23 @@ public class FollowingControllerTest {
     @Test
     public void 팔로잉_리스트_조회_성공() throws Exception {
         // given
-        final String api = "/followings/list";
+        final String api = "/followings/type/{followingType}";
 
         final String token = "accessToken";
-        final FollowingRequest request = FollowingRequest.builder().followingType(FollowingType.FOLLOWING).build();
         final UserDetail userDetail = UserDetail.builder().id(1L).nickname("user").build();
         final UserDetail targetUserDetail = UserDetail.builder().id(1L).nickname("user").build();
         final User user = User.builder().id(1L).role(UserRole.USER).email("user").userDetail(userDetail).build();
         final User targetUser = User.builder().id(2L).role(UserRole.USER).email("targetUser").userDetail(targetUserDetail).build();
         final Following following = Following.builder().id(1L).blockFlag(false).userFrom(user).userTo(targetUser).build();
-        final FollowingResponse response = FollowingResponse.of(following, FollowingType.FOLLOWING);
+        final FollowingResponse response = FollowingResponse.of(following, FOLLOWING);
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , List.of(response,response));
 
-        doReturn(message).when(followingService).getFollowingUserList(token, FollowingType.FOLLOWING);
+        doReturn(message).when(followingService).getFollowingUserList(token, FOLLOWING);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(api)
+                MockMvcRequestBuilders.get(api, FOLLOWING)
                         .cookie(new Cookie("accessToken" , token))
-                        .content(gson.toJson(request))
                         .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -445,9 +434,6 @@ public class FollowingControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("리스트 조회 할 사용자의 accessToken")
-                        ),
-                        requestFields(
-                                fieldWithPath("followingType").description("리스트 타입(FOLLOWING: 팔로잉, FOLLOWED: 팔로워, BOTH: 맞팔)")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),

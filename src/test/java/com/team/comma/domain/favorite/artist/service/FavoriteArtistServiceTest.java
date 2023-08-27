@@ -169,7 +169,7 @@ public class FavoriteArtistServiceTest {
         doReturn(List.of(favoriteArtistResponse)).when(favoriteArtistRepository).findAllFavoriteArtistByUser(user);
 
         // when
-        MessageResponse result = favoriteArtistService.findALlFavoriteArtist("accessToken");
+        MessageResponse result = favoriteArtistService.findAllFavoriteArtist("accessToken");
 
         // then
         assertThat(result.getCode()).isEqualTo(ResponseCodeEnum.REQUEST_SUCCESS.getCode());

@@ -28,7 +28,7 @@ public class FavoriteArtistController {
     public ResponseEntity findAllFavoriteArtist(
             @CookieValue String accessToken) throws AccountException {
         return ResponseEntity.ok()
-                .body(favoriteArtistService.findALlFavoriteArtist(accessToken));
+                .body(favoriteArtistService.findAllFavoriteArtist(accessToken));
     }
 
     @GetMapping("/{artistName}") // artist 테이블 생성 후 수정 필요
