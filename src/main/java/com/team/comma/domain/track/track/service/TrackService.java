@@ -78,12 +78,12 @@ public class TrackService {
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
-    public Track findTrackOrElseSave(final String spotifyTrackId) {
+    public Track findTrackOrSave(final String spotifyTrackId) {
         return trackRepository.findBySpotifyTrackId(spotifyTrackId)
-                .orElseGet(() -> saveNewTrack(spotifyTrackId));
+                .orElseGet(() -> saveTrack(spotifyTrackId));
     }
 
-    public Track saveNewTrack(final String spotifyTrackId) {
+    public Track saveTrack(final String spotifyTrackId) {
         return trackRepository.save(searchService.searchTrackByTrackId(spotifyTrackId));
     }
 

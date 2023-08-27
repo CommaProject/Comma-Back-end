@@ -35,7 +35,7 @@ public class FavoriteTrackService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
 
-        FavoriteTrack result = FavoriteTrack.buildFavoriteTrack(user , trackService.findTrackOrElseSave(trackRequest.getSpotifyTrackId()));
+        FavoriteTrack result = FavoriteTrack.buildFavoriteTrack(user , trackService.findTrackOrSave(trackRequest.getSpotifyTrackId()));
         favoriteTrackRepository.save(result);
 
         return MessageResponse.of(REQUEST_SUCCESS);
@@ -46,18 +46,13 @@ public class FavoriteTrackService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
 
-        List<FavoriteTrack> favoriteTracks = findAllByUser(user);
-
-        List<FavoriteTrackResponse> favoriteTrackResponses = new ArrayList<>();
-        for(FavoriteTrack favoriteTrack : favoriteTracks) {
-            favoriteTrackResponses.add(FavoriteTrackResponse.of(favoriteTrack));
-        }
+        List<FavoriteTrackResponse> favoriteTrackResponses = findAllFavoriteTrackByUser(user);
 
         return MessageResponse.of(REQUEST_SUCCESS, favoriteTrackResponses);
     }
 
-    public List<FavoriteTrack> findAllByUser(final User user) {
-        return favoriteTrackRepository.findAllByUser(user);
+    public List<FavoriteTrackResponse> findAllFavoriteTrackByUser(final User user) {
+        return favoriteTrackRepository.findAllFavoriteTrackByUser(user);
     }
 
 }
