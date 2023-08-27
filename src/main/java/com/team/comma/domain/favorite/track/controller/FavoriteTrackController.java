@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountException;
 
-@RequestMapping(value = "/favorite/track")
 @RestController
 @RequiredArgsConstructor
+@RequestMapping(value = "/favorite/track")
 public class FavoriteTrackController {
 
     private final FavoriteTrackService favoriteTrackService;
