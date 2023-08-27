@@ -1,6 +1,7 @@
 package com.team.comma.domain.favorite.artist.repository;
 
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
+import com.team.comma.domain.favorite.artist.dto.FavoriteArtistResponse;
 import com.team.comma.domain.favorite.artist.repository.FavoriteArtistRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
@@ -112,7 +113,7 @@ public class FavoriteArtistRepositoryTest {
         favoriteArtistRepository.save(favoriteArtist);
 
         // when
-        List<FavoriteArtist> result = favoriteArtistRepository.findAllByUser(user);
+        List<FavoriteArtistResponse> result = favoriteArtistRepository.findAllFavoriteArtistByUser(user);
 
         // then
         assertThat(result).isNotNull();

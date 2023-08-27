@@ -1,5 +1,6 @@
 package com.team.comma.domain.favorite.artist.service;
 
+import com.team.comma.domain.favorite.artist.dto.FavoriteArtistResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.global.common.constant.ResponseCodeEnum;
@@ -145,10 +146,10 @@ public class FavoriteArtistServiceTest {
         // given
         User user = buildUser();
         FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, "artistName");
-        doReturn(List.of(favoriteArtist)).when(favoriteArtistRepository).findAllByUser(user);
+        doReturn(List.of(favoriteArtist)).when(favoriteArtistRepository).findAllFavoriteArtistByUser(user);
 
         // when
-        List<FavoriteArtist> result = favoriteArtistService.findAllByUser(user);
+        List<FavoriteArtistResponse> result = favoriteArtistService.findAllFavoriteArtistByUser(user);
 
         // then
         assertThat(result.size()).isEqualTo(1);
@@ -161,10 +162,11 @@ public class FavoriteArtistServiceTest {
         // given
         User user = buildUser();
         FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, "artistName");
+        FavoriteArtistResponse favoriteArtistResponse = FavoriteArtistResponse.of(favoriteArtist);
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk("accessToken");
         doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
-        doReturn(List.of(favoriteArtist)).when(favoriteArtistRepository).findAllByUser(user);
+        doReturn(List.of(favoriteArtistResponse)).when(favoriteArtistRepository).findAllFavoriteArtistByUser(user);
 
         // when
         MessageResponse result = favoriteArtistService.findALlFavoriteArtist("accessToken");

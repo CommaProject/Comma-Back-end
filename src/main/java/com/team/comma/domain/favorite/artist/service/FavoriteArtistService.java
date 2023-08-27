@@ -78,25 +78,13 @@ public class FavoriteArtistService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
 
-        List<FavoriteArtist> favoriteArtists = findAllByUser(user);
-        List<FavoriteArtistResponse> favoriteArtistResponses = new ArrayList<>();
-        for(FavoriteArtist favoriteArtist : favoriteArtists) {
-            favoriteArtistResponses.add(FavoriteArtistResponse.of(favoriteArtist));
-        }
+        List<FavoriteArtistResponse> favoriteArtistResponses = findAllFavoriteArtistByUser(user);
 
         return MessageResponse.of(ResponseCodeEnum.REQUEST_SUCCESS, favoriteArtistResponses);
     }
 
-    public List<FavoriteArtist> findAllByUser(final User user) {
-        return favoriteArtistRepository.findAllByUser(user);
-    }
-
-    public List<String> getFavoriteArtistList(String token) throws AccountException {
-        String userName = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userName)
-                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
-
-        return favoriteArtistRepository.findFavoriteArtistListByUser(user);
+    public List<FavoriteArtistResponse> findAllFavoriteArtistByUser(final User user) {
+        return favoriteArtistRepository.findAllFavoriteArtistByUser(user);
     }
 
 }
