@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
@@ -38,23 +39,25 @@ public class ArchiveService {
         final Playlist playlist = playlistRepository.findById(archiveRequest.getPlaylistId())
                 .orElseThrow(() -> new PlaylistException("Playlist를 찾을 수 없습니다."));
 
-        final Archive archive = Archive.buildArchive(user , archiveRequest.getContent() , playlist);
+        final Archive archive = Archive.buildArchive(user , archiveRequest.getComment() , playlist);
         archiveRepository.save(archive);
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
-    public MessageResponse findAllArchive(final String token) throws AccountException {
+    public MessageResponse findAllArchiveByDate(final String token, final LocalDateTime startDate) throws AccountException {
         final String userEmail = jwtTokenProvider.getUserPk(token);
         final User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
 
-//        List<Archive> archives = archiveRepository.findAllArchiveByUser(user);
+        List<ArchiveResponse> archiveResponses = findAllArchiveByDate(user, startDate);
 
 
-        return MessageResponse.of(REQUEST_SUCCESS);
+        return MessageResponse.of(REQUEST_SUCCESS, archiveResponses);
     }
 
-//    public List<ArchiveResponse>
+    public List<ArchiveResponse> findAllArchiveByDate(final User user, final LocalDateTime startDate) {
+        return archiveRepository.findAllArchiveByDate(user, startDate);
+    }
 
 }

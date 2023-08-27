@@ -71,7 +71,7 @@ public class ArchiveControllerTest {
     public void addArchiveFail_notFoundUser() throws Exception {
         // given
         final String api = "/archives";
-        ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).content("content").build();
+        ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).comment("comment").build();
         doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(archiveService).createArchive(any(String.class), any(ArchiveRequest.class));
 
         // when
@@ -91,7 +91,7 @@ public class ArchiveControllerTest {
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
                         ),
                         requestFields(
-                                fieldWithPath("content").description("아카이브 입력 데이트"),
+                                fieldWithPath("comment").description("아카이브 입력 데이터"),
                                 fieldWithPath("playlistId").description("플레이리스트 Id")
                         ),
                         responseFields(
@@ -114,7 +114,7 @@ public class ArchiveControllerTest {
     public void addArchiveFail_notFoundPlaylist() throws Exception {
         // given
         final String api = "/archives";
-        ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).content("content").build();
+        ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).comment("comment").build();
         doThrow(new PlaylistException("Playlist를 찾을 수 없습니다.")).when(archiveService).createArchive(any(String.class), any(ArchiveRequest.class));
 
         // when
@@ -134,7 +134,7 @@ public class ArchiveControllerTest {
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
                         ),
                         requestFields(
-                                fieldWithPath("content").description("아카이브 입력 데이트"),
+                                fieldWithPath("comment").description("아카이브 입력 데이터"),
                                 fieldWithPath("playlistId").description("플레이리스트 Id")
                         ),
                         responseFields(
@@ -157,7 +157,7 @@ public class ArchiveControllerTest {
     public void addArchiveSuccess() throws Exception {
         // given
         final String api = "/archives";
-        ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).content("content").build();
+        ArchiveRequest request = ArchiveRequest.builder().playlistId(0L).comment("comment").build();
         doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(archiveService).createArchive(any(String.class), any(ArchiveRequest.class));
 
         // when
@@ -177,7 +177,7 @@ public class ArchiveControllerTest {
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
                         ),
                         requestFields(
-                                fieldWithPath("content").description("아카이브 입력 데이트"),
+                                fieldWithPath("comment").description("아카이브 입력 데이터"),
                                 fieldWithPath("playlistId").description("플레이리스트 Id")
                         ),
                         responseFields(

@@ -8,5 +8,5 @@ import lombok.*;
 @AllArgsConstructor
 public class ArchiveRequest {
     private long playlistId;
-    private String content;
+    private String comment;
 }
