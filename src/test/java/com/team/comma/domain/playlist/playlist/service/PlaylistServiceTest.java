@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.doReturn;
 
-import com.team.comma.domain.playlist.playlist.service.PlaylistService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
@@ -12,7 +11,7 @@ import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistUpdateRequest;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.artist.TrackArtist;
+import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;

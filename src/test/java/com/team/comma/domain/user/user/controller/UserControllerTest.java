@@ -2,6 +2,7 @@ package com.team.comma.domain.user.user.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.team.comma.domain.user.user.controller.UserController;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;

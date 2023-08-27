@@ -7,7 +7,17 @@ import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
 import com.team.comma.spotify.service.SearchService;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
+import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
+import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
+import com.team.comma.domain.track.track.repository.TrackRepository;
+import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
+import com.team.comma.spotify.service.SearchService;
 import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.domain.track.track.exception.TrackException;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.domain.track.track.exception.TrackException;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -66,12 +76,12 @@ public class TrackService {
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
-    public Track findTrackOrElseSave(final String spotifyTrackId) {
+    public Track findTrackOrSave(final String spotifyTrackId) {
         return trackRepository.findBySpotifyTrackId(spotifyTrackId)
-                .orElseGet(() -> saveNewTrack(spotifyTrackId));
+                .orElseGet(() -> saveTrack(spotifyTrackId));
     }
 
-    public Track saveNewTrack(final String spotifyTrackId) {
+    public Track saveTrack(final String spotifyTrackId) {
         return trackRepository.save(searchService.searchTrackByTrackId(spotifyTrackId));
     }
 

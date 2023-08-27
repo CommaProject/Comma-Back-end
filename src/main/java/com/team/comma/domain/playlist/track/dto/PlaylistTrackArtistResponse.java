@@ -1,6 +1,6 @@
 package com.team.comma.domain.playlist.track.dto;
 
-import com.team.comma.domain.track.artist.TrackArtist;
+import com.team.comma.domain.track.artist.domain.TrackArtist;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

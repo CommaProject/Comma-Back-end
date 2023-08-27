@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistUpdateRequest;
-import com.team.comma.domain.playlist.track.controller.PlaylistTrackController;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackArtistResponse;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
@@ -41,7 +40,7 @@ import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
 import com.team.comma.domain.playlist.track.service.PlaylistTrackService;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.artist.TrackArtist;
+import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.dto.TrackRequest;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.persistence.EntityNotFoundException;

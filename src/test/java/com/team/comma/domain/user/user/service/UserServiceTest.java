@@ -1,6 +1,8 @@
 package com.team.comma.domain.user.user.service;
 
 import com.team.comma.domain.user.history.service.HistoryService;
+import com.team.comma.domain.user.history.service.HistoryService;
+import com.team.comma.domain.user.user.service.UserService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.history.dto.HistoryRequest;
 import com.team.comma.domain.user.user.constant.UserRole;

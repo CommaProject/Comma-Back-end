@@ -1,4 +1,4 @@
-package com.team.comma.domain.track.artist;
+package com.team.comma.domain.track.artist.domain;
 
 import com.team.comma.domain.track.track.domain.Track;
 import jakarta.persistence.Column;
