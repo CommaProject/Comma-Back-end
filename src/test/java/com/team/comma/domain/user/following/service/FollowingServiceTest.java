@@ -45,11 +45,11 @@ public class FollowingServiceTest {
     @DisplayName("사용자 차단 성공")
     public void blockUserSuccess() {
         // given
-        doNothing().when(followingRepository).blockFollowedUser("toUserEmail" , "toUserEmail");
+        doNothing().when(followingRepository).blockFollowedUser(1L);
         doReturn("toUserEmail").when(jwtTokenProvider).getUserPk("token");
 
         // when
-        MessageResponse result = followingService.blockFollowedUser("token" , "toUserEmail");
+        MessageResponse result = followingService.blockFollowedUser("token" , 1L);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -60,11 +60,11 @@ public class FollowingServiceTest {
     @DisplayName("사용자 차단해제 성공")
     public void unblockUserSuccess() {
         // given
-        doNothing().when(followingRepository).unblockFollowedUser("toUserEmail" , "toUserEmail");
+        doNothing().when(followingRepository).unblockFollowedUser(1L);
         doReturn("toUserEmail").when(jwtTokenProvider).getUserPk("token");
 
         // when
-        MessageResponse result = followingService.unblockFollowedUser("token" , "toUserEmail");
+        MessageResponse result = followingService.unblockFollowedUser("token" , 1L);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -75,11 +75,11 @@ public class FollowingServiceTest {
     @DisplayName("팔로우 추가 실패 _ 이미 팔로우 한 사용자")
     public void followFail_existFollowUser() {
         // given
-        doReturn(Optional.of(User.builder().build())).when(followingRepository).getFollowedMeUserByEmail("toUserEmail" , "toUserEmail");
+        doReturn(Optional.of(User.builder().build())).when(followingRepository).getFollowedMeUserByEmail(1L , "toUserEmail");
         doReturn("toUserEmail").when(jwtTokenProvider).getUserPk("token");
 
         // when
-        Throwable thrown = catchThrowable(() -> followingService.addFollow("token" , "toUserEmail"));
+        Throwable thrown = catchThrowable(() -> followingService.addFollow("token" , 1L));
 
         // when
         assertThat(thrown).isInstanceOf(FollowingException.class).hasMessage("이미 팔로우중인 사용자입니다.");
@@ -89,12 +89,11 @@ public class FollowingServiceTest {
     @DisplayName("팔로우 추가 실패 _ 사용자 조회 실패")
     public void followFail_notFoundToUser() {
         // given
-        doReturn(Optional.empty()).when(followingRepository).getFollowedMeUserByEmail("toUserEmail" , "fromUserEmail");
+        doReturn(Optional.empty()).when(followingRepository).getFollowedMeUserByEmail(1L , "fromUserEmail");
         doReturn("fromUserEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.empty()).when(userRepository).findByEmail("toUserEmail");
 
         // when
-        Throwable thrown = catchThrowable(() -> followingService.addFollow("token" , "toUserEmail"));
+        Throwable thrown = catchThrowable(() -> followingService.addFollow("token" , 1L));
 
         // when
         assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("해당 사용자를 찾을 수 없습니다.");
@@ -105,12 +104,12 @@ public class FollowingServiceTest {
     public void followFail_notFoundFromUser() {
         // given
         doReturn("fromUserEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.empty()).when(followingRepository).getFollowedMeUserByEmail("toUserEmail" , "fromUserEmail");
-        doReturn(Optional.of(User.builder().build())).when(userRepository).findByEmail("toUserEmail");
+        doReturn(Optional.empty()).when(followingRepository).getFollowedMeUserByEmail(1L , "fromUserEmail");
+        doReturn(Optional.of(User.builder().build())).when(userRepository).findById(1L);
         doReturn(Optional.empty()).when(userRepository).findByEmail("fromUserEmail");
 
         // when
-        Throwable thrown = catchThrowable(() -> followingService.addFollow("token" , "toUserEmail"));
+        Throwable thrown = catchThrowable(() -> followingService.addFollow("token" , 1L));
 
         // when
         assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("대상 사용자를 찾을 수 없습니다.");
@@ -121,11 +120,11 @@ public class FollowingServiceTest {
     public void followFail_isBlockedUser() {
         // given
         doReturn("fromUserEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.empty()).when(followingRepository).getFollowedMeUserByEmail("toUserEmail" , "fromUserEmail");
-        doReturn(Optional.of(User.builder().build())).when(followingRepository).getBlockedUser("toUserEmail" , "fromUserEmail");
+        doReturn(Optional.empty()).when(followingRepository).getFollowedMeUserByEmail(1L , "fromUserEmail");
+        doReturn(Optional.of(User.builder().build())).when(followingRepository).getBlockedUser(1L , "fromUserEmail");
 
         // when
-        Throwable thrown = catchThrowable(() -> followingService.addFollow("token" , "toUserEmail"));
+        Throwable thrown = catchThrowable(() -> followingService.addFollow("token" , 1L));
 
         // when
         assertThat(thrown).isInstanceOf(FollowingException.class).hasMessage("차단된 사용자입니다.");
@@ -136,10 +135,10 @@ public class FollowingServiceTest {
     public void isfollow_false() {
         // given
         doReturn("fromUserEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.empty()).when(followingRepository).getFollowedMeUserByEmail("toUserEmail" , "fromUserEmail");
+        doReturn(Optional.empty()).when(followingRepository).getFollowedMeUserByEmail(1L , "fromUserEmail");
 
         // when
-        MessageResponse result = followingService.isFollowedUser("token" , "toUserEmail");
+        MessageResponse result = followingService.isFollowedUser("token" , 1L);
 
         // then
         assertThat(result.getData()).isEqualTo(false);
@@ -150,10 +149,10 @@ public class FollowingServiceTest {
     public void isfollow_true() {
         // given
         doReturn("fromUserEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(User.builder().build())).when(followingRepository).getFollowedMeUserByEmail("toUserEmail" , "fromUserEmail");
+        doReturn(Optional.of(User.builder().build())).when(followingRepository).getFollowedMeUserByEmail(1L , "fromUserEmail");
 
         // when
-        MessageResponse result = followingService.isFollowedUser("token" , "toUserEmail");
+        MessageResponse result = followingService.isFollowedUser("token" , 1L);
 
         // then
         assertThat(result.getData()).isEqualTo(true);
