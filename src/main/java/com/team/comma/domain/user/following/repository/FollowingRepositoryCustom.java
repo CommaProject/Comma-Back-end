@@ -8,13 +8,13 @@ import java.util.Optional;
 
 public interface FollowingRepositoryCustom {
 
-    Optional<User> getFollowedMeUserByEmail(String toUserEmail , String fromUserEmail);
+    Optional<User> getFollowedMeUserByEmail(long toUserId , String fromUserEmail);
 
-    Optional<User> getBlockedUser(String toUserEmail , String fromUserEmail);
+    Optional<User> getBlockedUser(long toUserId , String fromUserEmail);
 
-    void blockFollowedUser(String toUserEmail , String fromUserEmail);
+    void blockFollowedUser(long followingId);
 
-    void unblockFollowedUser(String toUserEmail , String fromUserEmail);
+    void unblockFollowedUser(long followingId);
 
     List<FollowingResponse> getFollowingToUserListByFromUser(User user);
 

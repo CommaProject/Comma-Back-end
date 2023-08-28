@@ -230,9 +230,17 @@ INSERT INTO user_detail_tb
 (sex, age, recommend_time, name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag)
 VALUES('male', 20, NULL, 'name', 'nickname', 'url', 'Y', 'Y', 'Y', 'Y');
 
+INSERT INTO user_detail_tb
+(sex, age, recommend_time, name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag)
+VALUES('female', 20, NULL, 'name2', 'nickname2', 'url', 'Y', 'Y', 'Y', 'Y');
+
 INSERT INTO user_tb
 (email, password, role, type, del_flag, join_date, user_detail_id)
 VALUES('testEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-21', 1);
+
+INSERT INTO user_tb
+(email, password, `role`, `type`, del_flag, join_date, user_detail_id)
+VALUES('toUserEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-28', 2);
 
 INSERT INTO track_tb
 (track_title, duration_time_ms, recommend_count, album_image_url, spotify_track_id, spotify_track_href)
@@ -257,8 +265,6 @@ VALUES(1, 1, 1, 1, 1);
 INSERT INTO favorite_track_tb
 (play_count, favorite_flag, user_id, track_id)
 VALUES(0, 1, 1, 1);
-
-VALUES(1, 1, 1, 1, 1);
 
 INSERT INTO favorite_track_tb
 (play_count, favorite_flag, user_id, track_id)

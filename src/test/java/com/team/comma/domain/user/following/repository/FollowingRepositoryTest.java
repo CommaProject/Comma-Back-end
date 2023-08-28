@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,12 +33,8 @@ public class FollowingRepositoryTest {
     @DisplayName("나를 팔로우한 사용자 탐색")
     public void searchFollowedMeUser() {
         // given
-        User toUser = User.builder()
-                .email("toEmail")
-                .build();
-        User fromUser = User.builder()
-                .email("fromEmail")
-                .build();
+        User toUser = userRepository.save(User.builder().email("toUser1").build());
+        User fromUser = userRepository.save(User.builder().email("fromEmail").build());
 
         Following follow = Following.builder()
                 .userTo(toUser)
@@ -45,16 +42,14 @@ public class FollowingRepositoryTest {
                 .blockFlag(false)
                 .build();
 
-        follow.setUserTo(toUser);
-        follow.setUserFrom(fromUser);
         followingRepository.save(follow);
 
         // when
-        User result = followingRepository.getFollowedMeUserByEmail("toEmail" , "fromEmail").orElse(null);
+        User result = followingRepository.getFollowedMeUserByEmail(toUser.getId(), fromUser.getEmail()).orElse(null);
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getEmail()).isEqualTo("toEmail");
+        assertThat(result.getId()).isEqualTo(toUser.getId());
     }
 
     @Test
@@ -80,7 +75,7 @@ public class FollowingRepositoryTest {
 
 
         // when
-        User result = followingRepository.getFollowedMeUserByEmail("toEmail" , "fromEmails").orElse(null);
+        User result = followingRepository.getFollowedMeUserByEmail(1L , "fromEmails").orElse(null);
 
         // then
         assertThat(result).isNull();
@@ -90,12 +85,8 @@ public class FollowingRepositoryTest {
     @DisplayName("나를 팔로우한 사람 차단")
     public void blockFollowedUser() {
         // given
-        User toUser = User.builder()
-                .email("toEmail")
-                .build();
-        User fromUser = User.builder()
-                .email("fromEmail")
-                .build();
+        User toUser = userRepository.save(User.builder().email("toUser1").build());
+        User fromUser = userRepository.save(User.builder().email("fromEmail").build());
 
         Following follow = Following.builder()
                 .userTo(toUser)
@@ -103,57 +94,44 @@ public class FollowingRepositoryTest {
                 .userFrom(fromUser)
                 .build();
 
-        follow.setUserTo(toUser);
-        follow.setUserFrom(fromUser);
-        followingRepository.save(follow);
+        Following following = followingRepository.save(follow);
 
         // when
-        followingRepository.blockFollowedUser("toEmail" , "fromEmail");
+        followingRepository.blockFollowedUser(following.getId());
 
         // then
-        User result = followingRepository.getBlockedUser("toEmail" , "fromEmail").orElse(null);
-        assertThat(result.getEmail()).isEqualTo("toEmail");
+        User result = followingRepository.getBlockedUser(toUser.getId(), fromUser.getEmail()).orElse(null);
+        assertThat(result).isNotNull();
     }
 
     @Test
     @DisplayName("나를 팔로우한 사람 차단 해제")
     public void unblockFollowedUser() {
         // given
-        User toUser = User.builder()
-                .email("toEmail")
-                .build();
-        User fromUser = User.builder()
-                .email("fromEmail")
-                .build();
+        User toUser = userRepository.save(User.builder().email("toUser1").build());
+        User fromUser = userRepository.save(User.builder().email("fromEmail").build());
 
         Following follow = Following.builder()
                 .userTo(toUser)
                 .blockFlag(true)
                 .userFrom(fromUser)
                 .build();
-
-        follow.setUserTo(toUser);
-        follow.setUserFrom(fromUser);
-        followingRepository.save(follow);
+        Following following = followingRepository.save(follow);
 
         // when
-        followingRepository.unblockFollowedUser("toEmail" , "fromEmail");
+        followingRepository.unblockFollowedUser(following.getId());
 
         // then
-        User result = followingRepository.getFollowedMeUserByEmail("toEmail" , "fromEmail").orElse(null);
-        assertThat(result.getEmail()).isEqualTo("toEmail");
+        User result = followingRepository.getFollowedMeUserByEmail(toUser.getId(), fromUser.getEmail()).orElse(null);
+        assertThat(result).isNotNull();
     }
 
     @Test
     @DisplayName("삭제된 사용자 확인")
     public void isBlockedUser() {
         // given
-        User toUser = User.builder()
-                .email("toEmail")
-                .build();
-        User fromUser = User.builder()
-                .email("fromEmail")
-                .build();
+        User toUser = userRepository.save(User.builder().email("toUser1").build());
+        User fromUser = userRepository.save(User.builder().email("fromEmail").build());
 
         Following follow = Following.builder()
                 .userTo(toUser)
@@ -161,15 +139,13 @@ public class FollowingRepositoryTest {
                 .userFrom(fromUser)
                 .build();
 
-        follow.setUserTo(toUser);
-        follow.setUserFrom(fromUser);
         followingRepository.save(follow);
 
         // when
-        User result = followingRepository.getBlockedUser("toEmail" , "fromEmail").orElse(null);
+        User result = followingRepository.getBlockedUser(toUser.getId(), fromUser.getEmail()).orElse(null);
 
         // then
-        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(toUser.getId());
     }
 
     @Test

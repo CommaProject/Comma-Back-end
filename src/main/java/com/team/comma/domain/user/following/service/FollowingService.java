@@ -29,37 +29,37 @@ public class FollowingService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
-    public MessageResponse blockFollowedUser(String token , String toUserEmail) {
+    public MessageResponse blockFollowedUser(String token , long followingId) {
         String fromUserEmail = jwtTokenProvider.getUserPk(token);
-        followingRepository.blockFollowedUser(toUserEmail , fromUserEmail);
+        followingRepository.blockFollowedUser(followingId);
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
-    public MessageResponse unblockFollowedUser(String token , String toUserEmail) {
+    public MessageResponse unblockFollowedUser(String token , long followingId) {
         String fromUserEmail = jwtTokenProvider.getUserPk(token);
-        followingRepository.unblockFollowedUser(toUserEmail , fromUserEmail);
+        followingRepository.unblockFollowedUser(followingId);
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
     @Transactional
-    public MessageResponse addFollow(String token , String toUserEmail) throws AccountException {
+    public MessageResponse addFollow(String token , long toUserId) throws AccountException {
         String fromUserEmail = jwtTokenProvider.getUserPk(token);
-        if(isFollowed(toUserEmail , fromUserEmail)) {
+        if(isFollowed(toUserId , fromUserEmail)) {
             throw new FollowingException("이미 팔로우중인 사용자입니다.");
         }
-        if(isBlockedUser(toUserEmail , fromUserEmail)) {
+        if(isBlockedUser(toUserId , fromUserEmail)) {
             throw new FollowingException("차단된 사용자입니다.");
         }
 
-        saveFollowing(toUserEmail , fromUserEmail);
+        saveFollowing(toUserId , fromUserEmail);
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
-    public void saveFollowing(String toUserEmail , String fromUserEmail) throws AccountException {
-        User userTo = userRepository.findByEmail(toUserEmail)
+    public void saveFollowing(long toUserId , String fromUserEmail) throws AccountException {
+        User userTo = userRepository.findById(toUserId)
                 .orElseThrow(() -> new AccountException("해당 사용자를 찾을 수 없습니다."));
 
         User userFrom = userRepository.findByEmail(fromUserEmail)
@@ -69,25 +69,25 @@ public class FollowingService {
         followingRepository.save(following);
     }
 
-    public MessageResponse isFollowedUser(String token , String toUserEmail) {
+    public MessageResponse isFollowedUser(String token , long toUserId) {
         String fromUserEmail = jwtTokenProvider.getUserPk(token);
-        if(isFollowed(toUserEmail , fromUserEmail)) {
+        if(isFollowed(toUserId , fromUserEmail)) {
             return MessageResponse.of(REQUEST_SUCCESS , true);
         }
 
         return MessageResponse.of(REQUEST_SUCCESS , false);
     }
 
-    public boolean isBlockedUser(String toUserEmail , String fromUserEmail) {
-        if(followingRepository.getBlockedUser(toUserEmail , fromUserEmail).isPresent()) {
+    public boolean isBlockedUser(long toUserId , String fromUserEmail) {
+        if(followingRepository.getBlockedUser(toUserId , fromUserEmail).isPresent()) {
             return true;
         }
 
         return false;
     }
 
-    public boolean isFollowed(String toUserEmail , String fromUserEmail) {
-        if(followingRepository.getFollowedMeUserByEmail(toUserEmail , fromUserEmail).isPresent()) {
+    public boolean isFollowed(long toUserId , String fromUserEmail) {
+        if(followingRepository.getFollowedMeUserByEmail(toUserId , fromUserEmail).isPresent()) {
             return true;
         }
 

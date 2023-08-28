@@ -23,7 +23,7 @@ public class FollowingController {
             @CookieValue String accessToken,
             @RequestBody FollowingRequest followingRequest) throws AccountException {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(followingService.addFollow(accessToken , followingRequest.getToUserEmail()));
+                .body(followingService.addFollow(accessToken , followingRequest.getToUserId()));
     }
 
     @GetMapping("/type/{followingType}")
@@ -34,12 +34,12 @@ public class FollowingController {
                 .body(followingService.getFollowingUserList(accessToken, followingType));
     }
 
-    @GetMapping("/{toUserEmail}")
+    @GetMapping("/{toUserId}")
     public ResponseEntity<MessageResponse> isFollow(
             @CookieValue String accessToken,
-            @PathVariable String toUserEmail) {
+            @PathVariable long toUserId) {
         return ResponseEntity.ok()
-                .body(followingService.isFollowedUser(accessToken , toUserEmail));
+                .body(followingService.isFollowedUser(accessToken , toUserId));
     }
 
     @PatchMapping("/unblocks")
@@ -47,7 +47,7 @@ public class FollowingController {
             @CookieValue String accessToken,
             @RequestBody FollowingRequest followingRequest) {
         return ResponseEntity.ok()
-                .body(followingService.unblockFollowedUser(accessToken , followingRequest.getToUserEmail()));
+                .body(followingService.unblockFollowedUser(accessToken , followingRequest.getFollowingId()));
     }
 
     @DeleteMapping
@@ -55,7 +55,7 @@ public class FollowingController {
             @CookieValue String accessToken,
             @RequestBody FollowingRequest followingRequest) {
         return ResponseEntity.ok()
-                .body(followingService.blockFollowedUser(accessToken , followingRequest.getToUserEmail()));
+                .body(followingService.blockFollowedUser(accessToken , followingRequest.getFollowingId()));
     }
 
 }
