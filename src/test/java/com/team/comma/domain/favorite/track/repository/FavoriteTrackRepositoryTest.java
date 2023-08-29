@@ -45,8 +45,7 @@ public class FavoriteTrackRepositoryTest {
     void saveFavoriteTrack() {
         // given
         User user = userRepository.save(buildUser());
-        TrackArtist trackArtist = buildTrackArtist();
-        Track track = buildTrack("track title", trackArtist);
+        Track track = buildTrack("track title");
         FavoriteTrack favoriteTrack = FavoriteTrack.buildFavoriteTrack(user, track);
 
         // when
@@ -62,10 +61,12 @@ public class FavoriteTrackRepositoryTest {
     void findFavoriteTrackByEmail() {
         // given
         User user = userRepository.save(buildUser());
-        TrackArtist trackArtist = buildTrackArtist();
-        Track track1 = buildTrack("track title1", trackArtist);
-        Track track2 = buildTrack("track title2", trackArtist);
-        Track track3 = buildTrack("track title3", trackArtist);
+        Track track1 = buildTrack("track title1");
+        Track track2 = buildTrack("track title2");
+        Track track3 = buildTrack("track title3");
+        trackRepository.save(track1);
+        trackRepository.save(track2);
+        trackRepository.save(track3);
         FavoriteTrack favoriteTrack1 = FavoriteTrack.buildFavoriteTrack(user, track1);
         FavoriteTrack favoriteTrack2 = FavoriteTrack.buildFavoriteTrack(user, track2);
         FavoriteTrack favoriteTrack3 = FavoriteTrack.buildFavoriteTrack(user, track3);
@@ -86,8 +87,7 @@ public class FavoriteTrackRepositoryTest {
     void findAllByUser() {
         // given
         User user = userRepository.save(buildUser());
-        TrackArtist trackArtist = trackArtistRepository.save(buildTrackArtist());
-        Track track = trackRepository.save(buildTrack("track title", trackArtist));
+        Track track = trackRepository.save(buildTrack("track title"));
         FavoriteTrack favoriteTrack1 = FavoriteTrack.buildFavoriteTrack(user, track);
         FavoriteTrack favoriteTrack2 = FavoriteTrack.buildFavoriteTrack(user, track);
         FavoriteTrack favoriteTrack3 = FavoriteTrack.buildFavoriteTrack(user, track);
@@ -104,19 +104,18 @@ public class FavoriteTrackRepositoryTest {
 
     public TrackArtist buildTrackArtist() {
         return TrackArtist.builder()
-                .id(1L)
                 .artistName("artist name")
                 .build();
     }
 
-    private Track buildTrack(String title, TrackArtist trackArtist) {
+    private Track buildTrack(String title) {
         return Track.builder()
                 .trackTitle(title)
                 .recommendCount(0L)
                 .albumImageUrl("url")
                 .spotifyTrackHref("spotifyTrackHref")
                 .spotifyTrackId(spotifyTrackId)
-                .trackArtistList(List.of(trackArtist))
+                .trackArtistList(List.of(buildTrackArtist()))
                 .build();
     }
 

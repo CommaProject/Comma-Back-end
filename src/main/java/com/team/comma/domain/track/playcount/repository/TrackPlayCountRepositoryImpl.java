@@ -27,7 +27,7 @@ public class TrackPlayCountRepositoryImpl implements TrackPlayCountRepositoryCus
                 .join(trackPlayCount.user , user).on(user.email.eq(userEmail))
                 .where(trackPlayCount.trackId.eq(trackId)).fetchOne();
 
-        return Optional.of(result);
+        return Optional.ofNullable(result);
     }
 
     @Override

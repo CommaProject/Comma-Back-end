@@ -1,5 +1,6 @@
 package com.team.comma.domain.track.track.service;
 
+import com.team.comma.domain.track.playcount.dto.TrackPlayCountRequest;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
@@ -24,8 +25,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.auth.login.AccountException;
 import java.util.List;
+import java.util.Optional;
 
+import static com.team.comma.domain.track.playcount.domain.TrackPlayCount.createTrackPlayCount;
+import static com.team.comma.domain.track.playcount.dto.TrackPlayCountRequest.createTrackPlayCountRequest;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
@@ -37,16 +42,33 @@ public class TrackService {
     private final FavoriteTrackRepository favoriteTrackRepository;
     private final TrackRepository trackRepository;
     private final SearchService searchService;
+    private final UserRepository userRepository;
 
     @Transactional
-    public MessageResponse countPlayCount(String accessToken , String trackId) {
+    public MessageResponse countPlayCount(String accessToken , String trackId) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        TrackPlayCount trackPlayCount = trackPlayCountRepository.findTrackPlayCountByUserEmail(userEmail , trackId)
-                .orElseThrow(() -> new TrackException("트랙을 찾을 수 없습니다."));
+        TrackPlayCount trackPlayCount = findTrackPlayCountOrSave(userEmail , trackId);
 
         trackPlayCount.updatePlayCount();
 
         return MessageResponse.of(REQUEST_SUCCESS);
+    }
+
+    public TrackPlayCount findTrackPlayCountOrSave(String userEmail , String trackId) throws AccountException {
+        Optional<TrackPlayCount> trackPlayCount = trackPlayCountRepository.findTrackPlayCountByUserEmail(userEmail , trackId);
+
+        if(!trackPlayCount.isPresent()) {
+            Track track = trackRepository.findBySpotifyTrackId(trackId)
+                    .orElseThrow(() -> new TrackException("트랙을 찾을 수 없습니다."));
+
+            User user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
+
+            TrackPlayCountRequest request = createTrackPlayCountRequest(track);
+            return trackPlayCountRepository.save(createTrackPlayCount(request , user));
+        }
+
+        return trackPlayCount.get();
     }
 
     public MessageResponse findMostListenedTrack(String accessToken) {

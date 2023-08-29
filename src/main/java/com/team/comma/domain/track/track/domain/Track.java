@@ -37,10 +37,10 @@ public class Track {
     @Column(length = 50 , nullable = false)
     private String spotifyTrackId;
 
-    @Column(length = 50 , nullable = false)
+    @Column(length = 150 , nullable = false)
     private String spotifyTrackHref;
 
-    @OneToMany(mappedBy = "track")
+    @OneToMany(mappedBy = "track" , cascade = CascadeType.PERSIST)
     @Builder.Default
     private List<TrackArtist> trackArtistList = new ArrayList<>();
 
@@ -63,6 +63,7 @@ public class Track {
                 .spotifyTrackHref(track.getHref())
                 .trackArtistList(trackArtists)
                 .build();
+
 
         for(ArtistSimplified artistSimplified : track.getArtists()) {
             trackArtists.add(TrackArtist.createTrackArtist(artistSimplified , trackEntity));

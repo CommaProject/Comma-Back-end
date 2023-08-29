@@ -73,7 +73,7 @@ public class TrackServiceTest {
 
     @Test
     @DisplayName("TrackPlayCount 탐색 성공")
-    void searchTrackPlayCount() {
+    void searchTrackPlayCount() throws AccountException {
         // given
         doReturn(Optional.of(buildTrackPlayCount())).when(trackPlayCountRepository).findTrackPlayCountByUserEmail(any(String.class), any(String.class));
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
@@ -180,7 +180,6 @@ public class TrackServiceTest {
                 .trackId("trackId")
                 .trackImageUrl("images")
                 .trackName("trackName")
-                .trackArtist("trackArtist")
                 .build();
     }
 

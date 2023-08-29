@@ -7,6 +7,8 @@ import com.team.comma.global.common.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.security.auth.login.AccountException;
+
 @RequestMapping(value = "/tracks")
 @RestController
 @RequiredArgsConstructor
@@ -14,8 +16,8 @@ public class TrackController {
 
     private final TrackService trackService;
 
-    @PatchMapping("/{trackId}")
-    public MessageResponse countPlayCount(@CookieValue String accessToken , @PathVariable String trackId) {
+    @PatchMapping("/play-count/{trackId}")
+    public MessageResponse countPlayCount(@CookieValue String accessToken , @PathVariable String trackId) throws AccountException {
         return trackService.countPlayCount(accessToken , trackId);
     }
 

@@ -1,6 +1,7 @@
 package com.team.comma.domain.track.playcount.domain;
 
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountRequest;
+import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.user.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -9,6 +10,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -43,10 +47,11 @@ public class TrackPlayCount {
                 .trackId(trackPlayCountRequest.getTrackId())
                 .trackImageUrl(trackPlayCountRequest.getTrackImageUrl())
                 .trackName(trackPlayCountRequest.getTrackName())
-                .trackArtist(trackPlayCountRequest.getTrackArtist())
                 .user(user)
+                .trackArtist(trackPlayCountRequest.getTrackArtist())
                 .build();
     }
+
 
     public void updatePlayCount() {
         this.playCount += 1;

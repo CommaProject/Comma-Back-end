@@ -76,7 +76,7 @@ public class TrackControllerTest {
     @DisplayName("트랙 추천 수 증가 실패 _ 트랙 탐색 실패")
     public void countPlayCountFail_notFountTrack() throws Exception {
         // given
-        final String url = "/tracks/{trackId}";
+        final String url = "/tracks/play-count/{trackId}";
         doThrow(new TrackException("트랙을 찾을 수 없습니다.")).when(trackService).countPlayCount(any(String.class) , any(String.class));
 
         // when
@@ -115,7 +115,7 @@ public class TrackControllerTest {
     @DisplayName("트랙 추천 수 증가")
     public void countPlayCount() throws Exception {
         // given
-        final String url = "/tracks/{trackId}";
+        final String url = "/tracks/play-count/{trackId}";
         doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(trackService).countPlayCount(any(String.class) , any(String.class));
 
         // when
