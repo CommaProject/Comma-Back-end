@@ -36,7 +36,7 @@ public class SearchService {
 
     public MessageResponse searchArtistList(String artistName , String token) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
-        SearchArtistsRequest searchArtistsRequest = spotifyApi.searchArtists(artistName).build();
+        SearchArtistsRequest searchArtistsRequest = spotifyApi.searchArtists(artistName).market(CountryCode.KR).build();
         Object executeResult = spotifySearchCommand.executeCommand(searchArtistsRequest);
 
         if(executeResult instanceof SpotifyApi) {
@@ -55,7 +55,7 @@ public class SearchService {
 
     public MessageResponse searchTrackList(String trackName , String token) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
-        SearchTracksRequest searchTrackRequest = spotifyApi.searchTracks(trackName).build();
+        SearchTracksRequest searchTrackRequest = spotifyApi.searchTracks(trackName).market(CountryCode.KR).build();
 
         Object executeResult = spotifySearchCommand.executeCommand(searchTrackRequest);
         if(executeResult instanceof SpotifyApi) {

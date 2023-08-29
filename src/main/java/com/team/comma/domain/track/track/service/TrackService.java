@@ -59,7 +59,7 @@ public class TrackService {
 
         if(!trackPlayCount.isPresent()) {
             Track track = trackRepository.findBySpotifyTrackId(trackId)
-                    .orElseThrow(() -> new TrackException("트랙을 찾을 수 없습니다."));
+                    .orElseGet(() -> findTrackOrSave(trackId));
 
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
