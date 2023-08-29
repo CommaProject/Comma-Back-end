@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,12 +26,13 @@ public class ArchiveController {
                 .body(archiveService.createArchive(accessToken, archiveRequest));
     }
 
-    @GetMapping("{startDate}")
-    public ResponseEntity<MessageResponse> findAllArchiveByDate(
+    @GetMapping("/{startDate}/{endDate}")
+    public ResponseEntity<MessageResponse> findArchiveByDate(
             @CookieValue String accessToken,
-            @PathVariable LocalDateTime startDate) throws AccountException {
+            @PathVariable LocalDate startDate,
+            @PathVariable LocalDate endDate) throws AccountException {
         return ResponseEntity.ok()
-                .body(archiveService.findAllArchiveByDate(accessToken, startDate));
+                .body(archiveService.findArchiveByDate(accessToken, startDate, endDate));
     }
 
 }

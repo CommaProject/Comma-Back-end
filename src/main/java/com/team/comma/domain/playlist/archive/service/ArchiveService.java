@@ -17,7 +17,10 @@ import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
@@ -39,25 +42,33 @@ public class ArchiveService {
         final Playlist playlist = playlistRepository.findById(archiveRequest.getPlaylistId())
                 .orElseThrow(() -> new PlaylistException("Playlist를 찾을 수 없습니다."));
 
-        final Archive archive = Archive.buildArchive(user , archiveRequest.getComment() , playlist);
+        final Archive archive = Archive.buildArchive(user, archiveRequest.getComment(), playlist);
         archiveRepository.save(archive);
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
-    public MessageResponse findAllArchiveByDate(final String token, final LocalDateTime startDate) throws AccountException {
+    public MessageResponse findArchiveByDate(final String token, LocalDate startDate, LocalDate endDate) throws AccountException {
         final String userEmail = jwtTokenProvider.getUserPk(token);
         final User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
 
-        List<ArchiveResponse> archiveResponses = findAllArchiveByDate(user, startDate);
-
+        List<ArchiveResponse> archiveResponses = findArchiveByDateTime(
+                user, dateToStartDateTime(startDate), dateToEndDateTime(endDate));
 
         return MessageResponse.of(REQUEST_SUCCESS, archiveResponses);
     }
 
-    public List<ArchiveResponse> findAllArchiveByDate(final User user, final LocalDateTime startDate) {
-        return archiveRepository.findAllArchiveByDate(user, startDate);
+    public List<ArchiveResponse> findArchiveByDateTime(final User user, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        return archiveRepository.findArchiveByDateTime(user, startDateTime, endDateTime);
+    }
+
+    public LocalDateTime dateToStartDateTime(LocalDate date){
+        return date.atStartOfDay();
+    }
+
+    public LocalDateTime dateToEndDateTime(LocalDate date){
+        return date.atTime(LocalTime.MAX);
     }
 
 }

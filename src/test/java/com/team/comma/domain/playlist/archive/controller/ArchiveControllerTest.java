@@ -1,12 +1,17 @@
 package com.team.comma.domain.playlist.archive.controller;
 
-
 import com.google.gson.Gson;
-import com.team.comma.domain.playlist.archive.controller.ArchiveController;
+import com.google.gson.reflect.TypeToken;
+import com.team.comma.domain.playlist.archive.domain.Archive;
+import com.team.comma.domain.playlist.archive.dto.ArchiveResponse;
+import com.team.comma.domain.playlist.playlist.domain.Playlist;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.archive.dto.ArchiveRequest;
 import com.team.comma.domain.playlist.archive.service.ArchiveService;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
+import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +34,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.List;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
@@ -44,11 +51,11 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureRestDocs
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
+@WebAppConfiguration
+@AutoConfigureRestDocs
 @WebMvcTest(ArchiveController.class)
 @MockBean(JpaMetamodelMappingContext.class)
-@WebAppConfiguration
 public class ArchiveControllerTest {
     @MockBean
     ArchiveService archiveService;
@@ -64,6 +71,7 @@ public class ArchiveControllerTest {
                 .build();
 
         gson = new Gson();
+
     }
 
     @Test
@@ -194,4 +202,69 @@ public class ArchiveControllerTest {
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getData()).isNull();
     }
+
+    @Test
+    @DisplayName("아카이브 Date로 조회 성공")
+    public void findArchiveByDate() throws Exception {
+        // given
+        final String api = "/archives/{startDate}/{endDate}";
+        User user = User.buildUser();
+        Track track = buildTrack();
+        Playlist playlist = Playlist.buildPlaylist(user);
+        playlist.addPlaylistTrack(track);
+        Archive archive = Archive.buildArchive(user,"comment", playlist);
+        ArchiveResponse archiveResponse = ArchiveResponse.of(archive);
+
+        LocalDate startDate = LocalDate.of(2023,8,28);
+        LocalDate endDate = LocalDate.now();
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS, List.of(archiveResponse, archiveResponse))).when(archiveService).findArchiveByDate("token", startDate, endDate);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders
+                        .get(api, startDate, endDate)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken", "token")));
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("playlist/archive/findSuccess",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터"),
+                                fieldWithPath("data.[].archiveId").description("아카이브 Id"),
+                                fieldWithPath("data.[].comment").description("코멘트 내용"),
+                                fieldWithPath("data.[].createDate").description("작성 일자"),
+                                fieldWithPath("data.[].publicFlag").description("공개 여부"),
+                                fieldWithPath("data.[].playlistId").description("플레이리스트 Id"),
+                                fieldWithPath("data.[].playlistTitle").description("플레이리스트 제목"),
+                                fieldWithPath("data.[].albumImageUrl").description("대표 앨범 이미지 url")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat((List<ArchiveResponse>) result.getData()).size().isEqualTo(2);
+    }
+
+    public Track buildTrack(){
+        return Track.builder()
+                .id(1L)
+                .trackTitle("title")
+                .albumImageUrl("url")
+                .spotifyTrackHref("href")
+                .spotifyTrackId("id123")
+                .build();
+    }
+
 }

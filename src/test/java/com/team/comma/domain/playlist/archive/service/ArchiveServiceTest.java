@@ -1,6 +1,12 @@
 package com.team.comma.domain.playlist.archive.service;
 
+import com.team.comma.domain.playlist.archive.domain.Archive;
+import com.team.comma.domain.playlist.archive.dto.ArchiveResponse;
 import com.team.comma.domain.playlist.archive.service.ArchiveService;
+import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
+import com.team.comma.domain.playlist.track.repository.PlaylistTrackRepository;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.archive.dto.ArchiveRequest;
 import com.team.comma.domain.playlist.archive.repository.ArchiveRepository;
@@ -18,6 +24,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.security.auth.login.AccountException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
@@ -36,6 +46,12 @@ public class ArchiveServiceTest {
 
     @Mock
     PlaylistRepository playlistRepository;
+
+    @Mock
+    TrackRepository trackRepository;
+
+    @Mock
+    PlaylistTrackRepository playlistTrackRepository;
 
     @Mock
     JwtTokenProvider jwtTokenProvider;
@@ -88,4 +104,69 @@ public class ArchiveServiceTest {
         // then
         assertThat(messageResponse.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
     }
+
+    @Test
+    @DisplayName("아카이브 DateTime으로 조회")
+    public void findArchiveByDateTime() {
+        // given
+        User user = User.buildUser();
+        Track track = buildTrack();
+        Playlist playlist = Playlist.buildPlaylist(user);
+        playlist.addPlaylistTrack(track);
+
+        Archive archive = Archive.buildArchive(user,"comment", playlist);
+        ArchiveResponse archiveResponse = ArchiveResponse.of(archive);
+        LocalDateTime startDateTime = LocalDate.of(2023,8,28).atStartOfDay();
+        LocalDateTime endDateTime = LocalDate.now().atTime(LocalTime.MAX);
+
+        doReturn(List.of(archiveResponse)).when(archiveRepository).findArchiveByDateTime(user, startDateTime, endDateTime);
+
+        // when
+        List<ArchiveResponse> result = archiveService.findArchiveByDateTime(user, startDateTime, endDateTime);
+
+        // then
+        assertThat(result.size()).isEqualTo(1);
+
+    }
+
+    @Test
+    @DisplayName("아카이브 Date로 조회")
+    public void findArchiveByDate() throws AccountException {
+        // given
+        User user = User.buildUser();
+        Track track = buildTrack();
+        Playlist playlist = Playlist.buildPlaylist(user);
+        playlist.addPlaylistTrack(track);
+
+        Archive archive = Archive.buildArchive(user,"comment", playlist);
+        ArchiveResponse archiveResponse = ArchiveResponse.of(archive);
+
+        LocalDate startDate = LocalDate.of(2023,8,28);
+        LocalDate endDate = LocalDate.now();
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk("token");
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(List.of(archiveResponse)).when(archiveRepository).findArchiveByDateTime(user, startDateTime, endDateTime);
+
+
+        // when
+        MessageResponse result = archiveService.findArchiveByDate("token", startDate, endDate);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+
+    }
+
+    public Track buildTrack(){
+        return Track.builder()
+                .id(1L)
+                .trackTitle("title")
+                .albumImageUrl("url")
+                .spotifyTrackHref("href")
+                .spotifyTrackId("id123")
+                .build();
+    }
+
 }

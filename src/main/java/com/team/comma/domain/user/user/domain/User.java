@@ -145,4 +145,13 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public static User buildUser(){
+        return User.builder()
+                .email("email@email.com")
+                .password("password")
+                .type(UserType.GENERAL_USER)
+                .role(UserRole.USER)
+                .build();
+    }
 }

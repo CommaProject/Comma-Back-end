@@ -68,4 +68,13 @@ public class Playlist {
         this.alarmStartTime = playlistUpdateRequest.getAlarmStartTime();
         this.listSequence = playlistUpdateRequest.getListSequence();
     }
+
+    public static Playlist buildPlaylist(User user){
+        return Playlist.builder()
+                .id(1L)
+                .playlistTitle("build playlist")
+                .alarmFlag(true)
+                .user(user)
+                .build();
+    }
 }

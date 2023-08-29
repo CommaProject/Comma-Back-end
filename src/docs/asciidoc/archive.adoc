@@ -48,3 +48,15 @@ include::{snippets}/spotify/archive/addSuccess/request-cookies.adoc[]
 
 include::{snippets}/spotify/archive/addSuccess/http-response.adoc[]
 include::{snippets}/spotify/archive/addSuccess/response-fields.adoc[]
+
+=== 아카이브 조회 성공 - /시작날짜/종료날짜
+
+=== request
+
+include::{snippets}/playlist/archive/findSuccess/http-request.adoc[]
+include::{snippets}/playlist/archive/findSuccess/request-cookies.adoc[]
+
+==== response
+
+include::{snippets}/playlist/archive/findSuccess/http-response.adoc[]
+include::{snippets}/playlist/archive/findSuccess/response-fields.adoc[]

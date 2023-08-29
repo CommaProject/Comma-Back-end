@@ -118,7 +118,7 @@ CREATE TABLE archive_tb
     id          BIGINT NOT NULL AUTO_INCREMENT,
     comment     TEXT,
     public_flag BOOLEAN,
-    created_at  DATETIME,
+    create_date   DATETIME,
     user_id     BIGINT,
     playlist_id BIGINT,
     PRIMARY KEY (id),
@@ -260,11 +260,17 @@ INSERT INTO playlist_track_tb
 (play_sequence, play_flag, track_alarm_flag, playlist_id, track_id)
 VALUES(1, 1, 1, 1, 1);
 
+INSERT INTO archive_tb
+(comment, public_flag, create_date, user_id, playlist_id)
+VALUES('archive1', 0, '2023-08-28 12:00:00', 1, 1);
+
+INSERT INTO archive_tb
+(comment, public_flag, create_date, user_id, playlist_id)
+VALUES('archive2', 0, '2023-08-29 12:00:00', 1, 1);
+
 INSERT INTO favorite_track_tb
 (play_count, favorite_flag, user_id, track_id)
 VALUES(0, 1, 1, 1);
-
-VALUES(1, 1, 1, 1, 1);
 
 INSERT INTO favorite_track_tb
 (play_count, favorite_flag, user_id, track_id)
