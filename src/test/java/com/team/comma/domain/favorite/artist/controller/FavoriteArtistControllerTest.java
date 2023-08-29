@@ -368,7 +368,8 @@ public class FavoriteArtistControllerTest {
         User user = buildUser();
         FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, "artistName");
         FavoriteArtistResponse favoriteArtistResponse = FavoriteArtistResponse.of(favoriteArtist);
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , List.of(favoriteArtistResponse))).when(favoriteArtistService).findALlFavoriteArtist("accessToken");
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , List.of(favoriteArtistResponse))).when(favoriteArtistService).findAllFavoriteArtist("accessToken");
 
         // when
         final ResultActions resultActions = mockMvc.perform(

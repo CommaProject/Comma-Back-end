@@ -8,5 +8,6 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class FollowingRequest {
-    private String toUserEmail;
+    private long followingId;
+    private long toUserId;
 }

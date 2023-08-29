@@ -73,7 +73,7 @@ public class FavoriteArtistService {
         return MessageResponse.of(ResponseCodeEnum.REQUEST_SUCCESS);
     }
 
-    public MessageResponse findALlFavoriteArtist(final String accessToken) throws AccountException{
+    public MessageResponse findAllFavoriteArtist(final String accessToken) throws AccountException{
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
