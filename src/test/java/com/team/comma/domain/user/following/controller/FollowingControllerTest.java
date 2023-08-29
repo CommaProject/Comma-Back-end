@@ -473,9 +473,11 @@ public class FollowingControllerTest {
         final User targetUser = User.builder().id(2L).role(UserRole.USER).email("targetUser").userDetail(targetUserDetail).build();
         final Following following = Following.builder().id(1L).blockFlag(false).userFrom(user).userTo(targetUser).build();
         final FollowingResponse followingResponse = FollowingResponse.of(following, FollowingType.FOLLOWING);
+
         Map<String, Double> response = new HashMap<>();
         response.put("followings", 0.0);
         response.put("followers", 1.0);
+
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , response);
 
         doReturn(List.of(followingResponse)).when(followingService).getFollowingFromUserListByToUser(user);
