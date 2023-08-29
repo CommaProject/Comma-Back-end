@@ -1,6 +1,7 @@
 package com.team.comma.domain.user.following.service;
 
 import com.team.comma.domain.user.following.constant.FollowingType;
+import com.team.comma.domain.user.following.dto.FollowingCountResponse;
 import com.team.comma.domain.user.profile.domain.UserDetail;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.following.domain.Following;
@@ -258,21 +259,27 @@ public class FollowingServiceTest {
         doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
-        Following followed = buildFollowingWithIdAndUserFromTo(1L, targetUser, user);
-        FollowingResponse followedResponse = FollowingResponse.of(followed, FollowingType.FOLLOWED);
-        doReturn(List.of(followedResponse)).when(followingRepository).getFollowingFromUserListByToUser(user);
+        Following following = buildFollowingWithIdAndUserFromTo(1L, user, targetUser);
+        List<FollowingResponse> followingResponses = List.of(FollowingResponse.of(following, FollowingType.FOLLOWING));
+        doReturn(followingResponses).when(followingRepository).getFollowingToUserListByFromUser(user);
+
+        Following followed = buildFollowingWithIdAndUserFromTo(2L, targetUser, user);
+        List<FollowingResponse> followedResponses = List.of(FollowingResponse.of(followed, FollowingType.FOLLOWED));
+        doReturn(followedResponses).when(followingRepository).getFollowingFromUserListByToUser(user);
+
+        FollowingCountResponse followingCountResponse = FollowingCountResponse.of(
+                followingResponses.size(),
+                followedResponses.size()
+        );
 
         // when
         MessageResponse result = followingService.countFollowings(token);
 
         // then
-        Map<String, Long> response = new HashMap<>();
-        response.put("followings", 0L);
-        response.put("followers", 1L);
-
+        FollowingCountResponse resultData = (FollowingCountResponse) result.getData();
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getData()).isEqualTo(response);
-
+        assertThat(resultData.getFollowers()).isEqualTo(followingCountResponse.getFollowers());
+        assertThat(resultData.getFollowings()).isEqualTo(followingCountResponse.getFollowings());
     }
 
     public User buildUserWithIdAndEmail(long id, String email){

@@ -1,5 +1,6 @@
 package com.team.comma.domain.user.following.service;
 
+import com.team.comma.domain.user.following.dto.FollowingCountResponse;
 import com.team.comma.domain.user.following.repository.FollowingRepository;
 import com.team.comma.domain.user.following.constant.FollowingType;
 import com.team.comma.domain.user.following.domain.Following;
@@ -143,9 +144,9 @@ public class FollowingService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
 
-        Map<String, Long> response = new HashMap<>();
-        response.put("followings", (long) getFollowingToUserListByFromUser(user).size());
-        response.put("followers", (long) getFollowingFromUserListByToUser(user).size());
+        FollowingCountResponse response = FollowingCountResponse.of(
+                getFollowingToUserListByFromUser(user).size(),
+                getFollowingFromUserListByToUser(user).size());
 
         return MessageResponse.of(REQUEST_SUCCESS, response);
     }
