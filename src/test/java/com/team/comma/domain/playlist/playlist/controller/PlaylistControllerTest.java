@@ -26,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.team.comma.domain.playlist.playlist.controller.PlaylistController;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistRequest;
@@ -104,7 +103,7 @@ class PlaylistControllerTest {
 
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlist);
 
-        doReturn(message).when(playlistService).getPlaylists("accessToken");
+        doReturn(message).when(playlistService).findAllPlaylists("accessToken");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -142,12 +141,89 @@ class PlaylistControllerTest {
     }
 
     @Test
+    void 단일_플레이리스트_조회_실패_찾을수없는_플레이리스트() throws Exception {
+        // given
+        final String url = "/playlist/{playlistId}";
+
+        doThrow(new PlaylistException("PlayList 정보를 찾을 수 없습니다.")).when(playlistService).findPlaylist(30L);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.get(url , 30)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isBadRequest()).andDo(
+                document("spotify/dummy",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("playlistId").description("플레이리스트 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(-5);
+    }
+
+    @Test
+    void 단일_플레이리스트_조회_성공() throws Exception {
+        // given
+        final String url = "/playlist/{playlistId}";
+
+        final PlaylistResponse playlist = PlaylistResponse.of(buildPlaylist(),3, "representative album image url");
+        final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlist);
+
+        doReturn(message).when(playlistService).findPlaylist(30L);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.get(url , 30)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("spotify/findPlaylist",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("playlistId").description("플레이리스트 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터"),
+                                fieldWithPath("data.playlistId").description("플레이리스트 id"),
+                                fieldWithPath("data.playlistTitle").description("플레이리스트 제목"),
+                                fieldWithPath("data.alarmFlag").description("알람 설정 여부, true = on / false = off"),
+                                fieldWithPath("data.alarmStartTime").description("알람 시작 시간"),
+                                fieldWithPath("data.trackCount").description("플레이리스트에 포함된 트랙 갯수"),
+                                fieldWithPath("data.repAlbumImageUrl").description("플레이리스트 대표 앨범 이미지 url")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(1);
+    }
+
+    @Test
     void 플레이리스트_알람설정변경_성공() throws Exception {
         // given
         final String url = "/playlist/alert";
 
         doReturn(MessageResponse.of(PLAYLIST_ALARM_UPDATED)
-        ).when(playlistService).updatePlaylistAlarmFlag(123L, false);
+        ).when(playlistService).modifyPlaylistAlarmFlag(123L, false);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -188,7 +264,7 @@ class PlaylistControllerTest {
         final String url = "/playlist/alert";
 
         doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
-                .when(playlistService).updatePlaylistAlarmFlag(123L, false);
+                .when(playlistService).modifyPlaylistAlarmFlag(123L, false);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -230,7 +306,7 @@ class PlaylistControllerTest {
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
 
         doReturn(MessageResponse.of(PLAYLIST_DELETED)
-        ).when(playlistService).updatePlaylistsDelFlag(playlistIdList);
+        ).when(playlistService).modifyPlaylistsDelFlag(playlistIdList);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -270,7 +346,7 @@ class PlaylistControllerTest {
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
 
         doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
-                .when(playlistService).updatePlaylistsDelFlag(playlistIdList);
+                .when(playlistService).modifyPlaylistsDelFlag(playlistIdList);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -369,7 +445,7 @@ class PlaylistControllerTest {
                     REQUEST_SUCCESS.getCode(),
                     REQUEST_SUCCESS.getMessage()
                 ))
-            .when(playlistService).updatePlaylist(any(PlaylistUpdateRequest.class));
+            .when(playlistService).modifyPlaylist(any(PlaylistUpdateRequest.class));
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -411,7 +487,7 @@ class PlaylistControllerTest {
         //given
         doThrow(
             new EntityNotFoundException("해당 플레이리스트가 없습니다")
-        ).when(playlistService).updatePlaylist(any(PlaylistUpdateRequest.class));
+        ).when(playlistService).modifyPlaylist(any(PlaylistUpdateRequest.class));
 
         //when
         ResultActions resultActions = mockMvc.perform(

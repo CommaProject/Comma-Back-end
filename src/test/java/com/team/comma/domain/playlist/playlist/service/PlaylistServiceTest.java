@@ -2,6 +2,7 @@ package com.team.comma.domain.playlist.playlist.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 import com.team.comma.global.common.dto.MessageResponse;
@@ -59,10 +60,10 @@ class PlaylistServiceTest {
 
         doReturn(optionalUser).when(userRepository).findByEmail(userEmail);
         doReturn(userEmail).when(jwtTokenProvider).getUserPk(token);
-        doReturn(playlistResponseList).when(playlistRepository).getPlaylistsByUser(user);
+        doReturn(playlistResponseList).when(playlistRepository).findAllPlaylistsByUser(user);
 
         // when
-        final MessageResponse result = playlistService.getPlaylists(token);
+        final MessageResponse result = playlistService.findAllPlaylists(token);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -71,11 +72,40 @@ class PlaylistServiceTest {
     }
 
     @Test
+    void 단일_플레이리스트_조회실패_존재하지않는플레이리스트() {
+        // given
+        doReturn(Optional.empty()).when(playlistRepository).findPlaylistsByPlaylistId(30);
+
+        // when
+        Throwable throwable = catchThrowable(() -> playlistService.findPlaylist(30));
+
+        // then
+        assertThat(throwable.getMessage()).isEqualTo("PlayList 정보를 찾을 수 없습니다.");
+    }
+
+    @Test
+    void 단일_플레이리스트_조회() {
+        // given
+        final TrackArtist trackArtist = buildTrackArtist();
+        final Track track = buildTrack(Arrays.asList(trackArtist));
+        final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
+        final PlaylistResponse playlistResponse = PlaylistResponse.of(buildUserPlaylist(Arrays.asList(playlistTrack)), 3, "representative album image url");
+        doReturn(Optional.ofNullable(playlistResponse)).when(playlistRepository).findPlaylistsByPlaylistId(30);
+
+        // when
+        MessageResponse result = playlistService.findPlaylist(30);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(1);
+        assertThat(((PlaylistResponse) result.getData()).getPlaylistId()).isEqualTo(playlistResponse.getPlaylistId());
+    }
+
+    @Test
     void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() {
         // given
 
         // when
-        final Throwable thrown = catchThrowable(() -> playlistService.updatePlaylistAlarmFlag(123L, false));
+        final Throwable thrown = catchThrowable(() -> playlistService.modifyPlaylistAlarmFlag(123L, false));
 
         // then
         assertThat(thrown.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
@@ -92,7 +122,7 @@ class PlaylistServiceTest {
         doReturn(optionalPlaylist).when(playlistRepository).findById(userPlaylist.getId());
 
         // when
-        final MessageResponse result = playlistService.updatePlaylistAlarmFlag(userPlaylist.getId(), false);
+        final MessageResponse result = playlistService.modifyPlaylistAlarmFlag(userPlaylist.getId(), false);
 
         // then
         assertThat(result.getCode()).isEqualTo(2);
@@ -105,7 +135,7 @@ class PlaylistServiceTest {
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
 
         // when
-        final Throwable thrown = catchThrowable(() -> playlistService.updatePlaylistsDelFlag(playlistIdList));
+        final Throwable thrown = catchThrowable(() -> playlistService.modifyPlaylistsDelFlag(playlistIdList));
 
         // then
         assertThat(thrown.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
@@ -124,7 +154,7 @@ class PlaylistServiceTest {
         final List<Long> playlistIdList = Arrays.asList(userPlaylist.getId());
 
         // when
-        final MessageResponse result = playlistService.updatePlaylistsDelFlag(playlistIdList);
+        final MessageResponse result = playlistService.modifyPlaylistsDelFlag(playlistIdList);
 
         // then
         assertThat(result.getCode()).isEqualTo(2);
@@ -138,7 +168,7 @@ class PlaylistServiceTest {
         final int TOTAL_DURATION_TIME = 100;
 
         doReturn(TOTAL_DURATION_TIME)
-            .when(playlistRepository).getTotalDurationTimeMsWithPlaylistId(PLAYLIST_ID);
+            .when(playlistRepository).findTotalDurationTimeMsWithPlaylistId(PLAYLIST_ID);
 
         //when
         MessageResponse<Integer> totalDurationTimeMsDto = playlistService.getTotalDurationTimeMsByPlaylist(
@@ -162,7 +192,7 @@ class PlaylistServiceTest {
             .when(playlistRepository).findById(playlistRequest.getId());
 
         //when
-        MessageResponse messageResponse = playlistService.updatePlaylist(playlistRequest);
+        MessageResponse messageResponse = playlistService.modifyPlaylist(playlistRequest);
 
         //then
         assertThat(messageResponse.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());

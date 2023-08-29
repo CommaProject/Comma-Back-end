@@ -1,5 +1,6 @@
 package com.team.comma.domain.playlist.playlist.service;
 
+import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistUpdateRequest;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
@@ -27,35 +28,42 @@ public class PlaylistService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public MessageResponse getPlaylists(final String accessToken) throws AccountException {
+    public MessageResponse findAllPlaylists(final String accessToken) throws AccountException {
         String userName = jwtTokenProvider.getUserPk(accessToken);
         User user = userRepository.findByEmail(userName)
             .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
 
         return MessageResponse.of(REQUEST_SUCCESS,
-                playlistRepository.getPlaylistsByUser(user));
+                playlistRepository.findAllPlaylistsByUser(user));
+    }
+
+    public MessageResponse findPlaylist(final long playlistId) {
+        PlaylistResponse result = playlistRepository.findPlaylistsByPlaylistId(playlistId)
+                .orElseThrow(() -> new PlaylistException("PlayList 정보를 찾을 수 없습니다."));
+
+        return MessageResponse.of(REQUEST_SUCCESS, result);
     }
 
     @Transactional
-    public MessageResponse updatePlaylist(PlaylistUpdateRequest playlistUpdateRequest) {
+    public MessageResponse modifyPlaylist(PlaylistUpdateRequest playlistUpdateRequest) {
         Playlist playlist = playlistRepository.findById(playlistUpdateRequest.getId()).orElseThrow(
             () -> new EntityNotFoundException("플레이리스트를 찾을 수 없습니다."));
-        playlist.updatePlaylist(playlistUpdateRequest);
+        playlist.modifyPlaylist(playlistUpdateRequest);
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
     @Transactional
-    public MessageResponse updatePlaylistAlarmFlag(long playlistId, boolean alarmFlag) {
+    public MessageResponse modifyPlaylistAlarmFlag(long playlistId, boolean alarmFlag) {
         Playlist playlist = playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
 
-        playlistRepository.updateAlarmFlag(playlistId, alarmFlag);
+        playlistRepository.modifyAlarmFlag(playlistId, alarmFlag);
         return MessageResponse.of(PLAYLIST_ALARM_UPDATED);
     }
 
     @Transactional
-    public MessageResponse updatePlaylistsDelFlag(List<Long> playlistIdList) {
+    public MessageResponse modifyPlaylistsDelFlag(List<Long> playlistIdList) {
         for(Long playlistId : playlistIdList){
             Playlist playlist = playlistRepository.findById(playlistId)
                     .orElseThrow(() -> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
@@ -69,7 +77,7 @@ public class PlaylistService {
     public MessageResponse<Integer> getTotalDurationTimeMsByPlaylist(Long playlistId) {
         return MessageResponse.of(
                 REQUEST_SUCCESS,
-                playlistRepository.getTotalDurationTimeMsWithPlaylistId(playlistId)
+                playlistRepository.findTotalDurationTimeMsWithPlaylistId(playlistId)
         );
     }
 

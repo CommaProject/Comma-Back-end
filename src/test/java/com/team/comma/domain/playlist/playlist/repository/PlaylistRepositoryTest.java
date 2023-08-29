@@ -6,7 +6,6 @@ import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistUpdateRequest;
-import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.playlist.track.repository.PlaylistTrackRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.repository.TrackRepository;
@@ -60,7 +59,7 @@ class PlaylistRepositoryTest {
         final User user = userRepository.save(buildUser());
 
         // when
-        final List<PlaylistResponse> result = playlistRepository.getPlaylistsByUser(user);
+        final List<PlaylistResponse> result = playlistRepository.findAllPlaylistsByUser(user);
 
         // then
         assertThat(result.size()).isEqualTo(0);
@@ -87,10 +86,32 @@ class PlaylistRepositoryTest {
         playlistTrackRepository.save(playlistTrack2);
 
         // when
-        final List<PlaylistResponse> result = playlistRepository.getPlaylistsByUser(user);
+        final List<PlaylistResponse> result = playlistRepository.findAllPlaylistsByUser(user);
 
         // then
         assertThat(result.size()).isEqualTo(2);
+    }
+
+    @Test
+    void 플레이리스트_아이디조회() {
+        // given
+        final User user = userRepository.save(buildUser());
+
+        Playlist playlist1 = buildPlaylist(user, title);
+        playlistRepository.save(playlist1);
+
+        Track track1 = buildTrackWithDurationTimeMs(1000);
+        trackRepository.save(track1);
+
+        PlaylistTrack playlistTrack1 = buildPlaylistTrackWithPlaylistAndTrack(playlist1, track1);
+        playlistTrackRepository.save(playlistTrack1);
+
+        // when
+        final PlaylistResponse result = playlistRepository.findPlaylistsByPlaylistId(playlist1.getId()).get();
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getPlaylistTitle()).isEqualTo(playlist1.getPlaylistTitle());
     }
 
     @Test
@@ -100,7 +121,7 @@ class PlaylistRepositoryTest {
         final Playlist playlist = playlistRepository.save(buildPlaylist(user, "test playlist"));
 
         // when
-        long result = playlistRepository.updateAlarmFlag(playlist.getId(), false);
+        long result = playlistRepository.modifyAlarmFlag(playlist.getId(), false);
 
         // then
         assertThat(result).isEqualTo(1);
@@ -126,7 +147,7 @@ class PlaylistRepositoryTest {
         playlistRepository.save(playlist);
 
         //when
-        int durationTimeSum = playlistRepository.getTotalDurationTimeMsWithPlaylistId(
+        int durationTimeSum = playlistRepository.findTotalDurationTimeMsWithPlaylistId(
             playlist.getId());
 
         //then
@@ -153,7 +174,7 @@ class PlaylistRepositoryTest {
         playlist.addPlaylistTrack(track2);
         playlistRepository.save(playlist);
         // when
-        int durationSum = playlistRepository.getTotalDurationTimeMsWithPlaylistId(playlist.getId());
+        int durationSum = playlistRepository.findTotalDurationTimeMsWithPlaylistId(playlist.getId());
 
         // then
         assertThat(durationSum).isEqualTo(3000L);
@@ -224,7 +245,7 @@ class PlaylistRepositoryTest {
             .build();
 
         //when
-        playlist.updatePlaylist(playlistUpdateRequest);
+        playlist.modifyPlaylist(playlistUpdateRequest);
 
         Playlist updatedPlaylist = playlistRepository.findById(playlistUpdateRequest.getId()).get();
 

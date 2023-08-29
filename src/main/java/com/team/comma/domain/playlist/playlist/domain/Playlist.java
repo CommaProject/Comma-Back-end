@@ -63,7 +63,7 @@ public class Playlist {
         playlistTrackList.add(playlistTrack);
     }
 
-    public void updatePlaylist(PlaylistUpdateRequest playlistUpdateRequest) {
+    public void modifyPlaylist(PlaylistUpdateRequest playlistUpdateRequest) {
         this.playlistTitle = playlistUpdateRequest.getPlaylistTitle();
         this.alarmStartTime = playlistUpdateRequest.getAlarmStartTime();
         this.listSequence = playlistUpdateRequest.getListSequence();
