@@ -34,6 +34,13 @@ public class FollowingController {
                 .body(followingService.getFollowingUserList(accessToken, followingType));
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<MessageResponse> countFollowings(
+            @CookieValue String accessToken) throws AccountException {
+        return ResponseEntity.ok()
+                .body(followingService.countFollowings(accessToken));
+    }
+
     @GetMapping("/{toUserId}")
     public ResponseEntity<MessageResponse> isFollow(
             @CookieValue String accessToken,

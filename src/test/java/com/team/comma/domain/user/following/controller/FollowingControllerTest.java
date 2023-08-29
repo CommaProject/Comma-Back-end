@@ -33,7 +33,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.team.comma.domain.user.following.constant.FollowingType.FOLLOWING;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
@@ -456,6 +458,59 @@ public class FollowingControllerTest {
                 MessageResponse.class);
 
         assertThat((List<FollowingResponse>) result.getData()).size().isEqualTo(2);
+
+    }
+
+    @Test
+    public void 팔로잉_팔로워_카운트_조회() throws Exception {
+        // given
+        final String api = "/followings/count";
+
+        final String token = "accessToken";
+        final UserDetail userDetail = UserDetail.builder().id(1L).nickname("user").build();
+        final UserDetail targetUserDetail = UserDetail.builder().id(1L).nickname("user").build();
+        final User user = User.builder().id(1L).role(UserRole.USER).email("user").userDetail(userDetail).build();
+        final User targetUser = User.builder().id(2L).role(UserRole.USER).email("targetUser").userDetail(targetUserDetail).build();
+        final Following following = Following.builder().id(1L).blockFlag(false).userFrom(user).userTo(targetUser).build();
+        final FollowingResponse followingResponse = FollowingResponse.of(following, FollowingType.FOLLOWING);
+
+        Map<String, Double> response = new HashMap<>();
+        response.put("followings", 0.0);
+        response.put("followers", 1.0);
+
+        final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS , response);
+
+        doReturn(List.of(followingResponse)).when(followingService).getFollowingFromUserListByToUser(user);
+        doReturn(message).when(followingService).countFollowings(token);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(api)
+                        .cookie(new Cookie("accessToken" , token))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("following/count-followings",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("리스트 조회 할 사용자의 accessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터"),
+                                fieldWithPath("data.followings").description("팔로잉 수"),
+                                fieldWithPath("data.followers").description("팔로워 수")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getData()).isEqualTo(response);
 
     }
 

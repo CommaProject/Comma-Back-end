@@ -116,9 +116,9 @@ CREATE TABLE playlist_track_tb
 CREATE TABLE archive_tb
 (
     id          BIGINT NOT NULL AUTO_INCREMENT,
-    content     TEXT,
+    comment     TEXT,
     public_flag BOOLEAN,
-    created_at  DATETIME,
+    create_date   DATETIME,
     user_id     BIGINT,
     playlist_id BIGINT,
     PRIMARY KEY (id),
@@ -229,6 +229,9 @@ CREATE TABLE refresh_token_tb
 INSERT INTO user_detail_tb
 (sex, age, recommend_time, name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag)
 VALUES('male', 20, NULL, 'name', 'nickname', 'url', 'Y', 'Y', 'Y', 'Y');
+INSERT INTO user_detail_tb
+(sex, age, recommend_time, name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag)
+VALUES('female', 20, NULL, 'name', 'nickname', 'url', 'Y', 'Y', 'Y', 'Y');
 
 INSERT INTO user_detail_tb
 (sex, age, recommend_time, name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag)
@@ -237,6 +240,9 @@ VALUES('female', 20, NULL, 'name2', 'nickname2', 'url', 'Y', 'Y', 'Y', 'Y');
 INSERT INTO user_tb
 (email, password, role, type, del_flag, join_date, user_detail_id)
 VALUES('testEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-21', 1);
+INSERT INTO user_tb
+(email, password, `role`, `type`, del_flag, join_date, user_detail_id)
+VALUES('toUserEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-25', 2);
 
 INSERT INTO user_tb
 (email, password, `role`, `type`, del_flag, join_date, user_detail_id)
@@ -261,6 +267,14 @@ VALUES('test playlist', '12:00:00', 1, 1, 'N', 1);
 INSERT INTO playlist_track_tb
 (play_sequence, play_flag, track_alarm_flag, playlist_id, track_id)
 VALUES(1, 1, 1, 1, 1);
+
+INSERT INTO archive_tb
+(comment, public_flag, create_date, user_id, playlist_id)
+VALUES('archive1', 0, '2023-08-28 12:00:00', 1, 1);
+
+INSERT INTO archive_tb
+(comment, public_flag, create_date, user_id, playlist_id)
+VALUES('archive2', 0, '2023-08-29 12:00:00', 1, 1);
 
 INSERT INTO favorite_track_tb
 (play_count, favorite_flag, user_id, track_id)

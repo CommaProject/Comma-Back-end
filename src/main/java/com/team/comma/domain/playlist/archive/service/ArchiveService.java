@@ -1,6 +1,7 @@
 package com.team.comma.domain.playlist.archive.service;
 
 import com.team.comma.domain.playlist.archive.domain.Archive;
+import com.team.comma.domain.playlist.archive.dto.ArchiveResponse;
 import com.team.comma.domain.playlist.archive.repository.ArchiveRepository;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
@@ -16,6 +17,12 @@ import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
@@ -28,17 +35,40 @@ public class ArchiveService {
     private final UserRepository userRepository;
 
     @Transactional
-    public MessageResponse addArchive(String token , ArchiveRequest archiveRequest) throws AccountException {
-        String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail)
+    public MessageResponse createArchive(final String token , final ArchiveRequest archiveRequest) throws AccountException {
+        final String userEmail = jwtTokenProvider.getUserPk(token);
+        final User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
-        Playlist playlist = playlistRepository.findById(archiveRequest.getPlaylistId())
+        final Playlist playlist = playlistRepository.findById(archiveRequest.getPlaylistId())
                 .orElseThrow(() -> new PlaylistException("Playlist를 찾을 수 없습니다."));
 
-        Archive archive = Archive.createArchive(user , archiveRequest.getContent() , playlist);
+        final Archive archive = Archive.buildArchive(user, archiveRequest.getComment(), playlist);
         archiveRepository.save(archive);
 
         return MessageResponse.of(REQUEST_SUCCESS);
+    }
+
+    public MessageResponse findArchiveByDate(final String token, LocalDate startDate, LocalDate endDate) throws AccountException {
+        final String userEmail = jwtTokenProvider.getUserPk(token);
+        final User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
+
+        List<ArchiveResponse> archiveResponses = findArchiveByDateTime(
+                user, dateToStartDateTime(startDate), dateToEndDateTime(endDate));
+
+        return MessageResponse.of(REQUEST_SUCCESS, archiveResponses);
+    }
+
+    public List<ArchiveResponse> findArchiveByDateTime(final User user, final LocalDateTime startDateTime, final LocalDateTime endDateTime) {
+        return archiveRepository.findArchiveByDateTime(user, startDateTime, endDateTime);
+    }
+
+    public LocalDateTime dateToStartDateTime(LocalDate date){
+        return date.atStartOfDay();
+    }
+
+    public LocalDateTime dateToEndDateTime(LocalDate date){
+        return date.atTime(LocalTime.MAX);
     }
 
 }

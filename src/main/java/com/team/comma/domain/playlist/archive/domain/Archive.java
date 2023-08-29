@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,13 +22,13 @@ public class Archive {
     private Long id;
 
     @Column(columnDefinition = "TEXT")
-    private String content;
+    private String comment;
 
     private Boolean publicFlag;
 
     @CreatedDate
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -37,14 +38,15 @@ public class Archive {
     @JoinColumn(name = "playlist_id")
     private Playlist playlist;
 
-    public static Archive createArchive(User user , String context , Playlist playlist) {
+    public static Archive buildArchive(User user, String comment, Playlist playlist) {
         return Archive.builder()
-                .content(context)
+                .id(1L)
+                .comment(comment)
                 .publicFlag(true)
                 .user(user)
                 .playlist(playlist)
+                .createDate(LocalDateTime.now())
                 .build();
     }
-
 
 }
