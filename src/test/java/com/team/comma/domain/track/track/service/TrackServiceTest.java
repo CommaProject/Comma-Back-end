@@ -1,18 +1,6 @@
 package com.team.comma.domain.track.track.service;
 
-import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
-import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
-import com.team.comma.domain.track.track.dto.TrackRequest;
-import com.team.comma.domain.track.track.exception.TrackException;
-import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
-import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
-import com.team.comma.domain.track.track.repository.TrackRepository;
-import com.team.comma.domain.user.user.constant.UserRole;
-import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
@@ -47,9 +35,6 @@ public class TrackServiceTest {
     TrackService trackService;
 
     @Mock
-    TrackPlayCountRepository trackPlayCountRepository;
-
-    @Mock
     JwtTokenProvider jwtTokenProvider;
 
     @Mock
@@ -57,73 +42,6 @@ public class TrackServiceTest {
 
     @Mock
     TrackRepository trackRepository;
-
-    @Test
-    @DisplayName("TrackPlayCount 탐색 실패")
-    void searchTrackPlayCountFail() {
-        // given
-        doThrow(new TrackException("트랙을 찾을 수 없습니다.")).when(trackPlayCountRepository).findTrackPlayCountByUserEmail(any(String.class), any(String.class));
-        doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        // when
-        Throwable thrown = catchThrowable(() -> trackService.countPlayCount("token", "trackId"));
-
-        // then
-        assertThat(thrown.getMessage()).isEqualTo("트랙을 찾을 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("TrackPlayCount 탐색 성공")
-    void searchTrackPlayCount() throws AccountException {
-        // given
-        doReturn(Optional.of(buildTrackPlayCount())).when(trackPlayCountRepository).findTrackPlayCountByUserEmail(any(String.class), any(String.class));
-        doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        // when
-        MessageResponse result = trackService.countPlayCount("token", "trackId");
-
-        // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-    @Test
-    @DisplayName("내가 가장 많이 들은 곡")
-    void findMostListenedTrack() {
-        // given
-        List<TrackPlayCountResponse> trackPlayCounts = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            trackPlayCounts.add(buildTrackPlayCountResponse());
-        }
-        doReturn(trackPlayCounts).when(trackPlayCountRepository).findTrackPlayCountByMostListenedTrack(any(String.class));
-        doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-
-        // when
-        MessageResponse result = trackService.findMostListenedTrack("token");
-
-        // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-        assertThat(((List) result.getData()).size()).isEqualTo(5);
-    }
-
-    @Test
-    @DisplayName("친구가 가장 많이 들은 곡")
-    void findMostListenedTrackByFriend() {
-        // given
-        List<TrackPlayCountResponse> trackPlayCounts = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            trackPlayCounts.add(buildTrackPlayCountResponse());
-        }
-        doReturn(trackPlayCounts).when(trackPlayCountRepository).findTrackPlayCountByFriend(any(String.class));
-        doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-
-        // when
-        MessageResponse result = trackService.findMostListenedTrackByFriend("token");
-
-        // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-        assertThat(((List) result.getData()).size()).isEqualTo(5);
-    }
 
     @Test
     @DisplayName("좋아요 표기한 곡 탐색")
@@ -162,25 +80,6 @@ public class TrackServiceTest {
         // then
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
         assertThat(((List) result.getData()).size()).isEqualTo(5);
-    }
-
-    public TrackPlayCountResponse buildTrackPlayCountResponse() {
-        return TrackPlayCountResponse.builder()
-                .playCount(0)
-                .trackId("trackId")
-                .trackImageUrl("images")
-                .trackName("trackName")
-                .trackArtist("trackArtist")
-                .build();
-    }
-
-    public TrackPlayCount buildTrackPlayCount() {
-        return TrackPlayCount.builder()
-                .playCount(0)
-                .trackId("trackId")
-                .trackImageUrl("images")
-                .trackName("trackName")
-                .build();
     }
 
     private Track buildTrack(String title, String spotifyId) {
