@@ -388,7 +388,7 @@ class PlaylistControllerTest {
                 REQUEST_SUCCESS.getMessage(),
                 1000)
         ).when(playlistService)
-            .getTotalDurationTimeMsByPlaylist(anyLong());
+            .findTotalDurationTimeMsByPlaylist(anyLong());
 
         ResultActions resultActions = mockMvc.perform(
             get("/playlist/all-duration-time/{id}", 1L)

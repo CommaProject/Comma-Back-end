@@ -168,10 +168,10 @@ class PlaylistServiceTest {
         final int TOTAL_DURATION_TIME = 100;
 
         doReturn(TOTAL_DURATION_TIME)
-            .when(playlistRepository).findTotalDurationTimeMsWithPlaylistId(PLAYLIST_ID);
+            .when(playlistRepository).findTotalDurationTimeMsByPlaylistId(PLAYLIST_ID);
 
         //when
-        MessageResponse<Integer> totalDurationTimeMsDto = playlistService.getTotalDurationTimeMsByPlaylist(
+        MessageResponse<Integer> totalDurationTimeMsDto = playlistService.findTotalDurationTimeMsByPlaylist(
             PLAYLIST_ID);
 
         //then

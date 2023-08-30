@@ -74,10 +74,10 @@ public class PlaylistService {
         return MessageResponse.of(PLAYLIST_DELETED);
     }
 
-    public MessageResponse<Integer> getTotalDurationTimeMsByPlaylist(Long playlistId) {
+    public MessageResponse<Integer> findTotalDurationTimeMsByPlaylist(Long playlistId) {
         return MessageResponse.of(
                 REQUEST_SUCCESS,
-                playlistRepository.findTotalDurationTimeMsWithPlaylistId(playlistId)
+                playlistRepository.findTotalDurationTimeMsByPlaylistId(playlistId)
         );
     }
 

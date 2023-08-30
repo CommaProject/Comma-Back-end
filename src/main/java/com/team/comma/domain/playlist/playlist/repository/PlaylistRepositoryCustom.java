@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface PlaylistRepositoryCustom {
 
-    int findTotalDurationTimeMsWithPlaylistId(Long playlistId);
+    int findTotalDurationTimeMsByPlaylistId(Long playlistId);
 
     int findMaxListSequence();
 

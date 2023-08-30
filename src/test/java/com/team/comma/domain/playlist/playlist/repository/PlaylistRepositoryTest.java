@@ -147,7 +147,7 @@ class PlaylistRepositoryTest {
         playlistRepository.save(playlist);
 
         //when
-        int durationTimeSum = playlistRepository.findTotalDurationTimeMsWithPlaylistId(
+        int durationTimeSum = playlistRepository.findTotalDurationTimeMsByPlaylistId(
             playlist.getId());
 
         //then
@@ -174,7 +174,7 @@ class PlaylistRepositoryTest {
         playlist.addPlaylistTrack(track2);
         playlistRepository.save(playlist);
         // when
-        int durationSum = playlistRepository.findTotalDurationTimeMsWithPlaylistId(playlist.getId());
+        int durationSum = playlistRepository.findTotalDurationTimeMsByPlaylistId(playlist.getId());
 
         // then
         assertThat(durationSum).isEqualTo(3000L);

@@ -20,7 +20,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public int findTotalDurationTimeMsWithPlaylistId(Long playlistId) {
+    public int findTotalDurationTimeMsByPlaylistId(Long playlistId) {
         return queryFactory.select(track.durationTimeMs.sum().coalesce(0))
             .from(playlist)
             .innerJoin(track).fetchJoin()

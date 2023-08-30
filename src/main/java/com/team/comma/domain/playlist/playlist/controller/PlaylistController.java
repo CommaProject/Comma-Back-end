@@ -61,10 +61,10 @@ public class PlaylistController {
         return ResponseEntity.ok().body(playlistService.modifyPlaylistsDelFlag(playlistIdList));
     }
 
-    @GetMapping("/all-duration-time/{id}")
-    public ResponseEntity<MessageResponse> getTotalDurationTimeMsByPlaylist(
+    @GetMapping("/total-duration-time/{id}")
+    public ResponseEntity<MessageResponse> findTotalDurationTimeMsByPlaylist(
             @PathVariable("id") final Long id) {
 
-        return ResponseEntity.ok(playlistService.getTotalDurationTimeMsByPlaylist(id));
+        return ResponseEntity.ok(playlistService.findTotalDurationTimeMsByPlaylist(id));
     }
 }
