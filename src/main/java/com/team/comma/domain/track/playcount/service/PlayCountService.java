@@ -6,6 +6,7 @@ import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.repository.TrackRepository;
+import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.common.dto.MessageResponse;
@@ -30,6 +31,7 @@ public class PlayCountService {
     private final JwtTokenProvider jwtTokenProvider;
     private final TrackPlayCountRepository trackPlayCountRepository;
     private final TrackRepository trackRepository;
+    private final TrackService trackService;
 
     public MessageResponse findMostListenedTrack(String accessToken) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
@@ -60,7 +62,7 @@ public class PlayCountService {
 
         if(!trackPlayCount.isPresent()) {
             Track track = trackRepository.findBySpotifyTrackId(trackId)
-                    .orElseGet(() -> findTrackOrSave(trackId));
+                    .orElseGet(() -> trackService.findTrackOrSave(trackId));
 
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));

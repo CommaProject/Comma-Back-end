@@ -52,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureRestDocs
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-@WebMvcTest(PlayCountService.class)
+@WebMvcTest(PlayCountController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @WebAppConfiguration
 public class PlayCountControllerTest {
