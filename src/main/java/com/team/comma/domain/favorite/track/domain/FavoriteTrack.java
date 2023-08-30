@@ -25,11 +25,11 @@ public class FavoriteTrack {
     private Boolean favoriteFlag;
 
     @JoinColumn(name = "user_id")
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @JoinColumn(name = "track_id")
-    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Track track;
 
     public static FavoriteTrack buildFavoriteTrack(User user , Track track) {

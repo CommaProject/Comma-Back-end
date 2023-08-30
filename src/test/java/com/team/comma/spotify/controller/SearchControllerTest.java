@@ -134,7 +134,7 @@ public class SearchControllerTest {
         // when
         final ResultActions resultActions = mockMvc.perform(
                 RestDocumentationRequestBuilders
-                        .get(api, "trackNameOrArtistName")
+                        .get(api, "trackName")
                         .cookie(new Cookie("accessToken", "token")));
 
         // then
@@ -277,7 +277,7 @@ public class SearchControllerTest {
 
         return ArtistResponse.builder()
                 .artistId("57htMBtzpppc1yoXgjbslj")
-                .artistName("Wild Flower")
+                .artistName("Park hyo shin")
                 .genres(new String[]{"korean pop"})
                 .images(new Image[]{image1, image2, image3})
                 .popularity(42)
