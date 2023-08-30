@@ -391,7 +391,7 @@ class PlaylistControllerTest {
             .findTotalDurationTimeMsByPlaylist(anyLong());
 
         ResultActions resultActions = mockMvc.perform(
-            get("/playlist/all-duration-time/{id}", 1L)
+            get("/playlist/total-duration-time/{id}", 1L)
         ).andDo(print());
 
         resultActions.andExpect(status().isOk())
@@ -414,7 +414,7 @@ class PlaylistControllerTest {
     @Test
     void 잘못된타입_들어오면_플레이리스트의_총재생시간_조회_실패() throws Exception {
         ResultActions resultActions = mockMvc.perform(
-                get("/playlist/all-duration-time/{id}", "wrongType")
+                get("/playlist/total-duration-time/{id}", "wrongType")
             )
             .andDo(print());
 
