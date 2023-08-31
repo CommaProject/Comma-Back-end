@@ -98,8 +98,8 @@ class PlaylistControllerTest {
         final String url = "/playlist";
 
         final List<PlaylistResponse> playlist = Arrays.asList(
-                PlaylistResponse.of(buildPlaylist(),3, "representative album image url"),
-                PlaylistResponse.of(buildPlaylist(),3, "representative album image url"));
+                PlaylistResponse.of(buildPlaylist(), "representative album image url"),
+                PlaylistResponse.of(buildPlaylist(), "representative album image url"));
 
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlist);
 
@@ -179,7 +179,7 @@ class PlaylistControllerTest {
         // given
         final String url = "/playlist/{playlistId}";
 
-        final PlaylistResponse playlist = PlaylistResponse.of(buildPlaylist(),3, "representative album image url");
+        final PlaylistResponse playlist = PlaylistResponse.of(buildPlaylist(), "representative album image url");
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlist);
 
         doReturn(message).when(playlistService).findPlaylist(30L);

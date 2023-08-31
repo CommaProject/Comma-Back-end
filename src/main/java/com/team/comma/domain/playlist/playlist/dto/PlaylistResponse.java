@@ -14,20 +14,20 @@ public final class PlaylistResponse {
     private final String playlistTitle;
     private final boolean alarmFlag;
     private final LocalTime alarmStartTime;
+    private final int trackCount;
     private final String repAlbumImageUrl;
-    private final long trackCount;
 
-    private PlaylistResponse(Playlist playlist, long trackCount, String repAlbumImageUrl) {
+    private PlaylistResponse(Playlist playlist, String repAlbumImageUrl) {
         this.playlistId = playlist.getId();
         this.playlistTitle = playlist.getPlaylistTitle();
         this.alarmFlag = playlist.getAlarmFlag();
         this.alarmStartTime = playlist.getAlarmStartTime();
+        this.trackCount = playlist.getPlaylistTrackList().size();
         this.repAlbumImageUrl = repAlbumImageUrl;
-        this.trackCount = trackCount;
     }
 
-    public static PlaylistResponse of(Playlist playlist, long trackCount, String repAlbumImageUrl) {
-        return new PlaylistResponse(playlist, trackCount, repAlbumImageUrl);
+    public static PlaylistResponse of(Playlist playlist, String repAlbumImageUrl) {
+        return new PlaylistResponse(playlist, repAlbumImageUrl);
     }
 
 }
