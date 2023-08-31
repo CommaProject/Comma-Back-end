@@ -14,7 +14,6 @@ public class CreationCookie {
                 //.secure(true)
                 .path("/")
                 .domain("comma-project.p-e.kr")
-                //.sameSite(Cookie.SameSite.NONE.name())
                 .maxAge(age)
                 .build();
     }
@@ -25,7 +24,6 @@ public class CreationCookie {
                 //.secure(true)
                 .path("/")
                 .domain("comma-project.p-e.kr")
-                //.sameSite(Cookie.SameSite.NONE.name())
                 .maxAge(age)
                 .build();
     }

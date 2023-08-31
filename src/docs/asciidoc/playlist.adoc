@@ -12,7 +12,7 @@ link:main.html[main 화면]
 
 == 플레이리스트 API
 
-=== 플레이리스트 조회
+=== 특정 사용자의 플레이리스트 조회
 
 ==== Request
 
@@ -23,6 +23,18 @@ include::{snippets}/spotify/selectPlaylist/request-cookies.adoc[]
 
 include::{snippets}/spotify/selectPlaylist/http-response.adoc[]
 include::{snippets}/spotify/selectPlaylist/response-fields.adoc[]
+
+=== ID로 단일 플레이리스트 조회
+
+==== Request
+
+include::{snippets}/spotify/findPlaylist/http-request.adoc[]
+include::{snippets}/spotify/findPlaylist/path-parameters.adoc[]
+
+==== Response
+
+include::{snippets}/spotify/findPlaylist/http-response.adoc[]
+include::{snippets}/spotify/findPlaylist/response-fields.adoc[]
 
 === 플레이리스트 알람설정 변경
 

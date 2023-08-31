@@ -28,41 +28,43 @@ public class PlaylistController {
     private final PlaylistService playlistService;
 
     @GetMapping
-    public ResponseEntity<MessageResponse> getUserPlaylist(
+    public ResponseEntity<MessageResponse> findAllPlaylists(
         @CookieValue final String accessToken) throws AccountException {
-        return ResponseEntity.ok()
-                .body(playlistService.getPlaylists(accessToken));
+
+        return ResponseEntity.ok().body(playlistService.findAllPlaylists(accessToken));
+    }
+
+    @GetMapping("/{playlistId}")
+    public ResponseEntity<MessageResponse> findPlaylist(@PathVariable long playlistId) {
+
+        return ResponseEntity.ok().body(playlistService.findPlaylist(playlistId));
     }
 
     @PatchMapping
     public ResponseEntity<MessageResponse> modifyPlaylist(
-            @RequestBody final PlaylistUpdateRequest playlistUpdateRequest
-    ) {
-        return ResponseEntity.ok(
-                playlistService.updatePlaylist(playlistUpdateRequest)
-        );
+            @RequestBody final PlaylistUpdateRequest playlistUpdateRequest) {
+
+        return ResponseEntity.ok(playlistService.modifyPlaylist(playlistUpdateRequest));
     }
 
     @PatchMapping("/alert")
-    public ResponseEntity<MessageResponse> modifyPlaylistAlert(
+    public ResponseEntity<MessageResponse> modifyPlaylistAlarmFlag(
             @RequestBody final PlaylistRequest request) throws PlaylistException {
-        return ResponseEntity.ok()
-                .body(playlistService.updatePlaylistAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
+
+        return ResponseEntity.ok().body(playlistService.modifyPlaylistAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }
 
     @DeleteMapping
     public ResponseEntity<MessageResponse> deletePlaylist(
             @RequestBody final List<Long> playlistIdList) throws PlaylistException {
-        return ResponseEntity.ok()
-                .body(playlistService.updatePlaylistsDelFlag(playlistIdList));
+
+        return ResponseEntity.ok().body(playlistService.modifyPlaylistsDelFlag(playlistIdList));
     }
 
-    @GetMapping("/all-duration-time/{id}")
-    public ResponseEntity<MessageResponse> getPlaylistAllDurationTime(
-            @PathVariable("id") final Long id
-    ) {
-        return ResponseEntity.ok(
-                playlistService.getTotalDurationTimeMsByPlaylist(id));
-    }
+    @GetMapping("/total-duration-time/{id}")
+    public ResponseEntity<MessageResponse> findTotalDurationTimeMsByPlaylist(
+            @PathVariable("id") final Long id) {
 
+        return ResponseEntity.ok(playlistService.findTotalDurationTimeMsByPlaylist(id));
+    }
 }
