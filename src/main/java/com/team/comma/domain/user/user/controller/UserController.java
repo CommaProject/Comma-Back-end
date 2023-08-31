@@ -21,19 +21,22 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<MessageResponse> loginUser(@RequestBody LoginRequest login , HttpServletResponse response) throws AccountException {
-        return userService.login(login , response);
+    public ResponseEntity<MessageResponse> loginUser(
+            @RequestBody LoginRequest login,
+            HttpServletResponse response) throws AccountException {
+        return ResponseEntity.ok().body(userService.login(login , response));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<MessageResponse> registerUser(@RequestBody RegisterRequest register) throws AccountException {
+    public ResponseEntity<MessageResponse> registerUser(
+            @RequestBody RegisterRequest register) throws AccountException {
         return ResponseEntity.ok().body(userService.register(register));
     }
 
     @PostMapping("/private-information")
     public ResponseEntity<MessageResponse> createUserInformation(
-        @CookieValue(value = "accessToken", required = false) String accessToken
-        , @RequestBody UserDetailRequest userDetail) throws AccountException {
+        @CookieValue(value = "accessToken", required = false) String accessToken,
+        @RequestBody UserDetailRequest userDetail) throws AccountException {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUserInformation(userDetail, accessToken));
     }
 
@@ -44,8 +47,9 @@ public class UserController {
     }
 
     @GetMapping("/search/user")
-    public ResponseEntity<MessageResponse> searchUserByNameAndNickName(@RequestParam String name
-            , @CookieValue("accessToken") String accessToken) throws AccountException {
+    public ResponseEntity<MessageResponse> searchUserByNameAndNickName(
+            @RequestParam String name,
+            @CookieValue("accessToken") String accessToken) throws AccountException {
         return ResponseEntity.ok().body(userService.searchUserByNameAndNickName(name , accessToken));
     }
 
