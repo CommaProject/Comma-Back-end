@@ -1,5 +1,6 @@
 package com.team.comma.domain.playlist.playlist.repository;
 
+import static com.querydsl.core.types.ExpressionUtils.count;
 import static com.querydsl.jpa.JPAExpressions.select;
 import static com.team.comma.domain.playlist.playlist.domain.QPlaylist.playlist;
 import static com.team.comma.domain.playlist.track.domain.QPlaylistTrack.playlistTrack;
@@ -57,19 +58,19 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
         return queryFactory.select(
                         Projections.constructor(
                                 PlaylistResponse.class,
-                                playlistTrack.playlist.id,
-                                playlistTrack.playlist.playlistTitle,
-                                playlistTrack.playlist.alarmFlag,
-                                playlistTrack.playlist.alarmStartTime,
-                                playlistTrack.track.albumImageUrl,
-                                select(playlistTrack.count())
-                                        .from(playlistTrack)
-                                        .where(playlistTrack.playlist.eq(playlist))
+                                playlist.id,
+                                playlist.playlistTitle,
+                                playlist.alarmFlag,
+                                playlist.alarmStartTime,
+                                playlist.playlistTrackList.size(),
+                                track.albumImageUrl.max()
                         ))
-                .from(playlistTrack)
-                .where(playlistTrack.playlist.delFlag.eq(false)
-                        .and(playlistTrack.playlist.user.eq(user)))
-                .orderBy(playlistTrack.playlist.alarmStartTime.asc())
+                .from(playlist)
+                .join(track)
+                .where(playlist.delFlag.eq(false)
+                        .and(playlist.user.eq(user)))
+                .groupBy(playlist)
+                .orderBy(playlist.alarmStartTime.asc())
                 .fetch();
     }
 
@@ -78,19 +79,19 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
         PlaylistResponse result = queryFactory.select(
                         Projections.constructor(
                                 PlaylistResponse.class,
-                                playlistTrack.playlist.id,
-                                playlistTrack.playlist.playlistTitle,
-                                playlistTrack.playlist.alarmFlag,
-                                playlistTrack.playlist.alarmStartTime,
-                                playlistTrack.track.albumImageUrl,
-                                select(playlistTrack.count())
-                                        .from(playlistTrack)
-                                        .where(playlistTrack.playlist.eq(playlist))
+                                playlist.id,
+                                playlist.playlistTitle,
+                                playlist.alarmFlag,
+                                playlist.alarmStartTime,
+                                playlist.playlistTrackList.size(),
+                                track.albumImageUrl.max()
                         ))
-                .from(playlistTrack)
-                .where(playlistTrack.playlist.delFlag.eq(false)
-                        .and(playlistTrack.playlist.id.eq(playlistId)))
-                .orderBy(playlistTrack.playlist.alarmStartTime.asc())
+                .from(playlist)
+                .join(track)
+                .where(playlist.delFlag.eq(false)
+                        .and(playlist.id.eq(playlistId)))
+                .groupBy(playlist)
+                .orderBy(playlist.alarmStartTime.asc())
                 .fetchOne();
 
         return Optional.ofNullable(result);

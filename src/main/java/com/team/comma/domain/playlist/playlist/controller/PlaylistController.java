@@ -30,27 +30,30 @@ public class PlaylistController {
     @GetMapping
     public ResponseEntity<MessageResponse> findAllPlaylists(
         @CookieValue final String accessToken) throws AccountException {
-
         return ResponseEntity.ok().body(playlistService.findAllPlaylists(accessToken));
     }
 
     @GetMapping("/{playlistId}")
     public ResponseEntity<MessageResponse> findPlaylist(@PathVariable long playlistId) {
-
         return ResponseEntity.ok().body(playlistService.findPlaylist(playlistId));
+    }
+
+    @GetMapping("/total-duration-time/{id}")
+    public ResponseEntity<MessageResponse> findTotalDurationTimeMsByPlaylist(
+            @PathVariable("id") final Long id) {
+
+        return ResponseEntity.ok().body(playlistService.findTotalDurationTimeMsByPlaylist(id));
     }
 
     @PatchMapping
     public ResponseEntity<MessageResponse> modifyPlaylist(
             @RequestBody final PlaylistUpdateRequest playlistUpdateRequest) {
-
-        return ResponseEntity.ok(playlistService.modifyPlaylist(playlistUpdateRequest));
+        return ResponseEntity.ok().body(playlistService.modifyPlaylist(playlistUpdateRequest));
     }
 
     @PatchMapping("/alert")
     public ResponseEntity<MessageResponse> modifyPlaylistAlarmFlag(
             @RequestBody final PlaylistRequest request) throws PlaylistException {
-
         return ResponseEntity.ok().body(playlistService.modifyPlaylistAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }
 
@@ -61,10 +64,4 @@ public class PlaylistController {
         return ResponseEntity.ok().body(playlistService.modifyPlaylistsDelFlag(playlistIdList));
     }
 
-    @GetMapping("/total-duration-time/{id}")
-    public ResponseEntity<MessageResponse> findTotalDurationTimeMsByPlaylist(
-            @PathVariable("id") final Long id) {
-
-        return ResponseEntity.ok(playlistService.findTotalDurationTimeMsByPlaylist(id));
-    }
 }
