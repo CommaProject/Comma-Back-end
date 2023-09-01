@@ -98,8 +98,8 @@ class PlaylistControllerTest {
         final String url = "/playlist";
 
         final List<PlaylistResponse> playlist = Arrays.asList(
-                PlaylistResponse.of(buildPlaylist(), "representative album image url"),
-                PlaylistResponse.of(buildPlaylist(), "representative album image url"));
+                PlaylistResponse.of(buildPlaylist(), "representative album image url", 21000L),
+                PlaylistResponse.of(buildPlaylist(), "representative album image url", 21000L));
 
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlist);
 
@@ -128,7 +128,8 @@ class PlaylistControllerTest {
                     fieldWithPath("data.[].alarmFlag").description("알람 설정 여부, true = on / false = off"),
                     fieldWithPath("data.[].alarmStartTime").description("알람 시작 시간"),
                     fieldWithPath("data.[].trackCount").description("플레이리스트에 포함된 트랙 갯수"),
-                    fieldWithPath("data.[].repAlbumImageUrl").description("플레이리스트 대표 앨범 이미지 url")
+                    fieldWithPath("data.[].repAlbumImageUrl").description("플레이리스트 대표 앨범 이미지 url"),
+                    fieldWithPath("data.[].totalDurationTime").description("플레이리스트 전체 재생 시간")
                 )
             )
         );
@@ -179,7 +180,7 @@ class PlaylistControllerTest {
         // given
         final String url = "/playlist/{playlistId}";
 
-        final PlaylistResponse playlist = PlaylistResponse.of(buildPlaylist(), "representative album image url");
+        final PlaylistResponse playlist = PlaylistResponse.of(buildPlaylist(), "representative album image url", 21000L);
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlist);
 
         doReturn(message).when(playlistService).findPlaylist(30L);
@@ -206,7 +207,8 @@ class PlaylistControllerTest {
                                 fieldWithPath("data.alarmFlag").description("알람 설정 여부, true = on / false = off"),
                                 fieldWithPath("data.alarmStartTime").description("알람 시작 시간"),
                                 fieldWithPath("data.trackCount").description("플레이리스트에 포함된 트랙 갯수"),
-                                fieldWithPath("data.repAlbumImageUrl").description("플레이리스트 대표 앨범 이미지 url")
+                                fieldWithPath("data.repAlbumImageUrl").description("플레이리스트 대표 앨범 이미지 url"),
+                                fieldWithPath("data.totalDurationTime").description("플레이리스트 전체 재생 시간")
                         )
                 )
         );

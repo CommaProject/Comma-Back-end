@@ -1,11 +1,10 @@
 package com.team.comma.domain.playlist.playlist.repository;
 
-import static com.querydsl.core.types.ExpressionUtils.count;
-import static com.querydsl.jpa.JPAExpressions.select;
 import static com.team.comma.domain.playlist.playlist.domain.QPlaylist.playlist;
 import static com.team.comma.domain.playlist.track.domain.QPlaylistTrack.playlistTrack;
 import static com.team.comma.domain.track.track.domain.QTrack.track;
 
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
@@ -63,10 +62,12 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
                                 playlist.alarmFlag,
                                 playlist.alarmStartTime,
                                 playlist.playlistTrackList.size(),
-                                track.albumImageUrl.max()
+                                track.albumImageUrl.max(),
+                                track.durationTimeMs.sum().coalesce(0).longValue()
                         ))
                 .from(playlist)
-                .join(track)
+                .join(playlist.playlistTrackList, playlistTrack)
+                .join(playlistTrack.track, track)
                 .where(playlist.delFlag.eq(false)
                         .and(playlist.user.eq(user)))
                 .groupBy(playlist)
@@ -84,10 +85,12 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
                                 playlist.alarmFlag,
                                 playlist.alarmStartTime,
                                 playlist.playlistTrackList.size(),
-                                track.albumImageUrl.max()
+                                track.albumImageUrl.max(),
+                                track.durationTimeMs.sum().coalesce(0).longValue()
                         ))
                 .from(playlist)
-                .join(track)
+                .join(playlist.playlistTrackList, playlistTrack)
+                .join(playlistTrack.track, track)
                 .where(playlist.delFlag.eq(false)
                         .and(playlist.id.eq(playlistId)))
                 .groupBy(playlist)

@@ -48,6 +48,7 @@ public class PlaylistService {
     public MessageResponse modifyPlaylist(PlaylistUpdateRequest playlistUpdateRequest) {
         Playlist playlist = playlistRepository.findById(playlistUpdateRequest.getId()).orElseThrow(
             () -> new EntityNotFoundException("플레이리스트를 찾을 수 없습니다."));
+
         playlist.modifyPlaylist(playlistUpdateRequest);
 
         return MessageResponse.of(REQUEST_SUCCESS);
