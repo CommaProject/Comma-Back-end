@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
+import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
@@ -16,6 +17,7 @@ import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,6 +38,8 @@ class PlaylistServiceTest {
     @InjectMocks
     private PlaylistService playlistService;
     @Mock
+    private TrackService trackService;
+    @Mock
     private PlaylistRepository playlistRepository;
     @Mock
     private UserRepository userRepository;
@@ -45,8 +49,27 @@ class PlaylistServiceTest {
     private String userEmail = "email@naver.com";
     private String token = "accessToken";
 
+
     @Test
-    void 플레이리스트_조회_성공() throws AccountException {
+    public void createPlaylistSuccess() throws AccountException {
+        // given
+        String spotifyTrackId = "spotifyTrackId";
+        Track track = Track.builder().build();
+        doReturn(track).when(trackService).findTrackOrSave(spotifyTrackId);
+
+        User user = User.buildUser();
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(any());
+
+        // when
+        final MessageResponse result = playlistService.createPlaylist(token, spotifyTrackId);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+
+    }
+
+    @Test
+    public void 플레이리스트_조회_성공() throws AccountException {
         // given
         final User user = buildUserWithEmail();
         final Optional<User> optionalUser = Optional.of(user);
@@ -75,7 +98,7 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 단일_플레이리스트_조회실패_존재하지않는플레이리스트() {
+    public void 단일_플레이리스트_조회실패_존재하지않는플레이리스트() {
         // given
         doReturn(Optional.empty()).when(playlistRepository).findPlaylistsByPlaylistId(30);
 
@@ -87,7 +110,7 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 단일_플레이리스트_조회() {
+    public void 단일_플레이리스트_조회() {
         // given
         final TrackArtist trackArtist = buildTrackArtist();
         final Track track = buildTrack(Arrays.asList(trackArtist));
@@ -107,7 +130,7 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() {
+    public void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() {
         // given
 
         // when
@@ -118,7 +141,7 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 플레이리스트_알람설정변경_성공() {
+    public void 플레이리스트_알람설정변경_성공() {
         // given
         final TrackArtist trackArtist = buildTrackArtist();
         final Track track = buildTrack(Arrays.asList(trackArtist));
@@ -136,7 +159,7 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 플레이리스트_삭제_실패_플레이리스트_찾을수없음() {
+    public void 플레이리스트_삭제_실패_플레이리스트_찾을수없음() {
         // given
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
 
@@ -148,7 +171,7 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 플레이리스트_삭제_성공() {
+    public void 플레이리스트_삭제_성공() {
         // given
         final TrackArtist trackArtist = buildTrackArtist();
         final Track track = buildTrack(Arrays.asList(trackArtist));
@@ -168,7 +191,7 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 플레이리스트의_총재생시간을_리턴한다() {
+    public void 플레이리스트의_총재생시간을_리턴한다() {
         //given
         final long PLAYLIST_ID = 1L;
         final int TOTAL_DURATION_TIME = 100;
@@ -185,17 +208,16 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 플리를_PlaylistRequest로_수정하고_MessageResponse를_반환한다() {
+    public void 플리를_PlaylistRequest로_수정하고_MessageResponse를_반환한다() {
         //given
         PlaylistUpdateRequest playlistRequest = PlaylistUpdateRequest.builder()
-            .id(1L)
+            .playlistId(1L)
             .playlistTitle("플리제목수정")
             .alarmStartTime(LocalTime.now())
-            .listSequence(2)
             .build();
 
         doReturn(Optional.of(buildPlaylist()))
-            .when(playlistRepository).findById(playlistRequest.getId());
+            .when(playlistRepository).findById(playlistRequest.getPlaylistId());
 
         //when
         MessageResponse messageResponse = playlistService.modifyPlaylist(playlistRequest);

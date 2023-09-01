@@ -30,13 +30,6 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
     }
 
     @Override
-    public int findMaxListSequence() {
-        return queryFactory.select(playlist.listSequence.max().coalesce(0))
-            .from(playlist)
-            .fetchOne();
-    }
-
-    @Override
     public long modifyAlarmFlag(long id, boolean alarmFlag) {
         return queryFactory.update(playlist)
                 .set(playlist.alarmFlag, alarmFlag)
@@ -71,7 +64,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
                 .where(playlist.delFlag.eq(false)
                         .and(playlist.user.eq(user)))
                 .groupBy(playlist)
-                .orderBy(playlist.alarmStartTime.asc())
+                .orderBy(playlist.alarmStartTime.asc().nullsLast())
                 .fetch();
     }
 

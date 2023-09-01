@@ -27,6 +27,13 @@ public class PlaylistController {
 
     private final PlaylistService playlistService;
 
+    @PostMapping
+    public ResponseEntity<MessageResponse> createPlaylist(
+            @CookieValue final String accessToken,
+            @RequestBody final PlaylistRequest playlistRequest) throws AccountException {
+        return ResponseEntity.ok().body(playlistService.createPlaylist(accessToken, playlistRequest.getSpotifyTrackId()));
+    }
+
     @GetMapping
     public ResponseEntity<MessageResponse> findAllPlaylists(
         @CookieValue final String accessToken) throws AccountException {
@@ -41,7 +48,6 @@ public class PlaylistController {
     @GetMapping("/total-duration-time/{id}")
     public ResponseEntity<MessageResponse> findTotalDurationTimeMsByPlaylist(
             @PathVariable("id") final Long id) {
-
         return ResponseEntity.ok().body(playlistService.findTotalDurationTimeMsByPlaylist(id));
     }
 
@@ -53,14 +59,13 @@ public class PlaylistController {
 
     @PatchMapping("/alert")
     public ResponseEntity<MessageResponse> modifyPlaylistAlarmFlag(
-            @RequestBody final PlaylistRequest request) throws PlaylistException {
+            @RequestBody final PlaylistUpdateRequest request) throws PlaylistException {
         return ResponseEntity.ok().body(playlistService.modifyPlaylistAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }
 
     @DeleteMapping
     public ResponseEntity<MessageResponse> deletePlaylist(
             @RequestBody final List<Long> playlistIdList) throws PlaylistException {
-
         return ResponseEntity.ok().body(playlistService.modifyPlaylistsDelFlag(playlistIdList));
     }
 

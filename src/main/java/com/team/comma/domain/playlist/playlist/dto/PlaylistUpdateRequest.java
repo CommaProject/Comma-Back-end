@@ -19,16 +19,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PlaylistUpdateRequest {
 
-    
-    private Long id;
-
+    private long playlistId;
     private String playlistTitle;
-
     private LocalTime alarmStartTime;
-
-    @JsonIgnore
-    @Setter
-    private int listSequence;
+    private boolean alarmFlag;
 
     @Setter
     @JsonIgnore
@@ -47,7 +41,6 @@ public class PlaylistUpdateRequest {
         return Playlist.builder()
             .playlistTitle(playlistTitle)
             .alarmStartTime(alarmStartTime)
-            .listSequence(listSequence)
             .user(user)
             .build();
     }
