@@ -1,7 +1,6 @@
 package com.team.comma.domain.playlist.playlist.service;
 
-import com.team.comma.domain.playlist.alertday.domain.AlertDay;
-import com.team.comma.domain.playlist.alertday.service.AlertDayService;
+import com.team.comma.domain.playlist.alertDay.service.AlertDayService;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistModifyRequest;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
@@ -14,12 +13,9 @@ import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 
-import java.time.DayOfWeek;
-import java.util.ArrayList;
 import java.util.List;
 import javax.security.auth.login.AccountException;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

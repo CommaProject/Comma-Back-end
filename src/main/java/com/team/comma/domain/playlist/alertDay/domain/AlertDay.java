@@ -1,14 +1,8 @@
-package com.team.comma.domain.playlist.alertday.domain;
+package com.team.comma.domain.playlist.alertDay.domain;
 
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.DayOfWeek;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -34,7 +28,7 @@ public class AlertDay {
     private DayOfWeek alarmDay;
 
     @JoinColumn(name = "playlist_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Playlist playlist;
 
     public static AlertDay buildAlertDay(Playlist playlist, DayOfWeek alarmDay){

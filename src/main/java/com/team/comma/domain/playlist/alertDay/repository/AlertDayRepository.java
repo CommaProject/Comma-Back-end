@@ -1,6 +1,6 @@
-package com.team.comma.domain.playlist.alertday.repository;
+package com.team.comma.domain.playlist.alertDay.repository;
 
-import com.team.comma.domain.playlist.alertday.domain.AlertDay;
+import com.team.comma.domain.playlist.alertDay.domain.AlertDay;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import org.springframework.data.jpa.repository.JpaRepository;
 

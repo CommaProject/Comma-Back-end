@@ -1,8 +1,10 @@
-package com.team.comma.domain.playlist.alertday.repository;
+package com.team.comma.domain.playlist.alertDay.repository;
 
-import com.team.comma.domain.playlist.alertday.domain.AlertDay;
+import com.team.comma.domain.playlist.alertDay.domain.AlertDay;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
+import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,7 @@ import org.springframework.context.annotation.Import;
 import java.time.DayOfWeek;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
 @DataJpaTest
@@ -23,6 +25,11 @@ public class AlertDayRepositoryTest {
 
     @Autowired
     private AlertDayRepository alertDayRepository;
+    @Autowired
+    private PlaylistRepository playlistRepository;
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
     void saveAll_Success() {
         // given
@@ -44,7 +51,11 @@ public class AlertDayRepositoryTest {
     void findAllByPlaylist() {
         // given
         User user = User.buildUser();
+        userRepository.save(user);
+
         Playlist playlist = Playlist.buildPlaylist(user);
+        playlistRepository.save(playlist);
+
         List<AlertDay> alertDayList = List.of(
                 AlertDay.buildAlertDay(playlist, DayOfWeek.of(1)),
                 AlertDay.buildAlertDay(playlist, DayOfWeek.of(2)));
