@@ -5,6 +5,7 @@ import com.team.comma.domain.playlist.alertday.repository.AlertDayRepository;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class AlertDayService {
 
     private final AlertDayRepository alertDayRepository;
 
+    @Transactional
     public void createAlertDay(Playlist playlist, List<Integer> alarmDays) {
         List<AlertDay> alertDays = new ArrayList<>();
         for(int alarmDay : alarmDays){
