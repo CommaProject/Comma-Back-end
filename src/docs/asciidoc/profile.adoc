@@ -1,0 +1,84 @@
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+
+== 메인 화면
+
+link:main.html[main 화면]
+
+== PROFILE API
+
+=== 사용자 상세 정보 저장
+
+==== 성공
+
+===== Request
+
+include::{snippets}/user/private-information/http-request.adoc[]
+include::{snippets}/user/private-information/request-fields.adoc[]
+
+===== Response
+
+include::{snippets}/user/private-information/http-response.adoc[]
+
+==== 실패 - AccessToken 없음
+
+===== Request
+
+include::{snippets}/user/private-information-Fail/notLogin/http-request.adoc[]
+include::{snippets}/user/private-information-Fail/notLogin/request-fields.adoc[]
+
+===== Response
+
+include::{snippets}/user/private-information-Fail/notLogin/http-response.adoc[]
+include::{snippets}/user/private-information-Fail/notLogin/response-fields.adoc[]
+
+==== 실패 - 존재 하지 않는 사용자
+
+===== Request
+
+include::{snippets}/user/private-information-Fail/notExistUser/http-request.adoc[]
+include::{snippets}/user/private-information-Fail/notExistUser/request-fields.adoc[]
+
+===== Response
+
+include::{snippets}/user/private-information-Fail/notExistUser/http-response.adoc[]
+include::{snippets}/user/private-information-Fail/notExistUser/response-fields.adoc[]
+
+---
+
+=== 사용자 상세 정보 조회
+
+==== 성공
+
+===== Request
+
+include::{snippets}/user/getUserInfoByToken/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/user/getUserInfoByToken/http-response.adoc[]
+include::{snippets}/user/getUserInfoByToken/response-fields.adoc[]
+
+==== 실패 - AccessToken 없음
+
+===== Request
+
+include::{snippets}/user/getUserInfoByToken-Fail/notExistToken/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/user/getUserInfoByToken-Fail/notExistToken/http-response.adoc[]
+include::{snippets}/user/getUserInfoByToken-Fail/notExistToken/response-fields.adoc[]
+
+==== 실패 - 존재 하지 않는 사용자
+
+===== Request
+
+include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/http-response.adoc[]
+include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/response-fields.adoc[]
