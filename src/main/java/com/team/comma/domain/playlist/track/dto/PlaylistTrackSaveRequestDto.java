@@ -51,7 +51,6 @@ public class PlaylistTrackSaveRequestDto {
             .playlistTitle(playlistTitle)
             .alarmStartTime(alarmStartTime)
             .user(user)
-            .listSequence(listSequence)
             .alarmFlag(true)
             .build();
     }

@@ -1,11 +1,10 @@
 package com.team.comma.domain.playlist.playlist.repository;
 
-import static com.querydsl.core.types.ExpressionUtils.count;
-import static com.querydsl.jpa.JPAExpressions.select;
 import static com.team.comma.domain.playlist.playlist.domain.QPlaylist.playlist;
 import static com.team.comma.domain.playlist.track.domain.QPlaylistTrack.playlistTrack;
 import static com.team.comma.domain.track.track.domain.QTrack.track;
 
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
@@ -28,13 +27,6 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
             .where(playlist.id.eq(playlistId))
             .fetchOne();
 
-    }
-
-    @Override
-    public int findMaxListSequence() {
-        return queryFactory.select(playlist.listSequence.max().coalesce(0))
-            .from(playlist)
-            .fetchOne();
     }
 
     @Override
@@ -63,14 +55,16 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
                                 playlist.alarmFlag,
                                 playlist.alarmStartTime,
                                 playlist.playlistTrackList.size(),
-                                track.albumImageUrl.max()
+                                track.albumImageUrl.max(),
+                                track.durationTimeMs.sum().coalesce(0).longValue()
                         ))
                 .from(playlist)
-                .join(track)
+                .join(playlist.playlistTrackList, playlistTrack)
+                .join(playlistTrack.track, track)
                 .where(playlist.delFlag.eq(false)
                         .and(playlist.user.eq(user)))
                 .groupBy(playlist)
-                .orderBy(playlist.alarmStartTime.asc())
+                .orderBy(playlist.alarmStartTime.asc().nullsLast())
                 .fetch();
     }
 
@@ -84,10 +78,12 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
                                 playlist.alarmFlag,
                                 playlist.alarmStartTime,
                                 playlist.playlistTrackList.size(),
-                                track.albumImageUrl.max()
+                                track.albumImageUrl.max(),
+                                track.durationTimeMs.sum().coalesce(0).longValue()
                         ))
                 .from(playlist)
-                .join(track)
+                .join(playlist.playlistTrackList, playlistTrack)
+                .join(playlistTrack.track, track)
                 .where(playlist.delFlag.eq(false)
                         .and(playlist.id.eq(playlistId)))
                 .groupBy(playlist)

@@ -40,8 +40,6 @@ public class Playlist {
     @ColumnDefault("false")
     private Boolean alarmFlag;
 
-    private Integer listSequence;
-
     @Builder.Default
     @Convert(converter = BooleanConverter.class)
     private boolean delFlag = false;
@@ -66,14 +64,11 @@ public class Playlist {
     public void modifyPlaylist(PlaylistUpdateRequest playlistUpdateRequest) {
         this.playlistTitle = playlistUpdateRequest.getPlaylistTitle();
         this.alarmStartTime = playlistUpdateRequest.getAlarmStartTime();
-        this.listSequence = playlistUpdateRequest.getListSequence();
     }
 
     public static Playlist buildPlaylist(User user){
         return Playlist.builder()
-                .id(1L)
-                .playlistTitle("build playlist")
-                .alarmFlag(true)
+                .playlistTitle("새로운 플레이리스트")
                 .user(user)
                 .build();
     }

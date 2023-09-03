@@ -72,7 +72,6 @@ CREATE TABLE playlist_tb
     playlist_title   VARCHAR(100),
     alarm_start_time TIME,
     alarm_flag       BOOLEAN,
-    list_sequence    INTEGER,
     del_flag         VARCHAR(1),
     user_id          BIGINT,
     PRIMARY KEY (id),
@@ -253,10 +252,10 @@ INSERT INTO track_artist_tb
 VALUES('test artist', 1);
 
 INSERT INTO playlist_tb
-(playlist_title, alarm_start_time, alarm_flag, list_sequence, del_flag, user_id)
+(playlist_title, alarm_start_time, alarm_flag, del_flag, user_id)
 VALUES
-    ('test playlist', '12:00:00', 1, 1, 'N', 1),
-    ('test playlist2', '13:00:00', 1, 1, 'N', 1);
+    ('test playlist', '12:00:00', 1, 'N', 1),
+    ('test playlist2', '13:00:00', 1, 'N', 1);
 
 INSERT INTO playlist_track_tb
 (play_sequence, play_flag, track_alarm_flag, playlist_id, track_id)

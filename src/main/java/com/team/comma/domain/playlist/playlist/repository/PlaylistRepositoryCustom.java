@@ -10,8 +10,6 @@ public interface PlaylistRepositoryCustom {
 
     int findTotalDurationTimeMsByPlaylistId(Long playlistId);
 
-    int findMaxListSequence();
-
     long modifyAlarmFlag(long id, boolean alarmFlag);
 
     long deletePlaylist(long id);

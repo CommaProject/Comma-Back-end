@@ -27,41 +27,54 @@ public class PlaylistController {
 
     private final PlaylistService playlistService;
 
+    @PostMapping
+    public ResponseEntity<MessageResponse> createPlaylist(
+            @CookieValue final String accessToken,
+            @RequestBody final PlaylistRequest playlistRequest) throws AccountException {
+        return ResponseEntity.ok()
+                .body(playlistService.createPlaylist(accessToken, playlistRequest.getSpotifyTrackId()));
+    }
+
     @GetMapping
     public ResponseEntity<MessageResponse> findAllPlaylists(
         @CookieValue final String accessToken) throws AccountException {
-        return ResponseEntity.ok().body(playlistService.findAllPlaylists(accessToken));
+        return ResponseEntity.ok()
+                .body(playlistService.findAllPlaylists(accessToken));
     }
 
     @GetMapping("/{playlistId}")
-    public ResponseEntity<MessageResponse> findPlaylist(@PathVariable long playlistId) {
-        return ResponseEntity.ok().body(playlistService.findPlaylist(playlistId));
+    public ResponseEntity<MessageResponse> findPlaylist(
+            @PathVariable long playlistId) {
+        return ResponseEntity.ok()
+                .body(playlistService.findPlaylist(playlistId));
     }
 
     @GetMapping("/total-duration-time/{id}")
     public ResponseEntity<MessageResponse> findTotalDurationTimeMsByPlaylist(
             @PathVariable("id") final Long id) {
-
-        return ResponseEntity.ok().body(playlistService.findTotalDurationTimeMsByPlaylist(id));
+        return ResponseEntity.ok()
+                .body(playlistService.findTotalDurationTimeMsByPlaylist(id));
     }
 
     @PatchMapping
     public ResponseEntity<MessageResponse> modifyPlaylist(
             @RequestBody final PlaylistUpdateRequest playlistUpdateRequest) {
-        return ResponseEntity.ok().body(playlistService.modifyPlaylist(playlistUpdateRequest));
+        return ResponseEntity.ok()
+                .body(playlistService.modifyPlaylist(playlistUpdateRequest));
     }
 
     @PatchMapping("/alert")
     public ResponseEntity<MessageResponse> modifyPlaylistAlarmFlag(
-            @RequestBody final PlaylistRequest request) throws PlaylistException {
-        return ResponseEntity.ok().body(playlistService.modifyPlaylistAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
+            @RequestBody final PlaylistUpdateRequest request) throws PlaylistException {
+        return ResponseEntity.ok()
+                .body(playlistService.modifyPlaylistAlarmFlag(request.getPlaylistId(), request.isAlarmFlag()));
     }
 
     @DeleteMapping
     public ResponseEntity<MessageResponse> deletePlaylist(
             @RequestBody final List<Long> playlistIdList) throws PlaylistException {
-
-        return ResponseEntity.ok().body(playlistService.modifyPlaylistsDelFlag(playlistIdList));
+        return ResponseEntity.ok()
+                .body(playlistService.modifyPlaylistsDelFlag(playlistIdList));
     }
 
 }

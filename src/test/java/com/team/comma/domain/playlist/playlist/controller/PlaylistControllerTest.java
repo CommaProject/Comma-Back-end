@@ -62,6 +62,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.security.auth.login.AccountException;
+
 @AutoConfigureRestDocs
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @WebMvcTest(PlaylistController.class)
@@ -93,13 +95,55 @@ class PlaylistControllerTest {
 
 
     @Test
-    void 플레이리스트_조회_성공() throws Exception {
+    public void createPlaylistSuccess() throws Exception {
+        // given
+        final String api = "/playlist";
+
+        final PlaylistRequest playlistRequest = PlaylistRequest.builder().spotifyTrackId("spotifyTrackId").build();
+        final MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS);
+        doReturn(messageResponse).when(playlistService).createPlaylist("accessToken", playlistRequest.getSpotifyTrackId());
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.post(api)
+                        .cookie(new Cookie("accessToken", "accessToken"))
+                        .content(gson.toJson(playlistRequest))
+                        .contentType(APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("playlist/create-success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 access token 값")
+                        ),
+                        requestFields(
+                                fieldWithPath("spotifyTrackId").description("스포티파이 트랙 Id")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터")
+                        )
+                )
+        );
+
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+    }
+
+    @Test
+    public void 플레이리스트_조회_성공() throws Exception {
         // given
         final String url = "/playlist";
 
         final List<PlaylistResponse> playlist = Arrays.asList(
-                PlaylistResponse.of(buildPlaylist(), "representative album image url"),
-                PlaylistResponse.of(buildPlaylist(), "representative album image url"));
+                PlaylistResponse.of(buildPlaylist(), "representative album image url", 21000L),
+                PlaylistResponse.of(buildPlaylist(), "representative album image url", 21000L));
 
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlist);
 
@@ -128,7 +172,8 @@ class PlaylistControllerTest {
                     fieldWithPath("data.[].alarmFlag").description("알람 설정 여부, true = on / false = off"),
                     fieldWithPath("data.[].alarmStartTime").description("알람 시작 시간"),
                     fieldWithPath("data.[].trackCount").description("플레이리스트에 포함된 트랙 갯수"),
-                    fieldWithPath("data.[].repAlbumImageUrl").description("플레이리스트 대표 앨범 이미지 url")
+                    fieldWithPath("data.[].repAlbumImageUrl").description("플레이리스트 대표 앨범 이미지 url"),
+                    fieldWithPath("data.[].totalDurationTime").description("플레이리스트 전체 재생 시간")
                 )
             )
         );
@@ -141,7 +186,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    void 단일_플레이리스트_조회_실패_찾을수없는_플레이리스트() throws Exception {
+    public void 단일_플레이리스트_조회_실패_찾을수없는_플레이리스트() throws Exception {
         // given
         final String url = "/playlist/{playlistId}";
 
@@ -175,11 +220,12 @@ class PlaylistControllerTest {
     }
 
     @Test
-    void 단일_플레이리스트_조회_성공() throws Exception {
+    public void 단일_플레이리스트_조회_성공() throws Exception {
         // given
         final String url = "/playlist/{playlistId}";
 
-        final PlaylistResponse playlist = PlaylistResponse.of(buildPlaylist(), "representative album image url");
+        final PlaylistResponse playlist = PlaylistResponse.of(buildPlaylist(), "representative album image url", 21000L);
+
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlist);
 
         doReturn(message).when(playlistService).findPlaylist(30L);
@@ -206,7 +252,8 @@ class PlaylistControllerTest {
                                 fieldWithPath("data.alarmFlag").description("알람 설정 여부, true = on / false = off"),
                                 fieldWithPath("data.alarmStartTime").description("알람 시작 시간"),
                                 fieldWithPath("data.trackCount").description("플레이리스트에 포함된 트랙 갯수"),
-                                fieldWithPath("data.repAlbumImageUrl").description("플레이리스트 대표 앨범 이미지 url")
+                                fieldWithPath("data.repAlbumImageUrl").description("플레이리스트 대표 앨범 이미지 url"),
+                                fieldWithPath("data.totalDurationTime").description("플레이리스트 전체 재생 시간")
                         )
                 )
         );
@@ -218,7 +265,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    void 플레이리스트_알람설정변경_성공() throws Exception {
+    public void 플레이리스트_알람설정변경_성공() throws Exception {
         // given
         final String url = "/playlist/alert";
 
@@ -229,7 +276,7 @@ class PlaylistControllerTest {
         final ResultActions resultActions = mockMvc.perform(
             MockMvcRequestBuilders.patch(url)
                 .content(gson.toJson(
-                    PlaylistRequest.builder().playlistId(123L).alarmFlag(false).build()))
+                    PlaylistUpdateRequest.builder().playlistId(123L).alarmFlag(false).build()))
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -259,7 +306,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() throws Exception {
+    public void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() throws Exception {
         // given
         final String url = "/playlist/alert";
 
@@ -270,7 +317,7 @@ class PlaylistControllerTest {
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.patch(url)
                         .content(gson.toJson(
-                                PlaylistRequest.builder().playlistId(123L).alarmFlag(false).build()))
+                                PlaylistUpdateRequest.builder().playlistId(123L).alarmFlag(false).build()))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -300,7 +347,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    void 플레이리스트_삭제_성공() throws Exception {
+    public void 플레이리스트_삭제_성공() throws Exception {
         // given
         final String url = "/playlist";
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
@@ -340,7 +387,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    void 플레이리스트_삭제_실패_플레이리스트_찾을수없음() throws Exception {
+    public void 플레이리스트_삭제_실패_플레이리스트_찾을수없음() throws Exception {
         // given
         final String url = "/playlist";
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
@@ -380,7 +427,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    void 플레이리스트의_총재생시간_조회_성공() throws Exception {
+    public void 플레이리스트의_총재생시간_조회_성공() throws Exception {
         //given
         doReturn(
             MessageResponse.of(
@@ -412,7 +459,7 @@ class PlaylistControllerTest {
 
     //    MethodArgumentTypeMismatchException
     @Test
-    void 잘못된타입_들어오면_플레이리스트의_총재생시간_조회_실패() throws Exception {
+    public void 잘못된타입_들어오면_플레이리스트의_총재생시간_조회_실패() throws Exception {
         ResultActions resultActions = mockMvc.perform(
                 get("/playlist/total-duration-time/{id}", "wrongType")
             )
@@ -437,22 +484,17 @@ class PlaylistControllerTest {
     }
 
     @Test
-    void 플레이리스트_수정_성공() throws Exception {
+    public void 플레이리스트_수정_성공() throws Exception {
         //given
-        doReturn(
-            MessageResponse.of
-                (
-                    REQUEST_SUCCESS.getCode(),
-                    REQUEST_SUCCESS.getMessage()
-                ))
-            .when(playlistService).modifyPlaylist(any(PlaylistUpdateRequest.class));
+        doReturn(MessageResponse.of(REQUEST_SUCCESS))
+                .when(playlistService).modifyPlaylist(any(PlaylistUpdateRequest.class));
 
         //when
         ResultActions resultActions = mockMvc.perform(
             patch("/playlist")
                 .contentType(APPLICATION_JSON)
                 .content(gson.toJson(PlaylistUpdateRequest.builder()
-                    .id(1L)
+                    .playlistId(1L)
                     .playlistTitle("test playlist")
                     .alarmStartTime(LocalTime.of(10, 10))
                     .build()))
@@ -466,10 +508,10 @@ class PlaylistControllerTest {
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     requestFields(
-                        fieldWithPath("id").description("플레이리스트 id"),
+                        fieldWithPath("playlistId").description("플레이리스트 id"),
                         fieldWithPath("playlistTitle").description("플레이리스트 제목"),
-                        fieldWithPath("alarmStartTime").description("알람 시작 시간"),
-                        fieldWithPath("listSequence").ignored()
+                        fieldWithPath("alarmFlag").description("알람 설정 여부"),
+                        fieldWithPath("alarmStartTime").description("알람 시작 시간")
                     ),
                     responseFields(
                         fieldWithPath("code").description("응답 코드"),
@@ -483,7 +525,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    void 플레이리스트_수정_실패() throws Exception {
+    public void 플레이리스트_수정_실패() throws Exception {
         //given
         doThrow(
             new EntityNotFoundException("해당 플레이리스트가 없습니다")
@@ -494,7 +536,7 @@ class PlaylistControllerTest {
             patch("/playlist")
                 .contentType(APPLICATION_JSON)
                 .content(gson.toJson(PlaylistUpdateRequest.builder()
-                    .id(1L)
+                    .playlistId(1L)
                     .playlistTitle("test playlist")
                     .alarmStartTime(LocalTime.of(10, 10))
                     .build()))
@@ -508,10 +550,10 @@ class PlaylistControllerTest {
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     requestFields(
-                        fieldWithPath("id").description("플레이리스트 id"),
+                        fieldWithPath("playlistId").description("플레이리스트 id"),
                         fieldWithPath("playlistTitle").description("플레이리스트 제목"),
-                        fieldWithPath("alarmStartTime").description("알람 시작 시간"),
-                        fieldWithPath("listSequence").ignored()
+                        fieldWithPath("alarmFlag").description("알람 설정 여부"),
+                        fieldWithPath("alarmStartTime").description("알람 시작 시간")
                     ),
                     responseFields(
                         fieldWithPath("code").description("응답 코드"),

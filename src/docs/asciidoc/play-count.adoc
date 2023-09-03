@@ -1,0 +1,40 @@
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+
+== 메인 화면
+
+link:main.html[main 화면]
+
+== Play-count API
+
+=== 내가 가장 많이 들은 곡 조회
+
+==== 성공
+
+===== Request
+
+include::{snippets}/track/mostListenTrackByMe/http-request.adoc[]
+include::{snippets}/track/mostListenTrackByMe/request-cookies.adoc[]
+
+===== Response
+
+include::{snippets}/track/mostListenTrackByMe/http-response.adoc[]
+include::{snippets}/track/mostListenTrackByMe/response-fields.adoc[]
+
+---
+
+=== 친구가 가장 많이 들은 곡 조회
+
+==== 성공
+
+===== Request
+
+include::{snippets}/track/mostListenTrackByFriend/http-request.adoc[]
+include::{snippets}/track/mostListenTrackByFriend/request-cookies.adoc[]
+
+===== Response
+
+include::{snippets}/track/mostListenTrackByFriend/http-response.adoc[]
+include::{snippets}/track/mostListenTrackByFriend/response-fields.adoc[]

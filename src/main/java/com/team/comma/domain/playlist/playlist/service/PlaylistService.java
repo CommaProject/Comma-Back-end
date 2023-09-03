@@ -5,6 +5,8 @@ import com.team.comma.domain.playlist.playlist.dto.PlaylistUpdateRequest;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.common.dto.MessageResponse;
@@ -24,9 +26,25 @@ public class PlaylistService {
 
     private final PlaylistRepository playlistRepository;
 
+    private final TrackService trackService;
+
     private final UserRepository userRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
+
+    public MessageResponse createPlaylist(final String accessToken, final String spotifyTrackId) throws AccountException {
+        String userName = jwtTokenProvider.getUserPk(accessToken);
+        User user = userRepository.findByEmail(userName)
+                .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
+
+        Track track = trackService.findTrackOrSave(spotifyTrackId);
+
+        Playlist playlist = Playlist.buildPlaylist(user);
+        playlist.addPlaylistTrack(track);
+        playlistRepository.save(playlist);
+
+        return MessageResponse.of(REQUEST_SUCCESS);
+    }
 
     public MessageResponse findAllPlaylists(final String accessToken) throws AccountException {
         String userName = jwtTokenProvider.getUserPk(accessToken);
@@ -46,8 +64,9 @@ public class PlaylistService {
 
     @Transactional
     public MessageResponse modifyPlaylist(PlaylistUpdateRequest playlistUpdateRequest) {
-        Playlist playlist = playlistRepository.findById(playlistUpdateRequest.getId()).orElseThrow(
+        Playlist playlist = playlistRepository.findById(playlistUpdateRequest.getPlaylistId()).orElseThrow(
             () -> new EntityNotFoundException("플레이리스트를 찾을 수 없습니다."));
+
         playlist.modifyPlaylist(playlistUpdateRequest);
 
         return MessageResponse.of(REQUEST_SUCCESS);

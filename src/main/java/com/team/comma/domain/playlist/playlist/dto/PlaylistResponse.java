@@ -16,18 +16,20 @@ public final class PlaylistResponse {
     private final LocalTime alarmStartTime;
     private final int trackCount;
     private final String repAlbumImageUrl;
+    private final long totalDurationTime;
 
-    private PlaylistResponse(Playlist playlist, String repAlbumImageUrl) {
+    private PlaylistResponse(Playlist playlist, String repAlbumImageUrl, long totalDurationTime) {
         this.playlistId = playlist.getId();
         this.playlistTitle = playlist.getPlaylistTitle();
         this.alarmFlag = playlist.getAlarmFlag();
         this.alarmStartTime = playlist.getAlarmStartTime();
         this.trackCount = playlist.getPlaylistTrackList().size();
         this.repAlbumImageUrl = repAlbumImageUrl;
+        this.totalDurationTime = totalDurationTime;
     }
 
-    public static PlaylistResponse of(Playlist playlist, String repAlbumImageUrl) {
-        return new PlaylistResponse(playlist, repAlbumImageUrl);
+    public static PlaylistResponse of(Playlist playlist, String repAlbumImageUrl, long totalDurationTime) {
+        return new PlaylistResponse(playlist, repAlbumImageUrl, totalDurationTime);
     }
 
 }

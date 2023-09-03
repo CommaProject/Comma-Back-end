@@ -111,7 +111,7 @@ public class ArchiveServiceTest {
         // given
         User user = User.buildUser();
         Track track = buildTrack();
-        Playlist playlist = Playlist.buildPlaylist(user);
+        Playlist playlist = buildPlaylist(user);
         playlist.addPlaylistTrack(track);
 
         Archive archive = Archive.buildArchive(user,"comment", playlist);
@@ -135,7 +135,7 @@ public class ArchiveServiceTest {
         // given
         User user = User.buildUser();
         Track track = buildTrack();
-        Playlist playlist = Playlist.buildPlaylist(user);
+        Playlist playlist = buildPlaylist(user);
         playlist.addPlaylistTrack(track);
 
         Archive archive = Archive.buildArchive(user,"comment", playlist);
@@ -166,6 +166,15 @@ public class ArchiveServiceTest {
                 .albumImageUrl("url")
                 .spotifyTrackHref("href")
                 .spotifyTrackId("id123")
+                .build();
+    }
+
+    public Playlist buildPlaylist(User user){
+        return Playlist.builder()
+                .id(1L)
+                .playlistTitle("새로운 플레이리스트")
+                .user(user)
+                .alarmFlag(true)
                 .build();
     }
 

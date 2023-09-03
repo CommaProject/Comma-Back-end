@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlaylistRequest {
-    private long playlistId;
-    private boolean alarmFlag;
+
+    private String spotifyTrackId;
 }
