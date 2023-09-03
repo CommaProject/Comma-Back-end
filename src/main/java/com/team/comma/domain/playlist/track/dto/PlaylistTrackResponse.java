@@ -1,5 +1,6 @@
 package com.team.comma.domain.playlist.track.dto;
 
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.domain.Track;
 import lombok.*;
 
@@ -17,9 +18,9 @@ public final class PlaylistTrackResponse {
     private final String albumImageUrl;
     private final boolean trackAlarmFlag;
 
-    private final List<PlaylistTrackArtistResponse> trackArtistList;
+    private final List<TrackArtistResponse> trackArtistList;
 
-    private PlaylistTrackResponse(Track track, boolean trackAlarmFlag, List<PlaylistTrackArtistResponse> trackArtistList) {
+    private PlaylistTrackResponse(Track track, boolean trackAlarmFlag, List<TrackArtistResponse> trackArtistList) {
         this.trackId = track.getId();
         this.trackTitle = track.getTrackTitle();
         this.durationTimeMs = track.getDurationTimeMs();
@@ -28,11 +29,11 @@ public final class PlaylistTrackResponse {
         this.trackArtistList = new ArrayList<>(trackArtistList);
     }
 
-    public static PlaylistTrackResponse of(Track track, boolean trackAlarmFlag, List<PlaylistTrackArtistResponse> trackArtistList) {
+    public static PlaylistTrackResponse of(Track track, boolean trackAlarmFlag, List<TrackArtistResponse> trackArtistList) {
         return new PlaylistTrackResponse(track, trackAlarmFlag, trackArtistList);
     }
 
-    public List<PlaylistTrackArtistResponse> getTrackArtistList() {
+    public List<TrackArtistResponse> getTrackArtistList() {
         return Collections.unmodifiableList(trackArtistList);
     }
 

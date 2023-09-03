@@ -4,7 +4,6 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.s3.exception.S3Exception;
-import com.team.comma.global.s3.service.FileUploadService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -2,7 +2,7 @@ package com.team.comma.domain.playlist.track.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
                         playlistTrack.track.albumImageUrl,
                         playlistTrack.trackAlarmFlag,
                         Projections.list(Projections.constructor(
-                                PlaylistTrackArtistResponse.class,
+                                TrackArtistResponse.class,
                                 trackArtist.id,
                                 trackArtist.artistName))))
                 .from(playlistTrack)

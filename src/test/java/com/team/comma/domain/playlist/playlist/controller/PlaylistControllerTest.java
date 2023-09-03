@@ -30,7 +30,7 @@ import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistRequest;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
-import com.team.comma.domain.playlist.playlist.dto.PlaylistUpdateRequest;
+import com.team.comma.domain.playlist.playlist.dto.PlaylistModifyRequest;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
 import com.team.comma.domain.playlist.playlist.service.PlaylistService;
 import com.team.comma.domain.playlist.track.service.PlaylistTrackService;
@@ -61,8 +61,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import javax.security.auth.login.AccountException;
 
 @AutoConfigureRestDocs
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
@@ -95,7 +93,7 @@ class PlaylistControllerTest {
 
 
     @Test
-    public void createPlaylistSuccess() throws Exception {
+    public void createPlaylist_Success() throws Exception {
         // given
         final String api = "/playlist";
 
@@ -111,7 +109,7 @@ class PlaylistControllerTest {
                         .contentType(APPLICATION_JSON));
 
         // then
-        resultActions.andExpect(status().isOk()).andDo(
+        resultActions.andExpect(status().isCreated()).andDo(
                 document("playlist/create-success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
@@ -137,7 +135,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    public void 플레이리스트_조회_성공() throws Exception {
+    public void findAllPlaylists_Success() throws Exception {
         // given
         final String url = "/playlist";
 
@@ -157,7 +155,7 @@ class PlaylistControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-            document("spotify/selectPlaylist",
+            document("playlist/find-all-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestCookies(
@@ -186,7 +184,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    public void 단일_플레이리스트_조회_실패_찾을수없는_플레이리스트() throws Exception {
+    public void findPlaylist_Fail_PlaylistNotFound() throws Exception {
         // given
         final String url = "/playlist/{playlistId}";
 
@@ -199,7 +197,7 @@ class PlaylistControllerTest {
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
-                document("spotify/dummy",
+                document("playlist/find-fail-playlist-not-found",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -220,7 +218,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    public void 단일_플레이리스트_조회_성공() throws Exception {
+    public void findPlaylist_Success() throws Exception {
         // given
         final String url = "/playlist/{playlistId}";
 
@@ -237,7 +235,7 @@ class PlaylistControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("spotify/findPlaylist",
+                document("playlist/find-success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -265,34 +263,74 @@ class PlaylistControllerTest {
     }
 
     @Test
-    public void 플레이리스트_알람설정변경_성공() throws Exception {
+    public void modifyPlaylist_Success() throws Exception {
         // given
-        final String url = "/playlist/alert";
+        final String url = "/playlist";
 
-        doReturn(MessageResponse.of(PLAYLIST_ALARM_UPDATED)
-        ).when(playlistService).modifyPlaylistAlarmFlag(123L, false);
+        final PlaylistModifyRequest request = PlaylistModifyRequest.builder().playlistId(1L).alarmDays(List.of(1,2,3)).build();
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(playlistService).modifyPlaylist(any());
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-            MockMvcRequestBuilders.patch(url)
-                .content(gson.toJson(
-                    PlaylistUpdateRequest.builder().playlistId(123L).alarmFlag(false).build()))
+                RestDocumentationRequestBuilders.patch(url)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("playlist/modify-success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("playlistId").description("플레이리스트 id"),
+                                fieldWithPath("alarmDays.[]").description("알람 설정 요일 리스트 (1 ~ 7 : 월 ~ 일)")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+
+    }
+    @Test
+    public void modifyPlaylistAlarmFlag_Success() throws Exception {
+        // given
+        final String url = "/playlist/alert";
+
+        final PlaylistModifyRequest request = PlaylistModifyRequest.builder().playlistId(1L).build();
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS))
+                .when(playlistService).modifyPlaylistAlarmFlag(any());
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.patch(url)
+                .content(gson.toJson(request))
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-            document("spotify/updatePlaylistAlert",
+            document("playlist/modify-alarm-flag-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestFields(
-                    fieldWithPath("playlistId").description("플레이리스트 id"),
-                    fieldWithPath("alarmFlag").description("변경 될 알람 상태, true = on / false = off")
+                    fieldWithPath("playlistId").description("플레이리스트 id")
                 ),
                 responseFields(
-                    fieldWithPath("code").description("응답 코드"),
-                    fieldWithPath("message").description("메세지"),
-                    fieldWithPath("data").description("데이터")
+                        fieldWithPath("code").description("응답 코드"),
+                        fieldWithPath("message").description("메세지"),
+                        fieldWithPath("data").description("데이터")
                 )
             )
         );
@@ -301,34 +339,34 @@ class PlaylistControllerTest {
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 MessageResponse.class);
 
-        assertThat(result.getCode()).isEqualTo(PLAYLIST_ALARM_UPDATED.getCode());
-        assertThat(result.getMessage()).isEqualTo(PLAYLIST_ALARM_UPDATED.getMessage());
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
     @Test
-    public void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() throws Exception {
+    public void modifyPlaylistAlarmFlag_Fail_PlaylistNotFound() throws Exception {
         // given
         final String url = "/playlist/alert";
 
+        final PlaylistModifyRequest request = PlaylistModifyRequest.builder().playlistId(1L).build();
+
         doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
-                .when(playlistService).modifyPlaylistAlarmFlag(123L, false);
+                .when(playlistService).modifyPlaylistAlarmFlag(any());
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.patch(url)
-                        .content(gson.toJson(
-                                PlaylistUpdateRequest.builder().playlistId(123L).alarmFlag(false).build()))
+                RestDocumentationRequestBuilders.patch(url)
+                        .content(gson.toJson(request))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
-                document("spotify/updatePlaylistAlertFail",
+                document("playlist/modify-alarm-flag-fail-playlist-not-found",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("playlistId").description("플레이리스트 id"),
-                                fieldWithPath("alarmFlag").description("변경 될 알람 상태, true = on / false = off")
+                                fieldWithPath("playlistId").description("플레이리스트 id")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -347,7 +385,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    public void 플레이리스트_삭제_성공() throws Exception {
+    public void deletePlaylist_Success() throws Exception {
         // given
         final String url = "/playlist";
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
@@ -364,7 +402,7 @@ class PlaylistControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("spotify/deletePlaylist",
+                document("playlist/delete-success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
@@ -387,7 +425,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    public void 플레이리스트_삭제_실패_플레이리스트_찾을수없음() throws Exception {
+    public void deletePlaylist_Fail_PlaylistNotFound() throws Exception {
         // given
         final String url = "/playlist";
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
@@ -404,7 +442,7 @@ class PlaylistControllerTest {
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
-                document("spotify/deletePlaylistFail",
+                document("playlist/delete-fail-playlist-not-found",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
@@ -427,7 +465,7 @@ class PlaylistControllerTest {
     }
 
     @Test
-    public void 플레이리스트의_총재생시간_조회_성공() throws Exception {
+    public void findTotalDurationTime_Success() throws Exception {
         //given
         doReturn(
             MessageResponse.of(
@@ -443,7 +481,7 @@ class PlaylistControllerTest {
 
         resultActions.andExpect(status().isOk())
             .andDo(
-                document("spotify/selectPlaylistTotalDurationTime",
+                document("playlist/find-total-duration-time-success",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     pathParameters(
@@ -457,46 +495,19 @@ class PlaylistControllerTest {
                 ));
     }
 
-    //    MethodArgumentTypeMismatchException
     @Test
-    public void 잘못된타입_들어오면_플레이리스트의_총재생시간_조회_실패() throws Exception {
-        ResultActions resultActions = mockMvc.perform(
-                get("/playlist/total-duration-time/{id}", "wrongType")
-            )
-            .andDo(print());
-
-        resultActions.andExpect(status().isBadRequest())
-            .andDo(
-                document(
-                    "spotify/selectPlaylistTotalDurationTimeFail",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    pathParameters(
-                        parameterWithName("id").description("플레이리스트 id")
-                    ),
-                    responseFields(
-                        fieldWithPath("code").description("응답 코드"),
-                        fieldWithPath("message").description("메세지"),
-                        fieldWithPath("data").description("데이터")
-                    )
-                )
-            );
-    }
-
-    @Test
-    public void 플레이리스트_수정_성공() throws Exception {
+    public void modifyPlaylistTitle_Success() throws Exception {
         //given
         doReturn(MessageResponse.of(REQUEST_SUCCESS))
-                .when(playlistService).modifyPlaylist(any(PlaylistUpdateRequest.class));
+                .when(playlistService).modifyPlaylistTitle(any(PlaylistModifyRequest.class));
 
         //when
         ResultActions resultActions = mockMvc.perform(
-            patch("/playlist")
+            patch("/playlist/title")
                 .contentType(APPLICATION_JSON)
-                .content(gson.toJson(PlaylistUpdateRequest.builder()
+                .content(gson.toJson(PlaylistModifyRequest.builder()
                     .playlistId(1L)
                     .playlistTitle("test playlist")
-                    .alarmStartTime(LocalTime.of(10, 10))
                     .build()))
         ).andDo(print());
 
@@ -504,19 +515,17 @@ class PlaylistControllerTest {
         resultActions.andExpect(status().isOk())
             .andDo(
                 document(
-                    "spotify/updatePlaylist",
+                    "playlist/modify-title-success",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     requestFields(
                         fieldWithPath("playlistId").description("플레이리스트 id"),
-                        fieldWithPath("playlistTitle").description("플레이리스트 제목"),
-                        fieldWithPath("alarmFlag").description("알람 설정 여부"),
-                        fieldWithPath("alarmStartTime").description("알람 시작 시간")
+                        fieldWithPath("playlistTitle").description("플레이리스트 제목")
                     ),
                     responseFields(
                         fieldWithPath("code").description("응답 코드"),
                         fieldWithPath("message").description("메세지"),
-                        fieldWithPath("data").ignored()
+                        fieldWithPath("data").description("데이터")
                     )
 
                 )
@@ -525,20 +534,19 @@ class PlaylistControllerTest {
     }
 
     @Test
-    public void 플레이리스트_수정_실패() throws Exception {
+    public void modifyPlaylistTitle_Fail_PlaylistNotFound() throws Exception {
         //given
         doThrow(
             new EntityNotFoundException("해당 플레이리스트가 없습니다")
-        ).when(playlistService).modifyPlaylist(any(PlaylistUpdateRequest.class));
+        ).when(playlistService).modifyPlaylistTitle(any(PlaylistModifyRequest.class));
 
         //when
         ResultActions resultActions = mockMvc.perform(
-            patch("/playlist")
+            patch("/playlist/title")
                 .contentType(APPLICATION_JSON)
-                .content(gson.toJson(PlaylistUpdateRequest.builder()
+                .content(gson.toJson(PlaylistModifyRequest.builder()
                     .playlistId(1L)
                     .playlistTitle("test playlist")
-                    .alarmStartTime(LocalTime.of(10, 10))
                     .build()))
         ).andDo(print());
 
@@ -546,14 +554,12 @@ class PlaylistControllerTest {
         resultActions.andExpect(status().isBadRequest())
             .andDo(
                 document(
-                    "spotify/updatePlaylistFail",
+                    "playlist/modify-title-fail-playlist-not-found",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     requestFields(
                         fieldWithPath("playlistId").description("플레이리스트 id"),
-                        fieldWithPath("playlistTitle").description("플레이리스트 제목"),
-                        fieldWithPath("alarmFlag").description("알람 설정 여부"),
-                        fieldWithPath("alarmStartTime").description("알람 시작 시간")
+                        fieldWithPath("playlistTitle").description("플레이리스트 제목")
                     ),
                     responseFields(
                         fieldWithPath("code").description("응답 코드"),

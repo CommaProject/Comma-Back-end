@@ -1,4 +1,4 @@
-package com.team.comma.domain.playlist.alertday;
+package com.team.comma.domain.playlist.alertday.domain;
 
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import jakarta.persistence.Entity;
@@ -29,11 +29,18 @@ public class AlertDay {
     private Long id;
 
     /**
-     * 1 ~ 7 : 월요일 ~ 일요일
+     * 1 ~ 7 : 토
      */
     private DayOfWeek alarmDay;
 
     @JoinColumn(name = "playlist_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Playlist playlist;
+
+    public static AlertDay buildAlertDay(Playlist playlist, DayOfWeek alarmDay){
+        return AlertDay.builder()
+                .playlist(playlist)
+                .alarmDay(alarmDay)
+                .build();
+    }
 }

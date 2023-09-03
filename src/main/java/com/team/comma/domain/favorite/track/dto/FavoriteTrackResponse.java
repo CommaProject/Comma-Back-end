@@ -1,7 +1,7 @@
 package com.team.comma.domain.favorite.track.dto;
 
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,9 +22,9 @@ public class FavoriteTrackResponse {
     private String trackAlbumImageUrl;
     private String spotifyTrackId;
 
-    private List<PlaylistTrackArtistResponse> trackArtistList;
+    private List<TrackArtistResponse> trackArtistList;
 
-    private FavoriteTrackResponse(FavoriteTrack favoriteTrack, List<PlaylistTrackArtistResponse> trackArtistList) {
+    private FavoriteTrackResponse(FavoriteTrack favoriteTrack, List<TrackArtistResponse> trackArtistList) {
         this.favoriteTrackId = favoriteTrack.getId();
         this.trackId = favoriteTrack.getTrack().getId();
         this.trackTitle = favoriteTrack.getTrack().getTrackTitle();
@@ -33,7 +33,7 @@ public class FavoriteTrackResponse {
         this.trackArtistList = new ArrayList<>(trackArtistList);
     }
 
-    public static FavoriteTrackResponse of(FavoriteTrack favoriteTrack, List<PlaylistTrackArtistResponse> trackArtistList) {
+    public static FavoriteTrackResponse of(FavoriteTrack favoriteTrack, List<TrackArtistResponse> trackArtistList) {
         return new FavoriteTrackResponse(favoriteTrack, trackArtistList);
     }
 

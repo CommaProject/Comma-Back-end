@@ -20,32 +20,6 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public int findTotalDurationTimeMsByPlaylistId(Long playlistId) {
-        return queryFactory.select(track.durationTimeMs.sum().coalesce(0))
-            .from(playlist)
-            .innerJoin(track).fetchJoin()
-            .where(playlist.id.eq(playlistId))
-            .fetchOne();
-
-    }
-
-    @Override
-    public long modifyAlarmFlag(long id, boolean alarmFlag) {
-        return queryFactory.update(playlist)
-                .set(playlist.alarmFlag, alarmFlag)
-                .where(playlist.id.eq(id))
-                .execute();
-    }
-
-    @Override
-    public long deletePlaylist(long id) {
-        return queryFactory.update(playlist)
-                .set(playlist.delFlag,true)
-                .where(playlist.id.eq(id))
-                .execute();
-    }
-
-    @Override
     public List<PlaylistResponse> findAllPlaylistsByUser(User user) {
         return queryFactory.select(
                         Projections.constructor(
@@ -69,7 +43,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
     }
 
     @Override
-    public Optional<PlaylistResponse> findPlaylistsByPlaylistId(long playlistId) {
+    public Optional<PlaylistResponse> findPlaylistByPlaylistId(long playlistId) {
         PlaylistResponse result = queryFactory.select(
                         Projections.constructor(
                                 PlaylistResponse.class,
@@ -92,5 +66,24 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
 
         return Optional.ofNullable(result);
     }
+
+    @Override
+    public int findTotalDurationTimeMsByPlaylistId(Long playlistId) {
+        return queryFactory.select(track.durationTimeMs.sum().coalesce(0))
+                .from(playlist)
+                .innerJoin(track).fetchJoin()
+                .where(playlist.id.eq(playlistId))
+                .fetchOne();
+
+    }
+
+    @Override
+    public long deletePlaylist(List<Long> playlistIdList) {
+        return queryFactory.update(playlist)
+                .set(playlist.delFlag, true)
+                .where(playlist.id.in(playlistIdList))
+                .execute();
+    }
+
 
 }

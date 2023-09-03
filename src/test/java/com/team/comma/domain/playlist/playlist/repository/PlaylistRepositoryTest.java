@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
-import com.team.comma.domain.playlist.playlist.dto.PlaylistUpdateRequest;
 import com.team.comma.domain.playlist.track.repository.PlaylistTrackRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.repository.TrackRepository;
@@ -14,7 +13,6 @@ import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
-import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,24 +105,11 @@ class PlaylistRepositoryTest {
         playlistTrackRepository.save(playlistTrack1);
 
         // when
-        final PlaylistResponse result = playlistRepository.findPlaylistsByPlaylistId(playlist1.getId()).get();
+        final PlaylistResponse result = playlistRepository.findPlaylistByPlaylistId(playlist1.getId()).get();
 
         // then
         assertThat(result).isNotNull();
         assertThat(result.getPlaylistTitle()).isEqualTo(playlist1.getPlaylistTitle());
-    }
-
-    @Test
-    void 플레이리스트_알람설정변경() {
-        // given
-        final User user = userRepository.save(buildUser());
-        final Playlist playlist = playlistRepository.save(buildPlaylist(user, "test playlist"));
-
-        // when
-        long result = playlistRepository.modifyAlarmFlag(playlist.getId(), false);
-
-        // then
-        assertThat(result).isEqualTo(1);
     }
 
     @Test
@@ -134,7 +119,7 @@ class PlaylistRepositoryTest {
         final Playlist playlist = playlistRepository.save(buildPlaylist(user, "test playlist"));
 
         // when
-        long result = playlistRepository.deletePlaylist(playlist.getId());
+        long result = playlistRepository.deletePlaylist(List.of(playlist.getId()));
 
         // then
         assertThat(result).isEqualTo(1);
@@ -178,28 +163,6 @@ class PlaylistRepositoryTest {
 
         // then
         assertThat(durationSum).isEqualTo(3000L);
-    }
-
-    @Test
-    void 플리의_내용을_수정한다() {
-        //given
-        Playlist playlist = buildPlaylist();
-        playlistRepository.save(playlist);
-
-        PlaylistUpdateRequest playlistUpdateRequest = PlaylistUpdateRequest.builder()
-            .playlistId(playlist.getId())
-            .playlistTitle("플리제목변경")
-            .alarmStartTime(LocalTime.now())
-            .build();
-
-        //when
-        playlist.modifyPlaylist(playlistUpdateRequest);
-
-        Playlist updatedPlaylist = playlistRepository.findById(playlistUpdateRequest.getPlaylistId()).get();
-
-        //then
-        assertThat(updatedPlaylist.getPlaylistTitle()).isEqualTo(
-            playlistUpdateRequest.getPlaylistTitle());
     }
 
     private User buildUser() {

@@ -2,8 +2,6 @@ package com.team.comma.domain.playlist.archive.service;
 
 import com.team.comma.domain.playlist.archive.domain.Archive;
 import com.team.comma.domain.playlist.archive.dto.ArchiveResponse;
-import com.team.comma.domain.playlist.archive.service.ArchiveService;
-import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
 import com.team.comma.domain.playlist.track.repository.PlaylistTrackRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.repository.TrackRepository;

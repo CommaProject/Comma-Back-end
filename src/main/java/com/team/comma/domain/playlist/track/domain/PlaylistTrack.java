@@ -35,6 +35,7 @@ public class PlaylistTrack {
 
     @ColumnDefault("false")
     private Boolean playFlag;
+
     @ColumnDefault("false")
     private Boolean trackAlarmFlag;
 
@@ -46,5 +47,11 @@ public class PlaylistTrack {
     @ManyToOne(fetch = FetchType.LAZY)
     private Track track;
 
+    public static PlaylistTrack buildPlaylistTrack(Playlist playlist, Track track){
+        return PlaylistTrack.builder()
+                .playlist(playlist)
+                .track(track)
+                .build();
+    }
 
 }

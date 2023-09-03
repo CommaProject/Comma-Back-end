@@ -1,7 +1,6 @@
 package com.team.comma.domain.user.history.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.user.history.controller.HistoryController;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.history.dto.HistoryRequest;
 import com.team.comma.domain.user.history.dto.HistoryResponse;

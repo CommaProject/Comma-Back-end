@@ -7,7 +7,6 @@ import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
-import com.team.comma.domain.playlist.track.repository.PlaylistTrackRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.user.user.constant.UserRole;

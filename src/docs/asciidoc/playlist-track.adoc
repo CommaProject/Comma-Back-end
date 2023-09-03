@@ -18,25 +18,19 @@ link:main.html[main 화면]
 
 ===== Request
 
-include::{snippets}/spotify/savePlaylistTrack/http-request.adoc[]
-include::{snippets}/spotify/savePlaylistTrack/request-fields.adoc[]
+include::{snippets}/playlist/track/create-success/http-request.adoc[]
+include::{snippets}/playlist/track/create-success/request-fields.adoc[]
 
 ===== Response
 
-include::{snippets}/spotify/savePlaylistTrack/http-response.adoc[]
-include::{snippets}/spotify/savePlaylistTrack/response-fields.adoc[]
-
-==== 실패 - 존재하지 않는 사용자
-
-===== Response
-
-include::{snippets}/spotify/savePlaylistTrackFailUser/http-response.adoc[]
+include::{snippets}/playlist/track/create-success/http-response.adoc[]
+include::{snippets}/playlist/track/create-success/response-fields.adoc[]
 
 ==== 실패 - 존재하지 않는 플레이리스트
 
 ===== Response
 
-include::{snippets}/spotify/savePlaylistTrackFailTrack/http-response.adoc[]
+include::{snippets}/playlist/track/create-fail-playlist-not-found/http-response.adoc[]
 
 ---
 
@@ -46,19 +40,19 @@ include::{snippets}/spotify/savePlaylistTrackFailTrack/http-response.adoc[]
 
 ===== Request
 
-include::{snippets}/spotify/selectPlaylistsTracks/http-request.adoc[]
+include::{snippets}/playlist/track/find-success/http-request.adoc[]
 
 ===== Response
 
-include::{snippets}/spotify/selectPlaylistsTracks/http-response.adoc[]
-include::{snippets}/spotify/selectPlaylistsTracks/response-fields.adoc[]
+include::{snippets}/playlist/track/find-success/http-response.adoc[]
+include::{snippets}/playlist/track/find-success/response-fields.adoc[]
 
 ==== 실패 - 플레이리스트 찾을 수 없음
 
 ===== Response
 
-include::{snippets}/spotify/selectPlaylistsTracksFailure/http-response.adoc[]
-include::{snippets}/spotify/selectPlaylistsTracksFailure/response-fields.adoc[]
+include::{snippets}/playlist/track/find-fail-playlist-not-found/http-response.adoc[]
+include::{snippets}/playlist/track/find-fail-playlist-not-found/response-fields.adoc[]
 
 ---
 
@@ -68,16 +62,16 @@ include::{snippets}/spotify/selectPlaylistsTracksFailure/response-fields.adoc[]
 
 ===== Request
 
-include::{snippets}/spotify/deletePlaylistTrack/http-request.adoc[]
-include::{snippets}/spotify/deletePlaylistTrack/request-fields.adoc[]
+include::{snippets}/playlist/track/delete-success/http-request.adoc[]
+include::{snippets}/playlist/track/delete-success/request-fields.adoc[]
 
 ===== Response
 
-include::{snippets}/spotify/deletePlaylistTrack/http-response.adoc[]
-include::{snippets}/spotify/deletePlaylistTrack/response-fields.adoc[]
+include::{snippets}/playlist/track/delete-success/http-response.adoc[]
+include::{snippets}/playlist/track/delete-success/response-fields.adoc[]
 
 ==== 실패 - 존재하지 않는 트랙
 
 ===== Response
 
-include::{snippets}/spotify/deletePlaylistTrackFail/http-response.adoc[]
+include::{snippets}/playlist/track/delete-fail-track-not-found/http-response.adoc[]
