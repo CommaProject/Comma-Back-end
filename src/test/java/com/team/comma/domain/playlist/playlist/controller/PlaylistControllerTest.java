@@ -225,6 +225,7 @@ class PlaylistControllerTest {
         final String url = "/playlist/{playlistId}";
 
         final PlaylistResponse playlist = PlaylistResponse.of(buildPlaylist(), "representative album image url", 21000L);
+
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlist);
 
         doReturn(message).when(playlistService).findPlaylist(30L);

@@ -82,6 +82,7 @@ class PlaylistServiceTest {
                 buildUserPlaylist(Arrays.asList(playlistTrack)),
                 "representative album image url",
                 21000L);
+
         final List<PlaylistResponse> playlistResponseList = List.of(playlistResponse);
 
         doReturn(optionalUser).when(userRepository).findByEmail(userEmail);
