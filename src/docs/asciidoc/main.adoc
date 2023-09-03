@@ -30,9 +30,9 @@
 === Playlist 문서
 
 * link:playlist[Playlist]
+* link:playlist-track[Playlist-Track]
 * link:archive[Archive]
 * link:recommend[Recommend]
-* link:playlist-track[Playlist-Track]
 
 === Track 문서
 
