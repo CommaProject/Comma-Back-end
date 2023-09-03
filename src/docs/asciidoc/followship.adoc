@@ -100,7 +100,7 @@ include::{snippets}/following/unblockSuccess/response-fields.adoc[]
 
 ---
 
-=== 팔로우 여부 확인
+=== 팔로우 여부 조회
 
 ==== 성공 - 팔로우 한 사용자
 
