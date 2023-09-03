@@ -11,6 +11,10 @@
 
 == API
 
+=== Security 문서
+
+* link:security.html[Security]
+
 === User 문서
 
 * link:user[User]
@@ -38,7 +42,3 @@
 === Spotify 문서
 
 * link:spotify[Spotify]
-
-=== Security 문서
-
-* link:security.html[Security]
