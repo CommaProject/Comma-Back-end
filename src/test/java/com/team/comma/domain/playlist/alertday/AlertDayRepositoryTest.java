@@ -1,5 +1,6 @@
-package com.team.comma.domain.playlist.alertDay.repository;
+package com.team.comma.domain.playlist.alertday;
 
+import com.team.comma.domain.alertday.repository.AlertDayRepository;
 import com.team.comma.domain.playlist.alertDay.domain.AlertDay;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
