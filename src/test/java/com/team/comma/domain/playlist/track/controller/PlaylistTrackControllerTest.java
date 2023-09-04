@@ -10,8 +10,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -25,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackModifyRequest;
 import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackDeleteRequest;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
@@ -92,7 +92,7 @@ class PlaylistTrackControllerTest {
         // given
         final String api = "/playlist/track";
 
-        final PlaylistTrackRequest playlistTrackRequest = PlaylistTrackRequest.builder()
+        final PlaylistTrackRequest request = PlaylistTrackRequest.builder()
                 .playlistIdList(List.of(1L, 2L, 3L))
                 .spotifyTrackId("spotify track id")
                 .build();
@@ -104,7 +104,7 @@ class PlaylistTrackControllerTest {
         ResultActions resultActions = mockMvc.perform(
                 post(api)
                         .contentType(APPLICATION_JSON)
-                        .content(gson.toJson(playlistTrackRequest)));
+                        .content(gson.toJson(request)));
 
         // then
         resultActions.andExpect(status().isCreated())
@@ -125,6 +125,46 @@ class PlaylistTrackControllerTest {
                 );
 
     }
+
+    @Test
+    void modifyPlaylistTrackAlarmFlag_Success() throws Exception {
+        // given
+        final String api = "/playlist/track";
+
+        final PlaylistTrackModifyRequest request = PlaylistTrackModifyRequest.builder()
+                .playlistId(1L)
+                .trackId(1L)
+                .build();
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS, false))
+                .when(playlistTrackService).modifyPlaylistTrackAlarmFlag(any());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                patch(api)
+                        .contentType(APPLICATION_JSON)
+                        .content(gson.toJson(request)));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        document(
+                                "playlist/track/modify-alarm-flag-success",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("playlistId").description("플레이리스트 Id"),
+                                        fieldWithPath("trackId").description("트랙 Id")
+                                ),
+                                responseFields(
+                                        fieldWithPath("code").description("응답 코드"),
+                                        fieldWithPath("message").description("메세지"),
+                                        fieldWithPath("data").description("데이터 - 변경 된 상태"))
+                        )
+                );
+
+    }
+
     @Test
     void 플레이리스트의_트랙_삭제_성공() throws Exception {
         // given
@@ -136,7 +176,7 @@ class PlaylistTrackControllerTest {
                 REQUEST_SUCCESS.getMessage(),
                 trackIdList.size())
         ).when(playlistTrackService)
-            .removePlaylistAndTrack(anySet(), anyLong());
+            .deletePlaylistTrack(anySet(), anyLong());
 
         //when //then
         ResultActions resultActions = mockMvc.perform(
@@ -177,7 +217,7 @@ class PlaylistTrackControllerTest {
                 REQUEST_SUCCESS.getMessage(),
                 trackIdListSize)
         ).when(playlistTrackService)
-            .removePlaylistAndTrack(anySet(), anyLong());
+            .deletePlaylistTrack(anySet(), anyLong());
 
         //when
         ResultActions resultActions = mockMvc.perform(
@@ -199,7 +239,7 @@ class PlaylistTrackControllerTest {
         Set<Long> trackIdList = Set.of();
 
         doThrow(new EntityNotFoundException("해당 트랙이 존재하지 않습니다."))
-            .when(playlistTrackService).removePlaylistAndTrack(anySet(), anyLong());
+            .when(playlistTrackService).deletePlaylistTrack(anySet(), anyLong());
 
         //when
         ResultActions resultActions = mockMvc.perform(

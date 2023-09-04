@@ -47,10 +47,14 @@ public class PlaylistTrack {
     @ManyToOne(fetch = FetchType.LAZY)
     private Track track;
 
+    public void modifyTrackAlarmFlag(){
+        this.trackAlarmFlag = !this.trackAlarmFlag;
+    }
     public static PlaylistTrack buildPlaylistTrack(Playlist playlist, Track track){
         return PlaylistTrack.builder()
                 .playlist(playlist)
                 .track(track)
+                .trackAlarmFlag(false)
                 .build();
     }
 

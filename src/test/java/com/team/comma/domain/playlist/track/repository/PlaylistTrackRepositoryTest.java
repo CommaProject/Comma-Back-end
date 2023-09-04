@@ -109,7 +109,7 @@ class PlaylistTrackRepositoryTest {
 
         //when
         boolean isPresent = playlistTrackRepository
-            .findByTrackIdAndPlaylistId(track.getId(), playlist.getId())
+            .findByPlaylistIdAndTrackId(playlist.getId(), track.getId())
             .isPresent();
 
         //then
@@ -136,7 +136,7 @@ class PlaylistTrackRepositoryTest {
             playlist.getId());
 
         Optional<PlaylistTrack> deletePlaylistTrack =
-            playlistTrackRepository.findByTrackIdAndPlaylistId(track.getId(), playlist.getId());
+            playlistTrackRepository.findByPlaylistIdAndTrackId(playlist.getId(), track.getId());
         //then
         assertThat(deleteCount).isEqualTo(1);
 

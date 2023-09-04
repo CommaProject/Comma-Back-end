@@ -1,6 +1,7 @@
 package com.team.comma.domain.playlist.track.controller;
 
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackDeleteRequest;
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackModifyRequest;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
 import com.team.comma.domain.playlist.track.service.PlaylistTrackService;
 import com.team.comma.global.common.dto.MessageResponse;
@@ -30,11 +31,18 @@ public class PlaylistTrackController {
                 .body(playlistTrackService.findPlaylistTrack(playlistId));
     }
 
+    @PatchMapping
+    public ResponseEntity<MessageResponse> modifyPlaylistTrackAlarmFlag(
+            @RequestBody final PlaylistTrackModifyRequest playlistTrackModifyRequest){
+        return ResponseEntity.ok()
+                .body(playlistTrackService.modifyPlaylistTrackAlarmFlag(playlistTrackModifyRequest));
+    }
+
     @DeleteMapping
     public ResponseEntity<MessageResponse> deletePlaylistTrack(
             @RequestBody final PlaylistTrackDeleteRequest playlistTrackRequest) {
         return ResponseEntity.ok()
-                .body(playlistTrackService.removePlaylistAndTrack(playlistTrackRequest.getTrackIdList(), playlistTrackRequest.getPlaylistId()));
+                .body(playlistTrackService.deletePlaylistTrack(playlistTrackRequest.getTrackIdList(), playlistTrackRequest.getPlaylistId()));
     }
 
 }
