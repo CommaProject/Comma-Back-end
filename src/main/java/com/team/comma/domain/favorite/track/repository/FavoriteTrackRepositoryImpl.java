@@ -3,7 +3,7 @@ package com.team.comma.domain.favorite.track.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.user.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                         track.albumImageUrl,
                         track.spotifyTrackId,
                         Projections.list(Projections.constructor(
-                                PlaylistTrackArtistResponse.class,
+                                TrackArtistResponse.class,
                                 trackArtist.id,
                                 trackArtist.artistName))
                 ))

@@ -5,14 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -26,32 +24,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.team.comma.domain.playlist.playlist.dto.PlaylistUpdateRequest;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackArtistResponse;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackModifyRequest;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackDeleteRequest;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackSaveRequestDto;
-import com.team.comma.domain.playlist.playlist.dto.PlaylistUpdateRequest;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackArtistResponse;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackSaveRequestDto;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
 import com.team.comma.domain.playlist.track.service.PlaylistTrackService;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
-import com.team.comma.domain.track.track.dto.TrackRequest;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import javax.security.auth.login.AccountException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -98,8 +88,86 @@ class PlaylistTrackControllerTest {
     }
 
     @Test
+    void createPlaylistTrack_Success() throws Exception {
+        // given
+        final String api = "/playlist/track";
+
+        final PlaylistTrackRequest request = PlaylistTrackRequest.builder()
+                .playlistIdList(List.of(1L, 2L, 3L))
+                .spotifyTrackId("spotify track id")
+                .build();
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS))
+                .when(playlistTrackService).createPlaylistTrack(any());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                post(api)
+                        .contentType(APPLICATION_JSON)
+                        .content(gson.toJson(request)));
+
+        // then
+        resultActions.andExpect(status().isCreated())
+                .andDo(
+                        document(
+                                "playlist/track/create-success",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("playlistIdList.[]").description("플레이리스트 Id 리스트"),
+                                        fieldWithPath("spotifyTrackId").description("스포티파이 트랙 Id")
+                                ),
+                                responseFields(
+                                        fieldWithPath("code").description("응답 코드"),
+                                        fieldWithPath("message").description("메세지"),
+                                        fieldWithPath("data").description("데이터"))
+                        )
+                );
+
+    }
+
+    @Test
+    void modifyPlaylistTrackAlarmFlag_Success() throws Exception {
+        // given
+        final String api = "/playlist/track";
+
+        final PlaylistTrackModifyRequest request = PlaylistTrackModifyRequest.builder()
+                .playlistId(1L)
+                .trackId(1L)
+                .build();
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS, false))
+                .when(playlistTrackService).modifyPlaylistTrackAlarmFlag(any());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                patch(api)
+                        .contentType(APPLICATION_JSON)
+                        .content(gson.toJson(request)));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        document(
+                                "playlist/track/modify-alarm-flag-success",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("playlistId").description("플레이리스트 Id"),
+                                        fieldWithPath("trackId").description("트랙 Id")
+                                ),
+                                responseFields(
+                                        fieldWithPath("code").description("응답 코드"),
+                                        fieldWithPath("message").description("메세지"),
+                                        fieldWithPath("data").description("데이터 - 변경 된 상태"))
+                        )
+                );
+
+    }
+
+    @Test
     void 플레이리스트의_트랙_삭제_성공() throws Exception {
-        //given
+        // given
         Set<Long> trackIdList = Set.of(1L, 2L, 3L);
 
         doReturn(
@@ -108,13 +176,13 @@ class PlaylistTrackControllerTest {
                 REQUEST_SUCCESS.getMessage(),
                 trackIdList.size())
         ).when(playlistTrackService)
-            .removePlaylistAndTrack(anySet(), anyLong());
+            .deletePlaylistTrack(anySet(), anyLong());
 
         //when //then
         ResultActions resultActions = mockMvc.perform(
-            delete("/playlist-track")
+            delete("/playlist/track")
                 .contentType(APPLICATION_JSON)
-                .content(gson.toJson(PlaylistTrackRequest.builder()
+                .content(gson.toJson(PlaylistTrackDeleteRequest.builder()
                     .trackIdList(trackIdList)
                     .playlistId(1L)
                     .build()))
@@ -122,7 +190,7 @@ class PlaylistTrackControllerTest {
         resultActions.andExpect(status().isOk())
             .andDo(
                 document(
-                    "spotify/deletePlaylistTrack",
+                    "playlist/track/delete-success",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     requestFields(
@@ -149,13 +217,13 @@ class PlaylistTrackControllerTest {
                 REQUEST_SUCCESS.getMessage(),
                 trackIdListSize)
         ).when(playlistTrackService)
-            .removePlaylistAndTrack(anySet(), anyLong());
+            .deletePlaylistTrack(anySet(), anyLong());
 
         //when
         ResultActions resultActions = mockMvc.perform(
-            delete("/playlist-track")
+            delete("/playlist/track")
                 .contentType(APPLICATION_JSON)
-                .content(gson.toJson(PlaylistTrackRequest.builder()
+                .content(gson.toJson(PlaylistTrackDeleteRequest.builder()
                     .trackIdList(trackIdList)
                     .playlistId(1L)
                     .build()))
@@ -171,13 +239,13 @@ class PlaylistTrackControllerTest {
         Set<Long> trackIdList = Set.of();
 
         doThrow(new EntityNotFoundException("해당 트랙이 존재하지 않습니다."))
-            .when(playlistTrackService).removePlaylistAndTrack(anySet(), anyLong());
+            .when(playlistTrackService).deletePlaylistTrack(anySet(), anyLong());
 
         //when
         ResultActions resultActions = mockMvc.perform(
-            delete("/playlist-track")
+            delete("/playlist/track")
                 .contentType(APPLICATION_JSON)
-                .content(gson.toJson(PlaylistTrackRequest.builder()
+                .content(gson.toJson(PlaylistTrackDeleteRequest.builder()
                     .trackIdList(trackIdList)
                     .playlistId(1L)
                     .build()))
@@ -187,7 +255,7 @@ class PlaylistTrackControllerTest {
         resultActions.andExpect(status().isBadRequest())
             .andDo(
                 document(
-                    "spotify/deletePlaylistTrackFail",
+                    "playlist/track/delete-fail-track-not-found",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     responseFields(
@@ -209,50 +277,33 @@ class PlaylistTrackControllerTest {
                 REQUEST_SUCCESS.getMessage()
             );
 
-        TrackRequest trackRequest = TrackRequest.builder()
-                .trackTitle("test track")
-                .albumImageUrl("url/track")
-                .spotifyTrackId("input ISRC")
-                .spotifyTrackHref("input href")
-                .trackArtistList(List.of("artist","artist")).build();
-
-        String body = objectMapper.writeValueAsString(PlaylistTrackSaveRequestDto.builder()
+        PlaylistTrackRequest playlistTrackRequest = PlaylistTrackRequest.builder()
             .playlistIdList(List.of(1L,2L,3L))
-            .playlistTitle("test playlist")
-            .alarmStartTime(LocalTime.of(10, 10))
-            .trackList(List.of(trackRequest))
-            .build());
+            .spotifyTrackId("spotifyTrackId")
+            .build();
 
         doReturn(messageResponse)
             .when(playlistTrackService)
-            .savePlaylistTrackList(any(PlaylistTrackSaveRequestDto.class), anyString());
+            .createPlaylistTrack(any(PlaylistTrackRequest.class));
 
         //when
         ResultActions resultActions = mockMvc.perform(
-            post("/playlists/tracks")
+            post("/playlist/track")
                 .contentType(APPLICATION_JSON)
-                .content(body)
+                .content(gson.toJson(playlistTrackRequest))
                 .cookie(accessToken)
         ).andDo(print());
 
         //then
-        resultActions.andExpect(status().isOk())
+        resultActions.andExpect(status().isCreated())
             .andDo(
                 document(
-                    "spotify/savePlaylistTrack",
+                    "playlist/track/create-success",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     requestFields(
                         fieldWithPath("playlistIdList").description("플레이리스트 ID 리스트, 신규 생성의 경우 입력받지 않음"),
-                        fieldWithPath("playlistTitle").description("플레이리스트 제목"),
-                        fieldWithPath("alarmStartTime").description("알람 시작 시간"),
-                        fieldWithPath("trackList").description("저장할 트랙 정보 리스트"),
-                        fieldWithPath("trackList.[].trackTitle").description("트랙 제목"),
-                        fieldWithPath("trackList.[].albumImageUrl").description("트랙 앨범 이미지 경로"),
-                        fieldWithPath("trackList.[].spotifyTrackId").description("트랙 ISRC 값"),
-                        fieldWithPath("trackList.[].spotifyTrackHref").description("트랙 href"),
-                        fieldWithPath("trackList.[].durationTimeMs").description("트랙 재생 시간"),
-                        fieldWithPath("trackList.[].trackArtistList").description("트랙 아티스트 이름 리스트")
+                        fieldWithPath("spotifyTrackId").description("스포티파이 트랙 ID")
                     ),
                     responseFields(
                         fieldWithPath("code").description("응답 코드"),
@@ -270,80 +321,25 @@ class PlaylistTrackControllerTest {
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
-
-    @Test
-    void 플레이리스트트랙_저장_실패_존재하지않는_사용자() throws Exception {
-        //given
-        Cookie accessToken = new Cookie("accessToken", "testToken");
-
-        String body = objectMapper.writeValueAsString(PlaylistUpdateRequest.builder()
-            .playlistTitle("test playlist")
-            .alarmStartTime(LocalTime.of(10, 10))
-            .build());
-
-        doThrow(new AccountException("사용자를 찾을 수 없습니다."))
-            .when(playlistTrackService)
-            .savePlaylistTrackList(any(PlaylistTrackSaveRequestDto.class), anyString());
-
-        //when
-        ResultActions resultActions = mockMvc.perform(
-            post("/playlists/tracks")
-                .contentType(APPLICATION_JSON)
-                .content(body)
-                .cookie(accessToken)
-        ).andDo(print());
-
-        //then
-        resultActions.andExpect(status().isBadRequest())
-            .andDo(
-                document(
-                    "spotify/savePlaylistTrackFailUser",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    responseFields(
-                        fieldWithPath("code").description("응답 코드"),
-                        fieldWithPath("message").description("메세지"),
-                        fieldWithPath("data").description("데이터").ignored()
-                    )
-                )
-            );
-
-        final MessageResponse result = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(result.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
-        assertThat(result.getMessage()).isEqualTo("사용자를 찾을 수 없습니다.");
-    }
-
     @Test
     void 플레이리스트트랙_저장_실패_존재하지않는_플레이리스트() throws Exception {
         //given
         Cookie accessToken = new Cookie("accessToken", "testToken");
 
-        TrackRequest trackRequest = TrackRequest.builder()
-                .trackTitle("test track")
-                .albumImageUrl("url/track")
-                .spotifyTrackId("input ISRC")
-                .spotifyTrackHref("input href")
-                .trackArtistList(List.of("artist","artist")).build();
-
-        String body = objectMapper.writeValueAsString(PlaylistTrackSaveRequestDto.builder()
+        PlaylistTrackRequest playlistTrackRequest = PlaylistTrackRequest.builder()
                 .playlistIdList(List.of(1L,2L,3L))
-                .playlistTitle("test playlist")
-                .alarmStartTime(LocalTime.of(10, 10))
-                .trackList(List.of(trackRequest))
-                .build());
+                .spotifyTrackId("spotifyTrackId")
+                .build();
 
         doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
             .when(playlistTrackService)
-            .savePlaylistTrackList(any(PlaylistTrackSaveRequestDto.class), anyString());
+            .createPlaylistTrack(any(PlaylistTrackRequest.class));
 
         //when
         ResultActions resultActions = mockMvc.perform(
-            post("/playlists/tracks")
+            post("/playlist/track")
                 .contentType(APPLICATION_JSON)
-                .content(body)
+                .content(gson.toJson(playlistTrackRequest))
                 .cookie(accessToken)
         ).andDo(print());
 
@@ -351,7 +347,7 @@ class PlaylistTrackControllerTest {
         resultActions.andExpect(status().isBadRequest())
             .andDo(
                 document(
-                    "spotify/savePlaylistTrackFailTrack",
+                    "playlist/track/create-fail-playlist-not-found",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint()),
                     responseFields(
@@ -373,17 +369,17 @@ class PlaylistTrackControllerTest {
     @Test
     void 플레이리스트_트랙_상세_리스트_조회_성공() throws Exception {
         // given
-        final String url = "/playlists/tracks/{playlistId}";
+        final String url = "/playlist/track/{playlistId}";
 
-        final List<PlaylistTrackArtistResponse> playlistTrackArtistResponseList = List.of(
-                PlaylistTrackArtistResponse.of(buildTrackArtist()));
+        final List<TrackArtistResponse> playlistTrackArtistResponseList = List.of(
+                TrackArtistResponse.of(buildTrackArtist()));
         final List<PlaylistTrackResponse> playlistTracks = Arrays.asList(
                 PlaylistTrackResponse.of(buildTrack(), true, playlistTrackArtistResponseList),
                 PlaylistTrackResponse.of(buildTrack(), true, playlistTrackArtistResponseList));
 
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlistTracks);
 
-        doReturn(message).when(playlistTrackService).getPlaylistTracks(anyLong());
+        doReturn(message).when(playlistTrackService).findPlaylistTrack(anyLong());
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -391,7 +387,7 @@ class PlaylistTrackControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("spotify/selectPlaylistsTracks",
+                document("playlist/track/find-success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -422,11 +418,11 @@ class PlaylistTrackControllerTest {
     @Test
     void 플레이리스트_트랙_상세_리스트_조회_실패_플레이리스트없음() throws Exception {
         // given
-        final String url = "/playlists/tracks/{playlistId}";
+        final String url = "/playlist/track/{playlistId}";
 
         doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
                 .when(playlistTrackService)
-                .getPlaylistTracks(anyLong());
+                .findPlaylistTrack(anyLong());
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -434,7 +430,7 @@ class PlaylistTrackControllerTest {
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
-                document("spotify/selectPlaylistsTracksFailure",
+                document("playlist/track/find-fail-playlist-not-found",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(

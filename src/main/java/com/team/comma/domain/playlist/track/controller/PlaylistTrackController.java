@@ -1,47 +1,48 @@
 package com.team.comma.domain.playlist.track.controller;
 
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackDeleteRequest;
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackModifyRequest;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackSaveRequestDto;
 import com.team.comma.domain.playlist.track.service.PlaylistTrackService;
 import com.team.comma.global.common.dto.MessageResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@RequestMapping("/playlist/track")
 @RestController
 @RequiredArgsConstructor
 public class PlaylistTrackController {
 
     private final PlaylistTrackService playlistTrackService;
 
-    @DeleteMapping("/playlist-track")
-    public ResponseEntity<MessageResponse> disconnectPlaylistAndTrack
-        (
-            @Valid @RequestBody final PlaylistTrackRequest playlistTrackRequest
-        ) {
-        return ResponseEntity.ok(
-            playlistTrackService.removePlaylistAndTrack(
-                playlistTrackRequest.getTrackIdList(),
-                playlistTrackRequest.getPlaylistId()
-            )
-        );
-    }
-
-    @PostMapping("/playlists/tracks")
+    @PostMapping
     public ResponseEntity<MessageResponse> createPlaylistTrack(
-        @CookieValue(value = "accessToken") String accessToken,
-        @RequestBody final PlaylistTrackSaveRequestDto requestDto
-    ) throws Exception {
-        return ResponseEntity.ok(
-            playlistTrackService.savePlaylistTrackList(requestDto, accessToken)
-        );
+            @RequestBody final PlaylistTrackRequest playlistTrackRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(playlistTrackService.createPlaylistTrack(playlistTrackRequest));
     }
 
-    @GetMapping("/playlists/tracks/{playlistId}")
-    public ResponseEntity<MessageResponse> getPlaylistTracks(
+    @GetMapping("/{playlistId}")
+    public ResponseEntity<MessageResponse> findPlaylistTrack(
             @PathVariable("playlistId") final long playlistId) {
-        return ResponseEntity.ok().body(playlistTrackService.getPlaylistTracks(playlistId));
+        return ResponseEntity.ok()
+                .body(playlistTrackService.findPlaylistTrack(playlistId));
+    }
+
+    @PatchMapping
+    public ResponseEntity<MessageResponse> modifyPlaylistTrackAlarmFlag(
+            @RequestBody final PlaylistTrackModifyRequest playlistTrackModifyRequest){
+        return ResponseEntity.ok()
+                .body(playlistTrackService.modifyPlaylistTrackAlarmFlag(playlistTrackModifyRequest));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<MessageResponse> deletePlaylistTrack(
+            @RequestBody final PlaylistTrackDeleteRequest playlistTrackRequest) {
+        return ResponseEntity.ok()
+                .body(playlistTrackService.deletePlaylistTrack(playlistTrackRequest.getTrackIdList(), playlistTrackRequest.getPlaylistId()));
     }
 
 }

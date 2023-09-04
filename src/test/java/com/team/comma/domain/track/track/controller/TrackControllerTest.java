@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
-import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
-import com.team.comma.domain.track.track.exception.TrackException;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
@@ -19,7 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,19 +31,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureRestDocs

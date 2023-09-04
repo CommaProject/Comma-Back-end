@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.exception.TokenForgeryException;
 import com.team.comma.global.jwt.service.JwtService;
-import com.team.comma.global.security.controller.SecurityController;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

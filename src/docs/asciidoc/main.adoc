@@ -17,28 +17,28 @@
 
 === User 문서
 
-* link:user[User]
-* link:profile[Profile]
-* link:followship[Followship]
-* link:history[History]
+* link:user.html[User]
+* link:profile.html[Profile]
+* link:followship.html[Followship]
+* link:history.html[History]
 
 === Favorite 문서
 
-* link:favorite-artist[Artist]
-* link:favorite-track[Track]
+* link:favorite-artist.html[Artist]
+* link:favorite-track.html[Track]
 
 === Playlist 문서
 
-* link:playlist[Playlist]
-* link:playlist-track[Playlist-Track]
-* link:archive[Archive]
-* link:recommend[Recommend]
+* link:playlist.html[Playlist]
+* link:playlist-track.html[Playlist-Track]
+* link:archive.html[Archive]
+* link:recommend.html[Recommend]
 
 === Track 문서
 
 // * link:track[Track]
-* link:play-count[Play-count]
+* link:play-count.html[Play-count]
 
 === Spotify 문서
 
-* link:spotify[Spotify]
+* link:spotify.html[Spotify]

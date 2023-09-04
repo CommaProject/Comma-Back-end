@@ -1,4 +1,4 @@
-package com.team.comma.domain.playlist.track.dto;
+package com.team.comma.domain.track.artist.dto;
 
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import lombok.Getter;
@@ -6,18 +6,18 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public final class PlaylistTrackArtistResponse {
+public final class TrackArtistResponse {
 
     private final long artistId;
     private final String artistName;
 
-    private PlaylistTrackArtistResponse(TrackArtist trackArtist) {
+    private TrackArtistResponse(TrackArtist trackArtist) {
         this.artistId = trackArtist.getId();
         this.artistName = trackArtist.getArtistName();
     }
 
-    public static PlaylistTrackArtistResponse of(TrackArtist trackArtist) {
-        return new PlaylistTrackArtistResponse(trackArtist);
+    public static TrackArtistResponse of(TrackArtist trackArtist) {
+        return new TrackArtistResponse(trackArtist);
     }
 
 }
