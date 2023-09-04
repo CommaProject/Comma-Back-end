@@ -28,7 +28,7 @@ public class AlertDay {
     private DayOfWeek alarmDay;
 
     @JoinColumn(name = "playlist_id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Playlist playlist;
 
     public static AlertDay buildAlertDay(Playlist playlist, DayOfWeek alarmDay){
