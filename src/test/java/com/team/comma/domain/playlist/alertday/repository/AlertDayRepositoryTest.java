@@ -1,4 +1,4 @@
-package com.team.comma.domain.playlist.alertday;
+package com.team.comma.domain.playlist.alertday.repository;
 
 import com.team.comma.domain.alertday.repository.AlertDayRepository;
 import com.team.comma.domain.playlist.alertDay.domain.AlertDay;
@@ -67,6 +67,28 @@ public class AlertDayRepositoryTest {
 
         // then
         assertThat(result.size()).isEqualTo(2);
+
+    }
+
+    @Test
+    void deleteAllAlertDaysByPlaylist_Success() {
+        // given
+        User user = User.buildUser();
+        userRepository.save(user);
+
+        Playlist playlist = Playlist.buildPlaylist(user);
+        playlistRepository.save(playlist);
+
+        List<AlertDay> alertDayList = List.of(
+                AlertDay.buildAlertDay(playlist, DayOfWeek.of(1)),
+                AlertDay.buildAlertDay(playlist, DayOfWeek.of(2)));
+        alertDayRepository.saveAll(alertDayList);
+
+        // when
+        long result = alertDayRepository.deleteAllAlertDaysByPlaylist(playlist);
+
+        // then
+        assertThat(result).isEqualTo(2);
 
     }
 

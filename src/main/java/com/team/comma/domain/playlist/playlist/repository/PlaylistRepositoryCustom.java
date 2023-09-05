@@ -10,7 +10,7 @@ public interface PlaylistRepositoryCustom {
 
     int findTotalDurationTimeMsByPlaylistId(Long playlistId);
 
-    long deletePlaylist(List<Long> playlistIdList);
+    long deletePlaylists(List<Long> playlistIdList);
 
     List<PlaylistResponse> findAllPlaylistsByUser(User user);
 

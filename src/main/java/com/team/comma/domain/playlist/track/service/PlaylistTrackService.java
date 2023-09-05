@@ -70,6 +70,7 @@ public class PlaylistTrackService {
         return MessageResponse.of(REQUEST_SUCCESS, playlistTrack.getTrackAlarmFlag());
     }
 
+    // 수정
     @Transactional
     public MessageResponse deletePlaylistTrack(final List<Long> playlistTrackIds) {
         for (long playlistTrackId : playlistTrackIds) {

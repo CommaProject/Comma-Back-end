@@ -119,7 +119,7 @@ class PlaylistRepositoryTest {
         final Playlist playlist = playlistRepository.save(buildPlaylist(user, "test playlist"));
 
         // when
-        long result = playlistRepository.deletePlaylist(List.of(playlist.getId()));
+        long result = playlistRepository.deletePlaylists(List.of(playlist.getId()));
 
         // then
         assertThat(result).isEqualTo(1);

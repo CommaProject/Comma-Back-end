@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface AlertDayRepository extends JpaRepository<AlertDay, Long> {
+public interface AlertDayRepository extends JpaRepository<AlertDay, Long>, AlertDayRepositoryCustom {
 
     List<AlertDay> findAllByPlaylist(Playlist playlist);
 
