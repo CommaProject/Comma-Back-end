@@ -63,37 +63,7 @@ class PlaylistTrackRepositoryTest {
     }
 
     @Test
-    void 플레이리스트_곡_연관관계_조회_0개() {
-        // given
-        final User user = userRepository.save(buildUser());
-        final Playlist playlist = playlistRepository.save(buildPlaylist(user, title));
-
-        // when
-        final List<PlaylistTrack> result = playlistTrackRepository.findAllByPlaylist(playlist);
-
-        // then
-        assertThat(result.size()).isEqualTo(0);
-    }
-
-    @Test
-    void 플레이리스트_곡_연관관계_조회_2개() {
-        // given
-        final User user = userRepository.save(buildUser());
-        final Playlist playlist = playlistRepository.save(buildPlaylist(user, title));
-        final Track track1 = trackRepository.save(buildTrack(trackTitle));
-        final Track track2 = trackRepository.save(buildTrack(trackTitle));
-        playlistTrackRepository.save(buildPlaylistTrack(playlist, track1));
-        playlistTrackRepository.save(buildPlaylistTrack(playlist, track2));
-
-        // when
-        final List<PlaylistTrack> result = playlistTrackRepository.findAllByPlaylist(playlist);
-
-        // then
-        assertThat(result.size()).isEqualTo(2);
-    }
-
-    @Test
-    void 플리_트랙으로_TrackPlaylist_성공() {
+    void delete_Success() {
         //given
         Track track = buildTrack("title");
         trackRepository.save(track);
@@ -105,85 +75,14 @@ class PlaylistTrackRepositoryTest {
             .playlist(playlist)
             .track(track)
             .build();
-        playlistTrackRepository.save(playlistTrack);
+        playlistTrack = playlistTrackRepository.save(playlistTrack);
 
         //when
-        boolean isPresent = playlistTrackRepository
-            .findByPlaylistIdAndTrackId(playlist.getId(), track.getId())
-            .isPresent();
+        playlistTrackRepository.delete(playlistTrack);
+        Optional<PlaylistTrack> result = playlistTrackRepository.findById(playlistTrack.getId());
 
         //then
-        assertThat(isPresent).isTrue();
-    }
-
-    @Test
-    void 플리_id_트랙_id로_삭제_성공() {
-        //given
-        Track track = buildTrack("title");
-        trackRepository.save(track);
-
-        Playlist playlist = Playlist.builder().build();
-        playlistRepository.save(playlist);
-
-        PlaylistTrack playlistTrack = PlaylistTrack.builder()
-            .playlist(playlist)
-            .track(track)
-            .build();
-        playlistTrackRepository.save(playlistTrack);
-        //when
-        int deleteCount = playlistTrackRepository.deletePlaylistTrackByTrackIdAndPlaylistId(
-            track.getId(),
-            playlist.getId());
-
-        Optional<PlaylistTrack> deletePlaylistTrack =
-            playlistTrackRepository.findByPlaylistIdAndTrackId(playlist.getId(), track.getId());
-        //then
-        assertThat(deleteCount).isEqualTo(1);
-
-        assertThat(deletePlaylistTrack).isEmpty();
-    }
-
-    @Test
-    void 트랙들간의_순서중_제일_높은_값을_리턴한다() {
-        //given
-        Track track1 = buildTrack("title");
-        trackRepository.save(track1);
-
-        Track track2 = buildTrack("title");
-        trackRepository.save(track2);
-
-        Track track3 = buildTrack("title");
-        trackRepository.save(track3);
-
-        Playlist playlist = Playlist.builder().build();
-        playlistRepository.save(playlist);
-
-        PlaylistTrack playlistTrack1 = PlaylistTrack.builder()
-            .playlist(playlist)
-            .track(track1)
-            .playSequence(1)
-            .build();
-        playlistTrackRepository.save(playlistTrack1);
-
-        PlaylistTrack playlistTrack2 = PlaylistTrack.builder()
-            .playlist(playlist)
-            .track(track2)
-            .playSequence(2)
-            .build();
-        playlistTrackRepository.save(playlistTrack2);
-
-        PlaylistTrack playlistTrack3 = PlaylistTrack.builder()
-            .playlist(playlist)
-            .track(track3)
-            .playSequence(3)
-            .build();
-        playlistTrackRepository.save(playlistTrack3);
-
-        //when
-        Integer maxPlaySequence = playlistTrackRepository.findMaxPlaySequenceByPlaylistId(
-            playlist.getId()).get();
-        //then
-        assertThat(maxPlaySequence).isEqualTo(3);
+        assertThat(result).isEmpty();
     }
 
     @Test

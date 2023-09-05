@@ -73,7 +73,7 @@ public class PlaylistService {
     }
 
     @Transactional
-    public MessageResponse modifyPlaylist(PlaylistModifyRequest request) {
+    public MessageResponse modifyPlaylistAlarmDayAndTime(PlaylistModifyRequest request) {
         Playlist playlist = findPlaylistOrThrow(request.getPlaylistId());
 
         alertDayService.createAlertDay(playlist, request.getAlarmDays());

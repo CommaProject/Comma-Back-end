@@ -23,7 +23,7 @@ public class AlertDay {
     private Long id;
 
     /**
-     * 1 ~ 7 : 토
+     * 1 ~ 7 : 월 ~ 토
      */
     private DayOfWeek alarmDay;
 

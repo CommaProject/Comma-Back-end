@@ -1,6 +1,5 @@
 package com.team.comma.domain.playlist.track.dto;
 
-import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlaylistTrackDeleteRequest {
+public class PlaylistTrackSingleRequest {
 
-    private long playlistId;
-    private Set<Long> trackIdList;
+    private long playlistTrackId;
 
 }

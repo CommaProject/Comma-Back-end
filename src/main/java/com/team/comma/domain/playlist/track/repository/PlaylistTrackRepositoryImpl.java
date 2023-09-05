@@ -12,8 +12,6 @@ import java.util.List;
 import static com.team.comma.domain.playlist.track.domain.QPlaylistTrack.playlistTrack;
 import static com.team.comma.domain.track.artist.domain.QTrackArtist.trackArtist;
 
-
-
 @RequiredArgsConstructor
 public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCustom{
 
@@ -24,11 +22,13 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
         return queryFactory.select(
                 Projections.constructor(
                         PlaylistTrackResponse.class,
+                        // playlisttrackId 추가 필요
                         playlistTrack.track.id,
                         playlistTrack.track.trackTitle,
                         playlistTrack.track.durationTimeMs,
                         playlistTrack.track.albumImageUrl,
                         playlistTrack.trackAlarmFlag,
+                        // playlistsequence 추가 필요
                         Projections.list(Projections.constructor(
                                 TrackArtistResponse.class,
                                 trackArtist.id,

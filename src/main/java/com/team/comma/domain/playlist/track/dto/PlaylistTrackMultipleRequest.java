@@ -1,5 +1,7 @@
 package com.team.comma.domain.playlist.track.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,9 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlaylistTrackModifyRequest {
+public class PlaylistTrackMultipleRequest {
 
-    private long playlistId;
-    private long trackId;
+    private List<Long> playlistTrackIdList;
 
 }
