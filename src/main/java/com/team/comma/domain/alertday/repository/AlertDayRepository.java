@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface AlertDayRepository extends JpaRepository<AlertDay, Long>, AlertDayRepositoryCustom {
 
+
     List<AlertDay> findAllByPlaylist(Playlist playlist);
 
 }

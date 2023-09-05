@@ -185,6 +185,7 @@ class PlaylistControllerTest {
 
     @Test
     public void findPlaylist_Success() throws Exception {
+
         // given
         final String url = "/playlist/{playlistId}";
 

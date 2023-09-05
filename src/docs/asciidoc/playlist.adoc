@@ -89,7 +89,7 @@ include::{snippets}/playlist/modify-title-success/request-fields.adoc[]
 include::{snippets}/playlist/modify-title-success/http-response.adoc[]
 include::{snippets}/playlist/modify-title-success/response-fields.adoc[]
 
-==== 실패
+==== 실패 - 플레이리스트 찾을 수 없음
 
 ===== Request
 
@@ -116,34 +116,6 @@ include::{snippets}/playlist/modify-alert-day-time-success/request-fields.adoc[]
 
 include::{snippets}/playlist/modify-alert-day-time-success/http-response.adoc[]
 include::{snippets}/playlist/modify-alert-day-time-success/response-fields.adoc[]
-
----
-
-=== 플레이리스트 제목 수정
-
-==== 성공
-
-===== Request
-
-include::{snippets}/playlist/modify-title-success/http-request.adoc[]
-include::{snippets}/playlist/modify-title-success/request-fields.adoc[]
-
-===== Response
-
-include::{snippets}/playlist/modify-title-success/http-response.adoc[]
-include::{snippets}/playlist/modify-title-success/response-fields.adoc[]
-
-==== 실패 - 플레이리스트 찾을 수 없음
-
-===== Request
-
-include::{snippets}/playlist/modify-title-fail-playlist-not-found/http-request.adoc[]
-include::{snippets}/playlist/modify-title-fail-playlist-not-found/request-fields.adoc[]
-
-===== Response
-
-include::{snippets}/playlist/modify-title-fail-playlist-not-found/http-response.adoc[]
-include::{snippets}/playlist/modify-title-fail-playlist-not-found/response-fields.adoc[]
 
 ---
 

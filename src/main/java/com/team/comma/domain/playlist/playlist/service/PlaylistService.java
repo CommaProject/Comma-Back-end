@@ -79,6 +79,7 @@ public class PlaylistService {
 
         alertDayService.modifyAlertDays(playlist, request.getAlarmDays());
 
+        playlist.modifyAlarmStartTime(request);
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
