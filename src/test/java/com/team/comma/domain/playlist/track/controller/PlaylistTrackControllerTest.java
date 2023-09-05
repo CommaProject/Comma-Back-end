@@ -338,7 +338,7 @@ class PlaylistTrackControllerTest {
                 .build();
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS))
-                .when(playlistTrackService).deletePlaylistTrack(anyList());
+                .when(playlistTrackService).deletePlaylistTracks(anyList());
 
         //when //then
         ResultActions resultActions = mockMvc.perform(

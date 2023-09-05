@@ -13,6 +13,7 @@ import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.track.track.domain.Track;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -54,10 +55,10 @@ public class PlaylistTrackService {
 
     @Transactional
     public MessageResponse modifyPlaylistTrackSequence(final List<Long> playlistTrackIdList){
-        int count = 1;
+        int sequence = 1;
         for(long playlistTrackId : playlistTrackIdList){
             PlaylistTrack playlistTrack = findPlaylistTrackOrThrow(playlistTrackId);
-            count = playlistTrack.modifyPlaySequence(count);
+            sequence = playlistTrack.modifyPlaySequence(sequence);
         }
         return MessageResponse.of(REQUEST_SUCCESS);
     }
@@ -70,13 +71,9 @@ public class PlaylistTrackService {
         return MessageResponse.of(REQUEST_SUCCESS, playlistTrack.getTrackAlarmFlag());
     }
 
-    // 수정
     @Transactional
-    public MessageResponse deletePlaylistTrack(final List<Long> playlistTrackIds) {
-        for (long playlistTrackId : playlistTrackIds) {
-            PlaylistTrack playlistTrack = findPlaylistTrackOrThrow(playlistTrackId);
-            playlistTrackRepository.delete(playlistTrack);
-        }
+    public MessageResponse deletePlaylistTracks(final List<Long> playlistTrackIds) {
+        playlistTrackRepository.deletePlaylistTracksByIds(playlistTrackIds);
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 }

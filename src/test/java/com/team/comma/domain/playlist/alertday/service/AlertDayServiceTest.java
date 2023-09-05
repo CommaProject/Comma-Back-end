@@ -75,7 +75,7 @@ public class AlertDayServiceTest {
     }
 
     @Test
-    void deleteAllAlertDaysByPlaylist_Success() {
+    void deleteAllAlertDays_Success() {
         // given
         User user = User.buildUser();
         Playlist playlist = Playlist.buildPlaylist(user);
@@ -86,7 +86,7 @@ public class AlertDayServiceTest {
         alertDayRepository.saveAll(alertDays);
 
         // when
-        alertDayService.deleteAllAlertDaysByPlaylist(playlist);
+        alertDayService.deleteAlertDays(playlist);
 
         // then
         List<AlertDay> result = alertDayRepository.findAllByPlaylist(playlist);

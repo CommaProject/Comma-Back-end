@@ -85,7 +85,7 @@ public class AlertDayRepositoryTest {
         alertDayRepository.saveAll(alertDayList);
 
         // when
-        long result = alertDayRepository.deleteAllAlertDaysByPlaylist(playlist);
+        long result = alertDayRepository.deleteAlertDaysByPlaylist(playlist);
 
         // then
         assertThat(result).isEqualTo(2);

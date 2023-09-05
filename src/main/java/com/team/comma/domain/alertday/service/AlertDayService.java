@@ -28,13 +28,13 @@ public class AlertDayService {
 
     @Transactional
     public void modifyAlertDays(Playlist playlist, List<Integer> alarmDays) {
-        deleteAllAlertDaysByPlaylist(playlist);
+        deleteAlertDays(playlist);
         createAlertDays(playlist, alarmDays);
     }
 
     @Transactional
-    public void deleteAllAlertDaysByPlaylist(Playlist playlist) {
-        alertDayRepository.deleteAllAlertDaysByPlaylist(playlist);
+    public void deleteAlertDays(Playlist playlist) {
+        alertDayRepository.deleteAlertDaysByPlaylist(playlist);
     }
 
 }

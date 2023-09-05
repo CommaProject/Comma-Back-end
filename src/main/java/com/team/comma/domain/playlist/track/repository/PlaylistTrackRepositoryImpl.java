@@ -2,6 +2,7 @@ package com.team.comma.domain.playlist.track.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
 import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
@@ -38,6 +39,13 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
                 .where(playlistTrack.playlist.eq(playlist))
                 .orderBy(playlistTrack.playSequence.asc())
                 .fetch();
+    }
+
+    @Override
+    public long deletePlaylistTracksByIds(List<Long> playlistTrackIds) {
+        return queryFactory.delete(playlistTrack)
+                .where(playlistTrack.id.in(playlistTrackIds))
+                .execute();
     }
 
 }

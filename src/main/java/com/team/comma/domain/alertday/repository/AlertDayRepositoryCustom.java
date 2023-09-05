@@ -4,5 +4,5 @@ import com.team.comma.domain.playlist.playlist.domain.Playlist;
 
 public interface AlertDayRepositoryCustom {
 
-    long deleteAllAlertDaysByPlaylist(Playlist playlist);
+    long deleteAlertDaysByPlaylist(Playlist playlist);
 }

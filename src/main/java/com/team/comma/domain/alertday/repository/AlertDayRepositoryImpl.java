@@ -12,7 +12,7 @@ public class AlertDayRepositoryImpl implements AlertDayRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public long deleteAllAlertDaysByPlaylist(Playlist playlist) {
+    public long deleteAlertDaysByPlaylist(Playlist playlist) {
         return queryFactory.delete(alertDay)
                 .where(alertDay.playlist.eq(playlist))
                 .execute();

@@ -47,10 +47,10 @@ public class PlaylistTrackController {
     }
 
     @DeleteMapping
-    public ResponseEntity<MessageResponse> deletePlaylistTrack(
+    public ResponseEntity<MessageResponse> deletePlaylistTracks(
             @RequestBody final PlaylistTrackMultipleRequest request) {
         return ResponseEntity.ok()
-                .body(playlistTrackService.deletePlaylistTrack(request.getPlaylistTrackIdList()));
+                .body(playlistTrackService.deletePlaylistTracks(request.getPlaylistTrackIdList()));
     }
 
 }

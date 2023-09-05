@@ -26,7 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.parameters.P;
 
 @ExtendWith(MockitoExtension.class)
 class PlaylistTrackServiceTest {
@@ -143,14 +142,26 @@ class PlaylistTrackServiceTest {
         //given
         final List<Long> playlistTrackIdList = List.of(1L, 2L, 3L);
 
-        doReturn(Optional.of(PlaylistTrack.builder().build()))
-            .when(playlistTrackRepository).findById(anyLong());
+        User user = User.buildUser();
+        Playlist playlist = Playlist.buildPlaylist(user);
+        Track track = buildTrack("title");
+        PlaylistTrack playlistTrack1 = PlaylistTrack.buildPlaylistTrack(playlist,track);
+        PlaylistTrack playlistTrack2 = PlaylistTrack.buildPlaylistTrack(playlist,track);
+        PlaylistTrack playlistTrack3 = PlaylistTrack.buildPlaylistTrack(playlist,track);
+        playlistTrackRepository.saveAll(List.of(playlistTrack1,playlistTrack2,playlistTrack3));
+
         //when
-        MessageResponse result = playlistTrackService.deletePlaylistTrack(playlistTrackIdList);
+        MessageResponse result = playlistTrackService.deletePlaylistTracks(playlistTrackIdList);
 
         //then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+        Optional<PlaylistTrack> pt1 = playlistTrackRepository.findById(playlistTrack1.getId());
+        Optional<PlaylistTrack> pt2 = playlistTrackRepository.findById(playlistTrack2.getId());
+        Optional<PlaylistTrack> pt3 = playlistTrackRepository.findById(playlistTrack3.getId());
+        assertThat(pt1).isEmpty();
+        assertThat(pt2).isEmpty();
+        assertThat(pt3).isEmpty();
     }
 
     private User buildUser() {

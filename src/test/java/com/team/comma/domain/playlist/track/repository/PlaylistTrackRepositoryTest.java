@@ -24,7 +24,6 @@ import org.springframework.context.annotation.Import;
 
 @DataJpaTest
 @Import(TestConfig.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class PlaylistTrackRepositoryTest {
 
     @Autowired
@@ -63,42 +62,21 @@ class PlaylistTrackRepositoryTest {
     }
 
     @Test
-    void delete_Success() {
-        //given
-        Track track = buildTrack("title");
-        trackRepository.save(track);
-
-        Playlist playlist = Playlist.builder().build();
-        playlistRepository.save(playlist);
-
-        PlaylistTrack playlistTrack = PlaylistTrack.builder()
-            .playlist(playlist)
-            .track(track)
-            .build();
-        playlistTrack = playlistTrackRepository.save(playlistTrack);
-
-        //when
-        playlistTrackRepository.delete(playlistTrack);
-        Optional<PlaylistTrack> result = playlistTrackRepository.findById(playlistTrack.getId());
-
-        //then
-        assertThat(result).isEmpty();
-    }
-
-    @Test
     void 플레이리스트_트랙_상세_조회() {
         // given
         final User user = buildUser();
+        userRepository.save(user);
+
         final Playlist playlist = buildPlaylist(user, "test playlist");
+        playlistRepository.save(playlist);
+
         final Track track1 = buildTrack("test track");
         final Track track2 = buildTrack("test track");
-        final PlaylistTrack playlistTrack1 = buildPlaylistTrack(playlist,track1);
-        final PlaylistTrack playlistTrack2 = buildPlaylistTrack(playlist,track2);
-
-        userRepository.save(user);
-        playlistRepository.save(playlist);
         trackRepository.save(track1);
         trackRepository.save(track2);
+
+        final PlaylistTrack playlistTrack1 = buildPlaylistTrack(playlist,track1);
+        final PlaylistTrack playlistTrack2 = buildPlaylistTrack(playlist,track2);
         playlistTrackRepository.save(playlistTrack1);
         playlistTrackRepository.save(playlistTrack2);
 
@@ -108,6 +86,33 @@ class PlaylistTrackRepositoryTest {
         // then
         assertThat(result.size()).isEqualTo(2);
 
+    }
+
+    @Test
+    void deletePlaylistTracksByIds_Success() {
+        //given
+        final User user = buildUser();
+        userRepository.save(user);
+
+        final Playlist playlist = buildPlaylist(user, "test playlist");
+        playlistRepository.save(playlist);
+
+        final Track track1 = buildTrack("test track");
+        final Track track2 = buildTrack("test track");
+        trackRepository.save(track1);
+        trackRepository.save(track2);
+
+        final PlaylistTrack playlistTrack1 = buildPlaylistTrack(playlist,track1);
+        final PlaylistTrack playlistTrack2 = buildPlaylistTrack(playlist,track2);
+        playlistTrackRepository.save(playlistTrack1);
+        playlistTrackRepository.save(playlistTrack2);
+
+        //when
+        long result = playlistTrackRepository.deletePlaylistTracksByIds(
+                List.of(playlistTrack1.getId(), playlistTrack2.getId()));
+
+        //then
+        assertThat(result).isEqualTo(2);
     }
 
     private User buildUser() {
