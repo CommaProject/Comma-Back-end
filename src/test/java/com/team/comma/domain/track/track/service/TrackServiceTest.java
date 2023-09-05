@@ -2,10 +2,6 @@ package com.team.comma.domain.track.track.service;
 
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
-import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
-import com.team.comma.domain.track.track.exception.TrackException;
-import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
@@ -19,14 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.security.auth.login.AccountException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class TrackServiceTest {

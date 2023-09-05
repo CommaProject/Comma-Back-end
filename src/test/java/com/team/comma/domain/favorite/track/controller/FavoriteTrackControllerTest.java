@@ -5,10 +5,9 @@ import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackRequest;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.favorite.track.service.FavoriteTrackService;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackRequest;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.global.common.dto.MessageResponse;
@@ -35,7 +34,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
@@ -174,7 +172,7 @@ public class FavoriteTrackControllerTest {
         Track track = buildTrack("track title", "spotifyId");
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
         TrackArtist trackArtist = buildTrackArtist(track);
-        PlaylistTrackArtistResponse trackArtistResponse = PlaylistTrackArtistResponse.of(trackArtist);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackArtist);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS, List.of(favoriteTrackResponse))).when(favoriteTrackService).findAllFavoriteTrack("accessToken");

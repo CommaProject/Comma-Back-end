@@ -1,6 +1,5 @@
 package com.team.comma.domain.track.playcount.repository;
 
-import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
 import com.team.comma.domain.user.following.domain.Following;
 import com.team.comma.domain.user.following.repository.FollowingRepository;
 import com.team.comma.domain.track.playcount.domain.TrackPlayCount;

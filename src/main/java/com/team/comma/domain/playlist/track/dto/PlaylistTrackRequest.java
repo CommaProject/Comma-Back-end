@@ -1,11 +1,8 @@
 package com.team.comma.domain.playlist.track.dto;
 
-import jakarta.validation.constraints.NotNull;
-import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.List;
+
+import lombok.*;
 
 @Getter
 @Builder
@@ -13,9 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PlaylistTrackRequest {
 
-    @NotNull(message = "트랙IdList 는 null 일 수 없습니다.")
-    private Set<Long> trackIdList;
+    private List<Long> playlistIdList;
+    private String spotifyTrackId;
 
-    @NotNull(message = "플리Id 는 null 일 수 없습니다.")
-    private long playlistId;
 }

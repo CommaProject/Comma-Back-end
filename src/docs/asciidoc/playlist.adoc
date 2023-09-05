@@ -2,124 +2,173 @@
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
-:toclevels: 2
-
-
+:toclevels: 3
 
 == 메인 화면
 
 link:main.html[main 화면]
 
-== 플레이리스트 API
+== PLAYLIST API
 
-=== 특정 사용자의 플레이리스트 조회
+=== 플레이리스트 생성
 
-==== Request
+==== 성공
 
-include::{snippets}/spotify/selectPlaylist/http-request.adoc[]
-include::{snippets}/spotify/selectPlaylist/request-cookies.adoc[]
+===== request
 
-==== Response
+include::{snippets}/playlist/create-success/http-request.adoc[]
+include::{snippets}/playlist/create-success/request-cookies.adoc[]
+include::{snippets}/playlist/create-success/request-fields.adoc[]
 
-include::{snippets}/spotify/selectPlaylist/http-response.adoc[]
-include::{snippets}/spotify/selectPlaylist/response-fields.adoc[]
+===== response
 
-=== ID로 단일 플레이리스트 조회
+include::{snippets}/playlist/create-success/http-response.adoc[]
+include::{snippets}/playlist/create-success/response-fields.adoc[]
 
-==== Request
+---
 
-include::{snippets}/spotify/findPlaylist/http-request.adoc[]
-include::{snippets}/spotify/findPlaylist/path-parameters.adoc[]
+=== 플레이리스트 조회
 
-==== Response
+==== 성공
 
-include::{snippets}/spotify/findPlaylist/http-response.adoc[]
-include::{snippets}/spotify/findPlaylist/response-fields.adoc[]
+===== Request
+
+include::{snippets}/playlist/find-all-success/http-request.adoc[]
+include::{snippets}/playlist/find-all-success/request-cookies.adoc[]
+
+===== Response
+
+include::{snippets}/playlist/find-all-success/http-response.adoc[]
+include::{snippets}/playlist/find-all-success/response-fields.adoc[]
+
+---
+
+=== 플레이리스트 상세 조회
+
+==== 성공
+
+===== Request
+
+include::{snippets}/playlist/find-success/http-request.adoc[]
+include::{snippets}/playlist/find-success/path-parameters.adoc[]
+
+===== Response
+
+include::{snippets}/playlist/find-success/http-response.adoc[]
+include::{snippets}/playlist/find-success/response-fields.adoc[]
+
+---
+
+=== 플레이리스트 총재생시간 조회
+
+==== 성공
+
+===== Request
+
+include::{snippets}/playlist/find-total-duration-time-success/http-request.adoc[]
+include::{snippets}/playlist/find-total-duration-time-success/path-parameters.adoc[]
+
+===== Response
+
+include::{snippets}/playlist/find-total-duration-time-success/http-response.adoc[]
+include::{snippets}/playlist/find-total-duration-time-success/response-fields.adoc[]
+
+---
+
+=== 플레이리스트 제목 변경
+
+==== 성공
+
+===== Request
+
+include::{snippets}/playlist/modify-title-success/http-request.adoc[]
+include::{snippets}/playlist/modify-title-success/request-fields.adoc[]
+
+===== Response
+
+include::{snippets}/playlist/modify-title-success/http-response.adoc[]
+include::{snippets}/playlist/modify-title-success/response-fields.adoc[]
+
+==== 실패 - 플레이리스트 찾을 수 없음
+
+===== Request
+
+include::{snippets}/playlist/modify-title-fail-playlist-not-found/http-request.adoc[]
+include::{snippets}/playlist/modify-title-fail-playlist-not-found/request-fields.adoc[]
+
+===== Response
+
+include::{snippets}/playlist/modify-title-fail-playlist-not-found/http-response.adoc[]
+include::{snippets}/playlist/modify-title-fail-playlist-not-found/response-fields.adoc[]
+
+---
+
+=== 플레이리스트 알람 시간 및 요일 설정
+
+==== 성공
+
+===== Request
+
+include::{snippets}/playlist/modify-alert-day-time-success/http-request.adoc[]
+include::{snippets}/playlist/modify-alert-day-time-success/request-fields.adoc[]
+
+===== Response
+
+include::{snippets}/playlist/modify-alert-day-time-success/http-response.adoc[]
+include::{snippets}/playlist/modify-alert-day-time-success/response-fields.adoc[]
+
+---
 
 === 플레이리스트 알람설정 변경
 
-==== Request
+==== 성공
 
-include::{snippets}/spotify/updatePlaylistAlert/http-request.adoc[]
-include::{snippets}/spotify/updatePlaylistAlert/request-fields.adoc[]
+===== Request
 
-==== Response
-x
-include::{snippets}/spotify/updatePlaylistAlert/http-response.adoc[]
-include::{snippets}/spotify/updatePlaylistAlert/response-fields.adoc[]
+include::{snippets}/playlist/modify-alarm-flag-success/http-request.adoc[]
+include::{snippets}/playlist/modify-alarm-flag-success/request-fields.adoc[]
 
-=== 플레이리스트 알람설정 변경 실패 - 플레이리스트 찾을 수 없음
+===== Response
 
-==== Request
+include::{snippets}/playlist/modify-alarm-flag-success/http-response.adoc[]
+include::{snippets}/playlist/modify-alarm-flag-success/response-fields.adoc[]
 
-include::{snippets}/spotify/updatePlaylistAlertFail/http-request.adoc[]
-include::{snippets}/spotify/updatePlaylistAlertFail/request-fields.adoc[]
+==== 실패 - 플레이리스트 찾을 수 없음
 
-==== Response
+===== Request
 
-include::{snippets}/spotify/updatePlaylistAlertFail/http-response.adoc[]
-include::{snippets}/spotify/updatePlaylistAlertFail/response-fields.adoc[]
+include::{snippets}/playlist/modify-alarm-flag-fail-playlist-not-found/http-request.adoc[]
+include::{snippets}/playlist/modify-alarm-flag-fail-playlist-not-found/request-fields.adoc[]
 
-=== 플레이리스트 삭제 성공
+===== Response
 
-==== Request
+include::{snippets}/playlist/modify-alarm-flag-fail-playlist-not-found/http-response.adoc[]
+include::{snippets}/playlist/modify-alarm-flag-fail-playlist-not-found/response-fields.adoc[]
 
-include::{snippets}/spotify/deletePlaylist/http-request.adoc[]
-include::{snippets}/spotify/deletePlaylist/request-fields.adoc[]
+---
 
-==== Response
+=== 플레이리스트 삭제
 
-include::{snippets}/spotify/deletePlaylist/http-response.adoc[]
-include::{snippets}/spotify/deletePlaylist/response-fields.adoc[]
+==== 성공
 
-=== 플레이리스트 삭제 실패 - 플레이리스트 찾을 수 없음
+===== Request
 
-==== Request
+include::{snippets}/playlist/delete-success/http-request.adoc[]
+include::{snippets}/playlist/delete-success/request-fields.adoc[]
 
-include::{snippets}/spotify/deletePlaylistFail/http-request.adoc[]
-include::{snippets}/spotify/deletePlaylistFail/request-fields.adoc[]
+===== Response
 
-==== Response
+include::{snippets}/playlist/delete-success/http-response.adoc[]
+include::{snippets}/playlist/delete-success/response-fields.adoc[]
 
-include::{snippets}/spotify/deletePlaylistFail/http-response.adoc[]
-include::{snippets}/spotify/deletePlaylistFail/response-fields.adoc[]
+==== 실패 - 플레이리스트 찾을 수 없음
 
-=== 플레이리스트 총재생시간 리턴 API
+===== Request
 
-==== Request
+include::{snippets}/playlist/delete-fail-playlist-not-found/http-request.adoc[]
+include::{snippets}/playlist/delete-fail-playlist-not-found/request-fields.adoc[]
 
-include::{snippets}/spotify/selectPlaylistTotalDurationTime/http-request.adoc[]
-include::{snippets}/spotify/selectPlaylistTotalDurationTime/path-parameters.adoc[]
+===== Response
 
-==== Response
-
-include::{snippets}/spotify/selectPlaylistTotalDurationTime/http-response.adoc[]
-include::{snippets}/spotify/selectPlaylistTotalDurationTime/response-fields.adoc[]
-
-=== 플레이리스트 총재생시간 리턴 실패 (타입 에러)
-
-
-==== Response
-
-include::{snippets}/spotify/selectPlaylistTotalDurationTimeFail/http-response.adoc[]
-
-=== 플레이리스트 수정 성공
-
-==== Request
-
-include::{snippets}/spotify/updatePlaylist/http-request.adoc[]
-include::{snippets}/spotify/updatePlaylist/request-fields.adoc[]
-
-
-==== Response
-
-include::{snippets}/spotify/updatePlaylist/http-response.adoc[]
-include::{snippets}/spotify/updatePlaylist/response-fields.adoc[]
-
-=== 플레이리스트 수정 실패
-
-==== Response
-
-include::{snippets}/spotify/updatePlaylistFail/http-response.adoc[]
-include::{snippets}/spotify/updatePlaylistFail/response-fields.adoc[]
-
+include::{snippets}/playlist/delete-fail-playlist-not-found/http-response.adoc[]
+include::{snippets}/playlist/delete-fail-playlist-not-found/response-fields.adoc[]

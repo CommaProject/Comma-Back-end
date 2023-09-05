@@ -10,13 +10,9 @@ public interface PlaylistRepositoryCustom {
 
     int findTotalDurationTimeMsByPlaylistId(Long playlistId);
 
-    int findMaxListSequence();
-
-    long modifyAlarmFlag(long id, boolean alarmFlag);
-
-    long deletePlaylist(long id);
+    long deletePlaylists(List<Long> playlistIdList);
 
     List<PlaylistResponse> findAllPlaylistsByUser(User user);
 
-    Optional<PlaylistResponse> findPlaylistsByPlaylistId(long playlistId);
+    Optional<PlaylistResponse> findPlaylistByPlaylistId(long playlistId);
 }

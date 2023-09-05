@@ -1,7 +1,6 @@
 package com.team.comma.domain.playlist.archive.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.team.comma.domain.playlist.archive.domain.Archive;
 import com.team.comma.domain.playlist.archive.dto.ArchiveResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
@@ -11,7 +10,6 @@ import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.archive.dto.ArchiveRequest;
 import com.team.comma.domain.playlist.archive.service.ArchiveService;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
-import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +22,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -49,6 +48,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
@@ -210,7 +211,7 @@ public class ArchiveControllerTest {
         final String api = "/archives/{startDate}/{endDate}";
         User user = User.buildUser();
         Track track = buildTrack();
-        Playlist playlist = Playlist.buildPlaylist(user);
+        Playlist playlist = buildPlaylist(user);
         playlist.addPlaylistTrack(track);
         Archive archive = Archive.buildArchive(user,"comment", playlist);
         ArchiveResponse archiveResponse = ArchiveResponse.of(archive);
@@ -222,7 +223,7 @@ public class ArchiveControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
+                RestDocumentationRequestBuilders
                         .get(api, startDate, endDate)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken", "token")));
@@ -234,6 +235,10 @@ public class ArchiveControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        pathParameters(
+                                parameterWithName("startDate").description("시작일자"),
+                                parameterWithName("endDate").description("종료일자")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -264,6 +269,15 @@ public class ArchiveControllerTest {
                 .albumImageUrl("url")
                 .spotifyTrackHref("href")
                 .spotifyTrackId("id123")
+                .build();
+    }
+
+    public Playlist buildPlaylist(User user){
+        return Playlist.builder()
+                .id(1L)
+                .playlistTitle("새로운 플레이리스트")
+                .user(user)
+                .alarmFlag(true)
                 .build();
     }
 

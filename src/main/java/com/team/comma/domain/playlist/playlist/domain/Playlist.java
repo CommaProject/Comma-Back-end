@@ -1,6 +1,6 @@
 package com.team.comma.domain.playlist.playlist.domain;
 
-import com.team.comma.domain.playlist.playlist.dto.PlaylistUpdateRequest;
+import com.team.comma.domain.playlist.playlist.dto.PlaylistModifyRequest;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.user.user.domain.User;
@@ -40,8 +40,6 @@ public class Playlist {
     @ColumnDefault("false")
     private Boolean alarmFlag;
 
-    private Integer listSequence;
-
     @Builder.Default
     @Convert(converter = BooleanConverter.class)
     private boolean delFlag = false;
@@ -63,17 +61,21 @@ public class Playlist {
         playlistTrackList.add(playlistTrack);
     }
 
-    public void modifyPlaylist(PlaylistUpdateRequest playlistUpdateRequest) {
-        this.playlistTitle = playlistUpdateRequest.getPlaylistTitle();
-        this.alarmStartTime = playlistUpdateRequest.getAlarmStartTime();
-        this.listSequence = playlistUpdateRequest.getListSequence();
+    public void modifyPlaylistTitle(PlaylistModifyRequest playlistModifyRequest) {
+        this.playlistTitle = playlistModifyRequest.getPlaylistTitle();
+    }
+
+    public void modifyAlarmStartTime(PlaylistModifyRequest playlistModifyRequest) {
+        this.alarmStartTime = playlistModifyRequest.getAlarmStartTime();
+    }
+
+    public void modifyAlarmFlag() {
+        this.alarmFlag = !this.alarmFlag;
     }
 
     public static Playlist buildPlaylist(User user){
         return Playlist.builder()
-                .id(1L)
-                .playlistTitle("build playlist")
-                .alarmFlag(true)
+                .playlistTitle("새로운 플레이리스트")
                 .user(user)
                 .build();
     }

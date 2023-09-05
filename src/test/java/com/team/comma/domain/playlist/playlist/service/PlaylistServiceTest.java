@@ -3,13 +3,16 @@ package com.team.comma.domain.playlist.playlist.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 
+import com.team.comma.domain.alertday.service.AlertDayService;
+import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
-import com.team.comma.domain.playlist.playlist.dto.PlaylistUpdateRequest;
+import com.team.comma.domain.playlist.playlist.dto.PlaylistModifyRequest;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
@@ -36,7 +39,11 @@ class PlaylistServiceTest {
     @InjectMocks
     private PlaylistService playlistService;
     @Mock
+    private TrackService trackService;
+    @Mock
     private PlaylistRepository playlistRepository;
+    @Mock
+    private AlertDayService alertDayService;
     @Mock
     private UserRepository userRepository;
     @Mock
@@ -45,8 +52,27 @@ class PlaylistServiceTest {
     private String userEmail = "email@naver.com";
     private String token = "accessToken";
 
+
     @Test
-    void 플레이리스트_조회_성공() throws AccountException {
+    public void createPlaylistSuccess() throws AccountException {
+        // given
+        String spotifyTrackId = "spotifyTrackId";
+        Track track = Track.builder().build();
+        doReturn(track).when(trackService).findTrackOrSave(spotifyTrackId);
+
+        User user = User.buildUser();
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(any());
+
+        // when
+        final MessageResponse result = playlistService.createPlaylist(token, spotifyTrackId);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+
+    }
+
+    @Test
+    public void 플레이리스트_조회_성공() throws AccountException {
         // given
         final User user = buildUserWithEmail();
         final Optional<User> optionalUser = Optional.of(user);
@@ -55,7 +81,11 @@ class PlaylistServiceTest {
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
 
-        final PlaylistResponse playlistResponse = PlaylistResponse.of(buildUserPlaylist(Arrays.asList(playlistTrack)), 3, "representative album image url");
+        final PlaylistResponse playlistResponse = PlaylistResponse.of(
+                buildUserPlaylist(Arrays.asList(playlistTrack)),
+                "representative album image url",
+                21000L);
+
         final List<PlaylistResponse> playlistResponseList = List.of(playlistResponse);
 
         doReturn(optionalUser).when(userRepository).findByEmail(userEmail);
@@ -72,25 +102,28 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 단일_플레이리스트_조회실패_존재하지않는플레이리스트() {
+    public void 단일_플레이리스트_조회실패_존재하지않는플레이리스트() {
         // given
-        doReturn(Optional.empty()).when(playlistRepository).findPlaylistsByPlaylistId(30);
+        doReturn(Optional.empty()).when(playlistRepository).findPlaylistByPlaylistId(30);
 
         // when
         Throwable throwable = catchThrowable(() -> playlistService.findPlaylist(30));
 
         // then
-        assertThat(throwable.getMessage()).isEqualTo("PlayList 정보를 찾을 수 없습니다.");
+        assertThat(throwable.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
     }
 
     @Test
-    void 단일_플레이리스트_조회() {
+    public void 단일_플레이리스트_조회() {
         // given
         final TrackArtist trackArtist = buildTrackArtist();
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
-        final PlaylistResponse playlistResponse = PlaylistResponse.of(buildUserPlaylist(Arrays.asList(playlistTrack)), 3, "representative album image url");
-        doReturn(Optional.ofNullable(playlistResponse)).when(playlistRepository).findPlaylistsByPlaylistId(30);
+        final PlaylistResponse playlistResponse = PlaylistResponse.of(buildUserPlaylist(
+                Arrays.asList(playlistTrack)),
+                "representative album image url",
+                21000L);
+        doReturn(Optional.ofNullable(playlistResponse)).when(playlistRepository).findPlaylistByPlaylistId(30);
 
         // when
         MessageResponse result = playlistService.findPlaylist(30);
@@ -101,36 +134,39 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() {
+    public void 플레이리스트_알람설정변경_실패_플레이리스트_찾을수없음() {
         // given
+        PlaylistModifyRequest request = PlaylistModifyRequest.builder().playlistId(1L).build();
 
         // when
-        final Throwable thrown = catchThrowable(() -> playlistService.modifyPlaylistAlarmFlag(123L, false));
+        final Throwable thrown = catchThrowable(() -> playlistService.modifyPlaylistAlarmFlag(request));
 
         // then
         assertThat(thrown.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
     }
 
     @Test
-    void 플레이리스트_알람설정변경_성공() {
+    public void 플레이리스트_알람설정변경_성공() {
         // given
         final TrackArtist trackArtist = buildTrackArtist();
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
-        final Playlist userPlaylist = buildUserPlaylist(Arrays.asList(playlistTrack));
-        final Optional<Playlist> optionalPlaylist = Optional.of(userPlaylist);
-        doReturn(optionalPlaylist).when(playlistRepository).findById(userPlaylist.getId());
+        final Playlist playlist = buildUserPlaylist(Arrays.asList(playlistTrack));
+        final Optional<Playlist> optionalPlaylist = Optional.of(playlist);
+        doReturn(optionalPlaylist).when(playlistRepository).findById(playlist.getId());
+
+        PlaylistModifyRequest request = PlaylistModifyRequest.builder().playlistId(playlist.getId()).build();
 
         // when
-        final MessageResponse result = playlistService.modifyPlaylistAlarmFlag(userPlaylist.getId(), false);
+        final MessageResponse result = playlistService.modifyPlaylistAlarmFlag(request);
 
         // then
-        assertThat(result.getCode()).isEqualTo(2);
-        assertThat(result.getMessage()).isEqualTo("알람 설정이 변경되었습니다.");
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
     @Test
-    void 플레이리스트_삭제_실패_플레이리스트_찾을수없음() {
+    public void 플레이리스트_삭제_실패_플레이리스트_찾을수없음() {
         // given
         final List<Long> playlistIdList = Arrays.asList(123L, 124L);
 
@@ -142,7 +178,7 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 플레이리스트_삭제_성공() {
+    public void 플레이리스트_삭제_성공() {
         // given
         final TrackArtist trackArtist = buildTrackArtist();
         final Track track = buildTrack(Arrays.asList(trackArtist));
@@ -157,12 +193,12 @@ class PlaylistServiceTest {
         final MessageResponse result = playlistService.modifyPlaylistsDelFlag(playlistIdList);
 
         // then
-        assertThat(result.getCode()).isEqualTo(2);
-        assertThat(result.getMessage()).isEqualTo("플레이리스트가 삭제되었습니다.");
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
     @Test
-    void 플레이리스트의_총재생시간을_리턴한다() {
+    public void 플레이리스트의_총재생시간을_리턴한다() {
         //given
         final long PLAYLIST_ID = 1L;
         final int TOTAL_DURATION_TIME = 100;
@@ -179,20 +215,40 @@ class PlaylistServiceTest {
     }
 
     @Test
-    void 플리를_PlaylistRequest로_수정하고_MessageResponse를_반환한다() {
+    public void modifyPlaylist_Success() {
+        // given
+        PlaylistModifyRequest request = PlaylistModifyRequest.builder()
+                .playlistId(1L)
+                .playlistTitle("플리제목수정")
+                .alarmStartTime(LocalTime.now())
+                .alarmDays(List.of(1,2,3))
+                .build();
+
+        User user = User.buildUser();
+        Playlist playlist = Playlist.buildPlaylist(user);
+        doReturn(Optional.of(playlist)).when(playlistRepository).findById(anyLong());
+
+        // when
+        MessageResponse result = playlistService.modifyPlaylistAlarmDayAndTime(request);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+    }
+
+    @Test
+    public void 플레이리스트_제목_수정() {
         //given
-        PlaylistUpdateRequest playlistRequest = PlaylistUpdateRequest.builder()
-            .id(1L)
+        PlaylistModifyRequest playlistRequest = PlaylistModifyRequest.builder()
+            .playlistId(1L)
             .playlistTitle("플리제목수정")
             .alarmStartTime(LocalTime.now())
-            .listSequence(2)
             .build();
 
         doReturn(Optional.of(buildPlaylist()))
-            .when(playlistRepository).findById(playlistRequest.getId());
+            .when(playlistRepository).findById(playlistRequest.getPlaylistId());
 
         //when
-        MessageResponse messageResponse = playlistService.modifyPlaylist(playlistRequest);
+        MessageResponse messageResponse = playlistService.modifyPlaylistTitle(playlistRequest);
 
         //then
         assertThat(messageResponse.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());

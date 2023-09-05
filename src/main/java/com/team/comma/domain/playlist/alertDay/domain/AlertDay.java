@@ -1,14 +1,8 @@
-package com.team.comma.domain.playlist.alertday;
+package com.team.comma.domain.playlist.alertDay.domain;
 
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.DayOfWeek;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,11 +23,18 @@ public class AlertDay {
     private Long id;
 
     /**
-     * 1 ~ 7 : 월요일 ~ 일요일
+     * 1 ~ 7 : 월 ~ 토
      */
     private DayOfWeek alarmDay;
 
     @JoinColumn(name = "playlist_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Playlist playlist;
+
+    public static AlertDay buildAlertDay(Playlist playlist, DayOfWeek alarmDay){
+        return AlertDay.builder()
+                .playlist(playlist)
+                .alarmDay(alarmDay)
+                .build();
+    }
 }
