@@ -18,12 +18,23 @@ public class AlertDayService {
     private final AlertDayRepository alertDayRepository;
 
     @Transactional
-    public void createAlertDay(Playlist playlist, List<Integer> alarmDays) {
+    public void createAlertDays(Playlist playlist, List<Integer> alarmDays) {
         List<AlertDay> alertDays = new ArrayList<>();
         for(int alarmDay : alarmDays){
             alertDays.add(AlertDay.buildAlertDay(playlist, DayOfWeek.of(alarmDay)));
         }
         alertDayRepository.saveAll(alertDays);
+    }
+
+    @Transactional
+    public void modifyAlertDays(Playlist playlist, List<Integer> alarmDays) {
+        deleteAlertDays(playlist);
+        createAlertDays(playlist, alarmDays);
+    }
+
+    @Transactional
+    public void deleteAlertDays(Playlist playlist) {
+        alertDayRepository.deleteAlertDaysByPlaylist(playlist);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.team.comma.domain.playlist.track.controller;
 
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackDeleteRequest;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackModifyRequest;
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackMultipleRequest;
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackSingleRequest;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
 import com.team.comma.domain.playlist.track.service.PlaylistTrackService;
 import com.team.comma.global.common.dto.MessageResponse;
@@ -19,9 +19,10 @@ public class PlaylistTrackController {
 
     @PostMapping
     public ResponseEntity<MessageResponse> createPlaylistTrack(
-            @RequestBody final PlaylistTrackRequest playlistTrackRequest) {
+            @RequestBody final PlaylistTrackRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(playlistTrackService.createPlaylistTrack(playlistTrackRequest));
+                .body(playlistTrackService.createPlaylistTrack(request.getPlaylistIdList(), request.getSpotifyTrackId()));
+
     }
 
     @GetMapping("/{playlistId}")
@@ -31,18 +32,25 @@ public class PlaylistTrackController {
                 .body(playlistTrackService.findPlaylistTrack(playlistId));
     }
 
-    @PatchMapping
-    public ResponseEntity<MessageResponse> modifyPlaylistTrackAlarmFlag(
-            @RequestBody final PlaylistTrackModifyRequest playlistTrackModifyRequest){
+    @PatchMapping("/sequence")
+    public ResponseEntity<MessageResponse> modifyPlaylistTrackSequence(
+            @RequestBody final PlaylistTrackMultipleRequest request){
         return ResponseEntity.ok()
-                .body(playlistTrackService.modifyPlaylistTrackAlarmFlag(playlistTrackModifyRequest));
+                .body(playlistTrackService.modifyPlaylistTrackSequence(request.getPlaylistTrackIdList()));
+    }
+
+    @PatchMapping("/alert")
+    public ResponseEntity<MessageResponse> modifyPlaylistTrackAlarmFlag(
+            @RequestBody final PlaylistTrackSingleRequest request){
+        return ResponseEntity.ok()
+                .body(playlistTrackService.modifyPlaylistTrackAlarmFlag(request.getPlaylistTrackId()));
     }
 
     @DeleteMapping
-    public ResponseEntity<MessageResponse> deletePlaylistTrack(
-            @RequestBody final PlaylistTrackDeleteRequest playlistTrackRequest) {
+    public ResponseEntity<MessageResponse> deletePlaylistTracks(
+            @RequestBody final PlaylistTrackMultipleRequest request) {
         return ResponseEntity.ok()
-                .body(playlistTrackService.deletePlaylistTrack(playlistTrackRequest.getTrackIdList(), playlistTrackRequest.getPlaylistId()));
+                .body(playlistTrackService.deletePlaylistTracks(request.getPlaylistTrackIdList()));
     }
 
 }

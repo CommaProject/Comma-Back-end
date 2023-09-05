@@ -8,4 +8,7 @@ import java.util.List;
 public interface PlaylistTrackRepositoryCustom {
 
     List<PlaylistTrackResponse> getPlaylistTracksByPlaylist(Playlist playlist);
+
+    long deletePlaylistTracksByIds(List<Long> playlistTrackIds);
+
 }

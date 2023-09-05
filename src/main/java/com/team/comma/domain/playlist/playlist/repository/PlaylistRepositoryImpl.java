@@ -78,7 +78,7 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
     }
 
     @Override
-    public long deletePlaylist(List<Long> playlistIdList) {
+    public long deletePlaylists(List<Long> playlistIdList) {
         return queryFactory.update(playlist)
                 .set(playlist.delFlag, true)
                 .where(playlist.id.in(playlistIdList))

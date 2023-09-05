@@ -57,13 +57,6 @@ public class PlaylistController {
                 .body(playlistService.findTotalDurationTimeMsByPlaylist(playlistId));
     }
 
-    @PatchMapping
-    public ResponseEntity<MessageResponse> modifyPlaylist(
-            @RequestBody final PlaylistModifyRequest request) {
-        return ResponseEntity.ok()
-                .body(playlistService.modifyPlaylist(request));
-    }
-
     @PatchMapping("/title")
     public ResponseEntity<MessageResponse> modifyPlaylistTitle(
             @RequestBody final PlaylistModifyRequest request) {
@@ -76,6 +69,13 @@ public class PlaylistController {
             @RequestBody final PlaylistModifyRequest request) throws PlaylistException {
         return ResponseEntity.ok()
                 .body(playlistService.modifyPlaylistAlarmFlag(request));
+    }
+
+    @PatchMapping("/alert/day-time")
+    public ResponseEntity<MessageResponse> modifyPlaylistAlarmDayAndTime(
+            @RequestBody final PlaylistModifyRequest request) {
+        return ResponseEntity.ok()
+                .body(playlistService.modifyPlaylistAlarmDayAndTime(request));
     }
 
     @DeleteMapping

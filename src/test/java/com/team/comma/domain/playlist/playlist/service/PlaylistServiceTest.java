@@ -229,7 +229,7 @@ class PlaylistServiceTest {
         doReturn(Optional.of(playlist)).when(playlistRepository).findById(anyLong());
 
         // when
-        MessageResponse result = playlistService.modifyPlaylist(request);
+        MessageResponse result = playlistService.modifyPlaylistAlarmDayAndTime(request);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());

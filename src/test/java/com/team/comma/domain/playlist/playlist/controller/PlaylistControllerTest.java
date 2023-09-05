@@ -184,41 +184,8 @@ class PlaylistControllerTest {
     }
 
     @Test
-    public void findPlaylist_Fail_PlaylistNotFound() throws Exception {
-        // given
-        final String url = "/playlist/{playlistId}";
-
-        doThrow(new PlaylistException("PlayList 정보를 찾을 수 없습니다.")).when(playlistService).findPlaylist(30L);
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.get(url , 30)
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isBadRequest()).andDo(
-                document("playlist/find-fail-playlist-not-found",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("playlistId").description("플레이리스트 아이디")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("응답 메세지"),
-                                fieldWithPath("data").description("응답 데이터")
-                        )
-                )
-        );
-        final MessageResponse result = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(result.getCode()).isEqualTo(-5);
-    }
-
-    @Test
     public void findPlaylist_Success() throws Exception {
+
         // given
         final String url = "/playlist/{playlistId}";
 
@@ -263,34 +230,29 @@ class PlaylistControllerTest {
     }
 
     @Test
-    public void modifyPlaylist_Success() throws Exception {
+    public void findPlaylist_Fail_PlaylistNotFound() throws Exception {
         // given
-        final String url = "/playlist";
+        final String url = "/playlist/{playlistId}";
 
-        final PlaylistModifyRequest request = PlaylistModifyRequest.builder().playlistId(1L).alarmDays(List.of(1,2,3)).build();
-
-        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(playlistService).modifyPlaylist(any());
+        doThrow(new PlaylistException("PlayList 정보를 찾을 수 없습니다.")).when(playlistService).findPlaylist(30L);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.patch(url)
-                        .content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
+                RestDocumentationRequestBuilders.get(url , 30)
+                        .contentType(MediaType.APPLICATION_JSON));
 
         // then
-        resultActions.andExpect(status().isOk()).andDo(
-                document("playlist/modify-success",
+        resultActions.andExpect(status().isBadRequest()).andDo(
+                document("playlist/find-fail-playlist-not-found",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("playlistId").description("플레이리스트 id"),
-                                fieldWithPath("alarmDays.[]").description("알람 설정 요일 리스트 (1 ~ 7 : 월 ~ 일)")
+                        pathParameters(
+                                parameterWithName("playlistId").description("플레이리스트 아이디")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터")
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data").description("응답 데이터")
                         )
                 )
         );
@@ -298,10 +260,117 @@ class PlaylistControllerTest {
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 MessageResponse.class);
 
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+        assertThat(result.getCode()).isEqualTo(-5);
+    }
+
+    @Test
+    public void findTotalDurationTime_Success() throws Exception {
+        //given
+        doReturn(
+                MessageResponse.of(
+                        REQUEST_SUCCESS.getCode(),
+                        REQUEST_SUCCESS.getMessage(),
+                        1000)
+        ).when(playlistService)
+                .findTotalDurationTimeMsByPlaylist(anyLong());
+
+        ResultActions resultActions = mockMvc.perform(
+                get("/playlist/total-duration-time/{id}", 1L)
+        ).andDo(print());
+
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        document("playlist/find-total-duration-time-success",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(
+                                        parameterWithName("id").description("플레이리스트 id")
+                                ),
+                                responseFields(
+                                        fieldWithPath("code").description("응답 코드"),
+                                        fieldWithPath("message").description("메세지"),
+                                        fieldWithPath("data").description("총재생시간(ms)")
+                                )
+                        ));
+    }
+
+    @Test
+    public void modifyPlaylistTitle_Success() throws Exception {
+        //given
+        doReturn(MessageResponse.of(REQUEST_SUCCESS))
+                .when(playlistService).modifyPlaylistTitle(any(PlaylistModifyRequest.class));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                patch("/playlist/title")
+                        .contentType(APPLICATION_JSON)
+                        .content(gson.toJson(PlaylistModifyRequest.builder()
+                                .playlistId(1L)
+                                .playlistTitle("test playlist")
+                                .build()))
+        ).andDo(print());
+
+        //then
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        document(
+                                "playlist/modify-title-success",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("playlistId").description("플레이리스트 id"),
+                                        fieldWithPath("playlistTitle").description("플레이리스트 제목")
+                                ),
+                                responseFields(
+                                        fieldWithPath("code").description("응답 코드"),
+                                        fieldWithPath("message").description("메세지"),
+                                        fieldWithPath("data").description("데이터")
+                                )
+
+                        )
+                );
 
     }
+
+    @Test
+    public void modifyPlaylistTitle_Fail_PlaylistNotFound() throws Exception {
+        //given
+        doThrow(
+                new EntityNotFoundException("해당 플레이리스트가 없습니다")
+        ).when(playlistService).modifyPlaylistTitle(any(PlaylistModifyRequest.class));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                patch("/playlist/title")
+                        .contentType(APPLICATION_JSON)
+                        .content(gson.toJson(PlaylistModifyRequest.builder()
+                                .playlistId(1L)
+                                .playlistTitle("test playlist")
+                                .build()))
+        ).andDo(print());
+
+        //then
+        resultActions.andExpect(status().isBadRequest())
+                .andDo(
+                        document(
+                                "playlist/modify-title-fail-playlist-not-found",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestFields(
+                                        fieldWithPath("playlistId").description("플레이리스트 id"),
+                                        fieldWithPath("playlistTitle").description("플레이리스트 제목")
+                                ),
+                                responseFields(
+                                        fieldWithPath("code").description("응답 코드"),
+                                        fieldWithPath("message").description("메세지"),
+                                        fieldWithPath("data").ignored()
+                                )
+
+                        )
+                );
+
+    }
+
     @Test
     public void modifyPlaylistAlarmFlag_Success() throws Exception {
         // given
@@ -315,24 +384,24 @@ class PlaylistControllerTest {
         // when
         final ResultActions resultActions = mockMvc.perform(
                 RestDocumentationRequestBuilders.patch(url)
-                .content(gson.toJson(request))
-                .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
         );
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-            document("playlist/modify-alarm-flag-success",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
-                requestFields(
-                    fieldWithPath("playlistId").description("플레이리스트 id")
-                ),
-                responseFields(
-                        fieldWithPath("code").description("응답 코드"),
-                        fieldWithPath("message").description("메세지"),
-                        fieldWithPath("data").description("데이터")
+                document("playlist/modify-alarm-flag-success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("playlistId").description("플레이리스트 id")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터")
+                        )
                 )
-            )
         );
 
         final MessageResponse result = gson.fromJson(
@@ -382,6 +451,48 @@ class PlaylistControllerTest {
 
         assertThat(result.getCode()).isEqualTo(PLAYLIST_NOT_FOUND.getCode());
         assertThat(result.getMessage()).isEqualTo(PLAYLIST_NOT_FOUND.getMessage());
+    }
+
+    @Test
+    public void modifyPlaylistAlarmDayAndTime_Success() throws Exception {
+        // given
+        final String url = "/playlist/alert/day-time";
+
+        final PlaylistModifyRequest request = PlaylistModifyRequest.builder()
+                .playlistId(1L).alarmDays(List.of(1,2,3)).build();
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(playlistService).modifyPlaylistAlarmDayAndTime(any());
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.patch(url)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("playlist/modify-success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("playlistId").description("플레이리스트 id"),
+                                fieldWithPath("alarmDays.[]").description("알람 설정 요일 리스트 (1 ~ 7 : 월 ~ 일)")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+
     }
 
     @Test
@@ -462,114 +573,6 @@ class PlaylistControllerTest {
 
         assertThat(result.getCode()).isEqualTo(PLAYLIST_NOT_FOUND.getCode());
         assertThat(result.getMessage()).isEqualTo(PLAYLIST_NOT_FOUND.getMessage());
-    }
-
-    @Test
-    public void findTotalDurationTime_Success() throws Exception {
-        //given
-        doReturn(
-            MessageResponse.of(
-                REQUEST_SUCCESS.getCode(),
-                REQUEST_SUCCESS.getMessage(),
-                1000)
-        ).when(playlistService)
-            .findTotalDurationTimeMsByPlaylist(anyLong());
-
-        ResultActions resultActions = mockMvc.perform(
-            get("/playlist/total-duration-time/{id}", 1L)
-        ).andDo(print());
-
-        resultActions.andExpect(status().isOk())
-            .andDo(
-                document("playlist/find-total-duration-time-success",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    pathParameters(
-                        parameterWithName("id").description("플레이리스트 id")
-                    ),
-                    responseFields(
-                        fieldWithPath("code").description("응답 코드"),
-                        fieldWithPath("message").description("메세지"),
-                        fieldWithPath("data").description("총재생시간(ms)")
-                    )
-                ));
-    }
-
-    @Test
-    public void modifyPlaylistTitle_Success() throws Exception {
-        //given
-        doReturn(MessageResponse.of(REQUEST_SUCCESS))
-                .when(playlistService).modifyPlaylistTitle(any(PlaylistModifyRequest.class));
-
-        //when
-        ResultActions resultActions = mockMvc.perform(
-            patch("/playlist/title")
-                .contentType(APPLICATION_JSON)
-                .content(gson.toJson(PlaylistModifyRequest.builder()
-                    .playlistId(1L)
-                    .playlistTitle("test playlist")
-                    .build()))
-        ).andDo(print());
-
-        //then
-        resultActions.andExpect(status().isOk())
-            .andDo(
-                document(
-                    "playlist/modify-title-success",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    requestFields(
-                        fieldWithPath("playlistId").description("플레이리스트 id"),
-                        fieldWithPath("playlistTitle").description("플레이리스트 제목")
-                    ),
-                    responseFields(
-                        fieldWithPath("code").description("응답 코드"),
-                        fieldWithPath("message").description("메세지"),
-                        fieldWithPath("data").description("데이터")
-                    )
-
-                )
-            );
-
-    }
-
-    @Test
-    public void modifyPlaylistTitle_Fail_PlaylistNotFound() throws Exception {
-        //given
-        doThrow(
-            new EntityNotFoundException("해당 플레이리스트가 없습니다")
-        ).when(playlistService).modifyPlaylistTitle(any(PlaylistModifyRequest.class));
-
-        //when
-        ResultActions resultActions = mockMvc.perform(
-            patch("/playlist/title")
-                .contentType(APPLICATION_JSON)
-                .content(gson.toJson(PlaylistModifyRequest.builder()
-                    .playlistId(1L)
-                    .playlistTitle("test playlist")
-                    .build()))
-        ).andDo(print());
-
-        //then
-        resultActions.andExpect(status().isBadRequest())
-            .andDo(
-                document(
-                    "playlist/modify-title-fail-playlist-not-found",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    requestFields(
-                        fieldWithPath("playlistId").description("플레이리스트 id"),
-                        fieldWithPath("playlistTitle").description("플레이리스트 제목")
-                    ),
-                    responseFields(
-                        fieldWithPath("code").description("응답 코드"),
-                        fieldWithPath("message").description("메세지"),
-                        fieldWithPath("data").ignored()
-                    )
-
-                )
-            );
-
     }
 
     private Playlist buildPlaylist() {

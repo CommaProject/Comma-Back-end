@@ -2,30 +2,24 @@ package com.team.comma.domain.playlist.track.service;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 import com.team.comma.domain.playlist.playlist.service.PlaylistService;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackModifyRequest;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
-import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.playlist.track.repository.PlaylistTrackRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,13 +51,8 @@ class PlaylistTrackServiceTest {
         doReturn(track).when(trackService).findTrackOrSave(anyString());
         doReturn(playlist).when(playlistService).findPlaylistOrThrow(anyLong());
 
-        PlaylistTrackRequest playlistTrackRequest = PlaylistTrackRequest.builder()
-                .playlistIdList(List.of(1L, 2L, 3L))
-                .spotifyTrackId("spotify track id")
-                .build();
-
         // when
-        MessageResponse result = playlistTrackService.createPlaylistTrack(playlistTrackRequest);
+        MessageResponse result = playlistTrackService.createPlaylistTrack(List.of(1L, 2L, 3L), "spotify track id");
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -72,66 +61,7 @@ class PlaylistTrackServiceTest {
     }
 
     @Test
-    void modifyPlaylistTrackAlarmFlag_Success() {
-        // given
-        User user = User.buildUser();
-        Track track = buildTrack("track title");
-        Playlist playlist = Playlist.buildPlaylist(user);
-        PlaylistTrack playlistTrack = PlaylistTrack.buildPlaylistTrack(playlist,track);
-        doReturn(Optional.of(playlistTrack)).when(playlistTrackRepository).findByPlaylistIdAndTrackId(anyLong(), anyLong());
-
-        PlaylistTrackModifyRequest request = PlaylistTrackModifyRequest.builder()
-                .playlistId(1L).trackId(1L).build();
-
-        // when
-        MessageResponse result = playlistTrackService.modifyPlaylistTrackAlarmFlag(request);
-
-        // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-        assertThat(result.getData()).isEqualTo(true);
-    }
-
-    @Test
-    void 플리에_담긴_트랙들을_삭제한다() {
-        //given
-        final Set<Long> trackIdList = Set.of(1L, 2L, 3L);
-        final long playlistId = 1L;
-        final int sizeOfTrackIdList = trackIdList.size();
-
-        doReturn(1)
-            .when(playlistTrackRepository)
-            .deletePlaylistTrackByTrackIdAndPlaylistId(anyLong(), anyLong());
-
-        doReturn(Optional.of(PlaylistTrack.builder().build()))
-            .when(playlistTrackRepository)
-                .findByPlaylistIdAndTrackId(anyLong(), anyLong());
-        //when
-        int deleteCount = (int) playlistTrackService.deletePlaylistTrack(trackIdList,
-                playlistId)
-            .getData();
-
-        //then
-        assertThat(deleteCount).isEqualTo(sizeOfTrackIdList);
-    }
-
-    @Test
-    void 플리에_없는_트랙과의_관계를_끊을려고하면_에러_발생() {
-        //given
-        long playlistId = 1L;
-        doThrow(EntityNotFoundException.class)
-            .when(playlistTrackRepository)
-            .findByPlaylistIdAndTrackId(anyLong(), anyLong());
-        //when //then
-        assertThrows(EntityNotFoundException.class,
-            () -> {
-                playlistTrackService.deletePlaylistTrack(Set.of(1L, 2L, 3L), playlistId);
-            });
-
-    }
-
-    @Test
-    void 플레이리스트_트랙_상세_리스트_조회_성공() throws PlaylistException {
+    void findPlaylistTrack_Success() throws PlaylistException {
         // given
         final long playlistId = 1L;
         final User user = buildUser();
@@ -148,7 +78,7 @@ class PlaylistTrackServiceTest {
     }
 
     @Test
-    void 플레이리스트_트랙_상세_리스트_조회_실패_플레이리스트없음() {
+    void findPlaylistTrack_Fail_PlaylistNotFound() {
         // given
         final long playlistId = 1L;
         doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
@@ -160,6 +90,78 @@ class PlaylistTrackServiceTest {
         // then
         assertThat(thrown.getMessage()).isEqualTo("플레이리스트를 찾을 수 없습니다.");
 
+    }
+
+    @Test
+    void modifyPlaylistTrackSequence_Success() {
+        // given
+        User user = User.buildUser();
+        Playlist playlist = Playlist.buildPlaylist(user);
+        Track track = buildTrack("title");
+        PlaylistTrack playlistTrack1 = PlaylistTrack.buildPlaylistTrack(playlist,track);
+        PlaylistTrack playlistTrack2 = PlaylistTrack.buildPlaylistTrack(playlist,track);
+        PlaylistTrack playlistTrack3 = PlaylistTrack.buildPlaylistTrack(playlist,track);
+
+        doReturn(Optional.of(playlistTrack1)).when(playlistTrackRepository).findById(1L);
+        doReturn(Optional.of(playlistTrack2)).when(playlistTrackRepository).findById(2L);
+        doReturn(Optional.of(playlistTrack3)).when(playlistTrackRepository).findById(3L);
+
+        // when
+        MessageResponse result = playlistTrackService.modifyPlaylistTrackSequence(List.of(3L, 2L, 1L));
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+
+        assertThat(playlistTrack3.getPlaySequence()).isEqualTo(1);
+        assertThat(playlistTrack2.getPlaySequence()).isEqualTo(2);
+        assertThat(playlistTrack1.getPlaySequence()).isEqualTo(3);
+
+    }
+
+    @Test
+    void modifyPlaylistTrackAlarmFlag_Success() {
+        // given
+        User user = User.buildUser();
+        Track track = buildTrack("track title");
+        Playlist playlist = Playlist.buildPlaylist(user);
+        PlaylistTrack playlistTrack = PlaylistTrack.buildPlaylistTrack(playlist,track);
+        doReturn(Optional.of(playlistTrack)).when(playlistTrackRepository).findById(anyLong());
+
+        // when
+        MessageResponse result = playlistTrackService.modifyPlaylistTrackAlarmFlag(1L);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+        assertThat(result.getData()).isEqualTo(true);
+    }
+
+    @Test
+    void deletePlaylistTrack_Success() {
+        //given
+        final List<Long> playlistTrackIdList = List.of(1L, 2L, 3L);
+
+        User user = User.buildUser();
+        Playlist playlist = Playlist.buildPlaylist(user);
+        Track track = buildTrack("title");
+        PlaylistTrack playlistTrack1 = PlaylistTrack.buildPlaylistTrack(playlist,track);
+        PlaylistTrack playlistTrack2 = PlaylistTrack.buildPlaylistTrack(playlist,track);
+        PlaylistTrack playlistTrack3 = PlaylistTrack.buildPlaylistTrack(playlist,track);
+        playlistTrackRepository.saveAll(List.of(playlistTrack1,playlistTrack2,playlistTrack3));
+
+        //when
+        MessageResponse result = playlistTrackService.deletePlaylistTracks(playlistTrackIdList);
+
+        //then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+        Optional<PlaylistTrack> pt1 = playlistTrackRepository.findById(playlistTrack1.getId());
+        Optional<PlaylistTrack> pt2 = playlistTrackRepository.findById(playlistTrack2.getId());
+        Optional<PlaylistTrack> pt3 = playlistTrackRepository.findById(playlistTrack3.getId());
+        assertThat(pt1).isEmpty();
+        assertThat(pt2).isEmpty();
+        assertThat(pt3).isEmpty();
     }
 
     private User buildUser() {

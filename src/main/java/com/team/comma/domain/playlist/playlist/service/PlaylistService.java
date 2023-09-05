@@ -62,21 +62,22 @@ public class PlaylistService {
         return MessageResponse.of(REQUEST_SUCCESS, result);
     }
 
-    public MessageResponse findTotalDurationTimeMsByPlaylist(final long playlistId) {
-        return MessageResponse.of(REQUEST_SUCCESS,
-                playlistRepository.findTotalDurationTimeMsByPlaylistId(playlistId));
-    }
-
     public Playlist findPlaylistOrThrow(final long playlistId){
         return playlistRepository.findById(playlistId)
                 .orElseThrow(() -> new PlaylistException("플레이리스트를 찾을 수 없습니다."));
     }
 
-    @Transactional
-    public MessageResponse modifyPlaylist(PlaylistModifyRequest request) {
-        Playlist playlist = findPlaylistOrThrow(request.getPlaylistId());
+    public MessageResponse findTotalDurationTimeMsByPlaylist(final long playlistId) {
+        return MessageResponse.of(REQUEST_SUCCESS,
+                playlistRepository.findTotalDurationTimeMsByPlaylistId(playlistId));
+    }
 
-        alertDayService.createAlertDay(playlist, request.getAlarmDays());
+    @Transactional
+    public MessageResponse modifyPlaylistAlarmDayAndTime(PlaylistModifyRequest request) {
+        Playlist playlist = findPlaylistOrThrow(request.getPlaylistId());
+        playlist.modifyAlarmStartTime(request);
+
+        alertDayService.modifyAlertDays(playlist, request.getAlarmDays());
 
         playlist.modifyAlarmStartTime(request);
         return MessageResponse.of(REQUEST_SUCCESS);
@@ -85,16 +86,16 @@ public class PlaylistService {
     @Transactional
     public MessageResponse modifyPlaylistTitle(PlaylistModifyRequest request) {
         Playlist playlist = findPlaylistOrThrow(request.getPlaylistId());
-
         playlist.modifyPlaylistTitle(request);
+
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
     @Transactional
     public MessageResponse modifyPlaylistAlarmFlag(PlaylistModifyRequest request) {
         Playlist playlist = findPlaylistOrThrow(request.getPlaylistId());
-
         playlist.modifyAlarmFlag();
+
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
@@ -103,8 +104,8 @@ public class PlaylistService {
         for(Long playlistId : playlistIdList){
             findPlaylistOrThrow(playlistId);
         }
+        playlistRepository.deletePlaylists(playlistIdList);
 
-        playlistRepository.deletePlaylist(playlistIdList);
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 

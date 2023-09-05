@@ -1,4 +1,4 @@
-package com.team.comma.domain.playlist.alertday;
+package com.team.comma.domain.playlist.alertday.service;
 
 import com.team.comma.domain.alertday.service.AlertDayService;
 import com.team.comma.domain.playlist.alertDay.domain.AlertDay;
@@ -7,6 +7,7 @@ import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.service.PlaylistService;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.repository.UserRepository;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.DayOfWeek;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -25,11 +27,7 @@ public class AlertDayServiceTest {
     @InjectMocks
     AlertDayService alertDayService;
     @Mock
-    PlaylistService playlistService;
-    @Mock
     AlertDayRepository alertDayRepository;
-    @Mock
-    UserRepository userRepository;
     @Test
     void createAlertDay_Success() {
         // given
@@ -42,7 +40,7 @@ public class AlertDayServiceTest {
         doReturn(alertDays).when(alertDayRepository).findAllByPlaylist(playlist);
 
         // when
-        alertDayService.createAlertDay(playlist, List.of(1,2,3));
+        alertDayService.createAlertDays(playlist, List.of(1,2,3));
 
         // then
         List<AlertDay> result = alertDayRepository.findAllByPlaylist(playlist);
@@ -50,6 +48,49 @@ public class AlertDayServiceTest {
         assertThat(result.get(0).getAlarmDay()).isEqualTo(DayOfWeek.of(1));
         assertThat(result.get(1).getAlarmDay()).isEqualTo(DayOfWeek.of(2));
         assertThat(result.get(2).getAlarmDay()).isEqualTo(DayOfWeek.of(3));
+
+    }
+
+    @Test
+    void modifyAlertDays_Success() {
+        // given
+        User user = User.buildUser();
+        Playlist playlist = Playlist.buildPlaylist(user);
+        List<AlertDay> alertDays = List.of(
+                AlertDay.buildAlertDay(playlist, DayOfWeek.of(4)),
+                AlertDay.buildAlertDay(playlist, DayOfWeek.of(5)),
+                AlertDay.buildAlertDay(playlist, DayOfWeek.of(6)));
+        doReturn(alertDays).when(alertDayRepository).findAllByPlaylist(playlist);
+
+        // when
+        alertDayService.modifyAlertDays(playlist, List.of(4, 5, 6));
+
+        // then
+        List<AlertDay> result = alertDayRepository.findAllByPlaylist(playlist);
+        assertThat(result.size()).isEqualTo(3);
+        assertThat(result.get(0).getAlarmDay()).isEqualTo(DayOfWeek.of(4));
+        assertThat(result.get(1).getAlarmDay()).isEqualTo(DayOfWeek.of(5));
+        assertThat(result.get(2).getAlarmDay()).isEqualTo(DayOfWeek.of(6));
+
+    }
+
+    @Test
+    void deleteAllAlertDays_Success() {
+        // given
+        User user = User.buildUser();
+        Playlist playlist = Playlist.buildPlaylist(user);
+        List<AlertDay> alertDays = List.of(
+                AlertDay.buildAlertDay(playlist, DayOfWeek.of(1)),
+                AlertDay.buildAlertDay(playlist, DayOfWeek.of(2)),
+                AlertDay.buildAlertDay(playlist, DayOfWeek.of(3)));
+        alertDayRepository.saveAll(alertDays);
+
+        // when
+        alertDayService.deleteAlertDays(playlist);
+
+        // then
+        List<AlertDay> result = alertDayRepository.findAllByPlaylist(playlist);
+        assertThat(result.size()).isEqualTo(0);
 
     }
 }

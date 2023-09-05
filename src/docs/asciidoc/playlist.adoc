@@ -75,23 +75,7 @@ include::{snippets}/playlist/find-total-duration-time-success/response-fields.ad
 
 ---
 
-=== 플레이리스트 알람 시간 및 요일 설정
-
-==== 성공
-
-===== Request
-
-include::{snippets}/playlist/modify-success/http-request.adoc[]
-include::{snippets}/playlist/modify-success/request-fields.adoc[]
-
-===== Response
-
-include::{snippets}/playlist/modify-success/http-response.adoc[]
-include::{snippets}/playlist/modify-success/response-fields.adoc[]
-
----
-
-=== 플레이리스트 제목 수정
+=== 플레이리스트 제목 변경
 
 ==== 성공
 
@@ -116,6 +100,22 @@ include::{snippets}/playlist/modify-title-fail-playlist-not-found/request-fields
 
 include::{snippets}/playlist/modify-title-fail-playlist-not-found/http-response.adoc[]
 include::{snippets}/playlist/modify-title-fail-playlist-not-found/response-fields.adoc[]
+
+---
+
+=== 플레이리스트 알람 시간 및 요일 설정
+
+==== 성공
+
+===== Request
+
+include::{snippets}/playlist/modify-alert-day-time-success/http-request.adoc[]
+include::{snippets}/playlist/modify-alert-day-time-success/request-fields.adoc[]
+
+===== Response
+
+include::{snippets}/playlist/modify-alert-day-time-success/http-response.adoc[]
+include::{snippets}/playlist/modify-alert-day-time-success/response-fields.adoc[]
 
 ---
 

@@ -31,14 +31,6 @@ public class PlaylistTrack {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer playSequence;
-
-    @ColumnDefault("false")
-    private Boolean playFlag;
-
-    @ColumnDefault("false")
-    private Boolean trackAlarmFlag;
-
     @JoinColumn(name = "playlist_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Playlist playlist;
@@ -47,9 +39,20 @@ public class PlaylistTrack {
     @ManyToOne(fetch = FetchType.LAZY)
     private Track track;
 
-    public void modifyTrackAlarmFlag(){
+    @ColumnDefault("false")
+    private Boolean trackAlarmFlag;
+
+    private Integer playSequence;
+
+    public void modifyTrackAlarmFlag() {
         this.trackAlarmFlag = !this.trackAlarmFlag;
     }
+
+    public int modifyPlaySequence(int playSequence) {
+        this.playSequence = playSequence;
+        return playSequence + 1;
+    }
+
     public static PlaylistTrack buildPlaylistTrack(Playlist playlist, Track track){
         return PlaylistTrack.builder()
                 .playlist(playlist)

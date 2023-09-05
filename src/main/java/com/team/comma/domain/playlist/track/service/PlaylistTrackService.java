@@ -3,7 +3,6 @@ package com.team.comma.domain.playlist.track.service;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 import com.team.comma.domain.playlist.playlist.service.PlaylistService;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackModifyRequest;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
 import com.team.comma.domain.playlist.track.exception.PlaylistTrackException;
@@ -14,8 +13,8 @@ import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.track.track.domain.Track;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,9 +29,9 @@ public class PlaylistTrackService {
 
     private final PlaylistTrackRepository playlistTrackRepository;
 
-    public MessageResponse createPlaylistTrack(PlaylistTrackRequest playlistTrackRequest) {
-        Track track = trackService.findTrackOrSave(playlistTrackRequest.getSpotifyTrackId());
-        for(long playlistId : playlistTrackRequest.getPlaylistIdList()){
+    public MessageResponse createPlaylistTrack(final List<Long> playlistIdList, final String spotifyTrackId) {
+        Track track = trackService.findTrackOrSave(spotifyTrackId);
+        for(long playlistId : playlistIdList){
             Playlist playlist = playlistService.findPlaylistOrThrow(playlistId);
             PlaylistTrack playlistTrack = PlaylistTrack.buildPlaylistTrack(playlist,track);
             playlistTrackRepository.save(playlistTrack);
@@ -49,31 +48,32 @@ public class PlaylistTrackService {
         return MessageResponse.of(REQUEST_SUCCESS, playlistTrackResponses);
     }
 
-    public PlaylistTrack findPlaylistTrackOrThrow(final long playlistId, final long trackId){
-        return playlistTrackRepository.findByPlaylistIdAndTrackId(playlistId, trackId)
+    public PlaylistTrack findPlaylistTrackOrThrow(final long playlistTrackId){
+        return playlistTrackRepository.findById(playlistTrackId)
                 .orElseThrow(() -> new PlaylistTrackException("플레이리스트의 트랙을 찾을 수 없습니다."));
     }
 
     @Transactional
-    public MessageResponse modifyPlaylistTrackAlarmFlag(PlaylistTrackModifyRequest playlistTrackModifyRequest){
-        PlaylistTrack playlistTrack = findPlaylistTrackOrThrow(
-                playlistTrackModifyRequest.getPlaylistId(), playlistTrackModifyRequest.getTrackId());
+    public MessageResponse modifyPlaylistTrackSequence(final List<Long> playlistTrackIdList){
+        int sequence = 1;
+        for(long playlistTrackId : playlistTrackIdList){
+            PlaylistTrack playlistTrack = findPlaylistTrackOrThrow(playlistTrackId);
+            sequence = playlistTrack.modifyPlaySequence(sequence);
+        }
+        return MessageResponse.of(REQUEST_SUCCESS);
+    }
+
+    @Transactional
+    public MessageResponse modifyPlaylistTrackAlarmFlag(final long playlistTrackId){
+        PlaylistTrack playlistTrack = findPlaylistTrackOrThrow(playlistTrackId);
         playlistTrack.modifyTrackAlarmFlag();
 
         return MessageResponse.of(REQUEST_SUCCESS, playlistTrack.getTrackAlarmFlag());
     }
 
     @Transactional
-    public MessageResponse deletePlaylistTrack(final Set<Long> trackIdList, final Long playlistId) {
-        int deleteCount = 0;
-
-        for (Long trackId : trackIdList) {
-            playlistTrackRepository.findByPlaylistIdAndTrackId(
-                    playlistId, trackId);
-
-            deleteCount += playlistTrackRepository.
-                    deletePlaylistTrackByTrackIdAndPlaylistId(trackId, playlistId);
-        }
-        return MessageResponse.of(REQUEST_SUCCESS,deleteCount);
+    public MessageResponse deletePlaylistTracks(final List<Long> playlistTrackIds) {
+        playlistTrackRepository.deletePlaylistTracksByIds(playlistTrackIds);
+        return MessageResponse.of(REQUEST_SUCCESS);
     }
 }
