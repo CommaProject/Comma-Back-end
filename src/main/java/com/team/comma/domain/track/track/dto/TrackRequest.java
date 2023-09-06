@@ -24,23 +24,6 @@ public class TrackRequest {
 
     private int durationTimeMs;
 
-    private List<String> trackArtistList;
+    private String artist;
 
-    public Track toTrackEntity() {
-        return Track.builder()
-                .trackTitle(trackTitle)
-                .albumImageUrl(albumImageUrl)
-                .spotifyTrackId(spotifyTrackId)
-                .spotifyTrackHref(spotifyTrackHref)
-                .durationTimeMs(durationTimeMs)
-                .trackArtistList(buildTrackArtistList(trackArtistList))
-                .build();
-    }
-    public List<TrackArtist> buildTrackArtistList(List<String> artistList) {
-        ArrayList<TrackArtist> trackArtistList = new ArrayList<>();
-        for (String artist : artistList){
-            trackArtistList.add(TrackArtist.builder().artistName(artist).build());
-        }
-        return trackArtistList;
-    }
 }

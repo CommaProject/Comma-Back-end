@@ -33,7 +33,7 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
                         Projections.list(Projections.constructor(
                                 TrackArtistResponse.class,
                                 trackArtist.id,
-                                trackArtist.artistName))))
+                                trackArtist.artist))))
                 .from(playlistTrack)
                 .leftJoin(trackArtist)
                 .where(playlistTrack.playlist.eq(playlist))

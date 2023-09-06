@@ -1,5 +1,6 @@
 package com.team.comma.domain.track.artist.domain;
 
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.track.track.domain.Track;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +15,8 @@ import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 
+import static com.team.comma.domain.artist.domain.Artist.createArtist;
+
 @Entity
 @Getter
 @Builder
@@ -27,8 +30,9 @@ public class TrackArtist {
     @JsonIgnore
     private Long id;
 
-    @Column(length = 30)
-    private String artistName;
+    @JoinColumn(name = "artist_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Artist artist;
 
     @Setter
     @JoinColumn(name = "track_id")
@@ -38,7 +42,7 @@ public class TrackArtist {
 
     public static TrackArtist createTrackArtist(ArtistSimplified artist, Track track) {
         return TrackArtist.builder()
-                .artistName(artist.getName())
+                .artist(createArtist(artist.getName()))
                 .track(track)
                 .build();
     }

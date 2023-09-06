@@ -1,5 +1,6 @@
 package com.team.comma.domain.track.track.domain;
 
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import jakarta.persistence.*;
 
@@ -44,9 +45,9 @@ public class Track {
     @Builder.Default
     private List<TrackArtist> trackArtistList = new ArrayList<>();
 
-    public void addTrackArtistList(String artistName) {
+    public void addTrackArtistList(Artist artist) {
         TrackArtist trackArtist = TrackArtist.builder()
-            .artistName(artistName)
+            .artist(artist)
             .track(this)
             .build();
 

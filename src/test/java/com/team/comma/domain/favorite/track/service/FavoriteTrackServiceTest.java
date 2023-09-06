@@ -1,5 +1,6 @@
 package com.team.comma.domain.favorite.track.service;
 
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackRequest;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
@@ -87,8 +88,9 @@ public class FavoriteTrackServiceTest {
         // given
         User user = buildUser();
         Track track = buildTrack("track title", "spotify id");
+        Artist artist = Artist.createArtist("artist");
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        TrackArtist trackArtist = buildTrackArtist(track);
+        TrackArtist trackArtist = buildTrackArtist(track , artist);
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackArtist);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
@@ -109,9 +111,10 @@ public class FavoriteTrackServiceTest {
         String accessToken = "accessToken";
         User user = buildUser();
         Track track = buildTrack("track title", "spotify id");
-        track.addTrackArtistList("artist name");
+        Artist artist = Artist.createArtist("artist name");
+        track.addTrackArtistList(artist);
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        TrackArtist trackArtist = buildTrackArtist(track);
+        TrackArtist trackArtist = buildTrackArtist(track , artist);
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackArtist);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
@@ -146,11 +149,11 @@ public class FavoriteTrackServiceTest {
                 .build();
     }
 
-    public TrackArtist buildTrackArtist(Track track) {
+    public TrackArtist buildTrackArtist(Track track , Artist artist) {
         return TrackArtist.builder()
                 .id(1L)
                 .track(track)
-                .artistName("artist name")
+                .artistName(artist)
                 .build();
     }
 

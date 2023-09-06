@@ -1,5 +1,6 @@
 package com.team.comma.domain.track.playcount.service;
 
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountRequest;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
@@ -63,11 +64,12 @@ public class PlayCountService {
         if(!trackPlayCount.isPresent()) {
             Track track = trackRepository.findBySpotifyTrackId(trackId)
                     .orElseGet(() -> trackService.findTrackOrSave(trackId));
+            
 
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
 
-            TrackPlayCountRequest request = createTrackPlayCountRequest(track);
+            TrackPlayCountRequest request = createTrackPlayCountRequest(track , null);
             return trackPlayCountRepository.save(createTrackPlayCount(request , user));
         }
 

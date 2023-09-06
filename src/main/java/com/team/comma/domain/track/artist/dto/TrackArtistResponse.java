@@ -13,7 +13,7 @@ public final class TrackArtistResponse {
 
     private TrackArtistResponse(TrackArtist trackArtist) {
         this.artistId = trackArtist.getId();
-        this.artistName = trackArtist.getArtistName();
+        this.artistName = trackArtist.getArtist().getArtistName();
     }
 
     public static TrackArtistResponse of(TrackArtist trackArtist) {

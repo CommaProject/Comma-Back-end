@@ -40,7 +40,7 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                         Projections.list(Projections.constructor(
                                 TrackArtistResponse.class,
                                 trackArtist.id,
-                                trackArtist.artistName))
+                                trackArtist.artist))
                 ))
                 .from(favoriteTrack)
                 .join(track)

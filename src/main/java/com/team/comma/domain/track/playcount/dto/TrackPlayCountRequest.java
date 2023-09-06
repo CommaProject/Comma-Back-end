@@ -17,15 +17,15 @@ public class TrackPlayCountRequest {
 
     private String trackName;
 
-    private String trackArtist;
+    private String artist;
 
-    public static TrackPlayCountRequest createTrackPlayCountRequest(Track track) {
+    public static TrackPlayCountRequest createTrackPlayCountRequest(Track track , String artist) {
 
         return TrackPlayCountRequest.builder()
                 .trackId(track.getSpotifyTrackId())
                 .trackImageUrl(track.getAlbumImageUrl())
                 .trackName(track.getTrackTitle())
-                .trackArtist(track.getTrackArtistList().get(0).getArtistName())
+                .artist(artist)
                 .build();
     }
 }

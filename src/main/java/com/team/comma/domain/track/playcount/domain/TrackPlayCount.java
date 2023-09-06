@@ -48,7 +48,7 @@ public class TrackPlayCount {
                 .trackImageUrl(trackPlayCountRequest.getTrackImageUrl())
                 .trackName(trackPlayCountRequest.getTrackName())
                 .user(user)
-                .trackArtist(trackPlayCountRequest.getTrackArtist())
+                //.trackArtist(trackPlayCountRequest.getTrackArtist())
                 .build();
     }
 
