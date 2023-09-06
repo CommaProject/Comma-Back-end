@@ -1,5 +1,6 @@
 package com.team.comma.domain.track.playcount.dto;
 
+import com.team.comma.domain.track.track.domain.Track;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,11 +15,5 @@ import java.util.List;
 public class TrackPlayCountResponse {
     private Integer playCount;
 
-    private String trackId;
-
-    private String trackImageUrl;
-
-    private String trackName;
-
-    private String trackArtist;
+    private Track track;
 }

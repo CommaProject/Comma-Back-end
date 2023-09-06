@@ -1,6 +1,7 @@
 package com.team.comma.domain.track.track.controller;
 
 import com.google.gson.Gson;
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
@@ -174,13 +175,31 @@ public class TrackControllerTest {
                 .albumImageUrl("url")
                 .spotifyTrackHref("spotifyTrackHref")
                 .spotifyTrackId(spotifyId)
-                .trackArtistList(Arrays.asList(buildTrackArtist()))
+                .trackArtistList(Arrays.asList(buildTrackArtist(buildTrack() , buildArtist())))
                 .build();
     }
 
-    public TrackArtist buildTrackArtist() {
+    public TrackArtist buildTrackArtist(Track track , Artist artist) {
         return TrackArtist.builder()
-                .artistName("artist")
+                .track(track)
+                .artist(artist)
+                .build();
+    }
+
+    private Track buildTrack() {
+        return Track.builder()
+                .id(1L)
+                .trackTitle("title")
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId("spotifyId")
+                .build();
+    }
+
+    private Artist buildArtist() {
+        return Artist.builder()
+                .artistName("artistName")
                 .build();
     }
 

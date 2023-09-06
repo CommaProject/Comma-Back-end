@@ -1,8 +1,11 @@
 package com.team.comma.domain.track.playcount.controller;
 
 import com.google.gson.Gson;
+import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.service.PlayCountService;
+import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.exception.TrackException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
@@ -117,7 +120,7 @@ public class PlayCountControllerTest {
         final String url = "/tracks";
         List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
         for(int i = 0; i < 2; i++) {
-            trackPlayCountResponses.add(buildTrackPlayCountResponse());
+            trackPlayCountResponses.add(buildTrackPlayCountResponse(buildTrack()));
         }
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(playCountService).findMostListenedTrack(any(String.class));
@@ -163,7 +166,7 @@ public class PlayCountControllerTest {
         final String url = "/tracks/friends";
         List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
         for(int i = 0; i < 2; i++) {
-            trackPlayCountResponses.add(buildTrackPlayCountResponse());
+            trackPlayCountResponses.add(buildTrackPlayCountResponse(buildTrack()));
         }
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(playCountService).findMostListenedTrackByFriend(any(String.class));
@@ -241,13 +244,21 @@ public class PlayCountControllerTest {
         assertThat(result.getMessage()).isEqualTo("트랙을 찾을 수 없습니다.");
     }
 
-    public TrackPlayCountResponse buildTrackPlayCountResponse() {
+    public TrackPlayCountResponse buildTrackPlayCountResponse(Track track) {
         return TrackPlayCountResponse.builder()
                 .playCount(0)
-                .trackId("trackId")
-                .trackImageUrl("images")
-                .trackName("trackName")
-                .trackArtist("trackArtist")
+                .track(track)
+                .build();
+    }
+
+    private Track buildTrack() {
+        return Track.builder()
+                .id(1L)
+                .trackTitle("title")
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId("spotifyId")
                 .build();
     }
 

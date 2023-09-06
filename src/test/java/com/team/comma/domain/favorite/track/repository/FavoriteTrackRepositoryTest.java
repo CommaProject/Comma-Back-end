@@ -1,5 +1,6 @@
 package com.team.comma.domain.favorite.track.repository;
 
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
@@ -102,9 +103,16 @@ public class FavoriteTrackRepositoryTest {
         assertThat(result.size()).isEqualTo(3);
     }
 
-    public TrackArtist buildTrackArtist() {
+    public Artist buildArtist(String artist) {
+        return Artist.builder()
+                .artistName(artist)
+                .build();
+    }
+
+    public TrackArtist buildTrackArtist(Track track , Artist artist) {
         return TrackArtist.builder()
-                .artistName("artist name")
+                .artist(artist)
+                .track(track)
                 .build();
     }
 
@@ -115,7 +123,7 @@ public class FavoriteTrackRepositoryTest {
                 .albumImageUrl("url")
                 .spotifyTrackHref("spotifyTrackHref")
                 .spotifyTrackId(spotifyTrackId)
-                .trackArtistList(List.of(buildTrackArtist()))
+                .trackArtistList(List.of(buildTrackArtist(null , buildArtist("artist"))))
                 .build();
     }
 

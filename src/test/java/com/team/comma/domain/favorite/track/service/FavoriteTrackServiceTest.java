@@ -153,7 +153,7 @@ public class FavoriteTrackServiceTest {
         return TrackArtist.builder()
                 .id(1L)
                 .track(track)
-                .artistName(artist)
+                .artist(artist)
                 .build();
     }
 

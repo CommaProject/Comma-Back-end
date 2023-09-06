@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackSingleRequest;
 import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackMultipleRequest;
@@ -174,7 +175,7 @@ class PlaylistTrackControllerTest {
         final String url = "/playlist/track/{playlistId}";
 
         final List<TrackArtistResponse> playlistTrackArtistResponseList = List.of(
-                TrackArtistResponse.of(buildTrackArtist()));
+                TrackArtistResponse.of(buildTrackArtist(buildTrack() , buildArtist())));
         final List<PlaylistTrackResponse> playlistTracks = Arrays.asList(
                 PlaylistTrackResponse.of(buildTrack(), true, playlistTrackArtistResponseList),
                 PlaylistTrackResponse.of(buildTrack(), true, playlistTrackArtistResponseList));
@@ -373,10 +374,17 @@ class PlaylistTrackControllerTest {
                 .build();
     }
 
-    private TrackArtist buildTrackArtist() {
+    private TrackArtist buildTrackArtist(Track track , Artist artist){
         return TrackArtist.builder()
-                .id(123L)
-                .artistName("test artist")
+                .id(1L)
+                .artist(artist)
+                .track(track)
+                .build();
+    }
+
+    private Artist buildArtist() {
+        return Artist.builder()
+                .artistName("artistName")
                 .build();
     }
 

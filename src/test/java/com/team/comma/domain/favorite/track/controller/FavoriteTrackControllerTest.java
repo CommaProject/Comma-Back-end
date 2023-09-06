@@ -1,6 +1,7 @@
 package com.team.comma.domain.favorite.track.controller;
 
 import com.google.gson.Gson;
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackRequest;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
@@ -171,7 +172,7 @@ public class FavoriteTrackControllerTest {
         User user = buildUser();
         Track track = buildTrack("track title", "spotifyId");
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        TrackArtist trackArtist = buildTrackArtist(track);
+        TrackArtist trackArtist = buildTrackArtist(track , buildArtist("artist"));
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackArtist);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
@@ -233,11 +234,17 @@ public class FavoriteTrackControllerTest {
                 .build();
     }
 
-    public TrackArtist buildTrackArtist(Track track) {
+    public Artist buildArtist(String artist) {
+        return Artist.builder()
+                .artistName(artist)
+                .build();
+    }
+
+    public TrackArtist buildTrackArtist(Track track , Artist artist) {
         return TrackArtist.builder()
                 .id(1L)
                 .track(track)
-                .artistName("artist name")
+                .artist(artist)
                 .build();
     }
     private User buildUser() {
