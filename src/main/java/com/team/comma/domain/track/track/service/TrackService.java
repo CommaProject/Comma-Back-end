@@ -2,6 +2,7 @@ package com.team.comma.domain.track.track.service;
 
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
 import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
@@ -24,13 +25,13 @@ public class TrackService {
 
     public MessageResponse findTrackByFavoriteTrack(String accessToken) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        List<Track> result = favoriteTrackRepository.findFavoriteTrackByEmail(userEmail);
+        List<TrackArtistResponse> result = favoriteTrackRepository.findFavoriteTrackByEmail(userEmail);
 
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
     public MessageResponse findTrackByMostFavorite() {
-        List<Track> result = trackRepository.findTrackMostRecommended();
+        List<TrackArtistResponse> result = trackRepository.findTrackMostRecommended();
 
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }

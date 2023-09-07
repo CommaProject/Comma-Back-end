@@ -3,10 +3,13 @@ package com.team.comma.domain.playlist.track.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.repository.ArtistRepository;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
+import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
@@ -37,6 +40,9 @@ class PlaylistTrackRepositoryTest {
 
     @Autowired
     private PlaylistTrackRepository playlistTrackRepository;
+
+    @Autowired
+    private ArtistRepository artistRepository;
 
     private final String userEmail = "email@naver.com";
 
@@ -70,10 +76,17 @@ class PlaylistTrackRepositoryTest {
         final Playlist playlist = buildPlaylist(user, "test playlist");
         playlistRepository.save(playlist);
 
+        Artist artist = Artist.builder().artistName("artist").build();
+        artistRepository.save(artist);
+
         final Track track1 = buildTrack("test track");
+        track1.addTrackArtistList(artist);
         final Track track2 = buildTrack("test track");
+        track2.addTrackArtistList(artist);
         trackRepository.save(track1);
         trackRepository.save(track2);
+
+
 
         final PlaylistTrack playlistTrack1 = buildPlaylistTrack(playlist,track1);
         final PlaylistTrack playlistTrack2 = buildPlaylistTrack(playlist,track2);

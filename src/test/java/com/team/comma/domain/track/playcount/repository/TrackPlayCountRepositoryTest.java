@@ -3,10 +3,12 @@ package com.team.comma.domain.track.playcount.repository;
 import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.user.following.domain.Following;
 import com.team.comma.domain.user.following.repository.FollowingRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +35,12 @@ public class TrackPlayCountRepositoryTest {
     @Autowired
     public FollowingRepository followingRepository;
 
+    @Autowired
+    public TrackRepository trackRepository;
+
+    @Autowired
+    public UserRepository userRepository;
+
 
     @Test
     @DisplayName("유저 이메일과 트랙 Id 로 탐색")
@@ -42,6 +50,8 @@ public class TrackPlayCountRepositoryTest {
         Track track = buildTrack();
         TrackPlayCount trackPlayCount = createTrackPlayCount(track, user);
 
+        trackRepository.save(track);
+        userRepository.save(user);
         trackPlayCountRepository.save(trackPlayCount);
 
         // when
@@ -64,6 +74,10 @@ public class TrackPlayCountRepositoryTest {
         TrackPlayCount trackPlayCount1 = createTrackPlayCount(track, friend1);
         TrackPlayCount trackPlayCount2 = createTrackPlayCount(track, friend2);
 
+        trackRepository.save(track);
+        userRepository.save(user);
+        userRepository.save(friend1);
+        userRepository.save(friend2);
         trackPlayCountRepository.save(trackPlayCount);
         trackPlayCountRepository.save(trackPlayCount1);
         trackPlayCountRepository.save(trackPlayCount2);
@@ -86,6 +100,8 @@ public class TrackPlayCountRepositoryTest {
         // given
         User user = buildUser();
         Track track = buildTrack();
+        trackRepository.save(track);
+        userRepository.save(user);
         trackPlayCountRepository.save(buildTrackPlayCount(4 , user , track));
         trackPlayCountRepository.save(buildTrackPlayCount(3 , user , track));
         trackPlayCountRepository.save(buildTrackPlayCount(1 , user , track));
@@ -114,6 +130,7 @@ public class TrackPlayCountRepositoryTest {
                 .spotifyTrackId("spotifyTrackId")
                 .trackArtistList(new ArrayList<>())
                 .spotifyTrackHref("href")
+                .albumImageUrl("image")
                 .recommendCount(0L)
                 .durationTimeMs(30)
                 .build();

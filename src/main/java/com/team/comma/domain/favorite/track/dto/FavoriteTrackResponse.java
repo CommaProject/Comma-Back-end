@@ -1,7 +1,9 @@
 package com.team.comma.domain.favorite.track.dto;
 
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
-import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackArtistResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,20 +19,11 @@ import java.util.List;
 public class FavoriteTrackResponse {
     private long favoriteTrackId;
 
-    private long trackId;
-    private String trackTitle;
-    private String trackAlbumImageUrl;
-    private String spotifyTrackId;
+    private List<TrackArtistResponse> trackArtistResponses;
 
-    private List<TrackArtistResponse> trackArtistList;
-
-    private FavoriteTrackResponse(FavoriteTrack favoriteTrack, List<TrackArtistResponse> trackArtistList) {
+    public FavoriteTrackResponse(FavoriteTrack favoriteTrack, List<TrackArtistResponse> trackArtistList) {
         this.favoriteTrackId = favoriteTrack.getId();
-        this.trackId = favoriteTrack.getTrack().getId();
-        this.trackTitle = favoriteTrack.getTrack().getTrackTitle();
-        this.trackAlbumImageUrl = favoriteTrack.getTrack().getAlbumImageUrl();
-        this.spotifyTrackId = favoriteTrack.getTrack().getSpotifyTrackId();
-        this.trackArtistList = new ArrayList<>(trackArtistList);
+        this.trackArtistResponses = trackArtistList;
     }
 
     public static FavoriteTrackResponse of(FavoriteTrack favoriteTrack, List<TrackArtistResponse> trackArtistList) {

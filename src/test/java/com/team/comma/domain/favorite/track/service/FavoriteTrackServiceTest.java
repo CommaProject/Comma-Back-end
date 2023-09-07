@@ -5,9 +5,9 @@ import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackRequest;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
-import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
@@ -90,8 +90,7 @@ public class FavoriteTrackServiceTest {
         Track track = buildTrack("track title", "spotify id");
         Artist artist = Artist.createArtist("artist");
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        TrackArtist trackArtist = buildTrackArtist(track , artist);
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackArtist);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(track , List.of(artist));
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(List.of(favoriteTrackResponse)).when(favoriteTrackRepository).findAllFavoriteTrackByUser(user);
@@ -114,8 +113,7 @@ public class FavoriteTrackServiceTest {
         Artist artist = Artist.createArtist("artist name");
         track.addTrackArtistList(artist);
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        TrackArtist trackArtist = buildTrackArtist(track , artist);
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackArtist);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(track , List.of(artist));
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(accessToken);

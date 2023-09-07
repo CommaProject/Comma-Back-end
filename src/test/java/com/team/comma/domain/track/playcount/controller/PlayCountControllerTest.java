@@ -144,10 +144,13 @@ public class PlayCountControllerTest {
                                 fieldWithPath("message").description("메세지"),
                                 fieldWithPath("data").description("데이터"),
                                 fieldWithPath("data.[].playCount").description("재생 횟수"),
-                                fieldWithPath("data.[].trackId").description("스포티파이 트랙 ID"),
-                                fieldWithPath("data.[].trackImageUrl").description("트랙 이미지 URL"),
-                                fieldWithPath("data.[].trackName").description("트랙 이름"),
-                                fieldWithPath("data.[].trackArtist").description("트랙 아티스트")
+                                fieldWithPath("data.[].track.id").description("스포티파이 트랙 키 값"),
+                                fieldWithPath("data.[].track.trackTitle").description("트랙 이름"),
+                                fieldWithPath("data.[].track.durationTimeMs").description("트랙 재생 시간"),
+                                fieldWithPath("data.[].track.recommendCount").description("트랙 추천 횟수"),
+                                fieldWithPath("data.[].track.albumImageUrl").description("앨범 이미지 URL"),
+                                fieldWithPath("data.[].track.spotifyTrackId").description("스포티파이 트랙 ID"),
+                                fieldWithPath("data.[].track.spotifyTrackHref").description("스포티파이 트랙 주소")
                         )
                 )
         );
@@ -190,10 +193,13 @@ public class PlayCountControllerTest {
                                 fieldWithPath("message").description("메세지"),
                                 fieldWithPath("data").description("데이터"),
                                 fieldWithPath("data.[].playCount").description("재생 횟수"),
-                                fieldWithPath("data.[].trackId").description("스포티파이 트랙 ID"),
-                                fieldWithPath("data.[].trackImageUrl").description("트랙 이미지 URL"),
-                                fieldWithPath("data.[].trackName").description("트랙 이름"),
-                                fieldWithPath("data.[].trackArtist").description("트랙 아티스트")
+                                fieldWithPath("data.[].track.id").description("스포티파이 트랙 키 값"),
+                                fieldWithPath("data.[].track.trackTitle").description("트랙 이름"),
+                                fieldWithPath("data.[].track.durationTimeMs").description("트랙 재생 시간"),
+                                fieldWithPath("data.[].track.recommendCount").description("트랙 추천 횟수"),
+                                fieldWithPath("data.[].track.albumImageUrl").description("앨범 이미지 URL"),
+                                fieldWithPath("data.[].track.spotifyTrackId").description("스포티파이 트랙 ID"),
+                                fieldWithPath("data.[].track.spotifyTrackHref").description("스포티파이 트랙 주소")
                         )
                 )
         );
@@ -259,6 +265,12 @@ public class PlayCountControllerTest {
                 .albumImageUrl("url")
                 .spotifyTrackHref("spotifyTrackHref")
                 .spotifyTrackId("spotifyId")
+                .build();
+    }
+
+    private Artist buildArtist() {
+        return Artist.builder()
+                .artistName("artist")
                 .build();
     }
 

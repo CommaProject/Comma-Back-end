@@ -1,11 +1,10 @@
 package com.team.comma.domain.track.track.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import jakarta.persistence.*;
-
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ public class Track {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
 
     @Column(length = 30 , nullable = false)
@@ -43,6 +41,7 @@ public class Track {
 
     @OneToMany(mappedBy = "track" , cascade = CascadeType.PERSIST)
     @Builder.Default
+    @JsonIgnore
     private List<TrackArtist> trackArtistList = new ArrayList<>();
 
     public void addTrackArtistList(Artist artist) {
