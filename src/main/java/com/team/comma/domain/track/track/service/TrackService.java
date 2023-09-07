@@ -9,6 +9,7 @@ import com.team.comma.global.jwt.support.JwtTokenProvider;
 import com.team.comma.spotify.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class TrackService {
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
+    @Transactional
     public Track findTrackOrSave(final String spotifyTrackId) {
         return trackRepository.findBySpotifyTrackId(spotifyTrackId)
                 .orElseGet(() -> saveTrack(spotifyTrackId));

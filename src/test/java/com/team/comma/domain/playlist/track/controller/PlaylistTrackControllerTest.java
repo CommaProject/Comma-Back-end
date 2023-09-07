@@ -204,7 +204,8 @@ class PlaylistTrackControllerTest {
                                 fieldWithPath("data.[].trackArtistList[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].trackArtistList[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].trackArtistList[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].trackArtistList[].artist[].id").description("트랙 아티스트 Id"),
+                                fieldWithPath("data.[].trackArtistList[].artist[].id").description("엔티티 식별자"),
+                                fieldWithPath("data.[].trackArtistList[].artist[].artistId").description("트랙 아티스트 Id"),
                                 fieldWithPath("data.[].trackArtistList[].artist[].artistName").description("트랙 아티스트 명")
                         )
                 )

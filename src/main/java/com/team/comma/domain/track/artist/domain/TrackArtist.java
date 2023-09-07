@@ -32,9 +32,9 @@ public class TrackArtist {
     @JsonIgnore
     private Track track;
 
-    public static TrackArtist createTrackArtist(ArtistSimplified artist, Track track) {
+    public static TrackArtist createTrackArtist(Artist artist, Track track) {
         return TrackArtist.builder()
-                .artist(createArtist(artist.getName()))
+                .artist(artist)
                 .track(track)
                 .build();
     }

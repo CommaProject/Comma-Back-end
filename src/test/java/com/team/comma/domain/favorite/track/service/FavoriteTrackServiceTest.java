@@ -88,7 +88,7 @@ public class FavoriteTrackServiceTest {
         // given
         User user = buildUser();
         Track track = buildTrack("track title", "spotify id");
-        Artist artist = Artist.createArtist("artist");
+        Artist artist = Artist.createArtist("artistId" ,"artist");
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(track , List.of(artist));
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
@@ -110,7 +110,7 @@ public class FavoriteTrackServiceTest {
         String accessToken = "accessToken";
         User user = buildUser();
         Track track = buildTrack("track title", "spotify id");
-        Artist artist = Artist.createArtist("artist name");
+        Artist artist = Artist.createArtist("artistId" , "artist name");
         track.addTrackArtistList(artist);
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(track , List.of(artist));

@@ -15,12 +15,16 @@ public class Artist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(nullable = false)
+    private String artistId;
+
     @Column(length = 30)
     private String artistName;
 
-    public static Artist createArtist(String artist) {
+    public static Artist createArtist(String artistId , String artistName) {
         return Artist.builder()
-                .artistName(artist)
+                .artistId(artistId)
+                .artistName(artistName)
                 .build();
     }
 }

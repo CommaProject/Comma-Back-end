@@ -69,7 +69,7 @@ public class FavoriteTrackRepositoryTest {
         Track track1 = buildTrack("track title1");
         Track track2 = buildTrack("track title2");
         Track track3 = buildTrack("track title3");
-        Artist artist = Artist.builder().artistName("artist").build();
+        Artist artist = buildArtist();
         artistRepository.save(artist);
         track1.addTrackArtistList(artist);
         trackRepository.save(track1);
@@ -127,6 +127,7 @@ public class FavoriteTrackRepositoryTest {
 
     public Artist buildArtist() {
         return Artist.builder()
+                .artistId("artistId")
                 .artistName("artist")
                 .build();
     }
