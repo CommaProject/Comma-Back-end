@@ -76,7 +76,7 @@ class PlaylistTrackRepositoryTest {
         final Playlist playlist = buildPlaylist(user, "test playlist");
         playlistRepository.save(playlist);
 
-        Artist artist = Artist.builder().artistName("artist").build();
+        Artist artist = Artist.builder().artistId("artistId").artistName("artist").build();
         artistRepository.save(artist);
 
         final Track track1 = buildTrack("test track");

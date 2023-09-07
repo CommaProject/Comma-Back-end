@@ -37,7 +37,6 @@ public class TrackService {
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
-    @Transactional
     public Track findTrackOrSave(final String spotifyTrackId) {
         return trackRepository.findBySpotifyTrackId(spotifyTrackId)
                 .orElseGet(() -> saveTrack(spotifyTrackId));
