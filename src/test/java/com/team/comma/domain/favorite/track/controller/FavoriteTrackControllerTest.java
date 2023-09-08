@@ -205,9 +205,9 @@ public class FavoriteTrackControllerTest {
                                 fieldWithPath("data.[].trackArtistResponses[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].trackArtistResponses[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].trackArtistResponses[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].trackArtistResponses[].artist[].id").description("엔티티 식별자"),
-                                fieldWithPath("data.[].trackArtistResponses[].artist[].artistId").description("트랙 아티스트 Id"),
-                                fieldWithPath("data.[].trackArtistResponses[].artist[].artistName").description("트랙 아티스트 명")
+                                fieldWithPath("data.[].trackArtistResponses[].artists[].id").description("엔티티 식별자"),
+                                fieldWithPath("data.[].trackArtistResponses[].artists[].spotifyArtistId").description("트랙 아티스트 Id"),
+                                fieldWithPath("data.[].trackArtistResponses[].artists[].spotifyArtistName").description("트랙 아티스트 명")
                         )
                 )
         );
@@ -240,7 +240,8 @@ public class FavoriteTrackControllerTest {
 
     public Artist buildArtist(String artist) {
         return Artist.builder()
-                .artistName(artist)
+                .spotifyArtistId("spotifyArtistId")
+                .spotifyArtistName(artist)
                 .build();
     }
 

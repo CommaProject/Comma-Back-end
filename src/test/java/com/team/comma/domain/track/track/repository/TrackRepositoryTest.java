@@ -120,7 +120,7 @@ public class TrackRepositoryTest {
         // given
         Track tracks1 = buildTrack("track1" , "id1");
         Track tracks2 = buildTrack("track2" , "id2");
-        Artist artist = Artist.builder().artistId("artistId").artistName("artist").build();
+        Artist artist = Artist.builder().spotifyArtistId("artistId").spotifyArtistName("artist").build();
         artistRepository.save(artist);
         
         tracks1.addTrackArtistList(artist);

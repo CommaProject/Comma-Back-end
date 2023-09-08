@@ -6,6 +6,7 @@ import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
 import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.track.track.exception.TrackException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
@@ -73,7 +74,7 @@ public class PlayCountServiceTest {
         // given
         List<TrackPlayCountResponse> trackPlayCounts = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            trackPlayCounts.add(buildTrackPlayCountResponse(buildTrack()));
+            trackPlayCounts.add(buildTrackPlayCountResponse(buildTrackResponse()));
         }
         doReturn(trackPlayCounts).when(trackPlayCountRepository).findTrackPlayCountByMostListenedTrack(any(String.class));
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
@@ -93,7 +94,7 @@ public class PlayCountServiceTest {
         // given
         List<TrackPlayCountResponse> trackPlayCounts = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
-            trackPlayCounts.add(buildTrackPlayCountResponse(buildTrack()));
+            trackPlayCounts.add(buildTrackPlayCountResponse(buildTrackResponse()));
         }
         doReturn(trackPlayCounts).when(trackPlayCountRepository).findTrackPlayCountByFriend(any(String.class));
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
@@ -107,10 +108,22 @@ public class PlayCountServiceTest {
         assertThat(((List) result.getData()).size()).isEqualTo(5);
     }
 
-    public TrackPlayCountResponse buildTrackPlayCountResponse(Track track) {
+    public TrackPlayCountResponse buildTrackPlayCountResponse(TrackResponse trackResponse) {
         return TrackPlayCountResponse.builder()
                 .playCount(0)
-                .track(track)
+                .track(trackResponse)
+                .build();
+    }
+
+    public TrackResponse buildTrackResponse() {
+        return TrackResponse.builder()
+                .albumImageUrl("albumImageURL")
+                .durationTimeMs(30)
+                .recommendCount(1L)
+                .trackTitle("title")
+                .spotifyTrackHref("href")
+                .spotifyTrackId("id")
+                .id(30L)
                 .build();
     }
 

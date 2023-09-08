@@ -74,7 +74,7 @@ public class TrackControllerTest {
         // given
         final String url = "/tracks/users/favorites";
         Track track = buildTrack("track title", "spotifyId");
-        Artist artist = Artist.builder().artistName("artist").build();
+        Artist artist = Artist.builder().spotifyArtistId("artistId").spotifyArtistName("artist").build();
 
         List<TrackArtistResponse> data = new ArrayList<>();
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(track , List.of(artist));
@@ -107,9 +107,9 @@ public class TrackControllerTest {
                                 fieldWithPath("data.[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].artist[].id").description("엔티티 식별자"),
-                                fieldWithPath("data.[].artist[].artistId").description("트랙 아티스트 Id"),
-                                fieldWithPath("data.[].artist[].artistName").description("트랙 아티스트 명")
+                                fieldWithPath("data.[].artists[].id").description("엔티티 식별자"),
+                                fieldWithPath("data.[].artists[].spotifyArtistId").description("트랙 아티스트 Id"),
+                                fieldWithPath("data.[].artists[].spotifyArtistName").description("트랙 아티스트 명")
                         )
                 )
         );
@@ -127,7 +127,7 @@ public class TrackControllerTest {
         // given
         final String url = "/tracks/favorites";
         Track track = buildTrack("track title", "spotifyId");
-        Artist artist = Artist.builder().artistName("artist").build();
+        Artist artist = Artist.builder().spotifyArtistId("artistId").spotifyArtistName("artist").build();
 
         List<TrackArtistResponse> data = new ArrayList<>();
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(track , List.of(artist));
@@ -156,9 +156,9 @@ public class TrackControllerTest {
                                 fieldWithPath("data.[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].artist[].id").description("엔티티 식별자"),
-                                fieldWithPath("data.[].artist[].artistId").description("트랙 아티스트 Id"),
-                                fieldWithPath("data.[].artist[].artistName").description("트랙 아티스트 명")
+                                fieldWithPath("data.[].artists[].id").description("엔티티 식별자"),
+                                fieldWithPath("data.[].artists[].spotifyArtistId").description("트랙 아티스트 Id"),
+                                fieldWithPath("data.[].artists[].spotifyArtistName").description("트랙 아티스트 명")
                         )
                 )
         );
@@ -203,7 +203,8 @@ public class TrackControllerTest {
 
     private Artist buildArtist() {
         return Artist.builder()
-                .artistName("artistName")
+                .spotifyArtistId("artistId")
+                .spotifyArtistName("artistName")
                 .build();
     }
 

@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
 
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.user.following.domain.QFollowing;
 import com.team.comma.domain.user.user.domain.QUser;
 import lombok.RequiredArgsConstructor;
@@ -40,13 +41,21 @@ public class TrackPlayCountRepositoryImpl implements TrackPlayCountRepositoryCus
         return queryFactory.select(Projections.constructor(
                         TrackPlayCountResponse.class,
                         trackPlayCount.playCount,
-                        trackPlayCount.track
+                        Projections.constructor(TrackResponse.class,
+                                track.id,
+                                track.trackTitle,
+                                track.durationTimeMs,
+                                track.recommendCount,
+                                track.albumImageUrl,
+                                track.spotifyTrackId,
+                                track.spotifyTrackHref
+                        )
                 )).from(trackPlayCount)
                 .innerJoin(trackPlayCount.user, user).on(user.eqAny(
                         JPAExpressions.select(following.userTo).from(following)
                                 .join(following.userFrom, fromUser).on(fromUser.email.eq(userEmail)))
                 )
-                .innerJoin(trackPlayCount.track , track)
+                .innerJoin(trackPlayCount.track, track)
                 .orderBy(trackPlayCount.playCount.desc())
                 .limit(20)
                 .fetch();
@@ -57,10 +66,18 @@ public class TrackPlayCountRepositoryImpl implements TrackPlayCountRepositoryCus
         return queryFactory.select(Projections.constructor(
                         TrackPlayCountResponse.class,
                         trackPlayCount.playCount,
-                        trackPlayCount.track
+                        Projections.constructor(TrackResponse.class,
+                                track.id,
+                                track.trackTitle,
+                                track.durationTimeMs,
+                                track.recommendCount,
+                                track.albumImageUrl,
+                                track.spotifyTrackId,
+                                track.spotifyTrackHref
+                        )
                 )).from(trackPlayCount)
                 .innerJoin(trackPlayCount.user, user).on(user.email.eq(userEmail))
-                .innerJoin(trackPlayCount.track , track)
+                .innerJoin(trackPlayCount.track, track)
                 .limit(20)
                 .orderBy(trackPlayCount.playCount.desc())
                 .fetch();

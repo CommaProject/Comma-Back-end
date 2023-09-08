@@ -2,20 +2,16 @@ package com.team.comma.spotify.service;
 
 import com.neovisionaries.i18n.CountryCode;
 import com.team.comma.domain.artist.service.ArtistService;
-import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.user.history.dto.HistoryRequest;
-import com.team.comma.domain.user.history.service.HistoryService;
 import com.team.comma.spotify.dto.ArtistResponse;
 import com.team.comma.spotify.support.SpotifyAuthorization;
 import com.team.comma.spotify.support.SpotifySearchCommand;
-import com.team.comma.domain.track.track.dto.TrackResponse;
+import com.team.comma.domain.track.track.dto.SearchTrackResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
-import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.requests.data.browse.miscellaneous.GetAvailableGenreSeedsRequest;
@@ -26,12 +22,10 @@ import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 import javax.security.auth.login.AccountException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.team.comma.domain.track.artist.domain.TrackArtist.createTrackArtist;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.domain.track.track.domain.Track.buildTrack;
-import static com.team.comma.domain.track.track.dto.TrackResponse.createTrackResponse;
+import static com.team.comma.domain.track.track.dto.SearchTrackResponse.createTrackResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +64,7 @@ public class SearchService {
         }
 
         Paging<Track> artistsPaging = (Paging<Track>) executeResult;
-        ArrayList<TrackResponse> result = new ArrayList<>();
+        ArrayList<SearchTrackResponse> result = new ArrayList<>();
         for (Track track : artistsPaging.getItems()) {
             result.add(createTrackResponse(track));
         }

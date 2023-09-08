@@ -2,10 +2,10 @@ package com.team.comma.domain.track.playcount.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.artist.domain.Artist;
-import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.service.PlayCountService;
 import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.track.track.exception.TrackException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
@@ -44,7 +44,6 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.requestCo
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -120,7 +119,7 @@ public class PlayCountControllerTest {
         final String url = "/tracks";
         List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
         for(int i = 0; i < 2; i++) {
-            trackPlayCountResponses.add(buildTrackPlayCountResponse(buildTrack()));
+            trackPlayCountResponses.add(buildTrackPlayCountResponse(buildTrackResponse()));
         }
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(playCountService).findMostListenedTrack(any(String.class));
@@ -169,7 +168,7 @@ public class PlayCountControllerTest {
         final String url = "/tracks/friends";
         List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
         for(int i = 0; i < 2; i++) {
-            trackPlayCountResponses.add(buildTrackPlayCountResponse(buildTrack()));
+            trackPlayCountResponses.add(buildTrackPlayCountResponse(buildTrackResponse()));
         }
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(playCountService).findMostListenedTrackByFriend(any(String.class));
@@ -250,27 +249,22 @@ public class PlayCountControllerTest {
         assertThat(result.getMessage()).isEqualTo("트랙을 찾을 수 없습니다.");
     }
 
-    public TrackPlayCountResponse buildTrackPlayCountResponse(Track track) {
+    public TrackPlayCountResponse buildTrackPlayCountResponse(TrackResponse trackResponse) {
         return TrackPlayCountResponse.builder()
                 .playCount(0)
-                .track(track)
+                .track(trackResponse)
                 .build();
     }
 
-    private Track buildTrack() {
-        return Track.builder()
-                .id(1L)
+    public TrackResponse buildTrackResponse() {
+        return TrackResponse.builder()
+                .albumImageUrl("albumImageURL")
+                .durationTimeMs(30)
+                .recommendCount(1L)
                 .trackTitle("title")
-                .recommendCount(0L)
-                .albumImageUrl("url")
-                .spotifyTrackHref("spotifyTrackHref")
-                .spotifyTrackId("spotifyId")
-                .build();
-    }
-
-    private Artist buildArtist() {
-        return Artist.builder()
-                .artistName("artist")
+                .spotifyTrackHref("href")
+                .spotifyTrackId("id")
+                .id(30L)
                 .build();
     }
 
