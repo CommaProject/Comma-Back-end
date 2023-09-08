@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 
 import com.team.comma.domain.alertday.service.AlertDayService;
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
@@ -77,7 +78,7 @@ class PlaylistServiceTest {
         final User user = buildUserWithEmail();
         final Optional<User> optionalUser = Optional.of(user);
 
-        final TrackArtist trackArtist = buildTrackArtist();
+        final TrackArtist trackArtist = buildTrackArtist(buildTrack() , buildArtist());
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
 
@@ -116,7 +117,7 @@ class PlaylistServiceTest {
     @Test
     public void 단일_플레이리스트_조회() {
         // given
-        final TrackArtist trackArtist = buildTrackArtist();
+        final TrackArtist trackArtist = buildTrackArtist(buildTrack() , buildArtist());
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
         final PlaylistResponse playlistResponse = PlaylistResponse.of(buildUserPlaylist(
@@ -148,7 +149,7 @@ class PlaylistServiceTest {
     @Test
     public void 플레이리스트_알람설정변경_성공() {
         // given
-        final TrackArtist trackArtist = buildTrackArtist();
+        final TrackArtist trackArtist = buildTrackArtist(buildTrack() , buildArtist());
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
         final Playlist playlist = buildUserPlaylist(Arrays.asList(playlistTrack));
@@ -180,7 +181,7 @@ class PlaylistServiceTest {
     @Test
     public void 플레이리스트_삭제_성공() {
         // given
-        final TrackArtist trackArtist = buildTrackArtist();
+        final TrackArtist trackArtist = buildTrackArtist(buildTrack() , buildArtist());
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
         final Playlist userPlaylist = buildUserPlaylist(Arrays.asList(playlistTrack));
@@ -287,10 +288,28 @@ class PlaylistServiceTest {
                 .build();
     }
 
-    private TrackArtist buildTrackArtist(){
+    private TrackArtist buildTrackArtist(Track track , Artist artist){
         return TrackArtist.builder()
                 .id(1L)
-                .artistName("test artist")
+                .artist(artist)
+                .track(track)
+                .build();
+    }
+
+    private Track buildTrack() {
+        return Track.builder()
+                .id(1L)
+                .trackTitle("title")
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId("spotifyId")
+                .build();
+    }
+
+    private Artist buildArtist() {
+        return Artist.builder()
+                .spotifyArtistName("artistName")
                 .build();
     }
 

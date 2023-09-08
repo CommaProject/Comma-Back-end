@@ -1,44 +1,21 @@
 package com.team.comma.domain.playlist.track.controller;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackSingleRequest;
-import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackMultipleRequest;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackMultipleRequest;
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
+import com.team.comma.domain.playlist.track.dto.PlaylistTrackSingleRequest;
 import com.team.comma.domain.playlist.track.service.PlaylistTrackService;
-import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.track.dto.TrackResponse;
+import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,6 +34,27 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.team.comma.global.common.constant.ResponseCodeEnum.PLAYLIST_NOT_FOUND;
+import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @AutoConfigureRestDocs
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @WebMvcTest(PlaylistTrackController.class)
@@ -72,7 +70,6 @@ class PlaylistTrackControllerTest {
 
     MockMvc mockMvc;
     Gson gson;
-    private String userEmail = "email@naver.com";
 
     @BeforeEach
     public void init(WebApplicationContext webApplicationContext,
@@ -174,10 +171,10 @@ class PlaylistTrackControllerTest {
         final String url = "/playlist/track/{playlistId}";
 
         final List<TrackArtistResponse> playlistTrackArtistResponseList = List.of(
-                TrackArtistResponse.of(buildTrackArtist()));
+                TrackArtistResponse.of(buildTrackResponse("title" , "id") , List.of(buildArtist())));
         final List<PlaylistTrackResponse> playlistTracks = Arrays.asList(
-                PlaylistTrackResponse.of(buildTrack(), true, playlistTrackArtistResponseList),
-                PlaylistTrackResponse.of(buildTrack(), true, playlistTrackArtistResponseList));
+                PlaylistTrackResponse.of(true, playlistTrackArtistResponseList),
+                PlaylistTrackResponse.of(true, playlistTrackArtistResponseList));
 
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlistTracks);
 
@@ -197,16 +194,19 @@ class PlaylistTrackControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("응답 메세지"),
-                                fieldWithPath("data").description("응답 데이터"),
-                                fieldWithPath("data.[].trackId").description("트랙 id"),
-                                fieldWithPath("data.[].trackTitle").description("트랙 제목"),
-                                fieldWithPath("data.[].durationTimeMs").description("트랙 재생 시간"),
-                                fieldWithPath("data.[].albumImageUrl").description("트랙 앨범 이미지 URL"),
-                                fieldWithPath("data.[].trackAlarmFlag").description("트랙 알람 설정 여부"),
-                                fieldWithPath("data.[].trackArtistList").description("트랙 아티스트 리스트"),
-                                fieldWithPath("data.[].trackArtistList.[].artistId").description("트랙 아티스트 id"),
-                                fieldWithPath("data.[].trackArtistList.[].artistName").description("트랙 아티스트명")
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터"),
+                                fieldWithPath("data.[].trackAlarmFlag").description("트랙 알람 여부"),
+                                fieldWithPath("data.[].trackArtistList[].track.id").description("트랙 Id"),
+                                fieldWithPath("data.[].trackArtistList[].track.trackTitle").description("트랙 제목"),
+                                fieldWithPath("data.[].trackArtistList[].track.durationTimeMs").description("트랙 재생 시간"),
+                                fieldWithPath("data.[].trackArtistList[].track.recommendCount").description("트랙 추천 횟수"),
+                                fieldWithPath("data.[].trackArtistList[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
+                                fieldWithPath("data.[].trackArtistList[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
+                                fieldWithPath("data.[].trackArtistList[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
+                                fieldWithPath("data.[].trackArtistList[].artists[].id").description("엔티티 식별자"),
+                                fieldWithPath("data.[].trackArtistList[].artists[].spotifyArtistId").description("트랙 아티스트 Id"),
+                                fieldWithPath("data.[].trackArtistList[].artists[].spotifyArtistName").description("트랙 아티스트 명")
                         )
                 )
         );
@@ -364,6 +364,17 @@ class PlaylistTrackControllerTest {
             );
     }
 
+    private TrackResponse buildTrackResponse(String title, String spotifyId) {
+        return TrackResponse.builder()
+                .id(1L)
+                .trackTitle(title)
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId(spotifyId)
+                .build();
+    }
+
     private Track buildTrack() {
         return Track.builder()
                 .id(123L)
@@ -373,10 +384,17 @@ class PlaylistTrackControllerTest {
                 .build();
     }
 
-    private TrackArtist buildTrackArtist() {
+    private TrackArtist buildTrackArtist(Track track , Artist artist){
         return TrackArtist.builder()
-                .id(123L)
-                .artistName("test artist")
+                .id(1L)
+                .artist(artist)
+                .track(track)
+                .build();
+    }
+
+    private Artist buildArtist() {
+        return Artist.builder()
+                .spotifyArtistName("artistName")
                 .build();
     }
 

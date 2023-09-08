@@ -1,7 +1,6 @@
 package com.team.comma.domain.track.playcount.service;
 
 import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
-import com.team.comma.domain.track.playcount.dto.TrackPlayCountRequest;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
 import com.team.comma.domain.track.track.domain.Track;
@@ -19,8 +18,6 @@ import javax.security.auth.login.AccountException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.team.comma.domain.track.playcount.domain.TrackPlayCount.createTrackPlayCount;
-import static com.team.comma.domain.track.playcount.dto.TrackPlayCountRequest.createTrackPlayCountRequest;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
@@ -67,8 +64,7 @@ public class PlayCountService {
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
 
-            TrackPlayCountRequest request = createTrackPlayCountRequest(track);
-            return trackPlayCountRepository.save(createTrackPlayCount(request , user));
+            return trackPlayCountRepository.save(TrackPlayCount.createTrackPlayCount(track , user));
         }
 
         return trackPlayCount.get();

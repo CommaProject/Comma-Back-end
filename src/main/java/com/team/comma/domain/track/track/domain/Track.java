@@ -1,14 +1,17 @@
 package com.team.comma.domain.track.track.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.service.ArtistService;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import jakarta.persistence.*;
-
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.team.comma.domain.track.artist.domain.TrackArtist.createTrackArtist;
 
 @Entity
 @Getter
@@ -20,7 +23,6 @@ public class Track {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
     private Long id;
 
     @Column(length = 30 , nullable = false)
@@ -44,16 +46,16 @@ public class Track {
     @Builder.Default
     private List<TrackArtist> trackArtistList = new ArrayList<>();
 
-    public void addTrackArtistList(String artistName) {
+    public void addTrackArtistList(Artist artist) {
         TrackArtist trackArtist = TrackArtist.builder()
-            .artistName(artistName)
+            .artist(artist)
             .track(this)
             .build();
 
         trackArtistList.add(trackArtist);
     }
 
-    public static Track buildTrack(se.michaelthelin.spotify.model_objects.specification.Track track) {
+    public static Track buildTrack(se.michaelthelin.spotify.model_objects.specification.Track track , ArtistService artistService) {
         List<TrackArtist> trackArtists = new ArrayList<>();
         Track trackEntity = Track.builder()
                 .trackTitle(track.getName())
@@ -61,12 +63,12 @@ public class Track {
                 .albumImageUrl(track.getAlbum().getImages()[0].getUrl())
                 .spotifyTrackId(track.getId())
                 .spotifyTrackHref(track.getHref())
-                .trackArtistList(trackArtists)
                 .build();
 
 
         for(ArtistSimplified artistSimplified : track.getArtists()) {
-            trackArtists.add(TrackArtist.createTrackArtist(artistSimplified , trackEntity));
+            Artist artist = artistService.findArtistOrSave(artistSimplified.getId() , artistSimplified.getName());
+            trackArtists.add(createTrackArtist(artist , trackEntity));
         }
 
         return trackEntity;

@@ -1,8 +1,11 @@
 package com.team.comma.domain.track.playcount.controller;
 
 import com.google.gson.Gson;
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.service.PlayCountService;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.track.track.exception.TrackException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
@@ -41,7 +44,6 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.requestCo
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -117,7 +119,7 @@ public class PlayCountControllerTest {
         final String url = "/tracks";
         List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
         for(int i = 0; i < 2; i++) {
-            trackPlayCountResponses.add(buildTrackPlayCountResponse());
+            trackPlayCountResponses.add(buildTrackPlayCountResponse(buildTrackResponse()));
         }
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(playCountService).findMostListenedTrack(any(String.class));
@@ -141,10 +143,13 @@ public class PlayCountControllerTest {
                                 fieldWithPath("message").description("메세지"),
                                 fieldWithPath("data").description("데이터"),
                                 fieldWithPath("data.[].playCount").description("재생 횟수"),
-                                fieldWithPath("data.[].trackId").description("스포티파이 트랙 ID"),
-                                fieldWithPath("data.[].trackImageUrl").description("트랙 이미지 URL"),
-                                fieldWithPath("data.[].trackName").description("트랙 이름"),
-                                fieldWithPath("data.[].trackArtist").description("트랙 아티스트")
+                                fieldWithPath("data.[].track.id").description("스포티파이 트랙 키 값"),
+                                fieldWithPath("data.[].track.trackTitle").description("트랙 이름"),
+                                fieldWithPath("data.[].track.durationTimeMs").description("트랙 재생 시간"),
+                                fieldWithPath("data.[].track.recommendCount").description("트랙 추천 횟수"),
+                                fieldWithPath("data.[].track.albumImageUrl").description("앨범 이미지 URL"),
+                                fieldWithPath("data.[].track.spotifyTrackId").description("스포티파이 트랙 ID"),
+                                fieldWithPath("data.[].track.spotifyTrackHref").description("스포티파이 트랙 주소")
                         )
                 )
         );
@@ -163,7 +168,7 @@ public class PlayCountControllerTest {
         final String url = "/tracks/friends";
         List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
         for(int i = 0; i < 2; i++) {
-            trackPlayCountResponses.add(buildTrackPlayCountResponse());
+            trackPlayCountResponses.add(buildTrackPlayCountResponse(buildTrackResponse()));
         }
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(playCountService).findMostListenedTrackByFriend(any(String.class));
@@ -187,10 +192,13 @@ public class PlayCountControllerTest {
                                 fieldWithPath("message").description("메세지"),
                                 fieldWithPath("data").description("데이터"),
                                 fieldWithPath("data.[].playCount").description("재생 횟수"),
-                                fieldWithPath("data.[].trackId").description("스포티파이 트랙 ID"),
-                                fieldWithPath("data.[].trackImageUrl").description("트랙 이미지 URL"),
-                                fieldWithPath("data.[].trackName").description("트랙 이름"),
-                                fieldWithPath("data.[].trackArtist").description("트랙 아티스트")
+                                fieldWithPath("data.[].track.id").description("스포티파이 트랙 키 값"),
+                                fieldWithPath("data.[].track.trackTitle").description("트랙 이름"),
+                                fieldWithPath("data.[].track.durationTimeMs").description("트랙 재생 시간"),
+                                fieldWithPath("data.[].track.recommendCount").description("트랙 추천 횟수"),
+                                fieldWithPath("data.[].track.albumImageUrl").description("앨범 이미지 URL"),
+                                fieldWithPath("data.[].track.spotifyTrackId").description("스포티파이 트랙 ID"),
+                                fieldWithPath("data.[].track.spotifyTrackHref").description("스포티파이 트랙 주소")
                         )
                 )
         );
@@ -241,13 +249,22 @@ public class PlayCountControllerTest {
         assertThat(result.getMessage()).isEqualTo("트랙을 찾을 수 없습니다.");
     }
 
-    public TrackPlayCountResponse buildTrackPlayCountResponse() {
+    public TrackPlayCountResponse buildTrackPlayCountResponse(TrackResponse trackResponse) {
         return TrackPlayCountResponse.builder()
                 .playCount(0)
-                .trackId("trackId")
-                .trackImageUrl("images")
-                .trackName("trackName")
-                .trackArtist("trackArtist")
+                .track(trackResponse)
+                .build();
+    }
+
+    public TrackResponse buildTrackResponse() {
+        return TrackResponse.builder()
+                .albumImageUrl("albumImageURL")
+                .durationTimeMs(30)
+                .recommendCount(1L)
+                .trackTitle("title")
+                .spotifyTrackHref("href")
+                .spotifyTrackId("id")
+                .id(30L)
                 .build();
     }
 

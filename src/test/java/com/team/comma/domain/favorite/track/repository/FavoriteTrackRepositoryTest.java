@@ -1,10 +1,12 @@
 package com.team.comma.domain.favorite.track.repository;
 
+import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.repository.ArtistRepository;
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
-import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.artist.repository.TrackArtistRepository;
 import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
@@ -40,6 +42,9 @@ public class FavoriteTrackRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    ArtistRepository artistRepository;
+
     @Test
     @DisplayName("트랙 좋아요 추가")
     void saveFavoriteTrack() {
@@ -64,9 +69,15 @@ public class FavoriteTrackRepositoryTest {
         Track track1 = buildTrack("track title1");
         Track track2 = buildTrack("track title2");
         Track track3 = buildTrack("track title3");
+        Artist artist = buildArtist();
+        artistRepository.save(artist);
+        track1.addTrackArtistList(artist);
         trackRepository.save(track1);
+        track2.addTrackArtistList(artist);
         trackRepository.save(track2);
+        track2.addTrackArtistList(artist);
         trackRepository.save(track3);
+
         FavoriteTrack favoriteTrack1 = FavoriteTrack.buildFavoriteTrack(user, track1);
         FavoriteTrack favoriteTrack2 = FavoriteTrack.buildFavoriteTrack(user, track2);
         FavoriteTrack favoriteTrack3 = FavoriteTrack.buildFavoriteTrack(user, track3);
@@ -76,7 +87,7 @@ public class FavoriteTrackRepositoryTest {
         favoriteTrackRepository.save(favoriteTrack3);
 
         // when
-        List<Track> result = favoriteTrackRepository.findFavoriteTrackByEmail("email");
+        List<TrackArtistResponse> result = favoriteTrackRepository.findFavoriteTrackByEmail("email");
         
         // then
         assertThat(result.size()).isEqualTo(3);
@@ -88,6 +99,8 @@ public class FavoriteTrackRepositoryTest {
         // given
         User user = userRepository.save(buildUser());
         Track track = trackRepository.save(buildTrack("track title"));
+        Artist artist = artistRepository.save(buildArtist());
+        track.addTrackArtistList(artist);
         FavoriteTrack favoriteTrack1 = FavoriteTrack.buildFavoriteTrack(user, track);
         FavoriteTrack favoriteTrack2 = FavoriteTrack.buildFavoriteTrack(user, track);
         FavoriteTrack favoriteTrack3 = FavoriteTrack.buildFavoriteTrack(user, track);
@@ -102,12 +115,6 @@ public class FavoriteTrackRepositoryTest {
         assertThat(result.size()).isEqualTo(3);
     }
 
-    public TrackArtist buildTrackArtist() {
-        return TrackArtist.builder()
-                .artistName("artist name")
-                .build();
-    }
-
     private Track buildTrack(String title) {
         return Track.builder()
                 .trackTitle(title)
@@ -115,7 +122,13 @@ public class FavoriteTrackRepositoryTest {
                 .albumImageUrl("url")
                 .spotifyTrackHref("spotifyTrackHref")
                 .spotifyTrackId(spotifyTrackId)
-                .trackArtistList(List.of(buildTrackArtist()))
+                .build();
+    }
+
+    public Artist buildArtist() {
+        return Artist.builder()
+                .spotifyArtistId("artistId")
+                .spotifyArtistName("artist")
                 .build();
     }
 
