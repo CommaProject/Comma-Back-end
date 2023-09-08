@@ -69,7 +69,6 @@ public class Track {
 
         for(ArtistSimplified artistSimplified : track.getArtists()) {
             Artist artist = artistService.findArtistOrSave(artistSimplified.getId() , artistSimplified.getName());
-            System.out.println(artist.getArtistId() + " // " + artist.getArtistName());
             trackArtists.add(createTrackArtist(artist , trackEntity));
         }
 

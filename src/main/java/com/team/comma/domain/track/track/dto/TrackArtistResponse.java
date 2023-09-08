@@ -17,12 +17,12 @@ public class TrackArtistResponse {
 
     private Track track;
 
-    private List<Artist> artist;
+    private List<Artist> artists;
 
     public static TrackArtistResponse of(Track track , List<Artist> artists) {
         return TrackArtistResponse.builder()
                 .track(track)
-                .artist(artists)
+                .artists(artists)
                 .build();
     }
 }

@@ -16,15 +16,15 @@ public class Artist {
     private long id;
 
     @Column(nullable = false)
-    private String artistId;
+    private String spotifyArtistId;
 
     @Column(length = 30)
-    private String artistName;
+    private String spotifyArtistName;
 
     public static Artist createArtist(String artistId , String artistName) {
         return Artist.builder()
-                .artistId(artistId)
-                .artistName(artistName)
+                .spotifyArtistId(artistId)
+                .spotifyArtistName(artistName)
                 .build();
     }
 }

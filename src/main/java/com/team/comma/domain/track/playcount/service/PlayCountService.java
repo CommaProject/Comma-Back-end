@@ -18,7 +18,6 @@ import javax.security.auth.login.AccountException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.team.comma.domain.track.playcount.domain.TrackPlayCount.createTrackPlayCount;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
@@ -65,7 +64,7 @@ public class PlayCountService {
             User user = userRepository.findByEmail(userEmail)
                     .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
 
-            return trackPlayCountRepository.save(createTrackPlayCount(track , user));
+            return trackPlayCountRepository.save(TrackPlayCount.createTrackPlayCount(track , user));
         }
 
         return trackPlayCount.get();

@@ -39,8 +39,8 @@ SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE artist_tb
 (
     id                   BIGINT  NOT NULL AUTO_INCREMENT,
-    artist_id            VARCHAR(50),
-    artist_name          VARCHAR(30),
+    spotify_artist_id            VARCHAR(50),
+    spotify_artist_name          VARCHAR(30),
     PRIMARY KEY (id)
 );
 
@@ -255,7 +255,7 @@ INSERT INTO track_play_count_tb
 VALUES(1, 1, 1);
 
 INSERT INTO artist_tb
-(id , artist_id , artist_name)
+(id , spotify_artist_id , spotify_artist_name)
 VALUE(5 , 'artistId' , 'artistName');
 
 INSERT INTO track_artist_tb
