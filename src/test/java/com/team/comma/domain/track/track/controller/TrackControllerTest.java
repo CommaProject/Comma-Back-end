@@ -2,12 +2,12 @@ package com.team.comma.domain.track.track.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.artist.domain.Artist;
-import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
-import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.track.track.service.TrackService;
+import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +42,8 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.requestCo
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureRestDocs
@@ -73,11 +74,12 @@ public class TrackControllerTest {
     public void findTrackByFavoriteTrack() throws Exception {
         // given
         final String url = "/tracks/users/favorites";
-        Track track = buildTrack("track title", "spotifyId");
+        TrackResponse trackResponse = buildTrackResponse("title" , "id");
+
         Artist artist = Artist.builder().spotifyArtistId("artistId").spotifyArtistName("artist").build();
 
         List<TrackArtistResponse> data = new ArrayList<>();
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(track , List.of(artist));
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , List.of(artist));
         data.add(trackArtistResponse);
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS , data)).when(trackService).findTrackByFavoriteTrack(any(String.class));
@@ -126,11 +128,12 @@ public class TrackControllerTest {
     public void findTrackByMostFavorite() throws Exception {
         // given
         final String url = "/tracks/favorites";
-        Track track = buildTrack("track title", "spotifyId");
+        TrackResponse trackResponse = buildTrackResponse("title" , "id");
+
         Artist artist = Artist.builder().spotifyArtistId("artistId").spotifyArtistName("artist").build();
 
         List<TrackArtistResponse> data = new ArrayList<>();
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(track , List.of(artist));
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , List.of(artist));
         data.add(trackArtistResponse);
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS , data)).when(trackService).findTrackByMostFavorite();
@@ -187,6 +190,17 @@ public class TrackControllerTest {
         return TrackArtist.builder()
                 .track(track)
                 .artist(artist)
+                .build();
+    }
+
+    private TrackResponse buildTrackResponse(String title, String spotifyId) {
+        return TrackResponse.builder()
+                .id(1L)
+                .trackTitle(title)
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId(spotifyId)
                 .build();
     }
 

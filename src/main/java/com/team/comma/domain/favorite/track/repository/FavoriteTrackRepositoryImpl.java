@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.user.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +25,15 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
     @Override
     public List<TrackArtistResponse> findFavoriteTrackByEmail(String userEmail) {
         return jpaQueryFactory.select(Projections.constructor(TrackArtistResponse.class,
-                        favoriteTrack.track,
+                        Projections.constructor(TrackResponse.class,
+                                track.id,
+                                track.trackTitle,
+                                track.durationTimeMs,
+                                track.recommendCount,
+                                track.albumImageUrl,
+                                track.spotifyTrackId,
+                                track.spotifyTrackHref
+                        ),
                         Projections.list(artist)
                 )).from(favoriteTrack)
                 .join(favoriteTrack.user, user).on(user.email.eq(userEmail))
@@ -42,7 +51,15 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                                 favoriteTrack.id,
                                 Projections.list(Projections.constructor(
                                         TrackArtistResponse.class,
-                                        track ,
+                                        Projections.constructor(TrackResponse.class,
+                                                track.id,
+                                                track.trackTitle,
+                                                track.durationTimeMs,
+                                                track.recommendCount,
+                                                track.albumImageUrl,
+                                                track.spotifyTrackId,
+                                                track.spotifyTrackHref
+                                        ),
                                         Projections.list(artist)))
                         ))
                 .from(favoriteTrack)

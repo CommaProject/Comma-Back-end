@@ -9,6 +9,7 @@ import com.team.comma.domain.favorite.track.service.FavoriteTrackService;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.global.common.dto.MessageResponse;
@@ -173,7 +174,9 @@ public class FavoriteTrackControllerTest {
         Track track = buildTrack("track title", "spotifyId");
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
         Artist trackArtist = buildArtist("artist");
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(track , List.of(trackArtist));
+
+        TrackResponse trackResponse = buildTrackResponse("track title", "spotifyId");
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , List.of(trackArtist));
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS, List.of(favoriteTrackResponse))).when(favoriteTrackService).findAllFavoriteTrack("accessToken");
@@ -227,6 +230,17 @@ public class FavoriteTrackControllerTest {
                 .build();
     }
 
+    private TrackResponse buildTrackResponse(String title, String spotifyId) {
+        return TrackResponse.builder()
+                .id(1L)
+                .trackTitle(title)
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId(spotifyId)
+                .build();
+    }
+
     private Track buildTrack(String title, String spotifyId) {
         return Track.builder()
                 .id(1L)
@@ -252,6 +266,7 @@ public class FavoriteTrackControllerTest {
                 .artist(artist)
                 .build();
     }
+
     private User buildUser() {
         return User.builder()
                 .id(1L)

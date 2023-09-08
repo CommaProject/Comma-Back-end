@@ -12,6 +12,7 @@ import com.team.comma.domain.playlist.track.service.PlaylistTrackService;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
@@ -69,7 +70,6 @@ class PlaylistTrackControllerTest {
 
     MockMvc mockMvc;
     Gson gson;
-    private String userEmail = "email@naver.com";
 
     @BeforeEach
     public void init(WebApplicationContext webApplicationContext,
@@ -171,7 +171,7 @@ class PlaylistTrackControllerTest {
         final String url = "/playlist/track/{playlistId}";
 
         final List<TrackArtistResponse> playlistTrackArtistResponseList = List.of(
-                TrackArtistResponse.of(buildTrack() , List.of(buildArtist())));
+                TrackArtistResponse.of(buildTrackResponse("title" , "id") , List.of(buildArtist())));
         final List<PlaylistTrackResponse> playlistTracks = Arrays.asList(
                 PlaylistTrackResponse.of(true, playlistTrackArtistResponseList),
                 PlaylistTrackResponse.of(true, playlistTrackArtistResponseList));
@@ -362,6 +362,17 @@ class PlaylistTrackControllerTest {
                     )
                 )
             );
+    }
+
+    private TrackResponse buildTrackResponse(String title, String spotifyId) {
+        return TrackResponse.builder()
+                .id(1L)
+                .trackTitle(title)
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId(spotifyId)
+                .build();
     }
 
     private Track buildTrack() {

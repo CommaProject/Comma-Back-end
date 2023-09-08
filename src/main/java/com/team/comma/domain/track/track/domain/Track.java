@@ -44,7 +44,6 @@ public class Track {
 
     @OneToMany(mappedBy = "track" , cascade = CascadeType.PERSIST)
     @Builder.Default
-    @JsonIgnore
     private List<TrackArtist> trackArtistList = new ArrayList<>();
 
     public void addTrackArtistList(Artist artist) {

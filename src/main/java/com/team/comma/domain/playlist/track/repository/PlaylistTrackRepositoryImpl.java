@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
 import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -28,7 +29,15 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
                         playlistTrack.trackAlarmFlag,
                         Projections.list(Projections.constructor(
                                 TrackArtistResponse.class,
-                                track,
+                                Projections.constructor(TrackResponse.class,
+                                        track.id,
+                                        track.trackTitle,
+                                        track.durationTimeMs,
+                                        track.recommendCount,
+                                        track.albumImageUrl,
+                                        track.spotifyTrackId,
+                                        track.spotifyTrackHref
+                                ),
                                 Projections.list(artist)))))
                 .from(playlistTrack)
                 .innerJoin(playlistTrack.track , track)

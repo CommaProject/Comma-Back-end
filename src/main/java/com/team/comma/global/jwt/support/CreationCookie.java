@@ -13,7 +13,7 @@ public class CreationCookie {
                 .httpOnly(true)
                 //.secure(true)
                 .path("/")
-                .domain("localhost")
+                .domain("comma-project.p-e.kr")
                 .maxAge(age)
                 .build();
     }

@@ -15,11 +15,11 @@ import java.util.List;
 @NoArgsConstructor
 public class TrackArtistResponse {
 
-    private Track track;
+    private TrackResponse track;
 
     private List<Artist> artists;
 
-    public static TrackArtistResponse of(Track track , List<Artist> artists) {
+    public static TrackArtistResponse of(TrackResponse track , List<Artist> artists) {
         return TrackArtistResponse.builder()
                 .track(track)
                 .artists(artists)
