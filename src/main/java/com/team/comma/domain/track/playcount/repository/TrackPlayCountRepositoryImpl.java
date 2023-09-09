@@ -6,7 +6,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
 
-import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.user.following.domain.QFollowing;
 import com.team.comma.domain.user.user.domain.QUser;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
-import static com.team.comma.domain.track.track.domain.QTrack.track;
 import static com.team.comma.domain.track.playcount.domain.QTrackPlayCount.trackPlayCount;
 import static com.team.comma.domain.user.user.domain.QUser.user;
 
@@ -24,11 +22,10 @@ public class TrackPlayCountRepositoryImpl implements TrackPlayCountRepositoryCus
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<TrackPlayCount> findTrackPlayCountByUserEmail(String userEmail, String trackId) {
+    public Optional<TrackPlayCount> findTrackPlayCountByUserEmail(String userEmail , String trackId) {
         TrackPlayCount result = queryFactory.select(trackPlayCount).from(trackPlayCount)
-                .join(trackPlayCount.user, user).on(user.email.eq(userEmail))
-                .innerJoin(trackPlayCount.track, track).on(track.spotifyTrackId.eq(trackId))
-                .fetchOne();
+                .join(trackPlayCount.user , user).on(user.email.eq(userEmail))
+                .where(trackPlayCount.trackId.eq(trackId)).fetchOne();
 
         return Optional.ofNullable(result);
     }
@@ -41,21 +38,16 @@ public class TrackPlayCountRepositoryImpl implements TrackPlayCountRepositoryCus
         return queryFactory.select(Projections.constructor(
                         TrackPlayCountResponse.class,
                         trackPlayCount.playCount,
-                        Projections.constructor(TrackResponse.class,
-                                track.id,
-                                track.trackTitle,
-                                track.durationTimeMs,
-                                track.recommendCount,
-                                track.albumImageUrl,
-                                track.spotifyTrackId,
-                                track.spotifyTrackHref
-                        )
+                        trackPlayCount.trackId,
+                        trackPlayCount.trackImageUrl,
+                        trackPlayCount.trackName,
+                        trackPlayCount.trackArtist
+
                 )).from(trackPlayCount)
-                .innerJoin(trackPlayCount.user, user).on(user.eqAny(
+                .join(trackPlayCount.user , user).on(user.eqAny(
                         JPAExpressions.select(following.userTo).from(following)
-                                .join(following.userFrom, fromUser).on(fromUser.email.eq(userEmail)))
+                                .join(following.userFrom , fromUser).on(fromUser.email.eq(userEmail)))
                 )
-                .innerJoin(trackPlayCount.track, track)
                 .orderBy(trackPlayCount.playCount.desc())
                 .limit(20)
                 .fetch();
@@ -66,18 +58,13 @@ public class TrackPlayCountRepositoryImpl implements TrackPlayCountRepositoryCus
         return queryFactory.select(Projections.constructor(
                         TrackPlayCountResponse.class,
                         trackPlayCount.playCount,
-                        Projections.constructor(TrackResponse.class,
-                                track.id,
-                                track.trackTitle,
-                                track.durationTimeMs,
-                                track.recommendCount,
-                                track.albumImageUrl,
-                                track.spotifyTrackId,
-                                track.spotifyTrackHref
-                        )
+                        trackPlayCount.trackId,
+                        trackPlayCount.trackImageUrl,
+                        trackPlayCount.trackName,
+                        trackPlayCount.trackArtist
+
                 )).from(trackPlayCount)
-                .innerJoin(trackPlayCount.user, user).on(user.email.eq(userEmail))
-                .innerJoin(trackPlayCount.track, track)
+                .join(trackPlayCount.user , user).on(user.email.eq(userEmail))
                 .limit(20)
                 .orderBy(trackPlayCount.playCount.desc())
                 .fetch();

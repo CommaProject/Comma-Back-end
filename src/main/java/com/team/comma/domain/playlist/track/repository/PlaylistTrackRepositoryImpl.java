@@ -2,17 +2,15 @@ package com.team.comma.domain.playlist.track.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.comma.domain.playlist.playlist.domain.Playlist;
+import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
-import com.team.comma.domain.track.track.dto.TrackResponse;
+import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.team.comma.domain.artist.domain.QArtist.artist;
 import static com.team.comma.domain.playlist.track.domain.QPlaylistTrack.playlistTrack;
-import static com.team.comma.domain.track.track.domain.QTrack.track;
 import static com.team.comma.domain.track.artist.domain.QTrackArtist.trackArtist;
 
 @RequiredArgsConstructor
@@ -22,27 +20,22 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
 
     @Override
     public List<PlaylistTrackResponse> getPlaylistTracksByPlaylist(Playlist playlist) {
-
         return queryFactory.select(
                 Projections.constructor(
                         PlaylistTrackResponse.class,
+                        // playlisttrackId 추가 필요
+                        playlistTrack.track.id,
+                        playlistTrack.track.trackTitle,
+                        playlistTrack.track.durationTimeMs,
+                        playlistTrack.track.albumImageUrl,
                         playlistTrack.trackAlarmFlag,
+                        // playlistsequence 추가 필요
                         Projections.list(Projections.constructor(
                                 TrackArtistResponse.class,
-                                Projections.constructor(TrackResponse.class,
-                                        track.id,
-                                        track.trackTitle,
-                                        track.durationTimeMs,
-                                        track.recommendCount,
-                                        track.albumImageUrl,
-                                        track.spotifyTrackId,
-                                        track.spotifyTrackHref
-                                ),
-                                Projections.list(artist)))))
+                                trackArtist.id,
+                                trackArtist.artistName))))
                 .from(playlistTrack)
-                .innerJoin(playlistTrack.track , track)
-                .innerJoin(track.trackArtistList , trackArtist)
-                .innerJoin(trackArtist.artist , artist)
+                .leftJoin(trackArtist)
                 .where(playlistTrack.playlist.eq(playlist))
                 .orderBy(playlistTrack.playSequence.asc())
                 .fetch();

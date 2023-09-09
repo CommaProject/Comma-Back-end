@@ -1,14 +1,12 @@
 package com.team.comma.domain.track.playcount.repository;
 
-import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
-import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
-import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.user.following.domain.Following;
 import com.team.comma.domain.user.following.repository.FollowingRepository;
+import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
+import com.team.comma.domain.track.playcount.dto.TrackPlayCountRequest;
+import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,11 +15,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.team.comma.domain.track.playcount.domain.TrackPlayCount.createTrackPlayCount;
 import static com.team.comma.domain.user.following.domain.Following.createFollowingToFrom;
+import static com.team.comma.domain.track.playcount.domain.TrackPlayCount.createTrackPlayCount;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -35,31 +32,23 @@ public class TrackPlayCountRepositoryTest {
     @Autowired
     public FollowingRepository followingRepository;
 
-    @Autowired
-    public TrackRepository trackRepository;
-
-    @Autowired
-    public UserRepository userRepository;
-
 
     @Test
     @DisplayName("유저 이메일과 트랙 Id 로 탐색")
     public void findTrackPlayCountByUserEmail() {
         // given
         User user = buildUser();
-        Track track = buildTrack();
-        TrackPlayCount trackPlayCount = createTrackPlayCount(track, user);
+        TrackPlayCountRequest trackPlayCountRequest = buildTrackPlayCount();
+        TrackPlayCount trackPlayCount = createTrackPlayCount(trackPlayCountRequest, user);
 
-        trackRepository.save(track);
-        userRepository.save(user);
         trackPlayCountRepository.save(trackPlayCount);
 
         // when
-        TrackPlayCount result = trackPlayCountRepository.findTrackPlayCountByUserEmail("email" , track.getSpotifyTrackId()).get();
+        TrackPlayCount result = trackPlayCountRepository.findTrackPlayCountByUserEmail("email" , "trackId").get();
 
         // then
         assertThat(result.getPlayCount()).isEqualTo(1);
-        assertThat(result.getTrack().getTrackTitle()).isEqualTo("title");
+        assertThat(result.getTrackId()).isEqualTo("trackId");
     }
 
     @Test
@@ -69,15 +58,11 @@ public class TrackPlayCountRepositoryTest {
         User user = buildUser();
         User friend1 = buildUser();
         User friend2 = buildUser();
-        Track track = buildTrack();
-        TrackPlayCount trackPlayCount = createTrackPlayCount(track, user);
-        TrackPlayCount trackPlayCount1 = createTrackPlayCount(track, friend1);
-        TrackPlayCount trackPlayCount2 = createTrackPlayCount(track, friend2);
+        TrackPlayCountRequest trackPlayCountRequest = buildTrackPlayCount();
+        TrackPlayCount trackPlayCount = createTrackPlayCount(trackPlayCountRequest, user);
+        TrackPlayCount trackPlayCount1 = createTrackPlayCount(trackPlayCountRequest, friend1);
+        TrackPlayCount trackPlayCount2 = createTrackPlayCount(trackPlayCountRequest, friend2);
 
-        trackRepository.save(track);
-        userRepository.save(user);
-        userRepository.save(friend1);
-        userRepository.save(friend2);
         trackPlayCountRepository.save(trackPlayCount);
         trackPlayCountRepository.save(trackPlayCount1);
         trackPlayCountRepository.save(trackPlayCount2);
@@ -99,12 +84,9 @@ public class TrackPlayCountRepositoryTest {
     public void findTrackPlayCountByMostListenedTrack() {
         // given
         User user = buildUser();
-        Track track = buildTrack();
-        trackRepository.save(track);
-        userRepository.save(user);
-        trackPlayCountRepository.save(buildTrackPlayCount(4 , user , track));
-        trackPlayCountRepository.save(buildTrackPlayCount(3 , user , track));
-        trackPlayCountRepository.save(buildTrackPlayCount(1 , user , track));
+        trackPlayCountRepository.save(buildTrackPlayCount(4 , user));
+        trackPlayCountRepository.save(buildTrackPlayCount(3 , user));
+        trackPlayCountRepository.save(buildTrackPlayCount(1 , user));
 
         // when
         List<TrackPlayCountResponse> result = trackPlayCountRepository.findTrackPlayCountByMostListenedTrack("email");
@@ -116,23 +98,24 @@ public class TrackPlayCountRepositoryTest {
         assertThat(result.get(2).getPlayCount()).isEqualTo(1);
     }
 
-    public TrackPlayCount buildTrackPlayCount(int count , User user , Track track) {
-        return TrackPlayCount.builder()
-                .playCount(count)
-                .user(user)
-                .track(track)
+    public TrackPlayCountRequest buildTrackPlayCount() {
+        return TrackPlayCountRequest.builder()
+                .trackArtist("artist")
+                .trackImageUrl("image")
+                .trackId("trackId")
+                .trackName("name")
+                .trackName("track")
                 .build();
     }
 
-    public Track buildTrack() {
-        return Track.builder()
-                .trackTitle("title")
-                .spotifyTrackId("spotifyTrackId")
-                .trackArtistList(new ArrayList<>())
-                .spotifyTrackHref("href")
-                .albumImageUrl("image")
-                .recommendCount(0L)
-                .durationTimeMs(30)
+    public TrackPlayCount buildTrackPlayCount(int count , User user) {
+        return TrackPlayCount.builder()
+                .playCount(count)
+                .trackArtist("artist")
+                .trackName("name")
+                .trackId("id")
+                .user(user)
+                .trackImageUrl("url")
                 .build();
     }
 
