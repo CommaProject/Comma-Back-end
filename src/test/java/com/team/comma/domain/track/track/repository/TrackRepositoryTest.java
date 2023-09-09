@@ -1,9 +1,6 @@
 package com.team.comma.domain.track.track.repository;
 
-import com.team.comma.domain.artist.domain.Artist;
-import com.team.comma.domain.artist.repository.ArtistRepository;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
 import com.team.comma.global.config.TestConfig;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
@@ -28,9 +25,6 @@ public class TrackRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
-
-    @Autowired
-    private ArtistRepository artistRepository;
 
     private String spotifyTrackId = "spotifyTrackId";
 
@@ -120,25 +114,25 @@ public class TrackRepositoryTest {
         // given
         Track tracks1 = buildTrack("track1" , "id1");
         Track tracks2 = buildTrack("track2" , "id2");
-        Artist artist = Artist.builder().spotifyArtistId("artistId").spotifyArtistName("artist").build();
-        artistRepository.save(artist);
-        
-        tracks1.addTrackArtistList(artist);
-        tracks2.addTrackArtistList(artist);
         trackRepository.save(tracks1);
         trackRepository.save(tracks2);
         entityManager.flush();
         entityManager.clear();
 
-        trackRepository.updateTrackRecommendCount("id1");
-        trackRepository.updateTrackRecommendCount("id2");
-        trackRepository.updateTrackRecommendCount("id2");
 
+        trackRepository.updateTrackRecommendCount("id1");
+
+        trackRepository.updateTrackRecommendCount("id2");
+        trackRepository.updateTrackRecommendCount("id2");
         // when
-        List<TrackArtistResponse> result = trackRepository.findTrackMostRecommended();
+        List<Track> result = trackRepository.findTrackMostRecommended();
 
         // then
         assertThat(result.size()).isEqualTo(2);
+        assertThat(result.get(0).getSpotifyTrackId()).isEqualTo("id2");
+        assertThat(result.get(0).getRecommendCount()).isEqualTo(2);
+        assertThat(result.get(1).getSpotifyTrackId()).isEqualTo("id1");
+        assertThat(result.get(1).getRecommendCount()).isEqualTo(1);
     }
 
 

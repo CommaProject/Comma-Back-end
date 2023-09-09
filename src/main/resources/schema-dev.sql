@@ -2,8 +2,6 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS alert_day_tb;
 
-DROP TABLE IF EXISTS artist_tb;
-
 DROP TABLE IF EXISTS archive_tb;
 
 DROP TABLE IF EXISTS favorite_artist_tb;
@@ -36,13 +34,6 @@ DROP TABLE IF EXISTS user_tb;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-CREATE TABLE artist_tb
-(
-    id                   BIGINT  NOT NULL AUTO_INCREMENT,
-    spotify_artist_id            VARCHAR(50),
-    spotify_artist_name          VARCHAR(30),
-    PRIMARY KEY (id)
-);
 
 CREATE TABLE user_detail_tb
 (
@@ -195,11 +186,10 @@ CREATE TABLE recommend_tb
 CREATE TABLE track_artist_tb
 (
     id          BIGINT NOT NULL AUTO_INCREMENT,
-    artist_id   BIGINT,
+    artist_name VARCHAR(30),
     track_id    BIGINT,
     PRIMARY KEY (id),
-    FOREIGN KEY (track_id) REFERENCES track_tb (id),
-    FOREIGN KEY (artist_id)REFERENCES artist_tb (id)
+    FOREIGN KEY (track_id) REFERENCES track_tb (id)
 );
 
 CREATE TABLE history_tb
@@ -216,10 +206,13 @@ CREATE TABLE track_play_count_tb
 (
     id               BIGINT NOT NULL AUTO_INCREMENT,
     play_count       INTEGER DEFAULT 1,
-    track_id         BIGINT,
+    spotify_track_id VARCHAR(255),
+    track_artist VARCHAR(255),
+    track_name VARCHAR(255),
+    track_image_url VARCHAR(255),
+    track_id VARCHAR(255),
     user_id          BIGINT,
     PRIMARY KEY (id),
-    FOREIGN KEY (track_id) REFERENCES track_tb (id),
     FOREIGN KEY (user_id) REFERENCES user_tb (id)
 );
 
@@ -245,22 +238,18 @@ VALUES
     ('toUserEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-25', 2);
 
 INSERT INTO track_tb
-(id , track_title, duration_time_ms, recommend_count, album_image_url, spotify_track_id, spotify_track_href)
+(track_title, duration_time_ms, recommend_count, album_image_url, spotify_track_id, spotify_track_href)
 VALUES
-    (1 , 'test track', 210000, 0, 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228', 'id123', 'href'),
-    (2 , 'test track2', 210000, 0, 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228', 'id1234', 'href');
+    ('test track', 210000, 0, 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228', 'id123', 'href'),
+    ('test track2', 210000, 0, 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228', 'id1234', 'href');
 
 INSERT INTO track_play_count_tb
-(play_count, track_id, user_id)
-VALUES(1, 1, 1);
-
-INSERT INTO artist_tb
-(id , spotify_artist_id , spotify_artist_name)
-VALUE(5 , 'artistId' , 'artistName');
+(play_count, spotify_track_id, track_artist, track_name, track_image_url, track_id, user_id)
+VALUES(1, 'id123', NULL, NULL, NULL, '1', 1);
 
 INSERT INTO track_artist_tb
-(artist_id , track_id)
-VALUES(5, 1);
+(artist_name, track_id)
+VALUES('test artist', 1);
 
 INSERT INTO playlist_tb
 (playlist_title, alarm_start_time, alarm_flag, del_flag, user_id)
