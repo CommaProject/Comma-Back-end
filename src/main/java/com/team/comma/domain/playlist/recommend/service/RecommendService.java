@@ -56,6 +56,8 @@ public class RecommendService {
             buildEntity = recommendRequest.toRecommendEntity(fromUser, playlist);
         }
 
+        playlistRepository.updateRecommendCountByPlaylistId(playlist.getId());
+
         recommendRepository.save(buildEntity);
 
         return MessageResponse.of(REQUEST_SUCCESS);

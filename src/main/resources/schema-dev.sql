@@ -209,10 +209,10 @@ CREATE TABLE refresh_token_tb
 
 
 INSERT INTO user_detail_tb
-(sex, age, recommend_time, name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag)
+(name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag)
 VALUES
-    ('male', 20, NULL, 'name', 'nickname', 'url', 'Y', 'Y', 'Y', 'Y'),
-    ('female', 20, NULL, 'name2', 'nickname2', 'url', 'Y', 'Y', 'Y', 'Y');
+    ('name', 'nickname', 'url', 'Y', 'Y', 'Y', 'Y'),
+    ('name2', 'nickname2', 'url', 'Y', 'Y', 'Y', 'Y');
 
 INSERT INTO user_tb
 (email, password, `role`, `type`, del_flag, join_date, user_detail_id)

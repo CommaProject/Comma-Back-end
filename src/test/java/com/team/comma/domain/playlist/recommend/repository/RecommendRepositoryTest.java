@@ -9,12 +9,15 @@ import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.playlist.recommend.constant.RecommendType;
 import com.team.comma.domain.playlist.recommend.domain.Recommend;
 import com.team.comma.domain.playlist.recommend.dto.RecommendResponse;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.profile.domain.UserDetail;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
+import jakarta.persistence.EntityManager;
 import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +40,12 @@ public class RecommendRepositoryTest {
     @Autowired
     private PlaylistRepository playlistRepository;
 
+    @Autowired
+    private TrackRepository trackRepository;
+
+    @Autowired
+    EntityManager em;
+
     @Test
     void 친구에게_추천_저장() {
         // given
@@ -50,6 +59,31 @@ public class RecommendRepositoryTest {
 
         // then
         assertThat(result.getComment()).isEqualTo("test recommend");
+    }
+
+    @Test
+    void 플레이리스트추천시_카운팅() {
+        // given
+        User fromUser = userRepository.save(buildUser("fromUserEmail"));
+        Playlist playlist = buildPlaylist(fromUser);
+        Track track = trackRepository.save(Track.builder().trackTitle("title").spotifyTrackHref("href").albumImageUrl("url").spotifyTrackId("id").build());
+        Track track2 = trackRepository.save(Track.builder().trackTitle("title").spotifyTrackHref("href").albumImageUrl("url").spotifyTrackId("id").build());
+
+        playlist.addPlaylistTrack(track);
+        playlist.addPlaylistTrack(track2);
+        Playlist result = playlistRepository.save(playlist);
+
+        // when
+        playlistRepository.updateRecommendCountByPlaylistId(result.getId());
+        playlistRepository.updateRecommendCountByPlaylistId(result.getId());
+        em.flush();
+        em.clear();
+
+        // then
+        Track trackResult = trackRepository.findById(track.getId()).get();
+        Track trackResult2 = trackRepository.findById(track2.getId()).get();
+        assertThat(trackResult.getRecommendCount()).isEqualTo(2);
+        assertThat(trackResult2.getRecommendCount()).isEqualTo(2);
     }
 
     @Test
