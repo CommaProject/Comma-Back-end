@@ -20,9 +20,4 @@ public class TrackController {
         return trackService.findTrackByFavoriteTrack(accessToken);
     }
 
-    @GetMapping("/favorites")
-    public MessageResponse findTrackByMostFavorite() {
-        return trackService.findTrackByMostFavorite();
-    }
-
 }

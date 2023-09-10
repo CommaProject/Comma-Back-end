@@ -69,3 +69,9 @@ include::{snippets}/spotify/selectRecommend/path-parameters.adoc[]
 
 include::{snippets}/spotify/selectRecommend/http-response.adoc[]
 include::{snippets}/spotify/selectRecommend/response-fields.adoc[]
+
+=== 가장 많이 추천된 트랙 정보
+
+===== Request
+include::{snippets}/track/mostListenTrackByRecommendTrack/http-response.adoc[]
+include::{snippets}/track/mostListenTrackByRecommendTrack/response-fields.adoc[]

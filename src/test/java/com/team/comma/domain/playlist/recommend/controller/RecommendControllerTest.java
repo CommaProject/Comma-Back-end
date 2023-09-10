@@ -19,6 +19,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.team.comma.domain.track.artist.domain.TrackArtist;
+import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.recommend.constant.RecommendListType;
@@ -37,6 +39,7 @@ import com.team.comma.domain.user.profile.domain.UserDetail;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +61,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @AutoConfigureRestDocs
@@ -73,6 +78,9 @@ public class RecommendControllerTest {
     @MockBean
     RecommendService recommendService;
 
+    @MockBean
+    TrackService trackService;
+
     MockMvc mockMvc;
     Gson gson;
 
@@ -84,6 +92,54 @@ public class RecommendControllerTest {
                 .build();
 
         gson = GsonUtil.getGsonInstance();
+    }
+
+    @Test
+    @DisplayName("추천 받은 인기 트랙")
+    public void findTrackByMostFavorite() throws Exception {
+        // given
+        final String url = "/recommend/tracks";
+        List<Track> tracks = new ArrayList<>();
+        for(int i = 0; i < 2; i++) {
+            tracks.add(buildTrack("title" , "spotifyId"));
+        }
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , tracks)).when(trackService).findTrackByMostFavorite();
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("track/mostListenTrackByRecommendTrack",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터"),
+                                fieldWithPath("data.[].id").description("트랙 테이블 ID"),
+                                fieldWithPath("data.[].trackTitle").description("트랙 이름"),
+                                fieldWithPath("data.[].durationTimeMs").description("트랙 재생 시간"),
+                                fieldWithPath("data.[].recommendCount").description("트랙 추천 횟수"),
+                                fieldWithPath("data.[].albumImageUrl").description("트랙 이미지 주소"),
+                                fieldWithPath("data.[].spotifyTrackId").description("스포티파이 트랙 ID"),
+                                fieldWithPath("data.[].spotifyTrackHref").description("아티스트 트랙 재생 주소"),
+                                fieldWithPath("data.[].trackArtistList").description("아티스트 목록"),
+                                fieldWithPath("data.[].trackArtistList[].id").description("제공되지 않는 데이터입니다."),
+                                fieldWithPath("data.[].trackArtistList[].artistName").description("아티스트 명"),
+                                fieldWithPath("data.[].trackArtistList[].track").description("제공되지 않는 데이터입니다.")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
     @Test
@@ -336,6 +392,23 @@ public class RecommendControllerTest {
                 .recommendType(RecommendType.FOLLOWING)
                 .recommendToEmail("toUserEmail")
                 .comment("test recommend")
+                .build();
+    }
+
+    private Track buildTrack(String title, String spotifyId) {
+        return Track.builder()
+                .trackTitle(title)
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId(spotifyId)
+                .trackArtistList(Arrays.asList(buildTrackArtist()))
+                .build();
+    }
+
+    public TrackArtist buildTrackArtist() {
+        return TrackArtist.builder()
+                .artistName("artist")
                 .build();
     }
 
