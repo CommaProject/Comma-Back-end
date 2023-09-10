@@ -256,24 +256,20 @@ public class FollowingControllerTest {
         final String api = "/followings";
         FollowingRequest request = FollowingRequest.builder().followingId(1L).build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS);
-        doReturn(message).when(followingService).blockFollowedUser("accessToken" , 1L);
+        doReturn(message).when(followingService).blockFollowedUser(1L);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
                         .delete(api)
                         .content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie("accessToken" , "accessToken")));
+                        .contentType(MediaType.APPLICATION_JSON));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
                 document("following/blockSuccess",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestCookies(
-                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
-                        ),
                         requestFields(
                                 fieldWithPath("followingId").description("following 관계 id"),
                                 fieldWithPath("toUserId").ignored()
@@ -300,24 +296,20 @@ public class FollowingControllerTest {
         final String api = "/followings/unblocks";
         FollowingRequest request = FollowingRequest.builder().followingId(1L).build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS);
-        doReturn(message).when(followingService).unblockFollowedUser("accessToken" , 1L);
+        doReturn(message).when(followingService).unblockFollowedUser(1L);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
                         .patch(api)
                         .content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .cookie(new Cookie("accessToken" , "accessToken")));
+                        .contentType(MediaType.APPLICATION_JSON));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
                 document("following/unblockSuccess",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestCookies(
-                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
-                        ),
                         requestFields(
                                 fieldWithPath("followingId").description("following 관계 id"),
                                 fieldWithPath("toUserId").ignored()

@@ -34,7 +34,7 @@ public class HistoryController {
 
     @PostMapping("/histories")
     public ResponseEntity<MessageResponse> addHistory(@RequestBody HistoryRequest historyRequest
-            , @CookieValue("accessToken") String token) throws AccountException {
+            , @CookieValue("accessToken") String token) {
         return ResponseEntity.status(HttpStatus.CREATED).body(historyService.addHistory(historyRequest , token));
     }
 

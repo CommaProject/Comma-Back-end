@@ -2,6 +2,7 @@ package com.team.comma.domain.user.user.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
@@ -399,7 +400,7 @@ class UserControllerTest {
     void getUserInfoByAccessTokenFail_NotExistUser() throws Exception {
         // given
         final String api = "/user/information";
-        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(userService).getUserByCookie(any(String.class));
+        doThrow(new UserException(NOT_FOUNT_USER)).when(userService).getUserByCookie(any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -426,7 +427,7 @@ class UserControllerTest {
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 MessageResponse.class);
 
-        assertThat(response.getMessage()).isEqualTo("사용자를 찾을 수 없습니다.");
+        assertThat(response.getMessage()).isEqualTo(NOT_FOUNT_USER.getMessage());
         assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
     }
 

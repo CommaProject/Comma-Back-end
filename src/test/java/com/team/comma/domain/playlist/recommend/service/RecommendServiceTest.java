@@ -1,7 +1,6 @@
 package com.team.comma.domain.playlist.recommend.service;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.PLAYLIST_NOT_FOUND;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.team.comma.global.common.dto.MessageResponse;
@@ -55,7 +54,7 @@ public class RecommendServiceTest {
         final Throwable thrown = catchThrowable(() -> recommendService.addRecommend(token, recommendRequest));
 
         // then
-        assertThat(thrown.getMessage()).isEqualTo("사용자 정보가 올바르지 않습니다.");
+        assertThat(thrown.getMessage()).isEqualTo(NOT_FOUNT_USER.getMessage());
 
     }
 
@@ -154,7 +153,7 @@ public class RecommendServiceTest {
         final Throwable thrown = catchThrowable(() -> recommendService.getRecommendList(token, recommendListRequest));
 
         // then
-        assertThat(thrown.getMessage()).isEqualTo("사용자 정보가 올바르지 않습니다.");
+        assertThat(thrown.getMessage()).isEqualTo(NOT_FOUNT_USER.getMessage());
     }
 
     @Test

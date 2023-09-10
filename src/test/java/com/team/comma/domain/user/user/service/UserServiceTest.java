@@ -10,6 +10,7 @@ import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.dto.LoginRequest;
 import com.team.comma.domain.user.user.dto.RegisterRequest;
 import com.team.comma.domain.user.user.dto.UserResponse;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.service.JwtService;
@@ -35,6 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -104,7 +106,7 @@ class UserServiceTest {
         Throwable thrown = catchThrowable(() -> userService.login(loginRequest , null));
 
         // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("정보가 올바르지 않습니다.");
+        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
 
     }
 
@@ -119,7 +121,7 @@ class UserServiceTest {
         Throwable thrown = catchThrowable(() -> userService.login(login , null));
 
         // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("정보가 올바르지 않습니다.");
+        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
 
         // verify
         verify(userRepository, times(1)).findByEmail(login.getEmail());
@@ -200,7 +202,7 @@ class UserServiceTest {
         Throwable thrown = catchThrowable(() -> userService.getUserByCookie(accessToken));
 
         // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
+        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
     }
 
     @Test
@@ -256,7 +258,7 @@ class UserServiceTest {
         Throwable thrown = catchThrowable(
             () -> userService.createUserInformation(userDetail, accessToken));
         // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
+        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
     }
 
     @Test

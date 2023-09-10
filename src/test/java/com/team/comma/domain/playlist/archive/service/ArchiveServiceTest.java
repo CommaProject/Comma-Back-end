@@ -5,6 +5,7 @@ import com.team.comma.domain.playlist.archive.dto.ArchiveResponse;
 import com.team.comma.domain.playlist.track.repository.PlaylistTrackRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.repository.TrackRepository;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.archive.dto.ArchiveRequest;
 import com.team.comma.domain.playlist.archive.repository.ArchiveRepository;
@@ -28,6 +29,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -68,7 +70,7 @@ public class ArchiveServiceTest {
         Throwable thrown = catchThrowable(() -> archiveService.createArchive("token" , null));
 
         // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
+        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
     }
 
     @Test

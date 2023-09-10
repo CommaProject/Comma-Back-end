@@ -10,6 +10,7 @@ import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.dto.LoginRequest;
 import com.team.comma.domain.user.user.dto.RegisterRequest;
 import com.team.comma.domain.user.user.dto.UserResponse;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.service.JwtService;
@@ -43,14 +44,14 @@ public class UserService {
     public ResponseEntity<MessageResponse> login(final LoginRequest loginRequest , HttpServletResponse response)
         throws AccountException {
         User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
+                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         if (user.getType() == UserType.OAUTH_USER) {
             throw new AccountException("일반 사용자는 OAuth 계정으로 로그인할 수 없습니다.");
         }
 
         if (!user.getPassword().equals(loginRequest.getPassword())) {
-            throw new AccountException("정보가 올바르지 않습니다.");
+            throw new UserException(NOT_FOUNT_USER);
         }
 
         setCookieFromJwt(response , createJwtToken(user));
@@ -78,7 +79,7 @@ public class UserService {
 
         String userName = jwtTokenProvider.getUserPk(token);
         User user = userRepository.findByEmail(userName)
-                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         UserDetail userDetail = UserDetail.createUserDetail(userDetailRequest);
         user.setUserDetail(userDetail);
@@ -119,10 +120,10 @@ public class UserService {
         return token;
     }
 
-    public MessageResponse getUserByCookie(String token) throws AccountException {
+    public MessageResponse getUserByCookie(String token) {
         String userName = jwtTokenProvider.getUserPk(token);
         User user = userRepository.findByEmail(userName)
-                .orElseThrow(() -> new AccountException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         return MessageResponse.of(REQUEST_SUCCESS , UserResponse.createUserResponse(user));
     }

@@ -1,8 +1,8 @@
 package com.team.comma.domain.user.user.controller;
 
+import com.team.comma.domain.user.profile.dto.UserDetailRequest;
 import com.team.comma.domain.user.user.dto.LoginRequest;
 import com.team.comma.domain.user.user.dto.RegisterRequest;
-import com.team.comma.domain.user.profile.dto.UserDetailRequest;
 import com.team.comma.domain.user.user.service.UserService;
 import com.team.comma.global.common.dto.MessageResponse;
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,7 +39,7 @@ public class UserController {
 
     @GetMapping("/user/information")
     public ResponseEntity<MessageResponse> getUserInfoByEmail(
-        @CookieValue("accessToken") String accessToken) throws AccountException {
+        @CookieValue("accessToken") String accessToken) {
         return ResponseEntity.ok().body(userService.getUserByCookie(accessToken));
     }
 
