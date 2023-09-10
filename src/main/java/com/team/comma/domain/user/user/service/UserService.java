@@ -42,7 +42,7 @@ public class UserService {
     private final FavoriteGenreRepository favoriteGenreRepository;
     private final HistoryService historyService;
 
-    public ResponseEntity<MessageResponse> login(final LoginRequest loginRequest , HttpServletResponse response)
+    public MessageResponse login(final LoginRequest loginRequest , HttpServletResponse response)
         throws AccountException {
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
@@ -57,7 +57,7 @@ public class UserService {
 
         setCookieFromJwt(response , createJwtToken(user));
 
-        return ResponseEntity.status(HttpStatus.OK).body(MessageResponse.of(LOGIN_SUCCESS , UserResponse.createUserResponse(user)));
+        return MessageResponse.of(LOGIN_SUCCESS , UserResponse.createUserResponse(user));
     }
 
     public MessageResponse register(final RegisterRequest registerRequest) throws AccountException {

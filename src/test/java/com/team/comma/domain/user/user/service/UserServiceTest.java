@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.team.comma.global.common.constant.ResponseCodeEnum.LOGIN_SUCCESS;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -145,10 +146,10 @@ class UserServiceTest {
         HttpServletResponse responseMock = Mockito.mock(HttpServletResponse.class);
 
         // when
-        final ResponseEntity result = userService.login(login , responseMock);
+        final MessageResponse result = userService.login(login , responseMock);
 
         // then
-        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getCode()).isEqualTo(LOGIN_SUCCESS.getCode());
     }
 
     @Test

@@ -23,8 +23,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -42,7 +40,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
-import static org.apache.http.cookie.SM.SET_COOKIE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -55,7 +52,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureRestDocs
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
@@ -90,12 +87,7 @@ class UserControllerTest {
         LoginRequest request = getLoginRequest();
         UserResponse response = getUserResponse();
         MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, response);
-        ResponseCookie cookie1 = ResponseCookie.from("accessToken", "accessTokenData1564").build();
-        ResponseCookie cookie2 = ResponseCookie.from("refreshToken", "refreshTokenData4567").build();
-        doReturn(ResponseEntity.ok()
-                .header(SET_COOKIE, cookie1.toString())
-                .header(SET_COOKIE, cookie2.toString())
-                .body(message)).when(userService).login(any(LoginRequest.class) , any(HttpServletResponse.class));
+        doReturn(message).when(userService).login(any(LoginRequest.class) , any(HttpServletResponse.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -105,17 +97,14 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON));
 
         // then
-        resultActions.andExpect(status().isOk()).andDo(
+        resultActions.andExpect(status().isOk())
+                .andDo(
                 document("user/login",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("email").description("아이디"),
                                 fieldWithPath("password").description("비밀 번호")
-                        ),
-                        responseCookies(
-                                cookieWithName("accessToken").description("accessToken"),
-                                cookieWithName("refreshToken").description("refreshToken")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -135,10 +124,6 @@ class UserControllerTest {
                         )
                 )
         );
-        String accessToken = resultActions.andReturn().getResponse().getCookie("accessToken").toString();
-        String refreshToken = resultActions.andReturn().getResponse().getCookie("refreshToken").toString();
-        assertThat(accessToken).contains("accessTokenData1564");
-        assertThat(refreshToken).contains("refreshTokenData4567");
 
         final MessageResponse responseResult = gson.fromJson(
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
