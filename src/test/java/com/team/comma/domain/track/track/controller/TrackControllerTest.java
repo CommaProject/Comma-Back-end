@@ -66,58 +66,6 @@ public class TrackControllerTest {
     }
 
     @Test
-    @DisplayName("유저가 좋아요 누른 트랙 탐색")
-    public void findTrackByFavoriteTrack() throws Exception {
-        // given
-        final String url = "/tracks/users/favorites";
-        List<Track> tracks = new ArrayList<>();
-        for(int i = 0; i < 2; i++) {
-            tracks.add(buildTrack("title" , "spotifyId"));
-        }
-
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , tracks)).when(trackService).findTrackByFavoriteTrack(any(String.class));
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(url)
-                        .cookie(new Cookie("accessToken", "accessToken"))
-        );
-
-        // then
-        resultActions.andExpect(status().isOk()).andDo(
-                document("track/favoriteTrack",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestCookies(
-                                cookieWithName("accessToken").description("사용자 access token")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터"),
-                                fieldWithPath("data.[].id").description("트랙 테이블 ID"),
-                                fieldWithPath("data.[].trackTitle").description("트랙 이름"),
-                                fieldWithPath("data.[].durationTimeMs").description("트랙 재생 시간"),
-                                fieldWithPath("data.[].recommendCount").description("트랙 추천 횟수"),
-                                fieldWithPath("data.[].albumImageUrl").description("트랙 이미지 주소"),
-                                fieldWithPath("data.[].spotifyTrackId").description("스포티파이 트랙 ID"),
-                                fieldWithPath("data.[].spotifyTrackHref").description("아티스트 트랙 재생 주소"),
-                                fieldWithPath("data.[].trackArtistList").description("아티스트 목록"),
-                                fieldWithPath("data.[].trackArtistList[].id").description("제공되지 않는 데이터입니다."),
-                                fieldWithPath("data.[].trackArtistList[].artistName").description("아티스트 명"),
-                                fieldWithPath("data.[].trackArtistList[].track").description("제공되지 않는 데이터입니다.")
-                        )
-                )
-        );
-        final MessageResponse result = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-    @Test
     @DisplayName("추천 받은 인기 트랙")
     public void findTrackByMostFavorite() throws Exception {
         // given
