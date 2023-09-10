@@ -36,7 +36,6 @@
 
 === Track 문서
 
-// * link:track[Track]
 * link:play-count.html[Play-count]
 
 === Spotify 문서

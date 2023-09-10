@@ -63,6 +63,7 @@ include::{snippets}/spotify/selectRecommendList/response-fields.adoc[]
 ===== Request
 
 include::{snippets}/spotify/selectRecommend/http-request.adoc[]
+include::{snippets}/spotify/selectRecommend/path-parameters.adoc[]
 
 ===== Response
 
