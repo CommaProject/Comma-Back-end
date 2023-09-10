@@ -42,8 +42,8 @@ public class RecommendRepositoryTest {
         // given
         final User toUser = userRepository.save(buildUser("toUserEmail"));
         final User fromUser = userRepository.save(buildUser("fromUserEmail"));
-        final Playlist playlist = playlistRepository.save(buildPlaylist());
-        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        final Playlist playlist = playlistRepository.save(buildPlaylist(fromUser));
+        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, toUser);
 
         // when
         final Recommend result = recommendRepository.save(recommend);
@@ -56,8 +56,8 @@ public class RecommendRepositoryTest {
     void 익명에게_추천_저장() {
         // given
         final User fromUser = userRepository.save(buildUser("fromUserEmail"));
-        final Playlist playlist = playlistRepository.save(buildPlaylist());
-        final Recommend recommend = buildRecommendToAnonymous(ANONYMOUS, playlist, fromUser);
+        final Playlist playlist = playlistRepository.save(buildPlaylist(fromUser));
+        final Recommend recommend = buildRecommendToAnonymous(ANONYMOUS, playlist);
 
         // when
         final Recommend result = recommendRepository.save(recommend);
@@ -71,8 +71,8 @@ public class RecommendRepositoryTest {
         // given
         final User toUser = userRepository.save(buildUser("toUserEmail"));
         final User fromUser = userRepository.save(buildUser("fromUserEmail"));
-        final Playlist playlist = playlistRepository.save(buildPlaylist());
-        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        final Playlist playlist = playlistRepository.save(buildPlaylist(fromUser));
+        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, toUser);
         recommendRepository.save(recommend);
 
         // when
@@ -87,9 +87,9 @@ public class RecommendRepositoryTest {
         // given
         final User toUser = userRepository.save(buildUser("toUserEmail"));
         final User fromUser = userRepository.save(buildUser("fromUserEmail"));
-        final Playlist playlist = playlistRepository.save(buildPlaylist());
-        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
-        final Recommend recommend2 = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        final Playlist playlist = playlistRepository.save(buildPlaylist(fromUser));
+        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, toUser);
+        final Recommend recommend2 = buildRecommendToFollowing(FOLLOWING, playlist, toUser);
         recommendRepository.save(recommend);
         recommendRepository.save(recommend2);
 
@@ -109,9 +109,9 @@ public class RecommendRepositoryTest {
         // given
         final User toUser = userRepository.save(buildUser("toUserEmail"));
         final User fromUser = userRepository.save(buildUser("fromUserEmail"));
-        final Playlist playlist = playlistRepository.save(buildPlaylist());
-        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
-        final Recommend recommend2 = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        final Playlist playlist = playlistRepository.save(buildPlaylist(fromUser));
+        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, toUser);
+        final Recommend recommend2 = buildRecommendToFollowing(FOLLOWING, playlist, toUser);
         recommendRepository.save(recommend);
         recommendRepository.save(recommend2);
 
@@ -131,9 +131,9 @@ public class RecommendRepositoryTest {
         // given
         final User toUser = userRepository.save(buildUser("toUserEmail"));
         final User fromUser = userRepository.save(buildUser("fromUserEmail"));
-        final Playlist playlist = playlistRepository.save(buildPlaylist());
-        final Recommend recommend = buildRecommendToFollowing(ANONYMOUS, playlist, fromUser, toUser);
-        final Recommend recommend2 = buildRecommendToFollowing(ANONYMOUS, playlist, fromUser, toUser);
+        final Playlist playlist = playlistRepository.save(buildPlaylist(fromUser));
+        final Recommend recommend = buildRecommendToFollowing(ANONYMOUS, playlist, toUser);
+        final Recommend recommend2 = buildRecommendToFollowing(ANONYMOUS, playlist, toUser);
         recommendRepository.save(recommend);
         recommendRepository.save(recommend2);
 
@@ -153,8 +153,8 @@ public class RecommendRepositoryTest {
         // given
         final User toUser = userRepository.save(buildUser("toUserEmail"));
         final User fromUser = userRepository.save(buildUser("fromUserEmail"));
-        final Playlist playlist = playlistRepository.save(buildPlaylist());
-        final Recommend recommend = recommendRepository.save(buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser));
+        final Playlist playlist = playlistRepository.save(buildPlaylist(fromUser));
+        final Recommend recommend = recommendRepository.save(buildRecommendToFollowing(FOLLOWING, playlist, toUser));
 
         // when
         final Optional<Recommend> result = recommendRepository.findById(recommend.getId());
@@ -167,9 +167,9 @@ public class RecommendRepositoryTest {
     void 추천_플레이리스트_재생횟수_증가() {
         // given
         final User toUser = userRepository.save(buildUser("toUserEmail"));
-        final User fromUser = userRepository.save(buildUser("fromUserEmail"));
-        final Playlist playlist = playlistRepository.save(buildPlaylist());
-        final Recommend recommend = recommendRepository.save(buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser));
+        final User fromUser = userRepository.save(buildUser("toFromEmail"));
+        final Playlist playlist = playlistRepository.save(buildPlaylist(fromUser));
+        final Recommend recommend = recommendRepository.save(buildRecommendToFollowing(FOLLOWING, playlist, toUser));
 
         // when
         final long result = recommendRepository.increasePlayCount(recommend.getId());
@@ -179,9 +179,8 @@ public class RecommendRepositoryTest {
 
     }
 
-    Recommend buildRecommendToFollowing(RecommendType type, Playlist playlist, User fromUser, User toUser) {
+    Recommend buildRecommendToFollowing(RecommendType type, Playlist playlist, User toUser) {
         return Recommend.builder()
-                .fromUser(fromUser)
                 .toUser(toUser)
                 .recommendType(type)
                 .comment("test recommend")
@@ -190,9 +189,8 @@ public class RecommendRepositoryTest {
                 .build();
     }
 
-    Recommend buildRecommendToAnonymous(RecommendType type, Playlist playlist, User fromUser) {
+    Recommend buildRecommendToAnonymous(RecommendType type, Playlist playlist) {
         return Recommend.builder()
-                .fromUser(fromUser)
                 .recommendType(type)
                 .comment("test recommend")
                 .playlist(playlist)
@@ -208,8 +206,9 @@ public class RecommendRepositoryTest {
                 .build();
     }
 
-    private Playlist buildPlaylist() {
+    private Playlist buildPlaylist(User fromUser) {
         return Playlist.builder()
+                .user(fromUser)
                 .playlistTitle("My Playlist")
                 .alarmFlag(false)
                 .build();

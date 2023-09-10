@@ -160,11 +160,9 @@ CREATE TABLE recommend_tb
     comment        TEXT,
     play_count     INTEGER DEFAULT 0,
     playlist_id    BIGINT,
-    from_user_id BIGINT,
     to_user_id   BIGINT,
     PRIMARY KEY (id),
     FOREIGN KEY (playlist_id) REFERENCES playlist_tb (id),
-    FOREIGN KEY (from_user_id) REFERENCES user_tb (id),
     FOREIGN KEY (to_user_id) REFERENCES user_tb (id)
 );
 

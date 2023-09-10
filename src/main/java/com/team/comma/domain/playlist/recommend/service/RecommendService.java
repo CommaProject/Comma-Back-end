@@ -48,7 +48,7 @@ public class RecommendService {
             User toUser = userRepository.findByEmail(recommendRequest.getRecommendToEmail())
                     .orElseThrow(() -> new AccountException("추천 받는 사용자 정보가 올바르지 않습니다."));
 
-            buildEntity = recommendRequest.toRecommendEntity(fromUser, toUser, playlist);
+            buildEntity = recommendRequest.toRecommendEntity(toUser, playlist);
             getRecommendCountByToUserAndPlaylist(buildEntity);
         } else {
             buildEntity = recommendRequest.toRecommendEntity(fromUser, playlist);

@@ -230,7 +230,7 @@ public class RecommendServiceTest {
         final Track track = Track.builder().id(1L).build();
         playlist.addPlaylistTrack(track);
 
-        final Recommend recommend = buildRecommend(fromUser, toUser, playlist);
+        final Recommend recommend = buildRecommend(toUser, playlist);
         doReturn(Optional.of(recommend)).when(recommendRepository).findById(recommend.getId());
 
         // when
@@ -255,10 +255,9 @@ public class RecommendServiceTest {
                 .build();
     }
 
-    private Recommend buildRecommend(User fromUser, User toUser, Playlist playlist) {
+    private Recommend buildRecommend(User toUser, Playlist playlist) {
         return Recommend.builder()
                 .id(1L)
-                .fromUser(fromUser)
                 .toUser(toUser)
                 .recommendType(RecommendType.FOLLOWING)
                 .comment("test recommend")

@@ -185,10 +185,10 @@ public class RecommendControllerTest {
         final User fromUser = buildUser("fromUserEmail");
 
         final Track track = buildTrack();
-        final Playlist playlist = buildPlaylist();
+        final Playlist playlist = buildPlaylist(fromUser);
         playlist.addPlaylistTrack(track);
 
-        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, toUser);
         final List<RecommendResponse> recommendList = List.of(
                 RecommendResponse.of(recommend, toUser, 1L),
                 RecommendResponse.of(recommend, toUser, 1L));
@@ -248,11 +248,11 @@ public class RecommendControllerTest {
         final User toUser = buildUser("toUserEmail");
         final User fromUser = buildUser("fromUserEmail");
 
-        final Playlist playlist = buildPlaylist();
+        final Playlist playlist = buildPlaylist(fromUser);
         final Track track = buildTrack();
         playlist.addPlaylistTrack(track);
 
-        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, toUser);
         final RecommendResponse recommendResponse = RecommendResponse.of(recommend, toUser, 0);
 
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, recommendResponse);
@@ -314,9 +314,10 @@ public class RecommendControllerTest {
                 .build();
     }
 
-    private Playlist buildPlaylist() {
+    private Playlist buildPlaylist(User fromUser) {
         return Playlist.builder()
                 .id(123L)
+                .user(fromUser)
                 .playlistTitle("test playlist")
                 .alarmFlag(true)
                 .alarmStartTime(LocalTime.now())
@@ -332,10 +333,9 @@ public class RecommendControllerTest {
                 .build();
     }
 
-    private Recommend buildRecommendToFollowing(RecommendType type, Playlist playlist, User fromUser, User toUser) {
+    private Recommend buildRecommendToFollowing(RecommendType type, Playlist playlist, User toUser) {
         return Recommend.builder()
                 .id(1L)
-                .fromUser(fromUser)
                 .toUser(toUser)
                 .recommendType(type)
                 .comment("test recommend")
