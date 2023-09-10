@@ -129,9 +129,7 @@ class UserControllerTest {
                                 fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.joinDate").description("가입 날짜"),
-                                fieldWithPath("data.nickName").description("사용자 닉네임"),
-                                fieldWithPath("data.age").description("사용자 연령"),
-                                fieldWithPath("data.sex").description("사용자 성별")
+                                fieldWithPath("data.nickName").description("사용자 닉네임")
                         )
                 )
         );
@@ -226,9 +224,7 @@ class UserControllerTest {
                                 fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임"),
-                                fieldWithPath("data.age").description("사용자 연령"),
-                                fieldWithPath("data.joinDate").description("가입 날짜"),
-                                fieldWithPath("data.sex").description("사용자 성별")
+                                fieldWithPath("data.joinDate").description("가입 날짜")
                         )
                 )
         );
@@ -304,10 +300,6 @@ class UserControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("sex").description("성별"),
-                                fieldWithPath("age").description("연령"),
-                                fieldWithPath("recommendTime").description("음악 듣는 시간대"),
-                                fieldWithPath("genres").description("좋아하는 장르"),
                                 fieldWithPath("artistNames").description("좋아하는 아티스트")
                         ),
                         responseFields(
@@ -349,10 +341,6 @@ class UserControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("sex").description("성별"),
-                                fieldWithPath("age").description("연령"),
-                                fieldWithPath("recommendTime").description("음악 듣는 시간대"),
-                                fieldWithPath("genres").description("좋아하는 장르"),
                                 fieldWithPath("artistNames").description("좋아하는 아티스트")
                         ),
                         responseFields(
@@ -394,10 +382,6 @@ class UserControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("sex").description("성별"),
-                                fieldWithPath("age").description("연령"),
-                                fieldWithPath("recommendTime").description("음악 듣는 시간대"),
-                                fieldWithPath("genres").description("좋아하는 장르"),
                                 fieldWithPath("artistNames").description("좋아하는 아티스트")
                         )
                 )
@@ -525,9 +509,7 @@ class UserControllerTest {
                                 fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임"),
-                                fieldWithPath("data.age").description("사용자 연령"),
-                                fieldWithPath("data.joinDate").description("가입 날짜"),
-                                fieldWithPath("data.sex").description("사용자 성별")
+                                fieldWithPath("data.joinDate").description("가입 날짜")
                         )
                 )
         );
@@ -578,9 +560,7 @@ class UserControllerTest {
                                 fieldWithPath("data[].profileImage").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data[].name").description("사용자 이름"),
                                 fieldWithPath("data[].nickName").description("사용자 닉네임"),
-                                fieldWithPath("data[].age").description("사용자 연령"),
-                                fieldWithPath("data[].joinDate").description("가입 날짜"),
-                                fieldWithPath("data[].sex").description("사용자 성별")
+                                fieldWithPath("data[].joinDate").description("가입 날짜")
                         )
                 )
         );
@@ -607,10 +587,8 @@ class UserControllerTest {
     }
 
     private UserDetailRequest getUserDetailRequest() {
-        return UserDetailRequest.builder().age(20).sex("female").nickName("name")
-                .recommendTime(LocalTime.of(12, 0))
+        return UserDetailRequest.builder().nickName("name")
                 .artistNames(Arrays.asList("artist1", "artist2", "artist3"))
-                .genres(Arrays.asList("genre1", "genre2", "genre3"))
                 .build();
     }
 

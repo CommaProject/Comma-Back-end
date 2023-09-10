@@ -1,18 +1,17 @@
 package com.team.comma.domain.user.user.service;
 
-import com.team.comma.domain.user.history.service.HistoryService;
-import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.history.dto.HistoryRequest;
+import com.team.comma.domain.user.history.service.HistoryService;
+import com.team.comma.domain.user.profile.domain.UserDetail;
+import com.team.comma.domain.user.profile.dto.UserDetailRequest;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.profile.domain.UserDetail;
 import com.team.comma.domain.user.user.dto.LoginRequest;
 import com.team.comma.domain.user.user.dto.RegisterRequest;
-import com.team.comma.domain.user.profile.dto.UserDetailRequest;
 import com.team.comma.domain.user.user.dto.UserResponse;
-import com.team.comma.domain.favorite.genre.repository.FavoriteGenreRepository;
 import com.team.comma.domain.user.user.repository.UserRepository;
+import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.service.JwtService;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import com.team.comma.global.security.dto.Token;
@@ -32,7 +31,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.security.auth.login.AccountException;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -54,9 +52,6 @@ class UserServiceTest {
 
     @Mock
     private JwtService jwtService;
-
-    @Mock
-    private FavoriteGenreRepository favoriteGenreRepository;
 
     @Mock
     private JwtTokenProvider jwtTokenProvider;
@@ -288,37 +283,6 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("사용자 관심 장르 가져오기 실패 _ 찾을 수 없는 사용자")
-    void getInterestGenreFail_notFoundUser() {
-        // given
-        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
-        doReturn("").when(jwtTokenProvider).getUserPk(any(String.class));
-
-        // when
-        Throwable thrown = catchThrowable(() -> userService.getFavoriteGenreList("token"));
-
-        // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("사용자 관심 장르 가져오기")
-    void getInterestGenre() throws AccountException {
-        // given
-        Optional<User> user = getUserEntity();
-        doReturn(user).when(userRepository).findByEmail(any(String.class));
-        doReturn("").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(Arrays.asList("genre1" , "genre2" , "genre3")).when(favoriteGenreRepository)
-                .findByGenreNameList(any(User.class));
-
-        // when
-        List<String> result = userService.getFavoriteGenreList("token");
-
-        // then
-        assertThat(result.size()).isEqualTo(3);
-    }
-
-    @Test
     @DisplayName("사용자 이름이나 닉네임으로 사용자 탐색")
     void searchUserByNameAndNickNameTest() throws AccountException {
         // given
@@ -335,10 +299,8 @@ class UserServiceTest {
     }
 
     private UserDetailRequest getUserDetailRequest() {
-        return UserDetailRequest.builder().age(20).sex("female").nickName("name")
-            .recommendTime(LocalTime.of(12, 0))
+        return UserDetailRequest.builder().nickName("name")
             .artistNames(Arrays.asList("artist1", "artist2", "artist3"))
-            .genres(Arrays.asList("genre1", "genre2", "genre3"))
             .build();
     }
 
@@ -353,7 +315,6 @@ class UserServiceTest {
         return UserDetail.builder()
                 .id(0L)
                 .name("name")
-                .age(0)
                 .allPublicFlag(false)
                 .calenderPublicFlag(false)
                 .favoritePublicFlag(false)

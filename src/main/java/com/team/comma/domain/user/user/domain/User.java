@@ -69,25 +69,11 @@ public class User implements UserDetails {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @Builder.Default
-    private List<FavoriteGenre> favoriteGenre = new ArrayList<>();
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    @Builder.Default
     private List<FavoriteArtist> favoriteArtist = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.PERSIST , mappedBy = "user")
     @Builder.Default
     private List<History> history = new ArrayList<>();
-
-    // 연관관계 편의 메서드
-    public void addFavoriteGenre(String genre) {
-        FavoriteGenre genreData = FavoriteGenre.builder()
-            .genreName(genre)
-            .user(this)
-            .build();
-
-        favoriteGenre.add(genreData);
-    }
 
     public void addFavoriteArtist(String artist) {
         FavoriteArtist artistData = FavoriteArtist.builder()

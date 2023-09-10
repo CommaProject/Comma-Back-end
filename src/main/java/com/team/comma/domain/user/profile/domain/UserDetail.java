@@ -21,15 +21,6 @@ public class UserDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 10)
-    private String sex;
-
-    @Column
-    private int age;
-
-    @Column(length = 10)
-    private LocalTime recommendTime;
-
     @Column(length = 45)
     private String name;
 
@@ -56,10 +47,7 @@ public class UserDetail {
 
     public static UserDetail createUserDetail(UserDetailRequest userDetailRequest) {
         return UserDetail.builder()
-                .age(userDetailRequest.getAge())
-                .sex(userDetailRequest.getSex())
                 .nickname(userDetailRequest.getNickName())
-                .recommendTime(userDetailRequest.getRecommendTime())
                 .build();
     }
 

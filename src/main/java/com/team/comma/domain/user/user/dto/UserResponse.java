@@ -21,8 +21,6 @@ public class UserResponse {
     private UserRole role;
     private String name;
     private String nickName;
-    private int age;
-    private String sex;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy/MM/dd" , timezone = "Asia/Seoul")
     private Date joinDate;
@@ -32,15 +30,11 @@ public class UserResponse {
         String profileImage = null;
         String name = null;
         String nickName = null;
-        int age = 0;
-        String sex = null;
         UserDetail detail = user.getUserDetail();
         if(detail != null) {
             profileImage = detail.getProfileImageUrl();
             name = detail.getName();
             nickName = detail.getNickname();
-            age = detail.getAge();
-            sex = detail.getSex();
         }
 
         return UserResponse.builder()
@@ -52,9 +46,7 @@ public class UserResponse {
                 .profileImage(profileImage)
                 .name(name)
                 .nickName(nickName)
-                .age(age)
                 .joinDate(user.getJoinDate())
-                .sex(sex)
                 .build();
     }
 
