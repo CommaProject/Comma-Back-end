@@ -6,6 +6,7 @@ import static com.team.comma.domain.track.track.domain.QTrack.track;
 
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.user.user.domain.User;
@@ -65,6 +66,16 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public long updateRecommendCountByPlaylistId(long playlistId) {
+        return queryFactory.update(track).set(track.recommendCount , track.recommendCount.add(1))
+                .where(track.id.in(
+                        JPAExpressions.select(track.id).from(playlistTrack)
+                                .innerJoin(playlistTrack.playlist , playlist).on(playlist.id.eq(playlistId))
+                                .innerJoin(playlistTrack.track , track)
+                )).execute();
     }
 
     @Override

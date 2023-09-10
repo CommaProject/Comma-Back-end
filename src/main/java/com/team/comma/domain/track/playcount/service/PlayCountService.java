@@ -8,6 +8,7 @@ import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 import static com.team.comma.domain.track.playcount.domain.TrackPlayCount.createTrackPlayCount;
 import static com.team.comma.domain.track.playcount.dto.TrackPlayCountRequest.createTrackPlayCountRequest;
+import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
@@ -57,7 +59,7 @@ public class PlayCountService {
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
-    public TrackPlayCount findTrackPlayCountOrSave(String userEmail , String trackId) throws AccountException {
+    public TrackPlayCount findTrackPlayCountOrSave(String userEmail , String trackId) {
         Optional<TrackPlayCount> trackPlayCount = trackPlayCountRepository.findTrackPlayCountByUserEmail(userEmail , trackId);
 
         if(!trackPlayCount.isPresent()) {
@@ -65,7 +67,7 @@ public class PlayCountService {
                     .orElseGet(() -> trackService.findTrackOrSave(trackId));
 
             User user = userRepository.findByEmail(userEmail)
-                    .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
             TrackPlayCountRequest request = createTrackPlayCountRequest(track);
             return trackPlayCountRepository.save(createTrackPlayCount(request , user));

@@ -10,6 +10,7 @@ import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
@@ -36,8 +37,7 @@ import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
+import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -82,7 +82,7 @@ public class FavoriteTrackControllerTest {
         FavoriteTrackRequest favoriteTrackRequest = FavoriteTrackRequest.builder()
                 .spotifyTrackId("trackId")
                 .build();
-        doThrow(new AccountException("사용자 정보를 찾을 수 없습니다.")).when(favoriteTrackService).createFavoriteTrack(any(String.class) , any(FavoriteTrackRequest.class));
+        doThrow(new UserException(NOT_FOUNT_USER)).when(favoriteTrackService).createFavoriteTrack(any(String.class) , any(FavoriteTrackRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -115,7 +115,7 @@ public class FavoriteTrackControllerTest {
                 MessageResponse.class);
 
         assertThat(result.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
-        assertThat(result.getMessage()).isEqualTo("사용자 정보를 찾을 수 없습니다.");
+        assertThat(result.getMessage()).isEqualTo(NOT_FOUNT_USER.getMessage());
     }
 
     @Test

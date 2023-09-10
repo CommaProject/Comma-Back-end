@@ -69,7 +69,7 @@ public class TrackControllerTest {
     @DisplayName("추천 받은 인기 트랙")
     public void findTrackByMostFavorite() throws Exception {
         // given
-        final String url = "/tracks/favorites";
+        final String url = "/tracks/recommend";
         List<Track> tracks = new ArrayList<>();
         for(int i = 0; i < 2; i++) {
             tracks.add(buildTrack("title" , "spotifyId"));
@@ -112,8 +112,6 @@ public class TrackControllerTest {
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
-
-
 
     private Track buildTrack(String title, String spotifyId) {
         return Track.builder()

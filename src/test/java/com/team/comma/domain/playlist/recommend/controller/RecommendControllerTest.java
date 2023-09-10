@@ -12,11 +12,15 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.team.comma.domain.track.artist.domain.TrackArtist;
+import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.recommend.constant.RecommendListType;
@@ -35,6 +39,7 @@ import com.team.comma.domain.user.profile.domain.UserDetail;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +50,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -55,6 +61,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @AutoConfigureRestDocs
@@ -69,6 +77,9 @@ public class RecommendControllerTest {
 
     @MockBean
     RecommendService recommendService;
+
+    @MockBean
+    TrackService trackService;
 
     MockMvc mockMvc;
     Gson gson;
@@ -185,10 +196,10 @@ public class RecommendControllerTest {
         final User fromUser = buildUser("fromUserEmail");
 
         final Track track = buildTrack();
-        final Playlist playlist = buildPlaylist();
+        final Playlist playlist = buildPlaylist(fromUser);
         playlist.addPlaylistTrack(track);
 
-        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, toUser);
         final List<RecommendResponse> recommendList = List.of(
                 RecommendResponse.of(recommend, toUser, 1L),
                 RecommendResponse.of(recommend, toUser, 1L));
@@ -248,11 +259,11 @@ public class RecommendControllerTest {
         final User toUser = buildUser("toUserEmail");
         final User fromUser = buildUser("fromUserEmail");
 
-        final Playlist playlist = buildPlaylist();
+        final Playlist playlist = buildPlaylist(fromUser);
         final Track track = buildTrack();
         playlist.addPlaylistTrack(track);
 
-        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, fromUser, toUser);
+        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, toUser);
         final RecommendResponse recommendResponse = RecommendResponse.of(recommend, toUser, 0);
 
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, recommendResponse);
@@ -260,7 +271,7 @@ public class RecommendControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
+                RestDocumentationRequestBuilders
                         .get(url, recommendResponse.getRecommendId())
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -270,6 +281,9 @@ public class RecommendControllerTest {
                 document("spotify/selectRecommend",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("recommendId").description("추천 정보의 식별자 값")
+                        ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("메세지"),
@@ -314,9 +328,10 @@ public class RecommendControllerTest {
                 .build();
     }
 
-    private Playlist buildPlaylist() {
+    private Playlist buildPlaylist(User fromUser) {
         return Playlist.builder()
                 .id(123L)
+                .user(fromUser)
                 .playlistTitle("test playlist")
                 .alarmFlag(true)
                 .alarmStartTime(LocalTime.now())
@@ -332,10 +347,26 @@ public class RecommendControllerTest {
                 .build();
     }
 
-    private Recommend buildRecommendToFollowing(RecommendType type, Playlist playlist, User fromUser, User toUser) {
+    private Track buildTrack(String title, String spotifyId) {
+        return Track.builder()
+                .trackTitle(title)
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId(spotifyId)
+                .trackArtistList(Arrays.asList(buildTrackArtist()))
+                .build();
+    }
+
+    public TrackArtist buildTrackArtist() {
+        return TrackArtist.builder()
+                .artistName("artist")
+                .build();
+    }
+
+    private Recommend buildRecommendToFollowing(RecommendType type, Playlist playlist, User toUser) {
         return Recommend.builder()
                 .id(1L)
-                .fromUser(fromUser)
                 .toUser(toUser)
                 .recommendType(type)
                 .comment("test recommend")

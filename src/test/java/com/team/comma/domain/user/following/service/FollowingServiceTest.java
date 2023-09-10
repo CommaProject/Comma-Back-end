@@ -46,10 +46,9 @@ public class FollowingServiceTest {
     public void blockUserSuccess() {
         // given
         doNothing().when(followingRepository).blockFollowedUser(1L);
-        doReturn("toUserEmail").when(jwtTokenProvider).getUserPk("token");
 
         // when
-        MessageResponse result = followingService.blockFollowedUser("token" , 1L);
+        MessageResponse result = followingService.blockFollowedUser(1L);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -61,10 +60,9 @@ public class FollowingServiceTest {
     public void unblockUserSuccess() {
         // given
         doNothing().when(followingRepository).unblockFollowedUser(1L);
-        doReturn("toUserEmail").when(jwtTokenProvider).getUserPk("token");
 
         // when
-        MessageResponse result = followingService.unblockFollowedUser("token" , 1L);
+        MessageResponse result = followingService.unblockFollowedUser(1L);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());

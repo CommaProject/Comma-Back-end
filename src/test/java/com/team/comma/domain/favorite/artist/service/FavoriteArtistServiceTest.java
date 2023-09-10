@@ -3,6 +3,7 @@ package com.team.comma.domain.favorite.artist.service;
 import com.team.comma.domain.favorite.artist.dto.FavoriteArtistResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.global.common.constant.ResponseCodeEnum;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -56,7 +58,7 @@ public class FavoriteArtistServiceTest {
         Throwable thrown = catchThrowable(() -> favoriteArtistService.createFavoriteArtist("token" , "artistName"));
 
         // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
+        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
     }
 
     @Test
@@ -100,7 +102,7 @@ public class FavoriteArtistServiceTest {
         Throwable thrown = catchThrowable(() -> favoriteArtistService.deleteFavoriteArtist("token" , "artistName"));
 
         // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
+        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
     }
 
     @Test

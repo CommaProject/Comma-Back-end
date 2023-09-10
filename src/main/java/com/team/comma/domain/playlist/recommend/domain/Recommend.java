@@ -46,10 +46,6 @@ public class Recommend {
     @ManyToOne(fetch = FetchType.LAZY)
     private Playlist playlist;
 
-    @JoinColumn(name = "from_user_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User fromUser;
-
     @JoinColumn(name = "to_user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User toUser;

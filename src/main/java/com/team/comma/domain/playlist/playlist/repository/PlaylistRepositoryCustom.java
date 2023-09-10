@@ -15,4 +15,7 @@ public interface PlaylistRepositoryCustom {
     List<PlaylistResponse> findAllPlaylistsByUser(User user);
 
     Optional<PlaylistResponse> findPlaylistByPlaylistId(long playlistId);
+
+    long updateRecommendCountByPlaylistId(long playlistId);
+
 }
