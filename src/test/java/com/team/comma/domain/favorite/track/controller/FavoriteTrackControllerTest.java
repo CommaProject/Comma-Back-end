@@ -2,6 +2,7 @@ package com.team.comma.domain.favorite.track.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackRequest;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
@@ -173,7 +174,7 @@ public class FavoriteTrackControllerTest {
         User user = buildUser();
         Track track = buildTrack("track title", "spotifyId");
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        Artist trackArtist = buildArtist("artist");
+        ArtistResponse trackArtist = buildArtist("artist");
 
         TrackResponse trackResponse = buildTrackResponse("track title", "spotifyId");
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , trackArtist);
@@ -208,7 +209,6 @@ public class FavoriteTrackControllerTest {
                                 fieldWithPath("data.[].trackArtistResponses[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].trackArtistResponses[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].trackArtistResponses[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].trackArtistResponses[].artists.id").description("엔티티 식별자"),
                                 fieldWithPath("data.[].trackArtistResponses[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
                                 fieldWithPath("data.[].trackArtistResponses[].artists.spotifyArtistName").description("트랙 아티스트 명")
                         )
@@ -252,8 +252,8 @@ public class FavoriteTrackControllerTest {
                 .build();
     }
 
-    public Artist buildArtist(String artist) {
-        return Artist.builder()
+    public ArtistResponse buildArtist(String artist) {
+        return ArtistResponse.builder()
                 .spotifyArtistId("spotifyArtistId")
                 .spotifyArtistName(artist)
                 .build();

@@ -2,6 +2,7 @@ package com.team.comma.domain.favorite.track.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.track.track.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.dto.TrackResponse;
@@ -35,8 +36,10 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                                 track.spotifyTrackId,
                                 track.spotifyTrackHref
                         ),
-                        artist
-                )).from(favoriteTrack)
+                        Projections.constructor(ArtistResponse.class,
+                                artist.spotifyArtistId,
+                                artist.spotifyArtistName
+                        ))).from(favoriteTrack)
                 .join(favoriteTrack.user, user).on(user.email.eq(userEmail))
                 .innerJoin(favoriteTrack.track, track)
                 .innerJoin(track.trackArtistList, trackArtist)
@@ -63,10 +66,10 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                                                         track.spotifyTrackId,
                                                         track.spotifyTrackHref
                                                 ),
-                                                artist
-                                        )
-                                )
-                        ))
+                                                Projections.constructor(ArtistResponse.class,
+                                                        artist.spotifyArtistId,
+                                                        artist.spotifyArtistName
+                                                )))))
                 .from(favoriteTrack)
                 .innerJoin(favoriteTrack.track, track)
                 .innerJoin(track.trackArtistList, trackArtist)

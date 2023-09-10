@@ -1,6 +1,7 @@
 package com.team.comma.domain.favorite.track.service;
 
 import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackRequest;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
@@ -91,7 +92,7 @@ public class FavoriteTrackServiceTest {
         Track track = buildTrack("track title", "spotify id");
         TrackResponse trackResponse = buildTrackResponse("title" , "spotifyId");
 
-        Artist artist = Artist.createArtist("artistId" ,"artist");
+        ArtistResponse artist = ArtistResponse.createArtist("artistId" ,"artist");
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
@@ -116,9 +117,10 @@ public class FavoriteTrackServiceTest {
         TrackResponse trackResponse = buildTrackResponse("title" , "spotifyId");
 
         Artist artist = Artist.createArtist("artistId" , "artist name");
+        ArtistResponse artistResponse = ArtistResponse.createArtist("artistId" , "artist name");
         track.addTrackArtistList(artist);
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artistResponse);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(accessToken);

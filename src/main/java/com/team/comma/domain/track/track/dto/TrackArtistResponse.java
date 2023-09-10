@@ -1,13 +1,11 @@
 package com.team.comma.domain.track.track.dto;
 
-import com.team.comma.domain.artist.domain.Artist;
-import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.artist.dto.ArtistResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 @Getter
 @Builder
@@ -17,9 +15,9 @@ public class TrackArtistResponse {
 
     private TrackResponse track;
 
-    private Artist artists;
+    private ArtistResponse artists;
 
-    public static TrackArtistResponse of(TrackResponse track , Artist artists) {
+    public static TrackArtistResponse of(TrackResponse track , ArtistResponse artists) {
         return TrackArtistResponse.builder()
                 .track(track)
                 .artists(artists)

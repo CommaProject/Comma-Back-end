@@ -2,6 +2,7 @@ package com.team.comma.domain.playlist.track.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
 import com.team.comma.domain.track.track.dto.TrackArtistResponse;
@@ -38,7 +39,10 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
                                         track.spotifyTrackId,
                                         track.spotifyTrackHref
                                 ),
-                                artist))))
+                                Projections.constructor(ArtistResponse.class,
+                                        artist.spotifyArtistId,
+                                        artist.spotifyArtistName
+                                )))))
                 .from(playlistTrack)
                 .innerJoin(playlistTrack.track , track)
                 .innerJoin(track.trackArtistList , trackArtist)

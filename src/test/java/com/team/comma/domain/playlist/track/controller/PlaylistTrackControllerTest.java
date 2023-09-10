@@ -3,6 +3,7 @@ package com.team.comma.domain.playlist.track.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackMultipleRequest;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
@@ -204,7 +205,6 @@ class PlaylistTrackControllerTest {
                                 fieldWithPath("data.[].trackArtistList[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].trackArtistList[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].trackArtistList[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].trackArtistList[].artists.id").description("엔티티 식별자"),
                                 fieldWithPath("data.[].trackArtistList[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
                                 fieldWithPath("data.[].trackArtistList[].artists.spotifyArtistName").description("트랙 아티스트 명")
                         )
@@ -392,8 +392,8 @@ class PlaylistTrackControllerTest {
                 .build();
     }
 
-    private Artist buildArtist() {
-        return Artist.builder()
+    private ArtistResponse buildArtist() {
+        return ArtistResponse.builder()
                 .spotifyArtistName("artistName")
                 .build();
     }

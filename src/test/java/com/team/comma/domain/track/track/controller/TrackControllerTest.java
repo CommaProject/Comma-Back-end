@@ -2,6 +2,7 @@ package com.team.comma.domain.track.track.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.dto.TrackArtistResponse;
@@ -76,7 +77,7 @@ public class TrackControllerTest {
         final String url = "/tracks/users/favorites";
         TrackResponse trackResponse = buildTrackResponse("title" , "id");
 
-        Artist artist = Artist.builder().spotifyArtistId("artistId").spotifyArtistName("artist").build();
+        ArtistResponse artist = ArtistResponse.createArtist("artistId" , "artist");
 
         List<TrackArtistResponse> data = new ArrayList<>();
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
@@ -109,7 +110,6 @@ public class TrackControllerTest {
                                 fieldWithPath("data.[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].artists.id").description("엔티티 식별자"),
                                 fieldWithPath("data.[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
                                 fieldWithPath("data.[].artists.spotifyArtistName").description("트랙 아티스트 명")
                         )
@@ -130,7 +130,7 @@ public class TrackControllerTest {
         final String url = "/tracks/favorites";
         TrackResponse trackResponse = buildTrackResponse("title" , "id");
 
-        Artist artist = Artist.builder().spotifyArtistId("artistId").spotifyArtistName("artist").build();
+        ArtistResponse artist = ArtistResponse.createArtist("artistId" , "artist");
 
         List<TrackArtistResponse> data = new ArrayList<>();
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
@@ -159,7 +159,6 @@ public class TrackControllerTest {
                                 fieldWithPath("data.[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].artists.id").description("엔티티 식별자"),
                                 fieldWithPath("data.[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
                                 fieldWithPath("data.[].artists.spotifyArtistName").description("트랙 아티스트 명")
                         )
