@@ -6,8 +6,6 @@ DROP TABLE IF EXISTS archive_tb;
 
 DROP TABLE IF EXISTS favorite_artist_tb;
 
-DROP TABLE IF EXISTS favorite_genre_tb;
-
 DROP TABLE IF EXISTS favorite_track_tb;
 
 DROP TABLE IF EXISTS following_tb;
@@ -38,9 +36,6 @@ SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE user_detail_tb
 (
     id                   BIGINT  NOT NULL AUTO_INCREMENT,
-    sex                  VARCHAR(10),
-    age                  INT ,
-    recommend_time       TIME,
     name                 VARCHAR(10),
     nickname             VARCHAR(10),
     profile_image_url    VARCHAR(50),
@@ -131,16 +126,6 @@ CREATE TABLE favorite_artist_tb
     artist_name      VARCHAR(50),
     artist_image_url VARCHAR(100),
     user_id          BIGINT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES user_tb (id)
-);
-
-CREATE TABLE favorite_genre_tb
-(
-    id              BIGINT      NOT NULL auto_increment,
-    genre_name      VARCHAR(45) NOT NULL,
-    genre_image_url VARCHAR(50),
-    user_id         BIGINT,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES user_tb (id)
 );
