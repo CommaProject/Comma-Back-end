@@ -1,16 +1,10 @@
 package com.team.comma.domain.user.user.domain;
 
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
-import com.team.comma.domain.favorite.genre.domain.FavoriteGenre;
 import com.team.comma.domain.user.history.domain.History;
 import com.team.comma.domain.user.profile.domain.UserDetail;
-import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.constant.UserRole;
-import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
-import com.team.comma.domain.favorite.genre.domain.FavoriteGenre;
-import com.team.comma.domain.user.history.domain.History;
 import com.team.comma.domain.user.user.constant.UserType;
-import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.global.converter.BooleanConverter;
 import jakarta.persistence.*;
 import lombok.*;
