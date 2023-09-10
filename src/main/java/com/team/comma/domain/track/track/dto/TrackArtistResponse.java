@@ -17,9 +17,9 @@ public class TrackArtistResponse {
 
     private TrackResponse track;
 
-    private List<Artist> artists;
+    private Artist artists;
 
-    public static TrackArtistResponse of(TrackResponse track , List<Artist> artists) {
+    public static TrackArtistResponse of(TrackResponse track , Artist artists) {
         return TrackArtistResponse.builder()
                 .track(track)
                 .artists(artists)

@@ -99,11 +99,11 @@ CREATE TABLE alert_day_tb
 CREATE TABLE track_tb
 (
     id                 BIGINT NOT NULL AUTO_INCREMENT,
-    track_title        VARCHAR(30),
+    track_title        VARCHAR(150),
     duration_time_ms   INTEGER,
     recommend_count BIGINT,
     album_image_url    VARCHAR(100),
-    spotify_track_id   VARCHAR(50),
+    spotify_track_id   VARCHAR(100),
     spotify_track_href VARCHAR(150),
     PRIMARY KEY (id)
 );

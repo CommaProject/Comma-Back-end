@@ -25,7 +25,7 @@ public class Track {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 30 , nullable = false)
+    @Column(length = 150 , nullable = false)
     private String trackTitle;
 
     private Integer durationTimeMs;
@@ -36,7 +36,7 @@ public class Track {
     @Column(length = 100 , nullable = false)
     private String albumImageUrl;
 
-    @Column(length = 50 , nullable = false)
+    @Column(length = 100 , nullable = false)
     private String spotifyTrackId;
 
     @Column(length = 150 , nullable = false)
@@ -56,7 +56,6 @@ public class Track {
     }
 
     public static Track buildTrack(se.michaelthelin.spotify.model_objects.specification.Track track , ArtistService artistService) {
-        List<TrackArtist> trackArtists = new ArrayList<>();
         Track trackEntity = Track.builder()
                 .trackTitle(track.getName())
                 .durationTimeMs(track.getDurationMs())
@@ -68,7 +67,7 @@ public class Track {
 
         for(ArtistSimplified artistSimplified : track.getArtists()) {
             Artist artist = artistService.findArtistOrSave(artistSimplified.getId() , artistSimplified.getName());
-            trackArtists.add(createTrackArtist(artist , trackEntity));
+            trackEntity.addTrackArtistList(artist);
         }
 
         return trackEntity;

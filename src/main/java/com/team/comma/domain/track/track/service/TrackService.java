@@ -9,7 +9,6 @@ import com.team.comma.global.jwt.support.JwtTokenProvider;
 import com.team.comma.spotify.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

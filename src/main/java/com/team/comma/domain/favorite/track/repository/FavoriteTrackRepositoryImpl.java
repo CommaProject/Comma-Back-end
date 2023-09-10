@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.team.comma.domain.artist.domain.QArtist.artist;
 import static com.team.comma.domain.favorite.track.domain.QFavoriteTrack.favoriteTrack;
 import static com.team.comma.domain.track.artist.domain.QTrackArtist.trackArtist;
@@ -39,35 +40,39 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                 .join(favoriteTrack.user, user).on(user.email.eq(userEmail))
                 .innerJoin(favoriteTrack.track, track)
                 .innerJoin(track.trackArtistList, trackArtist)
-                .innerJoin(trackArtist.artist , artist)
+                .innerJoin(trackArtist.artist, artist)
                 .fetch();
     }
 
     @Override
     public List<FavoriteTrackResponse> findAllFavoriteTrackByUser(User user) {
-        return jpaQueryFactory.select(
+        return jpaQueryFactory.selectDistinct(
                         Projections.constructor(
                                 FavoriteTrackResponse.class,
                                 favoriteTrack.id,
-                                Projections.list(Projections.constructor(
-                                        TrackArtistResponse.class,
-                                        Projections.constructor(TrackResponse.class,
-                                                track.id,
-                                                track.trackTitle,
-                                                track.durationTimeMs,
-                                                track.recommendCount,
-                                                track.albumImageUrl,
-                                                track.spotifyTrackId,
-                                                track.spotifyTrackHref
-                                        ),
-                                        Projections.list(artist)))
+                                Projections.list(
+                                        Projections.constructor(
+                                                TrackArtistResponse.class,
+                                                Projections.constructor(TrackResponse.class,
+                                                        track.id,
+                                                        track.trackTitle,
+                                                        track.durationTimeMs,
+                                                        track.recommendCount,
+                                                        track.albumImageUrl,
+                                                        track.spotifyTrackId,
+                                                        track.spotifyTrackHref
+                                                ),
+                                                artist
+                                        )
+                                )
                         ))
                 .from(favoriteTrack)
                 .innerJoin(favoriteTrack.track, track)
                 .innerJoin(track.trackArtistList, trackArtist)
-                .innerJoin(trackArtist.artist , artist)
+                .innerJoin(trackArtist.artist, artist)
                 .where(favoriteTrack.user.eq(user))
                 .orderBy(favoriteTrack.id.desc())
+                .groupBy(track.spotifyTrackId)
                 .fetch();
     }
 }
