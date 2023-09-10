@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TrackController {
     private final TrackService trackService;
 
-    @GetMapping("/favorites")
+    @GetMapping("/recommend")
     public MessageResponse findTrackByMostFavorite() {
         return trackService.findTrackByMostFavorite();
     }

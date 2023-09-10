@@ -21,8 +21,6 @@ public class FavoriteTrack {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Boolean favoriteFlag;
-
     @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -33,7 +31,6 @@ public class FavoriteTrack {
 
     public static FavoriteTrack buildFavoriteTrack(User user , Track track) {
         return FavoriteTrack.builder()
-                .favoriteFlag(true)
                 .user(user)
                 .track(track)
                 .build();

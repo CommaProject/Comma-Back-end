@@ -17,12 +17,6 @@ import javax.security.auth.login.AccountException;
 public class RecommendController {
 
     private final RecommendService recommendService;
-    private final TrackService trackService;
-
-    @GetMapping("/tracks")
-    public MessageResponse findTrackByMostFavorite() {
-        return trackService.findTrackByMostFavorite();
-    }
 
     @PostMapping
     public ResponseEntity<MessageResponse> recommendPlaylist(

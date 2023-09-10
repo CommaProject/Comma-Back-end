@@ -134,7 +134,6 @@ CREATE TABLE favorite_track_tb
 (
     id            BIGINT NOT NULL AUTO_INCREMENT,
     play_count    INTEGER,
-    favorite_flag BOOLEAN,
     user_id       BIGINT,
     track_id      BIGINT,
     PRIMARY KEY (id),
@@ -254,8 +253,8 @@ VALUES
     ('archive2', 0, '2023-08-29 12:00:00', 1, 1);
 
 INSERT INTO favorite_track_tb
-(play_count, favorite_flag, user_id, track_id)
-VALUES(0, 1, 1, 1);
+(play_count, user_id, track_id)
+VALUES(0, 1, 1);
 
 INSERT INTO favorite_artist_tb
 (artist_name, artist_image_url, user_id)

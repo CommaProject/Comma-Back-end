@@ -66,31 +66,27 @@ public class TrackControllerTest {
     }
 
     @Test
-    @DisplayName("유저가 좋아요 누른 트랙 탐색")
-    public void findTrackByFavoriteTrack() throws Exception {
+    @DisplayName("추천 받은 인기 트랙")
+    public void findTrackByMostFavorite() throws Exception {
         // given
-        final String url = "/tracks/users/favorites";
+        final String url = "/tracks/recommend";
         List<Track> tracks = new ArrayList<>();
         for(int i = 0; i < 2; i++) {
             tracks.add(buildTrack("title" , "spotifyId"));
         }
 
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , tracks)).when(trackService).findTrackByFavoriteTrack(any(String.class));
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , tracks)).when(trackService).findTrackByMostFavorite();
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.get(url)
-                        .cookie(new Cookie("accessToken", "accessToken"))
         );
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("track/favoriteTrack",
+                document("track/mostListenTrackByRecommendTrack",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        requestCookies(
-                                cookieWithName("accessToken").description("사용자 access token")
-                        ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("메세지"),
