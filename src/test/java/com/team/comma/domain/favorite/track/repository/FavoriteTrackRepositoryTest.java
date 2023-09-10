@@ -75,7 +75,7 @@ public class FavoriteTrackRepositoryTest {
         trackRepository.save(track1);
         track2.addTrackArtistList(artist);
         trackRepository.save(track2);
-        track2.addTrackArtistList(artist);
+        track3.addTrackArtistList(artist);
         trackRepository.save(track3);
 
         FavoriteTrack favoriteTrack1 = FavoriteTrack.buildFavoriteTrack(user, track1);

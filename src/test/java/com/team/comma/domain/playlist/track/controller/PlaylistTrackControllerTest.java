@@ -171,7 +171,7 @@ class PlaylistTrackControllerTest {
         final String url = "/playlist/track/{playlistId}";
 
         final List<TrackArtistResponse> playlistTrackArtistResponseList = List.of(
-                TrackArtistResponse.of(buildTrackResponse("title" , "id") , List.of(buildArtist())));
+                TrackArtistResponse.of(buildTrackResponse("title" , "id") , buildArtist()));
         final List<PlaylistTrackResponse> playlistTracks = Arrays.asList(
                 PlaylistTrackResponse.of(true, playlistTrackArtistResponseList),
                 PlaylistTrackResponse.of(true, playlistTrackArtistResponseList));
@@ -204,9 +204,9 @@ class PlaylistTrackControllerTest {
                                 fieldWithPath("data.[].trackArtistList[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].trackArtistList[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].trackArtistList[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].trackArtistList[].artists[].id").description("엔티티 식별자"),
-                                fieldWithPath("data.[].trackArtistList[].artists[].spotifyArtistId").description("트랙 아티스트 Id"),
-                                fieldWithPath("data.[].trackArtistList[].artists[].spotifyArtistName").description("트랙 아티스트 명")
+                                fieldWithPath("data.[].trackArtistList[].artists.id").description("엔티티 식별자"),
+                                fieldWithPath("data.[].trackArtistList[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
+                                fieldWithPath("data.[].trackArtistList[].artists.spotifyArtistName").description("트랙 아티스트 명")
                         )
                 )
         );

@@ -38,12 +38,13 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
                                         track.spotifyTrackId,
                                         track.spotifyTrackHref
                                 ),
-                                Projections.list(artist)))))
+                                artist))))
                 .from(playlistTrack)
                 .innerJoin(playlistTrack.track , track)
                 .innerJoin(track.trackArtistList , trackArtist)
                 .innerJoin(trackArtist.artist , artist)
                 .where(playlistTrack.playlist.eq(playlist))
+                .groupBy(track.id)
                 .orderBy(playlistTrack.playSequence.asc())
                 .fetch();
     }

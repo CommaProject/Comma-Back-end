@@ -93,7 +93,7 @@ public class FavoriteTrackServiceTest {
 
         Artist artist = Artist.createArtist("artistId" ,"artist");
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , List.of(artist));
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(List.of(favoriteTrackResponse)).when(favoriteTrackRepository).findAllFavoriteTrackByUser(user);
@@ -118,7 +118,7 @@ public class FavoriteTrackServiceTest {
         Artist artist = Artist.createArtist("artistId" , "artist name");
         track.addTrackArtistList(artist);
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , List.of(artist));
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(accessToken);

@@ -35,18 +35,19 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                                 track.spotifyTrackId,
                                 track.spotifyTrackHref
                         ),
-                        Projections.list(artist)
+                        artist
                 )).from(favoriteTrack)
                 .join(favoriteTrack.user, user).on(user.email.eq(userEmail))
                 .innerJoin(favoriteTrack.track, track)
                 .innerJoin(track.trackArtistList, trackArtist)
                 .innerJoin(trackArtist.artist, artist)
+                .groupBy(favoriteTrack)
                 .fetch();
     }
 
     @Override
     public List<FavoriteTrackResponse> findAllFavoriteTrackByUser(User user) {
-        return jpaQueryFactory.selectDistinct(
+        return jpaQueryFactory.select(
                         Projections.constructor(
                                 FavoriteTrackResponse.class,
                                 favoriteTrack.id,
@@ -71,8 +72,8 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                 .innerJoin(track.trackArtistList, trackArtist)
                 .innerJoin(trackArtist.artist, artist)
                 .where(favoriteTrack.user.eq(user))
+                .groupBy(favoriteTrack)
                 .orderBy(favoriteTrack.id.desc())
-                .groupBy(track.spotifyTrackId)
                 .fetch();
     }
 }

@@ -79,7 +79,7 @@ public class TrackControllerTest {
         Artist artist = Artist.builder().spotifyArtistId("artistId").spotifyArtistName("artist").build();
 
         List<TrackArtistResponse> data = new ArrayList<>();
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , List.of(artist));
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
         data.add(trackArtistResponse);
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS , data)).when(trackService).findTrackByFavoriteTrack(any(String.class));
@@ -109,9 +109,9 @@ public class TrackControllerTest {
                                 fieldWithPath("data.[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].artists[].id").description("엔티티 식별자"),
-                                fieldWithPath("data.[].artists[].spotifyArtistId").description("트랙 아티스트 Id"),
-                                fieldWithPath("data.[].artists[].spotifyArtistName").description("트랙 아티스트 명")
+                                fieldWithPath("data.[].artists.id").description("엔티티 식별자"),
+                                fieldWithPath("data.[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
+                                fieldWithPath("data.[].artists.spotifyArtistName").description("트랙 아티스트 명")
                         )
                 )
         );
@@ -133,7 +133,7 @@ public class TrackControllerTest {
         Artist artist = Artist.builder().spotifyArtistId("artistId").spotifyArtistName("artist").build();
 
         List<TrackArtistResponse> data = new ArrayList<>();
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , List.of(artist));
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
         data.add(trackArtistResponse);
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS , data)).when(trackService).findTrackByMostFavorite();
@@ -159,9 +159,9 @@ public class TrackControllerTest {
                                 fieldWithPath("data.[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].artists[].id").description("엔티티 식별자"),
-                                fieldWithPath("data.[].artists[].spotifyArtistId").description("트랙 아티스트 Id"),
-                                fieldWithPath("data.[].artists[].spotifyArtistName").description("트랙 아티스트 명")
+                                fieldWithPath("data.[].artists.id").description("엔티티 식별자"),
+                                fieldWithPath("data.[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
+                                fieldWithPath("data.[].artists.spotifyArtistName").description("트랙 아티스트 명")
                         )
                 )
         );

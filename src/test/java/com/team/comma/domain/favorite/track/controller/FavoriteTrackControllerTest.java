@@ -176,7 +176,7 @@ public class FavoriteTrackControllerTest {
         Artist trackArtist = buildArtist("artist");
 
         TrackResponse trackResponse = buildTrackResponse("track title", "spotifyId");
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , List.of(trackArtist));
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , trackArtist);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS, List.of(favoriteTrackResponse))).when(favoriteTrackService).findAllFavoriteTrack("accessToken");
@@ -208,9 +208,9 @@ public class FavoriteTrackControllerTest {
                                 fieldWithPath("data.[].trackArtistResponses[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].trackArtistResponses[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].trackArtistResponses[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].trackArtistResponses[].artists[].id").description("엔티티 식별자"),
-                                fieldWithPath("data.[].trackArtistResponses[].artists[].spotifyArtistId").description("트랙 아티스트 Id"),
-                                fieldWithPath("data.[].trackArtistResponses[].artists[].spotifyArtistName").description("트랙 아티스트 명")
+                                fieldWithPath("data.[].trackArtistResponses[].artists.id").description("엔티티 식별자"),
+                                fieldWithPath("data.[].trackArtistResponses[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
+                                fieldWithPath("data.[].trackArtistResponses[].artists.spotifyArtistName").description("트랙 아티스트 명")
                         )
                 )
         );
