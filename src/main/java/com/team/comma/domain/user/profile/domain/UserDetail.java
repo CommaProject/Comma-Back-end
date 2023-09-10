@@ -33,6 +33,7 @@ public class UserDetail {
     @Builder.Default
     @Convert(converter = BooleanConverter.class)
     private Boolean popupAlertFlag = true;
+
     @Builder.Default
     @Convert(converter = BooleanConverter.class)
     private Boolean favoritePublicFlag = true;

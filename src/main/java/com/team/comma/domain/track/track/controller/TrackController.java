@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class TrackController {
     private final TrackService trackService;
 
-    @GetMapping("/users/favorites")
-    public MessageResponse findTrackByFavoriteTrack(@CookieValue String accessToken) {
-        return trackService.findTrackByFavoriteTrack(accessToken);
+    @GetMapping("/favorites")
+    public MessageResponse findTrackByMostFavorite() {
+        return trackService.findTrackByMostFavorite();
     }
 
 }

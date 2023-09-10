@@ -41,7 +41,7 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final HistoryService historyService;
 
-    public ResponseEntity<MessageResponse> login(final LoginRequest loginRequest , HttpServletResponse response)
+    public MessageResponse login(final LoginRequest loginRequest , HttpServletResponse response)
         throws AccountException {
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
@@ -56,7 +56,7 @@ public class UserService {
 
         setCookieFromJwt(response , createJwtToken(user));
 
-        return ResponseEntity.status(HttpStatus.OK).body(MessageResponse.of(LOGIN_SUCCESS , UserResponse.createUserResponse(user)));
+        return MessageResponse.of(LOGIN_SUCCESS , UserResponse.createUserResponse(user));
     }
 
     public MessageResponse register(final RegisterRequest registerRequest) throws AccountException {

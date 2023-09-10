@@ -17,17 +17,8 @@ import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUC
 @RequiredArgsConstructor
 public class TrackService {
 
-    private final JwtTokenProvider jwtTokenProvider;
-    private final FavoriteTrackRepository favoriteTrackRepository;
     private final TrackRepository trackRepository;
     private final SearchService searchService;
-
-    public MessageResponse findTrackByFavoriteTrack(String accessToken) {
-        String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        List<Track> result = favoriteTrackRepository.findFavoriteTrackByEmail(userEmail);
-
-        return MessageResponse.of(REQUEST_SUCCESS , result);
-    }
 
     public MessageResponse findTrackByMostFavorite() {
         List<Track> result = trackRepository.findTrackMostRecommended();
