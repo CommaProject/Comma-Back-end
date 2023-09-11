@@ -2,6 +2,7 @@ package com.team.comma.domain.user.user.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
@@ -118,9 +119,7 @@ class UserControllerTest {
                                 fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.joinDate").description("가입 날짜"),
-                                fieldWithPath("data.nickName").description("사용자 닉네임"),
-                                fieldWithPath("data.age").description("사용자 연령"),
-                                fieldWithPath("data.sex").description("사용자 성별")
+                                fieldWithPath("data.nickName").description("사용자 닉네임")
                         )
                 )
         );
@@ -211,9 +210,7 @@ class UserControllerTest {
                                 fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임"),
-                                fieldWithPath("data.age").description("사용자 연령"),
-                                fieldWithPath("data.joinDate").description("가입 날짜"),
-                                fieldWithPath("data.sex").description("사용자 성별")
+                                fieldWithPath("data.joinDate").description("가입 날짜")
                         )
                 )
         );
@@ -289,10 +286,6 @@ class UserControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("sex").description("성별"),
-                                fieldWithPath("age").description("연령"),
-                                fieldWithPath("recommendTime").description("음악 듣는 시간대"),
-                                fieldWithPath("genres").description("좋아하는 장르"),
                                 fieldWithPath("artistNames").description("좋아하는 아티스트")
                         ),
                         responseFields(
@@ -334,10 +327,6 @@ class UserControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("sex").description("성별"),
-                                fieldWithPath("age").description("연령"),
-                                fieldWithPath("recommendTime").description("음악 듣는 시간대"),
-                                fieldWithPath("genres").description("좋아하는 장르"),
                                 fieldWithPath("artistNames").description("좋아하는 아티스트")
                         ),
                         responseFields(
@@ -379,10 +368,6 @@ class UserControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("sex").description("성별"),
-                                fieldWithPath("age").description("연령"),
-                                fieldWithPath("recommendTime").description("음악 듣는 시간대"),
-                                fieldWithPath("genres").description("좋아하는 장르"),
                                 fieldWithPath("artistNames").description("좋아하는 아티스트")
                         )
                 )
@@ -400,7 +385,7 @@ class UserControllerTest {
     void getUserInfoByAccessTokenFail_NotExistUser() throws Exception {
         // given
         final String api = "/user/information";
-        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(userService).getUserByCookie(any(String.class));
+        doThrow(new UserException(NOT_FOUNT_USER)).when(userService).getUserByCookie(any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -427,7 +412,7 @@ class UserControllerTest {
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 MessageResponse.class);
 
-        assertThat(response.getMessage()).isEqualTo("사용자를 찾을 수 없습니다.");
+        assertThat(response.getMessage()).isEqualTo(NOT_FOUNT_USER.getMessage());
         assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
     }
 
@@ -510,9 +495,7 @@ class UserControllerTest {
                                 fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임"),
-                                fieldWithPath("data.age").description("사용자 연령"),
-                                fieldWithPath("data.joinDate").description("가입 날짜"),
-                                fieldWithPath("data.sex").description("사용자 성별")
+                                fieldWithPath("data.joinDate").description("가입 날짜")
                         )
                 )
         );
@@ -563,9 +546,7 @@ class UserControllerTest {
                                 fieldWithPath("data[].profileImage").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data[].name").description("사용자 이름"),
                                 fieldWithPath("data[].nickName").description("사용자 닉네임"),
-                                fieldWithPath("data[].age").description("사용자 연령"),
-                                fieldWithPath("data[].joinDate").description("가입 날짜"),
-                                fieldWithPath("data[].sex").description("사용자 성별")
+                                fieldWithPath("data[].joinDate").description("가입 날짜")
                         )
                 )
         );
@@ -592,10 +573,8 @@ class UserControllerTest {
     }
 
     private UserDetailRequest getUserDetailRequest() {
-        return UserDetailRequest.builder().age(20).sex("female").nickName("name")
-                .recommendTime(LocalTime.of(12, 0))
+        return UserDetailRequest.builder().nickName("name")
                 .artistNames(Arrays.asList("artist1", "artist2", "artist3"))
-                .genres(Arrays.asList("genre1", "genre2", "genre3"))
                 .build();
     }
 

@@ -76,7 +76,7 @@ include::{snippets}/favorite/find-all-favorite-artist/response-fields.adoc[]
 ===== request
 
 include::{snippets}/favoriteArtist/isAddedArtist-true/http-request.adoc[]
-include::{snippets}/favoriteArtist/isAddedArtist-true/request-fields.adoc[]
+include::{snippets}/favoriteArtist/isAddedArtist-true/path-parameters.adoc[]
 include::{snippets}/favoriteArtist/isAddedArtist-true/request-cookies.adoc[]
 
 ===== response
@@ -89,7 +89,6 @@ include::{snippets}/favoriteArtist/isAddedArtist-true/response-fields.adoc[]
 ===== request
 
 include::{snippets}/favoriteArtist/isAddedArtist-false/http-request.adoc[]
-include::{snippets}/favoriteArtist/isAddedArtist-false/request-fields.adoc[]
 include::{snippets}/favoriteArtist/isAddedArtist-false/request-cookies.adoc[]
 
 ===== response

@@ -1,6 +1,8 @@
 package com.team.comma.domain.playlist.recommend.service;
 
+import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
+import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.playlist.recommend.constant.RecommendListType;
 import com.team.comma.domain.playlist.recommend.constant.RecommendType;
 import com.team.comma.domain.playlist.recommend.domain.Recommend;
@@ -10,10 +12,9 @@ import com.team.comma.domain.playlist.recommend.dto.RecommendResponse;
 import com.team.comma.domain.playlist.recommend.exception.RecommendException;
 import com.team.comma.domain.playlist.recommend.repository.RecommendRepository;
 import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.playlist.playlist.domain.Playlist;
-import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountException;
 
+import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
@@ -48,11 +50,13 @@ public class RecommendService {
             User toUser = userRepository.findByEmail(recommendRequest.getRecommendToEmail())
                     .orElseThrow(() -> new AccountException("추천 받는 사용자 정보가 올바르지 않습니다."));
 
-            buildEntity = recommendRequest.toRecommendEntity(fromUser, toUser, playlist);
+            buildEntity = recommendRequest.toRecommendEntity(toUser, playlist);
             getRecommendCountByToUserAndPlaylist(buildEntity);
         } else {
             buildEntity = recommendRequest.toRecommendEntity(fromUser, playlist);
         }
+
+        playlistRepository.updateRecommendCountByPlaylistId(playlist.getId());
 
         recommendRepository.save(buildEntity);
 
@@ -82,7 +86,7 @@ public class RecommendService {
     public User findUserByToken(final String accessToken) throws AccountException {
         final String userName = jwtTokenProvider.getUserPk(accessToken);
         final User user = userRepository.findByEmail(userName)
-                .orElseThrow(() -> new AccountException("사용자 정보가 올바르지 않습니다."));
+                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
         return user;
     }
 
