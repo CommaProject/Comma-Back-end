@@ -52,7 +52,6 @@ include::{snippets}/user/login/request-fields.adoc[]
 
 include::{snippets}/user/login/http-response.adoc[]
 include::{snippets}/user/login/response-fields.adoc[]
-include::{snippets}/user/login/response-cookies.adoc[]
 
 ==== 실패 - 잘못된 정보 입력
 

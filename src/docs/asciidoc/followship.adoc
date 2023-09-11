@@ -74,7 +74,6 @@ include::{snippets}/following/addFail-notFoundException/response-fields.adoc[]
 
 include::{snippets}/following/blockSuccess/http-request.adoc[]
 include::{snippets}/following/blockSuccess/request-fields.adoc[]
-include::{snippets}/following/blockSuccess/request-cookies.adoc[]
 
 ===== response
 
@@ -91,7 +90,6 @@ include::{snippets}/following/blockSuccess/response-fields.adoc[]
 
 include::{snippets}/following/unblockSuccess/http-request.adoc[]
 include::{snippets}/following/unblockSuccess/request-fields.adoc[]
-include::{snippets}/following/unblockSuccess/request-cookies.adoc[]
 
 ===== response
 

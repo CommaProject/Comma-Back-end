@@ -17,13 +17,13 @@ link:main.html[main 화면]
 
 ===== Request
 
-include::{snippets}/track/mostListenTrackByMe/http-request.adoc[]
-include::{snippets}/track/mostListenTrackByMe/request-cookies.adoc[]
+include::{snippets}/play-count/find-most-listened-track-success/http-request.adoc[]
+include::{snippets}/play-count/find-most-listened-track-success/request-cookies.adoc[]
 
 ===== Response
 
-include::{snippets}/track/mostListenTrackByMe/http-response.adoc[]
-include::{snippets}/track/mostListenTrackByMe/response-fields.adoc[]
+include::{snippets}/play-count/find-most-listened-track-success/http-response.adoc[]
+include::{snippets}/play-count/find-most-listened-track-success/response-fields.adoc[]
 
 ---
 
@@ -33,13 +33,13 @@ include::{snippets}/track/mostListenTrackByMe/response-fields.adoc[]
 
 ===== Request
 
-include::{snippets}/track/mostListenTrackByFriend/http-request.adoc[]
-include::{snippets}/track/mostListenTrackByFriend/request-cookies.adoc[]
+include::{snippets}/play-count/find-most-listened-track-friend-success/http-request.adoc[]
+include::{snippets}/play-count/find-most-listened-track-friend-success/request-cookies.adoc[]
 
 ===== Response
 
-include::{snippets}/track/mostListenTrackByFriend/http-response.adoc[]
-include::{snippets}/track/mostListenTrackByFriend/response-fields.adoc[]
+include::{snippets}/play-count/find-most-listened-track-friend-success/http-response.adoc[]
+include::{snippets}/play-count/find-most-listened-track-friend-success/response-fields.adoc[]
 
 ---
 
@@ -49,22 +49,22 @@ include::{snippets}/track/mostListenTrackByFriend/response-fields.adoc[]
 
 ===== Request
 
-include::{snippets}/track/addTrackListenedCount/http-request.adoc[]
-include::{snippets}/track/addTrackListenedCount/request-cookies.adoc[]
+include::{snippets}/play-count/modify-success/http-request.adoc[]
+include::{snippets}/play-count/modify-success/request-cookies.adoc[]
 
 ===== Response
 
-include::{snippets}/track/addTrackListenedCount/http-response.adoc[]
-include::{snippets}/track/addTrackListenedCount/response-fields.adoc[]
+include::{snippets}/play-count/modify-success/http-response.adoc[]
+include::{snippets}/play-count/modify-success/response-fields.adoc[]
 
 ==== 실패 - 트랙 찾을 수 없음
 
 ===== Request
 
-include::{snippets}/track/addTrackListenedCountFail-notFountTrack/http-request.adoc[]
-include::{snippets}/track/addTrackListenedCountFail-notFountTrack/request-cookies.adoc[]
+include::{snippets}/play-count/modify-fail-track-not-found/http-request.adoc[]
+include::{snippets}/play-count/modify-fail-track-not-found/request-cookies.adoc[]
 
 ===== Response
 
-include::{snippets}/track/addTrackListenedCountFail-notFountTrack/http-response.adoc[]
-include::{snippets}/track/addTrackListenedCountFail-notFountTrack/response-fields.adoc[]
+include::{snippets}/play-count/modify-fail-track-not-found/http-response.adoc[]
+include::{snippets}/play-count/modify-fail-track-not-found/response-fields.adoc[]
