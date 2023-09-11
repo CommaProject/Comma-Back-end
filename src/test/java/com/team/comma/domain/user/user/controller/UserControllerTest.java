@@ -264,123 +264,6 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("사용자 정보 저장하기 실패 _ 로그인 되지 않는 사용자")
-    void createUserInformationFail_notExistToken() throws Exception {
-        // given
-        String api = "/private-information";
-        UserDetailRequest userDetail = getUserDetailRequest();
-        doThrow(new AccountException("로그인이 되어있지 않습니다.")).when(userService)
-                .createUserInformation(any(UserDetailRequest.class), eq(null));
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(api)
-                        .content(gson.toJson(userDetail))
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isBadRequest()).andDo(
-                document("user/private-information-Fail/notLogin",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("artistNames").description("좋아하는 아티스트")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터")
-                        )
-                )
-        );
-        final MessageResponse response = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
-        assertThat(response.getMessage()).isEqualTo("로그인이 되어있지 않습니다.");
-    }
-
-    @Test
-    @DisplayName("사용자 정보 저장하기 실패 _ 사용자를 찾을 수 없음")
-    void createUserInformationFail_notExistUser() throws Exception {
-        // given
-        String api = "/private-information";
-        UserDetailRequest userDetail = getUserDetailRequest();
-        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(userService)
-                .createUserInformation(any(UserDetailRequest.class), eq("token"));
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(api)
-                        .cookie(new Cookie("accessToken", "token"))
-                        .content(gson.toJson(userDetail))
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isBadRequest()).andDo(
-                document("user/private-information-Fail/notExistUser",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("artistNames").description("좋아하는 아티스트")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터")
-                        )
-                )
-        );
-        final MessageResponse response = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
-        assertThat(response.getMessage()).isEqualTo("사용자를 찾을 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("사용자 정보 저장하기")
-    void createUserInformation() throws Exception {
-        // given
-        String api = "/private-information";
-        UserDetailRequest userDetail = getUserDetailRequest();
-        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(userService)
-                .createUserInformation(any(UserDetailRequest.class), eq("token"));
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(api)
-                        .cookie(new Cookie("accessToken", "token"))
-                        .content(gson.toJson(userDetail))
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isCreated()).andDo(
-                document("user/private-information",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("artistNames").description("좋아하는 아티스트")
-                        )
-                )
-        );
-        final MessageResponse response = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(response.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-    @Test
     @DisplayName("AccessToken 으로 사용자 정보 가져오기 실패 _ 존재하지 않는 회원")
     void getUserInfoByAccessTokenFail_NotExistUser() throws Exception {
         // given
@@ -570,12 +453,6 @@ class UserControllerTest {
     private User getUserEntity() {
         return User.builder().email(userEmail).password(userPassword)
                 .role(UserRole.USER).build();
-    }
-
-    private UserDetailRequest getUserDetailRequest() {
-        return UserDetailRequest.builder().nickName("name")
-                .artistNames(Arrays.asList("artist1", "artist2", "artist3"))
-                .build();
     }
 
     private UserResponse getUserResponse() {

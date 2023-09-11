@@ -5,6 +5,7 @@ import com.team.comma.domain.user.history.domain.History;
 import com.team.comma.domain.user.profile.domain.UserDetail;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
+import com.team.comma.domain.user.user.dto.RegisterRequest;
 import com.team.comma.global.converter.BooleanConverter;
 import jakarta.persistence.*;
 import lombok.*;
@@ -126,7 +127,16 @@ public class User implements UserDetails {
         return true;
     }
 
-    public static User buildUser(){
+    public static User buildUserForRegister(final RegisterRequest registerRequest, final UserType userType) {
+        return User.builder()
+                .email(registerRequest.getEmail())
+                .password(registerRequest.getPassword())
+                .type(userType)
+                .role(UserRole.USER)
+                .build();
+    }
+
+    public static User buildUser() {
         return User.builder()
                 .email("email@email.com")
                 .password("password")

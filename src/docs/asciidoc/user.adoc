@@ -81,3 +81,40 @@ include::{snippets}/user/searchUser/request-cookies.adoc[]
 
 include::{snippets}/user/searchUser/http-response.adoc[]
 include::{snippets}/user/searchUser/response-fields.adoc[]
+
+---
+
+=== 사용자 정보 조회
+
+==== 성공
+
+===== Request
+
+include::{snippets}/user/getUserInfoByToken/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/user/getUserInfoByToken/http-response.adoc[]
+include::{snippets}/user/getUserInfoByToken/response-fields.adoc[]
+
+==== 실패 - AccessToken 없음
+
+===== Request
+
+include::{snippets}/user/getUserInfoByToken-Fail/notExistToken/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/user/getUserInfoByToken-Fail/notExistToken/http-response.adoc[]
+include::{snippets}/user/getUserInfoByToken-Fail/notExistToken/response-fields.adoc[]
+
+==== 실패 - 존재 하지 않는 사용자
+
+===== Request
+
+include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/http-response.adoc[]
+include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/response-fields.adoc[]

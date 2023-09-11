@@ -15,70 +15,33 @@ link:main.html[main 화면]
 
 ===== Request
 
-include::{snippets}/user/private-information/http-request.adoc[]
-include::{snippets}/user/private-information/request-fields.adoc[]
+include::{snippets}/profile/create-success/http-request.adoc[]
+include::{snippets}/profile/create-success/request-fields.adoc[]
 
 ===== Response
 
-include::{snippets}/user/private-information/http-response.adoc[]
+include::{snippets}/profile/create-success/http-response.adoc[]
 
 ==== 실패 - AccessToken 없음
 
 ===== Request
 
-include::{snippets}/user/private-information-Fail/notLogin/http-request.adoc[]
-include::{snippets}/user/private-information-Fail/notLogin/request-fields.adoc[]
+include::{snippets}/profile/create-fail-token-not-found/http-request.adoc[]
+include::{snippets}/profile/create-fail-token-not-found/request-fields.adoc[]
 
 ===== Response
 
-include::{snippets}/user/private-information-Fail/notLogin/http-response.adoc[]
-include::{snippets}/user/private-information-Fail/notLogin/response-fields.adoc[]
+include::{snippets}/profile/create-fail-token-not-found/http-response.adoc[]
+include::{snippets}/profile/create-fail-token-not-found/response-fields.adoc[]
 
 ==== 실패 - 존재 하지 않는 사용자
 
 ===== Request
 
-include::{snippets}/user/private-information-Fail/notExistUser/http-request.adoc[]
-include::{snippets}/user/private-information-Fail/notExistUser/request-fields.adoc[]
+include::{snippets}/profile/create-fail-user-not-found/http-request.adoc[]
+include::{snippets}/profile/create-fail-user-not-found/request-fields.adoc[]
 
 ===== Response
 
-include::{snippets}/user/private-information-Fail/notExistUser/http-response.adoc[]
-include::{snippets}/user/private-information-Fail/notExistUser/response-fields.adoc[]
-
----
-
-=== 사용자 상세 정보 조회
-
-==== 성공
-
-===== Request
-
-include::{snippets}/user/getUserInfoByToken/http-request.adoc[]
-
-===== Response
-
-include::{snippets}/user/getUserInfoByToken/http-response.adoc[]
-include::{snippets}/user/getUserInfoByToken/response-fields.adoc[]
-
-==== 실패 - AccessToken 없음
-
-===== Request
-
-include::{snippets}/user/getUserInfoByToken-Fail/notExistToken/http-request.adoc[]
-
-===== Response
-
-include::{snippets}/user/getUserInfoByToken-Fail/notExistToken/http-response.adoc[]
-include::{snippets}/user/getUserInfoByToken-Fail/notExistToken/response-fields.adoc[]
-
-==== 실패 - 존재 하지 않는 사용자
-
-===== Request
-
-include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/http-request.adoc[]
-
-===== Response
-
-include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/http-response.adoc[]
-include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/response-fields.adoc[]
+include::{snippets}/profile/create-fail-user-not-found/http-response.adoc[]
+include::{snippets}/profile/create-fail-user-not-found/response-fields.adoc[]

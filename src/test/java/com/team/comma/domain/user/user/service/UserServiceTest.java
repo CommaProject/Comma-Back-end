@@ -3,7 +3,6 @@ package com.team.comma.domain.user.user.service;
 import com.team.comma.domain.user.history.dto.HistoryRequest;
 import com.team.comma.domain.user.history.service.HistoryService;
 import com.team.comma.domain.user.profile.domain.UserDetail;
-import com.team.comma.domain.user.profile.dto.UserDetailRequest;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
@@ -30,7 +29,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.security.auth.login.AccountException;
-import java.time.LocalTime;
+import javax.swing.text.html.Option;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -129,18 +128,17 @@ class UserServiceTest {
     @DisplayName("사용자 로그인 성공")
     void loginUserTest() throws AccountException {
         // given
-        LoginRequest login = getLoginRequest();
-        Optional<User> userEntity = getUserEntity();
-        doReturn(userEntity).when(userRepository).findByEmail(userEmail);
-        doReturn(
-            Token.builder().accessToken("accessTokenData").refreshToken("refreshTokenData").build())
-            .when(jwtTokenProvider).createAccessToken(userEntity.get().getUsername(),
-                userEntity.get().getRole());
-        doNothing().when(jwtService).login(any(Token.class));
+        Optional<User> user = getUserEntity();
+        Token token = Token.builder().accessToken("accessTokenData").refreshToken("refreshTokenData").build();
+
+        doReturn(user).when(userRepository).findByEmail(userEmail);
+        doReturn(token).when(jwtService).createJwtToken(user.get());
+
+        LoginRequest request = getLoginRequest();
         HttpServletResponse responseMock = Mockito.mock(HttpServletResponse.class);
 
         // when
-        final MessageResponse result = userService.login(login , responseMock);
+        final MessageResponse result = userService.login(request , responseMock);
 
         // then
         assertThat(result.getCode()).isEqualTo(LOGIN_SUCCESS.getCode());
@@ -186,18 +184,11 @@ class UserServiceTest {
     @DisplayName("AccessToken 쿠키로 사용자 정보 가져오기 실패 _ 존재하지 않은 사용자")
     void getUserInfoByCookieButNotExistendUser() {
         // given
-        Token token = Token.builder().accessToken("accessToken").refreshToken("refreshToken").build();
-        doReturn(token).when(jwtTokenProvider).createAccessToken(any() , any());
-
-        doNothing().when(jwtService).login(token);
-        doReturn("token").when(jwtTokenProvider).getUserPk(any(String.class));
-
-        Optional<User> user = getUserEntity();
-        String accessToken = userService.createJwtToken(user.get()).getAccessToken();
+        doReturn("accessToken").when(jwtTokenProvider).getUserPk(any(String.class));
         doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
 
         // when
-        Throwable thrown = catchThrowable(() -> userService.getUserByCookie(accessToken));
+        Throwable thrown = catchThrowable(() -> userService.getUserByCookie("accessToken"));
 
         // then
         assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
@@ -205,20 +196,13 @@ class UserServiceTest {
 
     @Test
     @DisplayName("AccessToken 쿠키로 사용자 정보 가져오기")
-    void getUserInfoByCookie() throws AccountException {
+    void getUserInfoByCookie() {
         // given
-        Token token = Token.builder().accessToken("accessToken").refreshToken("refreshToken").build();
-        doReturn(token).when(jwtTokenProvider).createAccessToken(any() , any());
-
-        doNothing().when(jwtService).login(token);
-        doReturn("token").when(jwtTokenProvider).getUserPk(any(String.class));
-
-        User user = getUserEntity().get();
-        String accessToken = userService.createJwtToken(user).getAccessToken();
+        doReturn("accessToken").when(jwtTokenProvider).getUserPk(any(String.class));
         doReturn(getUserEntity()).when(userRepository).findByEmail(any(String.class));
 
         // when
-        MessageResponse result = userService.getUserByCookie(accessToken);
+        MessageResponse result = userService.getUserByCookie("accessToken");
 
         // then
         assertThat(result).isNotNull();
@@ -226,66 +210,8 @@ class UserServiceTest {
     }
 
     @Test
-    @DisplayName("사용자 정보 저장 실패 _ 로그인 되어있지 않음")
-    void saveUserInformationFail_notExistToken() {
-        // given
-        UserDetailRequest userDetail = getUserDetailRequest();
-        // when
-        Throwable thrown = catchThrowable(
-            () -> userService.createUserInformation(userDetail, null));
-        // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("로그인이 되어있지 않습니다.");
-    }
-
-    @Test
-    @DisplayName("사용자 정보 저장 실패 _ 존재하지 않는 사용자")
-    void saveUserInfomationFail_notExistUser() {
-        // given
-        Token token = Token.builder().accessToken("accessToken").refreshToken("refreshToken").build();
-        doReturn(token).when(jwtTokenProvider).createAccessToken(any() , any());
-
-        doNothing().when(jwtService).login(token);
-        doReturn("token").when(jwtTokenProvider).getUserPk(any(String.class));
-
-        UserDetailRequest userDetail = getUserDetailRequest();
-        Optional<User> user = getUserEntity();
-        String accessToken = userService.createJwtToken(user.get()).getAccessToken();
-        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
-
-        // when
-        Throwable thrown = catchThrowable(
-            () -> userService.createUserInformation(userDetail, accessToken));
-        // then
-        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
-    }
-
-    @Test
-    @DisplayName("사용자 정보 저장 성공")
-    void saveUserInfomation() throws AccountException {
-        // given
-        Token token = Token.builder().accessToken("accessToken").refreshToken("refreshToken").build();
-        doReturn(token).when(jwtTokenProvider).createAccessToken(any() , any());
-
-        doNothing().when(jwtService).login(token);
-        doReturn("token").when(jwtTokenProvider).getUserPk(any(String.class));
-
-        UserDetailRequest userDetail = getUserDetailRequest();
-        Optional<User> user = getUserEntity();
-        String accessToken = userService.createJwtToken(user.get()).getAccessToken();
-        doReturn(user).when(userRepository).findByEmail(any(String.class));
-
-        // when
-        MessageResponse result = userService.createUserInformation(userDetail, accessToken);
-
-        // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-
-    @Test
     @DisplayName("사용자 이름이나 닉네임으로 사용자 탐색")
-    void searchUserByNameAndNickNameTest() throws AccountException {
+    void searchUserByNameAndNickNameTest() {
         // given
         List<User> userList = Arrays.asList(getUserEntity().get() , getUserEntity().get() , getUserEntity().get());
         doReturn(userList).when(userRepository).searchUserByUserNameAndNickName(any(String.class));
@@ -297,12 +223,6 @@ class UserServiceTest {
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(((List<UserResponse>) result.getData()).size()).isEqualTo(3);
-    }
-
-    private UserDetailRequest getUserDetailRequest() {
-        return UserDetailRequest.builder().nickName("name")
-            .artistNames(Arrays.asList("artist1", "artist2", "artist3"))
-            .build();
     }
 
     private Optional<User> getUserEntity() {

@@ -54,7 +54,7 @@ public class UserService {
             throw new UserException(NOT_FOUNT_USER);
         }
 
-        setCookieFromJwt(response , createJwtToken(user));
+        setCookieFromJwt(response , jwtService.createJwtToken(user));
 
         return MessageResponse.of(LOGIN_SUCCESS , UserResponse.createUserResponse(user));
     }
@@ -65,33 +65,13 @@ public class UserService {
             throw new AccountException("이미 존재하는 계정입니다.");
         }
 
-        User buildEntity = createUser(registerRequest, UserType.GENERAL_USER);
+        User buildEntity = User.buildUserForRegister(registerRequest, UserType.GENERAL_USER);
         User user = userRepository.save(buildEntity);
 
         return MessageResponse.of(REGISTER_SUCCESS , UserResponse.createUserResponse(user));
     }
 
-    public MessageResponse createUserInformation(final UserDetailRequest userDetailRequest,
-        final String token) throws AccountException {
-        if (token == null) {
-            throw new AccountException("로그인이 되어있지 않습니다.");
-        }
-
-        String userName = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userName)
-                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
-
-        UserDetail userDetail = UserDetail.createUserDetail(userDetailRequest);
-        user.setUserDetail(userDetail);
-
-        for (String artist : userDetailRequest.getArtistNames()) {
-            user.addFavoriteArtist(artist);
-        }
-
-        return MessageResponse.of(REQUEST_SUCCESS);
-    }
-
-    public MessageResponse searchUserByNameAndNickName(String name , String accessToken) throws AccountException {
+    public MessageResponse searchUserByNameAndNickName(String name , String accessToken) {
         List<User> userList = userRepository.searchUserByUserNameAndNickName(name);
         historyService.addHistory(HistoryRequest.builder().searchHistory(name).build() , accessToken);
         ArrayList<UserResponse> userResponses = new ArrayList<>();
@@ -101,23 +81,6 @@ public class UserService {
         }
 
         return MessageResponse.of(REQUEST_SUCCESS , userResponses);
-    }
-
-    public User createUser(final RegisterRequest registerRequest, final UserType userType) {
-        return User.builder()
-            .email(registerRequest.getEmail())
-            .password(registerRequest.getPassword())
-            .type(userType)
-            .role(UserRole.USER)
-            .build();
-    }
-
-    public Token createJwtToken(User userEntity) {
-        Token token = jwtTokenProvider.createAccessToken(userEntity.getUsername(),
-            userEntity.getRole());
-        jwtService.login(token);
-
-        return token;
     }
 
     public MessageResponse getUserByCookie(String token) {

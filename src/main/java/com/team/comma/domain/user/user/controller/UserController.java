@@ -33,13 +33,6 @@ public class UserController {
         return ResponseEntity.ok().body(userService.register(register));
     }
 
-    @PostMapping("/private-information")
-    public ResponseEntity<MessageResponse> createUserInformation(
-        @CookieValue(value = "accessToken", required = false) String accessToken,
-        @RequestBody UserDetailRequest userDetail) throws AccountException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUserInformation(userDetail, accessToken));
-    }
-
     @GetMapping("/user/information")
     public ResponseEntity<MessageResponse> getUserInfoByEmail(
         @CookieValue("accessToken") String accessToken) {
@@ -49,7 +42,7 @@ public class UserController {
     @GetMapping("/search/user")
     public ResponseEntity<MessageResponse> searchUserByNameAndNickName(
             @RequestParam String name,
-            @CookieValue("accessToken") String accessToken) throws AccountException {
+            @CookieValue("accessToken") String accessToken) {
         return ResponseEntity.ok().body(userService.searchUserByNameAndNickName(name , accessToken));
     }
 

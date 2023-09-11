@@ -1,5 +1,6 @@
 package com.team.comma.global.jwt.service;
 
+import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.exception.TokenForgeryException;
 import com.team.comma.global.jwt.support.CreationCookie;
@@ -41,6 +42,14 @@ public class JwtService {
         }
         refreshTokenRepository.save(refreshToken);
 
+    }
+
+    public Token createJwtToken(User userEntity) {
+        Token token = jwtTokenProvider.createAccessToken(userEntity.getUsername(),
+                userEntity.getRole());
+        login(token);
+
+        return token;
     }
 
     public Optional<RefreshToken> getRefreshToken(String refreshToken) {
