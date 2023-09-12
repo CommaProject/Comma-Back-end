@@ -61,11 +61,9 @@ public class FileUploadServiceTest {
         doReturn(null).when(amazonS3Client).getUrl(any() , any(String.class));
 
         // when
-        MessageResponse result = fileUploadService.uploadFileToS3(multipartFile);
+        String result = fileUploadService.uploadFileToS3(multipartFile);
 
         // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo("요청이 성공적으로 수행되었습니다.");
-        assertThat(result.getData()).isEqualTo(null);
+        assertThat(result).isNotNull();
     }
 }

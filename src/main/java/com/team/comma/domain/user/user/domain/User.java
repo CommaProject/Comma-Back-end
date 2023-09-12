@@ -2,7 +2,7 @@ package com.team.comma.domain.user.user.domain;
 
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
 import com.team.comma.domain.user.history.domain.History;
-import com.team.comma.domain.user.profile.domain.UserDetail;
+import com.team.comma.domain.user.detail.domain.UserDetail;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.dto.RegisterRequest;
@@ -89,6 +89,24 @@ public class User implements UserDetails {
         this.history.add(historyEntity);
     }
 
+    public static User buildUserForRegister(final RegisterRequest registerRequest, final UserType userType) {
+        return User.builder()
+                .email(registerRequest.getEmail())
+                .password(registerRequest.getPassword())
+                .type(userType)
+                .role(UserRole.USER)
+                .build();
+    }
+
+    public static User buildUser() {
+        return User.builder()
+                .email("email@email.com")
+                .password("password")
+                .type(UserType.GENERAL_USER)
+                .role(UserRole.USER)
+                .build();
+    }
+
     // JWT Security
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -127,21 +145,4 @@ public class User implements UserDetails {
         return true;
     }
 
-    public static User buildUserForRegister(final RegisterRequest registerRequest, final UserType userType) {
-        return User.builder()
-                .email(registerRequest.getEmail())
-                .password(registerRequest.getPassword())
-                .type(userType)
-                .role(UserRole.USER)
-                .build();
-    }
-
-    public static User buildUser() {
-        return User.builder()
-                .email("email@email.com")
-                .password("password")
-                .type(UserType.GENERAL_USER)
-                .role(UserRole.USER)
-                .build();
-    }
 }

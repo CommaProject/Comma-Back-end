@@ -14,7 +14,7 @@ import com.team.comma.domain.playlist.recommend.dto.RecommendRequest;
 import com.team.comma.domain.playlist.recommend.repository.RecommendRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.profile.domain.UserDetail;
+import com.team.comma.domain.user.detail.domain.UserDetail;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import org.junit.jupiter.api.Test;

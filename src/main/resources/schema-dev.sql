@@ -38,7 +38,7 @@ CREATE TABLE user_detail_tb
     id                   BIGINT  NOT NULL AUTO_INCREMENT,
     name                 VARCHAR(10),
     nickname             VARCHAR(10),
-    profile_image_url    VARCHAR(50),
+    profile_image_url    VARCHAR(100),
     popup_alert_flag     VARCHAR(10) NOT NULL,
     favorite_public_flag VARCHAR(10) NOT NULL,
     calender_public_flag VARCHAR(10) NOT NULL,
@@ -210,8 +210,8 @@ CREATE TABLE refresh_token_tb
 INSERT INTO user_detail_tb
 (name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag)
 VALUES
-    ('name', 'nickname', 'url', 'Y', 'Y', 'Y', 'Y'),
-    ('name2', 'nickname2', 'url', 'Y', 'Y', 'Y', 'Y');
+    ('name', 'nickname', 'no profile image', 'Y', 'Y', 'Y', 'Y'),
+    ('name2', 'nickname2', 'no profile image', 'Y', 'Y', 'Y', 'Y');
 
 INSERT INTO user_tb
 (email, password, `role`, `type`, del_flag, join_date, user_detail_id)

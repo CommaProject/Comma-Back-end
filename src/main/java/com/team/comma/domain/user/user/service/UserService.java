@@ -2,9 +2,6 @@ package com.team.comma.domain.user.user.service;
 
 import com.team.comma.domain.user.history.dto.HistoryRequest;
 import com.team.comma.domain.user.history.service.HistoryService;
-import com.team.comma.domain.user.profile.domain.UserDetail;
-import com.team.comma.domain.user.profile.dto.UserDetailRequest;
-import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.dto.LoginRequest;
@@ -15,12 +12,9 @@ import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.service.JwtService;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
-import com.team.comma.global.security.dto.Token;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
@@ -84,10 +78,15 @@ public class UserService {
     }
 
     public MessageResponse getUserByCookie(String token) {
-        String userName = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userName)
+        String userEmail = jwtTokenProvider.getUserPk(token);
+        User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         return MessageResponse.of(REQUEST_SUCCESS , UserResponse.createUserResponse(user));
+    }
+
+    public User findUserOrThrow(final String userEmail) {
+        return userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
     }
 }

@@ -1,6 +1,7 @@
 package com.team.comma.global.s3.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.s3.exception.S3Exception;
@@ -17,11 +18,12 @@ import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUC
 @Service
 @RequiredArgsConstructor
 public class FileUploadService {
+
     private final AmazonS3Client amazonS3Client;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public MessageResponse uploadFileToS3(MultipartFile file) throws IOException {
+    public String uploadFileToS3(MultipartFile file) throws IOException {
         String uuid = UUID.randomUUID().toString();
 
         if(!isImageFile(file)) {
@@ -33,7 +35,7 @@ public class FileUploadService {
         metadata.setContentLength(file.getInputStream().available());
         amazonS3Client.putObject(bucket , uuid ,file.getInputStream() , metadata);
 
-        return MessageResponse.of(REQUEST_SUCCESS , amazonS3Client.getUrl(bucket , uuid));
+        return String.valueOf(amazonS3Client.getUrl(bucket , uuid));
     }
 
     public boolean isImageFile(MultipartFile file) {

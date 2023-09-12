@@ -1,8 +1,8 @@
-package com.team.comma.domain.user.profile.controller;
+package com.team.comma.domain.user.detail.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.user.profile.dto.UserDetailRequest;
-import com.team.comma.domain.user.profile.service.ProfileService;
+import com.team.comma.domain.user.detail.dto.UserDetailRequest;
+import com.team.comma.domain.user.detail.service.UserDetailService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -34,23 +35,28 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
+import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureRestDocs
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-@WebMvcTest(ProfileController.class)
+@WebMvcTest(UserDetailController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @WebAppConfiguration
-public class ProfileControllerTest {
+public class UserDetailControllerTest {
 
     @MockBean
-    private ProfileService profileService;
+    private UserDetailService userDetailService;
 
     MockMvc mockMvc;
     Gson gson;
@@ -69,8 +75,8 @@ public class ProfileControllerTest {
     void createProfile_Fail_TokenNotFound() throws Exception {
         // given
         String api = "/profile";
-        UserDetailRequest userDetail = buildUserDetailRequest();
-        doThrow(new AccountException("로그인이 되어있지 않습니다.")).when(profileService)
+        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
+        doThrow(new AccountException("로그인이 되어있지 않습니다.")).when(userDetailService)
                 .createProfile(any(UserDetailRequest.class), eq(null));
 
         // when
@@ -107,8 +113,8 @@ public class ProfileControllerTest {
     void createProfile_Fail_UserNotFound() throws Exception {
         // given
         String api = "/profile";
-        UserDetailRequest userDetail = buildUserDetailRequest();
-        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(profileService)
+        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
+        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(userDetailService)
                 .createProfile(any(UserDetailRequest.class), eq("token"));
 
         // when
@@ -146,8 +152,8 @@ public class ProfileControllerTest {
     void createProfile_Success() throws Exception {
         // given
         String api = "/profile";
-        UserDetailRequest userDetail = buildUserDetailRequest();
-        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(profileService)
+        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
+        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(userDetailService)
                 .createProfile(any(UserDetailRequest.class), eq("token"));
 
         // when
@@ -176,11 +182,45 @@ public class ProfileControllerTest {
         assertThat(response.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
+    @Test
+    void modifyProfileImage_success() throws Exception {
+        // given
+        String api = "/profile";
 
-    private UserDetailRequest buildUserDetailRequest() {
-        return UserDetailRequest.builder()
-                .nickName("name")
-                .build();
+        MockMultipartFile multipartFile = new MockMultipartFile(
+                "image",
+                "Comma-Default-Profile-Image.png",
+                "image/png",
+                getClass().getResourceAsStream("/img/Comma-Default-Profile-Image.png"));
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(userDetailService)
+                .uploadProfileImage("accessToken", multipartFile);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                multipart(api)
+                        .file(multipartFile)
+                        .cookie(new Cookie("accessToken", "accessToken")));
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("profile/modify-profile-image-success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 액세스 토큰")
+                        ),
+                        requestParts(
+                                partWithName("image").description("프로필 이미지")
+                        )
+                )
+        );
+        final MessageResponse response = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(response.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
 }

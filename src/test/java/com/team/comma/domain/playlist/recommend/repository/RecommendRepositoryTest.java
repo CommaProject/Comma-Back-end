@@ -14,7 +14,7 @@ import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.profile.domain.UserDetail;
+import com.team.comma.domain.user.detail.domain.UserDetail;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import jakarta.persistence.EntityManager;

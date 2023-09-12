@@ -2,7 +2,7 @@ package com.team.comma.domain.user.user.service;
 
 import com.team.comma.domain.user.history.dto.HistoryRequest;
 import com.team.comma.domain.user.history.service.HistoryService;
-import com.team.comma.domain.user.profile.domain.UserDetail;
+import com.team.comma.domain.user.detail.domain.UserDetail;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
@@ -29,7 +29,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.security.auth.login.AccountException;
-import javax.swing.text.html.Option;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;

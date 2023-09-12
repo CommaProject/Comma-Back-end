@@ -1,12 +1,9 @@
-package com.team.comma.domain.user.profile.domain;
+package com.team.comma.domain.user.detail.domain;
 
-import com.team.comma.domain.user.profile.dto.UserDetailRequest;
 import com.team.comma.global.converter.BooleanConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
-
-import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -27,7 +24,7 @@ public class UserDetail {
     @Column(length = 45)
     private String nickname;
 
-    @Column(length = 50)
+    @Column(length = 100)
     private String profileImageUrl;
 
     @Builder.Default
@@ -46,10 +43,16 @@ public class UserDetail {
     @Convert(converter = BooleanConverter.class)
     private Boolean allPublicFlag = true;
 
-    public static UserDetail createUserDetail(UserDetailRequest userDetailRequest) {
+    public static UserDetail buildUserDetail() {
         return UserDetail.builder()
-                .nickname(userDetailRequest.getNickName())
+                .name("name")
+                .nickname("nickname")
+                .profileImageUrl("S3 url")
                 .build();
+    }
+
+    public void modifyProfileImage(final String url){
+        this.profileImageUrl = url;
     }
 
 }

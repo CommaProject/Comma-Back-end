@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 import java.util.Optional;
 
-import static com.team.comma.domain.user.profile.domain.QUserDetail.userDetail;
+import static com.team.comma.domain.user.detail.domain.QUserDetail.userDetail;
 import static com.team.comma.domain.user.user.domain.QUser.user;
 
 
