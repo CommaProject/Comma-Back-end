@@ -193,10 +193,6 @@ public class UserDetailControllerTest {
                 "image/png",
                 "/img/Comma-Default-Profile-Image.png".getBytes());
 
-        MockMultipartFile metadata = new MockMultipartFile(
-                "metadata", "", "application/json",
-                "{ \"version\": \"1.0\"}".getBytes());
-
         doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(userDetailService)
                 .uploadProfileImage("accessToken", image);
 
