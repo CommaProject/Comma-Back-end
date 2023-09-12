@@ -28,7 +28,7 @@ public class UserDetailController {
                 .body(userDetailService.createProfile(userDetail, accessToken));
     }
 
-    @PostMapping(consumes = "multipart/form-data")
+    @PostMapping(value = "/profile-image/upload", consumes = "multipart/form-data")
     public ResponseEntity<MessageResponse> uploadProfileImage(
             @CookieValue("accessToken") String accessToken,
             @RequestParam MultipartFile image) throws IOException {
