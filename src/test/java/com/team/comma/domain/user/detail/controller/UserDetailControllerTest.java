@@ -185,7 +185,7 @@ public class UserDetailControllerTest {
     @Test
     void modifyProfileImage_success() throws Exception {
         // given
-        String api = "/user/detail/profile-image/upload";
+        String api = "/user/detail/image/upload";
 
         MockMultipartFile image = new MockMultipartFile(
                 "image",
