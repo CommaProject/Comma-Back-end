@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/profile")
+@RequestMapping("/user/detail")
 public class UserDetailController {
 
     private final UserDetailService userDetailService;
@@ -32,7 +32,8 @@ public class UserDetailController {
     public ResponseEntity<MessageResponse> uploadProfileImage(
             @CookieValue("accessToken") String accessToken,
             @RequestParam MultipartFile image) throws IOException {
-        return ResponseEntity.ok().body(userDetailService.uploadProfileImage(accessToken, image));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(userDetailService.uploadProfileImage(accessToken, image));
     }
 
 }

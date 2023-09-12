@@ -74,7 +74,7 @@ public class UserDetailControllerTest {
     @Test
     void createProfile_Fail_TokenNotFound() throws Exception {
         // given
-        String api = "/profile";
+        String api = "/user/detail";
         UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
         doThrow(new AccountException("로그인이 되어있지 않습니다.")).when(userDetailService)
                 .createProfile(any(UserDetailRequest.class), eq(null));
@@ -88,7 +88,7 @@ public class UserDetailControllerTest {
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
-                document("profile/create-fail-token-not-found",
+                document("user-detail/create-fail-token-not-found",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
@@ -112,7 +112,7 @@ public class UserDetailControllerTest {
     @Test
     void createProfile_Fail_UserNotFound() throws Exception {
         // given
-        String api = "/profile";
+        String api = "/user/detail";
         UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
         doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(userDetailService)
                 .createProfile(any(UserDetailRequest.class), eq("token"));
@@ -127,7 +127,7 @@ public class UserDetailControllerTest {
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
-                document("profile/create-fail-user-not-found",
+                document("user-detail/create-fail-user-not-found",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
@@ -151,7 +151,7 @@ public class UserDetailControllerTest {
     @Test
     void createProfile_Success() throws Exception {
         // given
-        String api = "/profile";
+        String api = "/user/detail";
         UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
         doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(userDetailService)
                 .createProfile(any(UserDetailRequest.class), eq("token"));
@@ -166,7 +166,7 @@ public class UserDetailControllerTest {
 
         // then
         resultActions.andExpect(status().isCreated()).andDo(
-                document("profile/create-success",
+                document("user-detail/create-success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
@@ -185,26 +185,30 @@ public class UserDetailControllerTest {
     @Test
     void modifyProfileImage_success() throws Exception {
         // given
-        String api = "/profile";
+        String api = "/user/detail";
 
-        MockMultipartFile multipartFile = new MockMultipartFile(
+        MockMultipartFile image = new MockMultipartFile(
                 "image",
                 "Comma-Default-Profile-Image.png",
                 "image/png",
-                getClass().getResourceAsStream("/img/Comma-Default-Profile-Image.png"));
+                "/img/Comma-Default-Profile-Image.png".getBytes());
+
+        MockMultipartFile metadata = new MockMultipartFile(
+                "metadata", "", "application/json",
+                "{ \"version\": \"1.0\"}".getBytes());
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(userDetailService)
-                .uploadProfileImage("accessToken", multipartFile);
+                .uploadProfileImage("accessToken", image);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 multipart(api)
-                        .file(multipartFile)
+                        .file(image)
                         .cookie(new Cookie("accessToken", "accessToken")));
 
         // then
-        resultActions.andExpect(status().isOk()).andDo(
-                document("profile/modify-profile-image-success",
+        resultActions.andExpect(status().isCreated()).andDo(
+                document("user-detail/upload-profile-image-success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
@@ -212,6 +216,12 @@ public class UserDetailControllerTest {
                         ),
                         requestParts(
                                 partWithName("image").description("프로필 이미지")
+                        )
+                        ,
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터")
                         )
                 )
         );
