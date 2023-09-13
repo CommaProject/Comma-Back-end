@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -35,17 +34,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
-import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
-import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.multipart;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureRestDocs
@@ -171,53 +165,6 @@ public class UserDetailControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("nickName").description("닉네임")
-                        )
-                )
-        );
-        final MessageResponse response = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(response.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-    @Test
-    void modifyProfileImage_success() throws Exception {
-        // given
-        String api = "/user/detail/image/upload";
-
-        MockMultipartFile image = new MockMultipartFile(
-                "image",
-                "Comma-Default-Profile-Image.png",
-                "image/png",
-                "/img/Comma-Default-Profile-Image.png".getBytes());
-
-        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(userDetailService)
-                .uploadProfileImage("accessToken", image);
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                multipart(api)
-                        .file(image)
-                        .cookie(new Cookie("accessToken", "accessToken")));
-
-        // then
-        resultActions.andExpect(status().isCreated()).andDo(
-                document("user-detail/upload-profile-image-success",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestCookies(
-                                cookieWithName("accessToken").description("사용자 액세스 토큰")
-                        ),
-                        requestParts(
-                                partWithName("image").description("프로필 이미지")
-                        )
-                        ,
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터")
                         )
                 )
         );

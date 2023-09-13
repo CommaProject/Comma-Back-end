@@ -23,9 +23,10 @@ import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUC
 public class UserDetailService {
 
     private final UserService userService;
-    private final UserDetailRepository userDetailRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final FileUploadService fileUploadService;
+
+    private final UserDetailRepository userDetailRepository;
 
     public MessageResponse createProfile(final UserDetailRequest userDetailRequest, final String token)
             throws AccountException {
@@ -37,18 +38,6 @@ public class UserDetailService {
         User user = userService.findUserOrThrow(userEmail);
         UserDetail userDetail = userDetailRequest.toUserDetailEntity();
         user.setUserDetail(userDetail);
-
-        return MessageResponse.of(REQUEST_SUCCESS);
-    }
-
-    public MessageResponse uploadProfileImage(final String token, final MultipartFile image) throws IOException {
-        String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userService.findUserOrThrow(userEmail);
-        UserDetail userDetail = user.getUserDetail();
-
-        String url = image.isEmpty() ? "none" : fileUploadService.uploadFileToS3(image);
-        userDetail.modifyProfileImage(url);
-        userDetailRepository.save(userDetail);
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }

@@ -13,9 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.security.auth.login.AccountException;
 import java.io.IOException;
 
+@RequestMapping("/user/detail")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user/detail")
 public class UserDetailController {
 
     private final UserDetailService userDetailService;
@@ -28,12 +28,5 @@ public class UserDetailController {
                 .body(userDetailService.createProfile(userDetail, accessToken));
     }
 
-    @PostMapping(value = "/image/upload", consumes = "multipart/form-data")
-    public ResponseEntity<MessageResponse> uploadProfileImage(
-            @CookieValue("accessToken") String accessToken,
-            @RequestParam MultipartFile image) throws IOException {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(userDetailService.uploadProfileImage(accessToken, image));
-    }
 
 }

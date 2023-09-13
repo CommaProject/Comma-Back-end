@@ -39,8 +39,6 @@ public class UserDetailServiceTest {
     @Mock
     private UserService userService;
     @Mock
-    private FileUploadService fileUploadService;
-    @Mock
     private JwtTokenProvider jwtTokenProvider;
 
     @Test
@@ -90,53 +88,6 @@ public class UserDetailServiceTest {
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-    @Test
-    void modifyProfileImage_success() throws IOException {
-        // given
-        User user = User.buildUser();
-        user.setUserDetail(UserDetail.buildUserDetail());
-        doReturn("accessToken").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(user).when(userService).findUserOrThrow(any(String.class));
-
-        MockMultipartFile multipartFile = new MockMultipartFile(
-                "image",
-                "Comma-Default-Profile-Image.png",
-                "image/png",
-                getClass().getResourceAsStream("/img/Comma-Default-Profile-Image.png"));
-        doReturn("S3 url modified").when(fileUploadService).uploadFileToS3(multipartFile);
-
-        // when
-        MessageResponse result = userDetailService.uploadProfileImage("accessToken", multipartFile);
-
-        // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-        assertThat(user.getUserDetail().getProfileImageUrl()).isEqualTo("S3 url modified");
-    }
-
-    @Test
-    void modifyProfileImage_success_none() throws IOException {
-        // given
-        User user = User.buildUser();
-        user.setUserDetail(UserDetail.buildUserDetail());
-        doReturn("accessToken").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(user).when(userService).findUserOrThrow(any(String.class));
-
-        MockMultipartFile multipartFile = new MockMultipartFile(
-                "empty",
-                "",
-                "",
-                getClass().getResourceAsStream("empty"));
-
-        // when
-        MessageResponse result = userDetailService.uploadProfileImage("accessToken", multipartFile);
-
-        // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-        assertThat(user.getUserDetail().getProfileImageUrl()).isEqualTo("none");
     }
 
 }
