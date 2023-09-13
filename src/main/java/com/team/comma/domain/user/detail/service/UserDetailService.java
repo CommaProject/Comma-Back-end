@@ -24,11 +24,10 @@ public class UserDetailService {
 
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final FileUploadService fileUploadService;
 
     private final UserDetailRepository userDetailRepository;
 
-    public MessageResponse createProfile(final UserDetailRequest userDetailRequest, final String token)
+    public MessageResponse createUserDetail(final String token, final UserDetailRequest request)
             throws AccountException {
         if (token == null) {
             throw new AccountException("로그인이 되어있지 않습니다.");
@@ -36,7 +35,7 @@ public class UserDetailService {
 
         String userEmail = jwtTokenProvider.getUserPk(token);
         User user = userService.findUserOrThrow(userEmail);
-        UserDetail userDetail = userDetailRequest.toUserDetailEntity();
+        UserDetail userDetail = request.toUserDetailEntity();
         user.setUserDetail(userDetail);
 
         return MessageResponse.of(REQUEST_SUCCESS);

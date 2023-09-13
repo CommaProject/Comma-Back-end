@@ -1,7 +1,6 @@
 package com.team.comma.global.s3.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.user.detail.controller.UserDetailController;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
 import com.team.comma.global.s3.service.FileUploadService;
@@ -93,13 +92,13 @@ public class FileUploadControllerTest {
                                 cookieWithName("accessToken").description("사용자 액세스 토큰")
                         ),
                         requestParts(
-                                partWithName("image").description("프로필 이미지")
+                                partWithName("image").description("이미지 파일")
                         )
                         ,
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터")
+                                fieldWithPath("data").description("데이터(S3 URL)")
                         )
                 )
         );

@@ -1,6 +1,5 @@
 package com.team.comma.domain.user.detail.controller;
 
-
 import com.team.comma.domain.user.detail.dto.UserDetailRequest;
 import com.team.comma.domain.user.detail.service.UserDetailService;
 import com.team.comma.global.common.dto.MessageResponse;
@@ -8,10 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.security.auth.login.AccountException;
-import java.io.IOException;
 
 @RequestMapping("/user/detail")
 @RestController
@@ -21,12 +18,19 @@ public class UserDetailController {
     private final UserDetailService userDetailService;
 
     @PostMapping
-    public ResponseEntity<MessageResponse> createProfile(
+    public ResponseEntity<MessageResponse> createUserDetail(
             @CookieValue(value = "accessToken", required = false) String accessToken,
-            @RequestBody UserDetailRequest userDetail) throws AccountException {
+            @RequestBody UserDetailRequest request) throws AccountException {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(userDetailService.createProfile(userDetail, accessToken));
+                .body(userDetailService.createUserDetail(accessToken, request));
     }
 
+//    @PutMapping
+//    public ResponseEntity<MessageResponse> modifyUserDetail(
+//
+//    ){
+//        return ResponseEntity.ok()
+//                .body(userDetailService.modifyUserDetail(accessToken, request));
+//    }
 
 }

@@ -49,7 +49,7 @@ public class UserDetailServiceTest {
 
         // when
         Throwable thrown = catchThrowable(
-                () -> userDetailService.createProfile(userDetail, null));
+                () -> userDetailService.createUserDetail(null, userDetail));
 
         // then
         assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("로그인이 되어있지 않습니다.");
@@ -62,11 +62,11 @@ public class UserDetailServiceTest {
         doReturn("accessToken").when(jwtTokenProvider).getUserPk(any(String.class));
         doThrow(new UserException(NOT_FOUNT_USER)).when(userService).findUserOrThrow(any(String.class));
 
-        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
+        UserDetailRequest request = UserDetailRequest.buildUserDetailRequest();
 
         // when
         Throwable thrown = catchThrowable(
-                () -> userDetailService.createProfile(userDetail, "accessToken"));
+                () -> userDetailService.createUserDetail("accessToken", request));
 
         // then
         assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
@@ -83,7 +83,7 @@ public class UserDetailServiceTest {
         UserDetailRequest request = UserDetailRequest.buildUserDetailRequest();
 
         // when
-        MessageResponse result = userDetailService.createProfile(request, "accessToken");
+        MessageResponse result = userDetailService.createUserDetail("accessToken", request);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());

@@ -12,7 +12,6 @@ import java.util.List;
 public class UserDetailRequest {
 
     private String nickName;
-    private List<String> artistNames;
 
     public UserDetail toUserDetailEntity() {
         return UserDetail.builder()
@@ -25,4 +24,5 @@ public class UserDetailRequest {
                 .nickName("name")
                 .build();
     }
+
 }

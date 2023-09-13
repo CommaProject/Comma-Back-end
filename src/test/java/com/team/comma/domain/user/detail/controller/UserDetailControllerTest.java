@@ -30,12 +30,14 @@ import java.nio.charset.StandardCharsets;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
+import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -71,7 +73,7 @@ public class UserDetailControllerTest {
         String api = "/user/detail";
         UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
         doThrow(new AccountException("로그인이 되어있지 않습니다.")).when(userDetailService)
-                .createProfile(any(UserDetailRequest.class), eq(null));
+                .createUserDetail(eq(null), any(UserDetailRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -108,8 +110,8 @@ public class UserDetailControllerTest {
         // given
         String api = "/user/detail";
         UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
-        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(userDetailService)
-                .createProfile(any(UserDetailRequest.class), eq("token"));
+        doThrow(new AccountException("사용자를 찾을 수 없습니다."))
+                .when(userDetailService).createUserDetail(anyString(), eq(userDetail));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -146,14 +148,14 @@ public class UserDetailControllerTest {
     void createProfile_Success() throws Exception {
         // given
         String api = "/user/detail";
+
         UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
-        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(userDetailService)
-                .createProfile(any(UserDetailRequest.class), eq("token"));
+        doReturn(MessageResponse.of(REQUEST_SUCCESS))
+                .when(userDetailService).createUserDetail(anyString(), any(UserDetailRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(api)
+                post(api)
                         .cookie(new Cookie("accessToken", "token"))
                         .content(gson.toJson(userDetail))
                         .contentType(MediaType.APPLICATION_JSON));
@@ -163,8 +165,16 @@ public class UserDetailControllerTest {
                 document("user-detail/create-success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 액세스 토큰")
+                        ),
                         requestFields(
                                 fieldWithPath("nickName").description("닉네임")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터")
                         )
                 )
         );
