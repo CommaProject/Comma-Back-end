@@ -47,10 +47,10 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.cookies.CookieDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureRestDocs
@@ -392,15 +392,14 @@ class UserControllerTest {
     @DisplayName("이름이나 닉네임으로 사용자 정보 탐색")
     void searchUserByNameAndNickName() throws Exception {
         // given
-        String api = "/search/user?name=name";
+        String api = "/user/{name}";
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS
                 , Arrays.asList(getUserResponse(), getUserResponse(), getUserResponse()));
         doReturn(messageResponse).when(userService).searchUserByNameAndNickName("name", "token");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .get(api)
+                        get(api, "name")
                         .cookie(new Cookie("accessToken", "token"))
         );
 
@@ -409,11 +408,11 @@ class UserControllerTest {
                 document("user/searchUser",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        queryParameters(
-                                parameterWithName("name").description("탐색할 사용자 정보")
-                        ),
                         requestCookies(
                                 cookieWithName("accessToken").description("accessToken 명")
+                        ),
+                        pathParameters(
+                                parameterWithName("name").description("탐색할 사용자 명")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),

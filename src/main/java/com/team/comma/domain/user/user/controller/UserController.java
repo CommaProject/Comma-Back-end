@@ -31,17 +31,18 @@ public class UserController {
         return ResponseEntity.ok().body(userService.register(register));
     }
 
+    @GetMapping("/user/{name}")
+    public ResponseEntity<MessageResponse> searchUserByNameAndNickName(
+            @PathVariable String name,
+            @CookieValue("accessToken") String accessToken) {
+        return ResponseEntity.ok().body(userService.searchUserByNameAndNickName(name , accessToken));
+    }
+
     @GetMapping("/user/information")
     public ResponseEntity<MessageResponse> getUserInfoByEmail(
         @CookieValue("accessToken") String accessToken) {
         return ResponseEntity.ok().body(userService.getUserByCookie(accessToken));
     }
 
-    @GetMapping("/search/user")
-    public ResponseEntity<MessageResponse> searchUserByNameAndNickName(
-            @RequestParam String name,
-            @CookieValue("accessToken") String accessToken) {
-        return ResponseEntity.ok().body(userService.searchUserByNameAndNickName(name , accessToken));
-    }
 
 }

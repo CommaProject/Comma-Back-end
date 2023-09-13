@@ -67,23 +67,6 @@ include::{snippets}/user/login-Fail/wrongInfo/response-fields.adoc[]
 
 ---
 
-=== 사용자 검색
-
-==== 성공
-
-===== Request
-
-include::{snippets}/user/searchUser/http-request.adoc[]
-include::{snippets}/user/searchUser/query-parameters.adoc[]
-include::{snippets}/user/searchUser/request-cookies.adoc[]
-
-===== Response
-
-include::{snippets}/user/searchUser/http-response.adoc[]
-include::{snippets}/user/searchUser/response-fields.adoc[]
-
----
-
 === 사용자 정보 조회
 
 ==== 성공
@@ -118,3 +101,20 @@ include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/http-request.adoc[
 
 include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/http-response.adoc[]
 include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/response-fields.adoc[]
+
+---
+
+=== 사용자 검색
+
+==== 성공
+
+===== Request
+
+include::{snippets}/user/searchUser/http-request.adoc[]
+include::{snippets}/user/searchUser/path-parameters.adoc[]
+include::{snippets}/user/searchUser/request-cookies.adoc[]
+
+===== Response
+
+include::{snippets}/user/searchUser/http-response.adoc[]
+include::{snippets}/user/searchUser/response-fields.adoc[]
