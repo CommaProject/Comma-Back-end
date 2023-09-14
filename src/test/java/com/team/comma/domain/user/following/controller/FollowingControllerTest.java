@@ -2,7 +2,7 @@ package com.team.comma.domain.user.following.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.user.following.constant.FollowingType;
-import com.team.comma.domain.user.profile.domain.UserDetail;
+import com.team.comma.domain.user.detail.domain.UserDetail;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.following.domain.Following;
 import com.team.comma.domain.user.following.dto.FollowingRequest;

@@ -6,9 +6,7 @@ import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.dto.LoginRequest;
-import com.team.comma.domain.user.user.dto.RegisterRequest;
-import com.team.comma.domain.user.profile.dto.UserDetailRequest;
+import com.team.comma.domain.user.user.dto.UserRequest;
 import com.team.comma.domain.user.user.dto.UserResponse;
 import com.team.comma.domain.user.user.service.UserService;
 import com.team.comma.global.gson.GsonUtil;
@@ -36,7 +34,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,10 +46,11 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.cookies.CookieDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureRestDocs
@@ -85,10 +83,11 @@ class UserControllerTest {
     void loginRequestSuccess() throws Exception {
         // given
         String api = "/login";
-        LoginRequest request = getLoginRequest();
-        UserResponse response = getUserResponse();
+
+        UserRequest request = UserRequest.buildUserRequest("userEmail");
+        UserResponse response = UserResponse.buildUserResponse("userEmail");
         MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, response);
-        doReturn(message).when(userService).login(any(LoginRequest.class) , any(HttpServletResponse.class));
+        doReturn(message).when(userService).login(any(UserRequest.class) , any(HttpServletResponse.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -116,7 +115,7 @@ class UserControllerTest {
                                 fieldWithPath("data.delFlag").description("탈퇴 여부 True -> 탈퇴한 사용자"),
                                 fieldWithPath("data.role").description("사용자 권한"),
                                 fieldWithPath("data.userId").description("사용자 Id 데이터"),
-                                fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
+                                fieldWithPath("data.profileImageUrl").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.joinDate").description("가입 날짜"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임")
@@ -139,8 +138,8 @@ class UserControllerTest {
     void loginRequestFail_notExistUser() throws Exception {
         // given
         String api = "/login";
-        LoginRequest request = getLoginRequest();
-        doThrow(new AccountException("정보가 올바르지 않습니다.")).when(userService).login(any(LoginRequest.class) , any(HttpServletResponse.class));
+        UserRequest request = UserRequest.buildUserRequest("email");
+        doThrow(new AccountException("정보가 올바르지 않습니다.")).when(userService).login(any(UserRequest.class) , any(HttpServletResponse.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -178,9 +177,10 @@ class UserControllerTest {
     void registUserSuccess() throws Exception {
         // given
         final String api = "/register";
-        LoginRequest request = getLoginRequest();
-        UserResponse response = getUserResponse();
-        doReturn(MessageResponse.of(REGISTER_SUCCESS, response)).when(userService).register(any(RegisterRequest.class));
+
+        UserRequest request = UserRequest.buildUserRequest("userEmail");
+        UserResponse response = UserResponse.buildUserResponse("userEmail");
+        doReturn(MessageResponse.of(REGISTER_SUCCESS, response)).when(userService).register(any(UserRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -207,20 +207,20 @@ class UserControllerTest {
                                 fieldWithPath("data.delFlag").description("탈퇴 여부 True -> 탈퇴한 사용자"),
                                 fieldWithPath("data.role").description("사용자 권한"),
                                 fieldWithPath("data.userId").description("사용자 Id 데이터"),
-                                fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
+                                fieldWithPath("data.profileImageUrl").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임"),
                                 fieldWithPath("data.joinDate").description("가입 날짜")
                         )
                 )
         );
-        final MessageResponse responseResult = gson.fromJson(
+        final MessageResponse result = gson.fromJson(
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 new TypeToken<MessageResponse<UserResponse>>() {}.getType());
 
-        UserResponse userResponse = (UserResponse) responseResult.getData();
-        assertThat(responseResult.getCode()).isEqualTo(REGISTER_SUCCESS.getCode());
-        assertThat(responseResult.getMessage()).isEqualTo("성공적으로 가입되었습니다.");
+        UserResponse userResponse = (UserResponse) result.getData();
+        assertThat(result.getCode()).isEqualTo(REGISTER_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo("성공적으로 가입되었습니다.");
         assertThat(userResponse.getEmail()).isEqualTo(request.getEmail());
     }
 
@@ -229,8 +229,8 @@ class UserControllerTest {
     void registUserFail_existUserException() throws Exception {
         // given
         final String api = "/register";
-        LoginRequest request = getLoginRequest();
-        doThrow(new AccountException("이미 존재하는 계정입니다.")).when(userService).register(any(RegisterRequest.class));
+        UserRequest request = UserRequest.buildUserRequest("email");
+        doThrow(new AccountException("이미 존재하는 계정입니다.")).when(userService).register(any(UserRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -264,128 +264,11 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("사용자 정보 저장하기 실패 _ 로그인 되지 않는 사용자")
-    void createUserInformationFail_notExistToken() throws Exception {
-        // given
-        String api = "/private-information";
-        UserDetailRequest userDetail = getUserDetailRequest();
-        doThrow(new AccountException("로그인이 되어있지 않습니다.")).when(userService)
-                .createUserInformation(any(UserDetailRequest.class), eq(null));
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(api)
-                        .content(gson.toJson(userDetail))
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isBadRequest()).andDo(
-                document("user/private-information-Fail/notLogin",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("artistNames").description("좋아하는 아티스트")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터")
-                        )
-                )
-        );
-        final MessageResponse response = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
-        assertThat(response.getMessage()).isEqualTo("로그인이 되어있지 않습니다.");
-    }
-
-    @Test
-    @DisplayName("사용자 정보 저장하기 실패 _ 사용자를 찾을 수 없음")
-    void createUserInformationFail_notExistUser() throws Exception {
-        // given
-        String api = "/private-information";
-        UserDetailRequest userDetail = getUserDetailRequest();
-        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(userService)
-                .createUserInformation(any(UserDetailRequest.class), eq("token"));
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(api)
-                        .cookie(new Cookie("accessToken", "token"))
-                        .content(gson.toJson(userDetail))
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isBadRequest()).andDo(
-                document("user/private-information-Fail/notExistUser",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("artistNames").description("좋아하는 아티스트")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터")
-                        )
-                )
-        );
-        final MessageResponse response = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(response.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
-        assertThat(response.getMessage()).isEqualTo("사용자를 찾을 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("사용자 정보 저장하기")
-    void createUserInformation() throws Exception {
-        // given
-        String api = "/private-information";
-        UserDetailRequest userDetail = getUserDetailRequest();
-        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(userService)
-                .createUserInformation(any(UserDetailRequest.class), eq("token"));
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .post(api)
-                        .cookie(new Cookie("accessToken", "token"))
-                        .content(gson.toJson(userDetail))
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        resultActions.andExpect(status().isCreated()).andDo(
-                document("user/private-information",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("artistNames").description("좋아하는 아티스트")
-                        )
-                )
-        );
-        final MessageResponse response = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(response.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-    @Test
     @DisplayName("AccessToken 으로 사용자 정보 가져오기 실패 _ 존재하지 않는 회원")
     void getUserInfoByAccessTokenFail_NotExistUser() throws Exception {
         // given
         final String api = "/user/information";
-        doThrow(new UserException(NOT_FOUNT_USER)).when(userService).getUserByCookie(any(String.class));
+        doThrow(new UserException(NOT_FOUNT_USER)).when(userService).getUserInformation(any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -422,7 +305,7 @@ class UserControllerTest {
         // given
         final String api = "/user/information";
         doThrow(new TokenForgeryException("알 수 없는 토큰이거나 , 변조되었습니다."))
-                .when(userService).getUserByCookie(any(String.class));
+                .when(userService).getUserInformation(any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -466,7 +349,7 @@ class UserControllerTest {
                 .role(UserRole.USER)
                 .build();
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS, user);
-        doReturn(messageResponse).when(userService).getUserByCookie(any(String.class));
+        doReturn(messageResponse).when(userService).getUserInformation(any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -492,7 +375,7 @@ class UserControllerTest {
                                 fieldWithPath("data.delFlag").description("탈퇴 여부 True -> 탈퇴한 사용자"),
                                 fieldWithPath("data.role").description("사용자 권한"),
                                 fieldWithPath("data.userId").description("사용자 Id 데이터"),
-                                fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
+                                fieldWithPath("data.profileImageUrl").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임"),
                                 fieldWithPath("data.joinDate").description("가입 날짜")
@@ -511,15 +394,19 @@ class UserControllerTest {
     @DisplayName("이름이나 닉네임으로 사용자 정보 탐색")
     void searchUserByNameAndNickName() throws Exception {
         // given
-        String api = "/search/user?name=name";
-        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS
-                , Arrays.asList(getUserResponse(), getUserResponse(), getUserResponse()));
-        doReturn(messageResponse).when(userService).searchUserByNameAndNickName("name", "token");
+        String api = "/user/{name}";
+
+        User user = User.buildUser("email");
+        MessageResponse messageResponse = MessageResponse.of(
+                REQUEST_SUCCESS, Arrays.asList(
+                        UserResponse.buildUserResponse("userEmail"),
+                        UserResponse.buildUserResponse("userEmail"),
+                        UserResponse.buildUserResponse("userEmail")));
+        doReturn(messageResponse).when(userService).findAllUsersBySearchWord("name", "token");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .get(api)
+                        get(api, "name")
                         .cookie(new Cookie("accessToken", "token"))
         );
 
@@ -528,11 +415,11 @@ class UserControllerTest {
                 document("user/searchUser",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        queryParameters(
-                                parameterWithName("name").description("탐색할 사용자 정보")
-                        ),
                         requestCookies(
                                 cookieWithName("accessToken").description("accessToken 명")
+                        ),
+                        pathParameters(
+                                parameterWithName("name").description("탐색할 사용자 명")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -543,7 +430,7 @@ class UserControllerTest {
                                 fieldWithPath("data[].delFlag").description("탈퇴 여부 True -> 탈퇴한 사용자"),
                                 fieldWithPath("data[].role").description("사용자 권한"),
                                 fieldWithPath("data[].userId").description("사용자 Id 데이터"),
-                                fieldWithPath("data[].profileImage").description("사용자 프로필 이미지 URL"),
+                                fieldWithPath("data[].profileImageUrl").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data[].name").description("사용자 이름"),
                                 fieldWithPath("data[].nickName").description("사용자 닉네임"),
                                 fieldWithPath("data[].joinDate").description("가입 날짜")
@@ -559,34 +446,48 @@ class UserControllerTest {
         assertThat(((List<UserResponse>) response.getData()).size()).isEqualTo(3);
     }
 
+    @Test
+    void modifyUserPassword_success() throws Exception {
+        // given
+        String api = "/user";
 
-    public LoginRequest getLoginRequest() {
-        return LoginRequest.builder()
-                .email(userEmail)
-                .password(userPassword)
-                .build();
-    }
+        doReturn(MessageResponse.of(REQUEST_SUCCESS))
+                .when(userService).modifyUserPassword("accessToken", "change_password");
 
-    private User getUserEntity() {
-        return User.builder().email(userEmail).password(userPassword)
-                .role(UserRole.USER).build();
-    }
+        UserRequest request = UserRequest.buildUserModifyRequest("change_password");
 
-    private UserDetailRequest getUserDetailRequest() {
-        return UserDetailRequest.builder().nickName("name")
-                .artistNames(Arrays.asList("artist1", "artist2", "artist3"))
-                .build();
-    }
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                patch(api)
+                        .cookie(new Cookie("accessToken", "accessToken"))
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
 
-    private UserResponse getUserResponse() {
-        return UserResponse.builder()
-                .email(userEmail)
-                .password(userPassword)
-                .role(UserRole.USER)
-                .delFlag(false)
-                .profileImage("s3 Image URL")
-                .userId(0)
-                .build();
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("user/modify-password-success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("accessToken 명")
+                        ),
+                        requestFields(
+                                fieldWithPath("password").description("변경 할 패스워드")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터")
+                        )
+                )
+        );
+        final MessageResponse response = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
     }
 
 }

@@ -64,7 +64,7 @@ public class ArchiveServiceTest {
     public void addArchiveFail_notFoundUser() {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.empty()).when(userRepository).findByEmail("userEmail");
+        doReturn(Optional.empty()).when(userRepository).findUserByEmail("userEmail");
 
         // when
         Throwable thrown = catchThrowable(() -> archiveService.createArchive("token" , null));
@@ -78,7 +78,7 @@ public class ArchiveServiceTest {
     public void addArchiveFail_notFoundPlaylist() {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(User.builder().build())).when(userRepository).findByEmail("userEmail");
+        doReturn(Optional.of(User.builder().build())).when(userRepository).findUserByEmail("userEmail");
         doReturn(Optional.empty()).when(playlistRepository).findById(0L);
         ArchiveRequest archiveRequest = ArchiveRequest.builder().playlistId(0L).build();
 
@@ -94,7 +94,7 @@ public class ArchiveServiceTest {
     public void addArchiveSuccess() throws AccountException {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(User.builder().build())).when(userRepository).findByEmail("userEmail");
+        doReturn(Optional.of(User.builder().build())).when(userRepository).findUserByEmail("userEmail");
         doReturn(Optional.of(Playlist.builder().build())).when(playlistRepository).findById(0L);
         ArchiveRequest archiveRequest = ArchiveRequest.builder().playlistId(0L).build();
 
@@ -109,7 +109,7 @@ public class ArchiveServiceTest {
     @DisplayName("아카이브 DateTime으로 조회")
     public void findArchiveByDateTime() {
         // given
-        User user = User.buildUser();
+        User user = User.buildUser("userEmail");
         Track track = buildTrack();
         Playlist playlist = buildPlaylist(user);
         playlist.addPlaylistTrack(track);
@@ -133,7 +133,7 @@ public class ArchiveServiceTest {
     @DisplayName("아카이브 Date로 조회")
     public void findArchiveByDate() throws AccountException {
         // given
-        User user = User.buildUser();
+        User user = User.buildUser("userEmail");
         Track track = buildTrack();
         Playlist playlist = buildPlaylist(user);
         playlist.addPlaylistTrack(track);
@@ -147,7 +147,7 @@ public class ArchiveServiceTest {
         LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
         doReturn(List.of(archiveResponse)).when(archiveRepository).findArchiveByDateTime(user, startDateTime, endDateTime);
 
 

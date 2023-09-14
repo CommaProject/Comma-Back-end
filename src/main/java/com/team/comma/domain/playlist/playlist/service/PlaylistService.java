@@ -35,7 +35,7 @@ public class PlaylistService {
 
     public MessageResponse createPlaylist(final String accessToken, final String spotifyTrackId) {
         String userName = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(userName)
+        User user = userRepository.findUserByEmail(userName)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         Track track = trackService.findTrackOrSave(spotifyTrackId);
@@ -49,7 +49,7 @@ public class PlaylistService {
 
     public MessageResponse findAllPlaylists(final String accessToken) {
         String userName = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(userName)
+        User user = userRepository.findUserByEmail(userName)
             .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         return MessageResponse.of(REQUEST_SUCCESS,

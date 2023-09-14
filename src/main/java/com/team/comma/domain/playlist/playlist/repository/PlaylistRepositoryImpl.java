@@ -70,11 +70,14 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
 
     @Override
     public long updateRecommendCountByPlaylistId(long playlistId) {
-        return queryFactory.update(track).set(track.recommendCount , track.recommendCount.add(1))
+        return queryFactory.update(track)
+                .set(track.recommendCount, track.recommendCount.add(1))
                 .where(track.id.in(
-                        JPAExpressions.select(track.id).from(playlistTrack)
-                                .innerJoin(playlistTrack.playlist , playlist).on(playlist.id.eq(playlistId))
-                                .innerJoin(playlistTrack.track , track)
+                        JPAExpressions.select(track.id)
+                                .from(playlistTrack)
+                                .innerJoin(playlistTrack.playlist, playlist)
+                                .on(playlist.id.eq(playlistId))
+                                .innerJoin(playlistTrack.track, track)
                 )).execute();
     }
 
