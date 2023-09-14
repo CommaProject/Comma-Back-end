@@ -2,6 +2,7 @@ package com.team.comma.domain.user.detail.repository;
 
 import com.team.comma.domain.user.detail.domain.UserDetail;
 import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class UserDetailRepositoryTest {
     @Autowired
     UserDetailRepository userDetailRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Test
     public void save() {
         // given
@@ -36,19 +40,20 @@ public class UserDetailRepositoryTest {
 
     }
 
-//    @Test
-//    public void findUserDetailByUser() {
-//        // given
-//        User user = User.buildUser();
-//        UserDetail userDetail = UserDetail.buildUserDetail();
-//        userDetailRepository.save(userDetail);
-//
-//        // when
-//        Optional<UserDetail> result = userDetailRepository.findUserDetailByUser(user);
-//
-//        // then
-//
-//
-//    }
+    @Test
+    public void findUserDetailByUser() {
+        // given
+        User user = User.buildUser("userEmail");
+        UserDetail userDetail = UserDetail.buildUserDetail(user);
+        userRepository.save(user);
+        userDetailRepository.save(userDetail);
+
+        // when
+        Optional<UserDetail> result = userDetailRepository.findUserDetailByUser(user);
+
+        // then
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(userDetail);
+    }
 
 }

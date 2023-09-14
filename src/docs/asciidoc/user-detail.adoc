@@ -7,7 +7,7 @@
 
 link:main.html[main 화면]
 
-== PROFILE API
+== User Detail API
 
 === 사용자 상세 정보 저장
 
@@ -45,3 +45,20 @@ include::{snippets}/user-detail/create-fail-user-not-found/request-fields.adoc[]
 
 include::{snippets}/user-detail/create-fail-user-not-found/http-response.adoc[]
 include::{snippets}/user-detail/create-fail-user-not-found/response-fields.adoc[]
+
+---
+
+=== 사용자 상세 정보 수정
+수정 하고자 하는 데이터만 선택 입력
+
+==== 성공
+
+===== Request
+
+include::{snippets}/user-detail/modify-success/http-request.adoc[]
+include::{snippets}/user-detail/modify-success/request-fields.adoc[]
+
+===== Response
+
+include::{snippets}/user-detail/modify-success/http-response.adoc[]
+include::{snippets}/user-detail/modify-success/response-fields.adoc[]

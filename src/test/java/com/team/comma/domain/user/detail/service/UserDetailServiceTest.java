@@ -20,17 +20,19 @@ import org.springframework.mock.web.MockMultipartFile;
 import javax.security.auth.login.AccountException;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
-public class UserDetailServiceTest {
+class UserDetailServiceTest {
 
     @InjectMocks
     UserDetailService userDetailService;
@@ -42,10 +44,9 @@ public class UserDetailServiceTest {
     private JwtTokenProvider jwtTokenProvider;
 
     @Test
-    @DisplayName("사용자 정보 저장 실패 _ 로그인 되어있지 않음")
-    void createProfile_fail_tokenNotFound() {
+    void createUserDetail_fail_tokenNotFound() {
         // given
-        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
+        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailCreateRequest();
 
         // when
         Throwable thrown = catchThrowable(
@@ -56,31 +57,29 @@ public class UserDetailServiceTest {
     }
 
     @Test
-    @DisplayName("사용자 정보 저장 실패 _ 존재하지 않는 사용자")
-    void createProfile_fail_userNotFound() {
+    void createUserDetail_fail_userNotFound() {
         // given
-        doReturn("accessToken").when(jwtTokenProvider).getUserPk(any(String.class));
-        doThrow(new UserException(NOT_FOUNT_USER)).when(userService).findUserOrThrow(any(String.class));
-
-        UserDetailRequest request = UserDetailRequest.buildUserDetailRequest();
+        doReturn("accessToken").when(jwtTokenProvider).getUserPk(anyString());
+        doThrow(new UserException(NOT_FOUNT_USER)).when(userService).findUserOrThrow(anyString());
 
         // when
         Throwable thrown = catchThrowable(
-                () -> userDetailService.createUserDetail("accessToken", request));
+                () -> userDetailService.createUserDetail("accessToken", any(UserDetailRequest.class)));
 
         // then
         assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
     }
 
     @Test
-    @DisplayName("사용자 정보 저장 성공")
-    void createProfile_success() throws AccountException {
+    void createUserDetail_success() throws AccountException {
         // given
+        String token = "accessToken";
         User user = User.buildUser("userEmail");
-        doReturn("accessToken").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(user).when(userService).findUserOrThrow(any(String.class));
 
-        UserDetailRequest request = UserDetailRequest.buildUserDetailRequest();
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
+        doReturn(user).when(userService).findUserOrThrow(user.getEmail());
+
+        UserDetailRequest request = UserDetailRequest.buildUserDetailCreateRequest();
 
         // when
         MessageResponse result = userDetailService.createUserDetail("accessToken", request);
@@ -91,7 +90,40 @@ public class UserDetailServiceTest {
     }
 
     @Test
-    void findUserDetailOrThrow_success() {
+    void findUserDetailOrThrow_success() throws AccountException {
+        // given
+        User user = User.buildUser("userEmail");
+        UserDetail userDetail = UserDetail.buildUserDetail(user);
+
+        doReturn(Optional.of(userDetail)).when(userDetailRepository).findUserDetailByUser(user);
+
+        // when
+        UserDetail result = userDetailService.findUserDetailOrThrow(user);
+
+        // then
+        assertThat(result).isEqualTo(userDetail);
+
+    }
+
+    @Test
+    void modifyUserDetail_success() throws AccountException {
+        // given
+        String token = "accessToken";
+        User user = User.buildUser("userEmail");
+        UserDetail userDetail = UserDetail.buildUserDetail(user);
+
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
+        doReturn(user).when(userService).findUserOrThrow(user.getEmail());
+        doReturn(Optional.of(userDetail)).when(userDetailRepository).findUserDetailByUser(user);
+
+        UserDetailRequest request = UserDetailRequest.buildUserDetailModifyRequest();
+
+        // when
+        MessageResponse result = userDetailService.modifyUserDetail(token, request);
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
 
     }
 

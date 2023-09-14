@@ -33,7 +33,7 @@ public class UserDetailService {
 
         String userEmail = jwtTokenProvider.getUserPk(token);
         User user = userService.findUserOrThrow(userEmail);
-        UserDetail userDetail = request.toUserDetailEntity();
+        UserDetail userDetail = request.toUserDetailEntity(user);
         userDetailRepository.save(userDetail);
 
         return MessageResponse.of(REQUEST_SUCCESS);
@@ -49,7 +49,6 @@ public class UserDetailService {
         String userEmail = jwtTokenProvider.getUserPk(token);
         User user = userService.findUserOrThrow(userEmail);
         UserDetail userDetail = findUserDetailOrThrow(user);
-
         userDetail.modifyUserDetail(request);
 
         return MessageResponse.of(REQUEST_SUCCESS);

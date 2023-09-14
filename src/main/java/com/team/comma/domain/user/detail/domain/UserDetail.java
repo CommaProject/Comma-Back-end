@@ -60,7 +60,7 @@ public class UserDetail {
     }
 
     public void modifyUserDetail(final UserDetailRequest request){
-        this.nickname = request.getNickName() != null ? request.getNickName() : this.nickname ;
+        this.nickname = request.getNickname() != null ? request.getNickname() : this.nickname ;
         this.profileImageUrl = request.getProfileImageUrl() != null ? request.getProfileImageUrl() : this.profileImageUrl;
         this.popupAlertFlag = request.getPopupAlertFlag() != null ? request.getPopupAlertFlag() : this.popupAlertFlag;
         this.favoritePublicFlag = request.getFavoritePublicFlag() != null ? request.getFavoritePublicFlag() : this.favoritePublicFlag;

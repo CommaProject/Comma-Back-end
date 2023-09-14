@@ -37,6 +37,7 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWit
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -71,7 +72,7 @@ public class UserDetailControllerTest {
     void createProfile_Fail_TokenNotFound() throws Exception {
         // given
         String api = "/user/detail";
-        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
+        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailCreateRequest();
         doThrow(new AccountException("로그인이 되어있지 않습니다.")).when(userDetailService)
                 .createUserDetail(eq(null), any(UserDetailRequest.class));
 
@@ -88,8 +89,7 @@ public class UserDetailControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("profileImageUrl").ignored()
+                                fieldWithPath("nickname").description("닉네임")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -110,7 +110,7 @@ public class UserDetailControllerTest {
     void createProfile_Fail_UserNotFound() throws Exception {
         // given
         String api = "/user/detail";
-        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
+        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailCreateRequest();
         doThrow(new AccountException("사용자를 찾을 수 없습니다."))
                 .when(userDetailService).createUserDetail(anyString(), eq(userDetail));
 
@@ -128,8 +128,7 @@ public class UserDetailControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("profileImageUrl").ignored()
+                                fieldWithPath("nickname").description("닉네임")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -151,7 +150,7 @@ public class UserDetailControllerTest {
         // given
         String api = "/user/detail";
 
-        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailRequest();
+        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailCreateRequest();
         doReturn(MessageResponse.of(REQUEST_SUCCESS))
                 .when(userDetailService).createUserDetail(anyString(), any(UserDetailRequest.class));
 
@@ -171,8 +170,7 @@ public class UserDetailControllerTest {
                                 cookieWithName("accessToken").description("사용자 액세스 토큰")
                         ),
                         requestFields(
-                                fieldWithPath("nickName").description("닉네임"),
-                                fieldWithPath("profileImageUrl").ignored()
+                                fieldWithPath("nickname").description("닉네임")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -188,5 +186,53 @@ public class UserDetailControllerTest {
         assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(response.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
+
+    @Test
+    void modifyUserDetail_success() throws Exception {
+        // given
+        String api = "/user/detail";
+
+        UserDetailRequest userDetail = UserDetailRequest.buildUserDetailModifyRequest();
+        doReturn(MessageResponse.of(REQUEST_SUCCESS))
+                .when(userDetailService).modifyUserDetail(anyString(), any(UserDetailRequest.class));
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                patch(api)
+                        .cookie(new Cookie("accessToken", "token"))
+                        .content(gson.toJson(userDetail))
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("user-detail/modify-success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 액세스 토큰")
+                        ),
+                        requestFields(
+                                fieldWithPath("nickname").description("닉네임"),
+                                fieldWithPath("profileImageUrl").description("프로필 이미지 url"),
+                                fieldWithPath("popupAlertFlag").description("알람 설정 여부"),
+                                fieldWithPath("allPublicFlag").description("전체 공개 여부"),
+                                fieldWithPath("favoritePublicFlag").description("Favorite 공개 여부"),
+                                fieldWithPath("calenderPublicFlag").description("Calender 공개 여부")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터")
+                        )
+                )
+        );
+        final MessageResponse response = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(response.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+    }
+
 
 }
