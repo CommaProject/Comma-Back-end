@@ -88,7 +88,8 @@ public class UserDetailControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("nickName").description("닉네임")
+                                fieldWithPath("nickName").description("닉네임"),
+                                fieldWithPath("profileImageUrl").ignored()
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -127,7 +128,8 @@ public class UserDetailControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
-                                fieldWithPath("nickName").description("닉네임")
+                                fieldWithPath("nickName").description("닉네임"),
+                                fieldWithPath("profileImageUrl").ignored()
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -169,7 +171,8 @@ public class UserDetailControllerTest {
                                 cookieWithName("accessToken").description("사용자 액세스 토큰")
                         ),
                         requestFields(
-                                fieldWithPath("nickName").description("닉네임")
+                                fieldWithPath("nickName").description("닉네임"),
+                                fieldWithPath("profileImageUrl").ignored()
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),

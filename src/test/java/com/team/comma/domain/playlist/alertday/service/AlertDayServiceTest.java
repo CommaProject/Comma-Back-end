@@ -31,7 +31,7 @@ public class AlertDayServiceTest {
     @Test
     void createAlertDay_Success() {
         // given
-        User user = User.buildUser();
+        User user = User.buildUser("userEmail");
         Playlist playlist = Playlist.buildPlaylist(user);
         List<AlertDay> alertDays = List.of(
                 AlertDay.buildAlertDay(playlist, DayOfWeek.of(1)),
@@ -54,7 +54,7 @@ public class AlertDayServiceTest {
     @Test
     void modifyAlertDays_Success() {
         // given
-        User user = User.buildUser();
+        User user = User.buildUser("userEmail");
         Playlist playlist = Playlist.buildPlaylist(user);
         List<AlertDay> alertDays = List.of(
                 AlertDay.buildAlertDay(playlist, DayOfWeek.of(4)),
@@ -77,7 +77,7 @@ public class AlertDayServiceTest {
     @Test
     void deleteAllAlertDays_Success() {
         // given
-        User user = User.buildUser();
+        User user = User.buildUser("userEmail");
         Playlist playlist = Playlist.buildPlaylist(user);
         List<AlertDay> alertDays = List.of(
                 AlertDay.buildAlertDay(playlist, DayOfWeek.of(1)),

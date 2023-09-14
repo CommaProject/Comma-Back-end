@@ -47,7 +47,7 @@ public class RecommendService {
 
         Recommend buildEntity;
         if(recommendRequest.getRecommendType().equals(RecommendType.FOLLOWING)){
-            User toUser = userRepository.findByEmail(recommendRequest.getRecommendToEmail())
+            User toUser = userRepository.findUserByEmail(recommendRequest.getRecommendToEmail())
                     .orElseThrow(() -> new AccountException("추천 받는 사용자 정보가 올바르지 않습니다."));
 
             buildEntity = recommendRequest.toRecommendEntity(toUser, playlist);
@@ -85,7 +85,7 @@ public class RecommendService {
 
     public User findUserByToken(final String accessToken) throws AccountException {
         final String userName = jwtTokenProvider.getUserPk(accessToken);
-        final User user = userRepository.findByEmail(userName)
+        final User user = userRepository.findUserByEmail(userName)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
         return user;
     }

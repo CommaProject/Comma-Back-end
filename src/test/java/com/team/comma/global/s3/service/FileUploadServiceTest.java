@@ -60,7 +60,7 @@ public class FileUploadServiceTest {
     @DisplayName("파일 업로드 성공")
     public void uploadFileSuccess() throws IOException {
         // given
-        User user = User.buildUser();
+        User user = User.buildUser("userEmail");
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk("accessToken");
         doReturn(user).when(userService).findUserOrThrow(user.getEmail());
 

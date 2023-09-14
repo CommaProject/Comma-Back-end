@@ -28,7 +28,7 @@ public class HistoryService {
     @Transactional
     public MessageResponse addHistory(HistoryRequest history , String token) {
         String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         user.addHistory(history.getSearchHistory());
@@ -38,7 +38,7 @@ public class HistoryService {
 
     public MessageResponse getHistoryList(String token) {
         String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         List<HistoryResponse> historyList = historyRepository.getHistoryListByUserEmail(user.getEmail());
@@ -56,7 +56,7 @@ public class HistoryService {
     @Transactional
     public MessageResponse deleteAllHistory(String token) {
         String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         historyRepository.deleteAllHistoryByUser(user);

@@ -49,7 +49,7 @@ public class HistoryServiceTest {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
+        doReturn(Optional.empty()).when(userRepository).findUserByEmail(any(String.class));
         HistoryRequest request = HistoryRequest.builder().searchHistory("history").build();
 
         // when
@@ -66,7 +66,7 @@ public class HistoryServiceTest {
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
         Optional<User> user = createUserEntity();
-        doReturn(user).when(userRepository).findByEmail(any(String.class));
+        doReturn(user).when(userRepository).findUserByEmail(any(String.class));
         HistoryRequest request = HistoryRequest.builder().searchHistory("history").build();
 
         // when
@@ -84,7 +84,7 @@ public class HistoryServiceTest {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
+        doReturn(Optional.empty()).when(userRepository).findUserByEmail(any(String.class));
 
         // when
         Throwable thrown = catchThrowable(() -> spotifyHistoryService.getHistoryList(token));
@@ -100,7 +100,7 @@ public class HistoryServiceTest {
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
         Optional<User> user = createUserEntity();
-        doReturn(user).when(userRepository).findByEmail(any(String.class));
+        doReturn(user).when(userRepository).findUserByEmail(any(String.class));
         doReturn(Arrays.asList("history1" , "history2" , "history3")).when(spotifyHistoryRepository)
                 .getHistoryListByUserEmail(any(String.class));
         // when
@@ -119,7 +119,7 @@ public class HistoryServiceTest {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
+        doReturn(Optional.empty()).when(userRepository).findUserByEmail(any(String.class));
         // when
         Throwable thrown = catchThrowable(() -> spotifyHistoryService.deleteAllHistory(token));
 
@@ -134,7 +134,7 @@ public class HistoryServiceTest {
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
         Optional<User> user = createUserEntity();
-        doReturn(user).when(userRepository).findByEmail(any(String.class));
+        doReturn(user).when(userRepository).findUserByEmail(any(String.class));
         doNothing().when(spotifyHistoryRepository).deleteAllHistoryByUser(any(User.class));
 
         // when

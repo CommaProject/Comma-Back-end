@@ -66,7 +66,7 @@ public class PlayCountService {
             Track track = trackRepository.findBySpotifyTrackId(trackId)
                     .orElseGet(() -> trackService.findTrackOrSave(trackId));
 
-            User user = userRepository.findByEmail(userEmail)
+            User user = userRepository.findUserByEmail(userEmail)
                     .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
             TrackPlayCountRequest request = createTrackPlayCountRequest(track);

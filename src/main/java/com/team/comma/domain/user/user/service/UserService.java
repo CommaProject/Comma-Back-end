@@ -37,7 +37,7 @@ public class UserService {
 
     public MessageResponse login(final LoginRequest loginRequest , HttpServletResponse response)
         throws AccountException {
-        User user = userRepository.findByEmail(loginRequest.getEmail())
+        User user = userRepository.findUserByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         if (user.getType() == UserType.OAUTH_USER) {
@@ -54,12 +54,12 @@ public class UserService {
     }
 
     public MessageResponse register(final RegisterRequest registerRequest) throws AccountException {
-        Optional<User> findUser = userRepository.findByEmail(registerRequest.getEmail());
+        Optional<User> findUser = userRepository.findUserByEmail(registerRequest.getEmail());
         if(findUser.isPresent()) {
             throw new AccountException("이미 존재하는 계정입니다.");
         }
 
-        User buildEntity = User.buildUserForRegister(registerRequest, UserType.GENERAL_USER);
+        User buildEntity = registerRequest.toUserEntity(UserType.GENERAL_USER);
         User user = userRepository.save(buildEntity);
 
         return MessageResponse.of(REGISTER_SUCCESS , UserResponse.createUserResponse(user));
@@ -79,14 +79,14 @@ public class UserService {
 
     public MessageResponse getUserByCookie(String token) {
         String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         return MessageResponse.of(REQUEST_SUCCESS , UserResponse.createUserResponse(user));
     }
 
     public User findUserOrThrow(final String userEmail) {
-        return userRepository.findByEmail(userEmail)
+        return userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
     }
 }

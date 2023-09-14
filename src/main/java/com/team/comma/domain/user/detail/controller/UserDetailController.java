@@ -25,12 +25,12 @@ public class UserDetailController {
                 .body(userDetailService.createUserDetail(accessToken, request));
     }
 
-//    @PutMapping
-//    public ResponseEntity<MessageResponse> modifyUserDetail(
-//
-//    ){
-//        return ResponseEntity.ok()
-//                .body(userDetailService.modifyUserDetail(accessToken, request));
-//    }
+    @PatchMapping
+    public ResponseEntity<MessageResponse> modifyUserDetail(
+            @CookieValue(value = "accessToken", required = false) String accessToken,
+            @RequestBody UserDetailRequest request) throws AccountException {
+        return ResponseEntity.ok()
+                .body(userDetailService.modifyUserDetail(accessToken, request));
+    }
 
 }

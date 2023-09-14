@@ -23,15 +23,4 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .fetch();
     }
 
-    @Override
-    public Optional<User> findByEmail(String email) {
-        User result = queryFactory.select(user)
-                .from(user)
-                .leftJoin(user.userDetail)
-                .fetchJoin()
-                .where(user.email.eq(email))
-                .fetchFirst();
-
-        return Optional.ofNullable(result);
-    }
 }

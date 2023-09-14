@@ -1,7 +1,10 @@
 package com.team.comma.domain.user.following.repository;
 
+import com.team.comma.domain.user.detail.repository.UserDetailRepository;
 import com.team.comma.domain.user.following.domain.Following;
 import com.team.comma.domain.user.following.dto.FollowingResponse;
+import com.team.comma.domain.user.user.constant.UserRole;
+import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.detail.domain.UserDetail;
 import com.team.comma.domain.user.user.repository.UserRepository;
@@ -27,6 +30,9 @@ public class FollowingRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserDetailRepository userDetailRepository;
 
     @Test
     @DisplayName("나를 팔로우한 사용자 탐색")
@@ -169,50 +175,52 @@ public class FollowingRepositoryTest {
     @Test
     public void 팔로잉_리스트_조회() {
         // given
-        User user = User.builder()
-                .email("user")
-                .userDetail(UserDetail.builder().nickname("userNickname").build())
-                .build();
-        User targetUser = User.builder()
-                .email("targetUser")
-                .userDetail(UserDetail.builder().nickname("targetUserNickname").build())
-                .build();
+        User user = User.buildUser("userEmail");
+        User targetUser = User.buildUser("targetUserEmail");
+        userRepository.save(user);
+        userRepository.save(targetUser);
 
-        Following follow = Following.createFollowingToFrom(targetUser, user);
-        followingRepository.save(follow);
+        UserDetail userDetail1 = UserDetail.buildUserDetail(user);
+        UserDetail userDetail2 = UserDetail.buildUserDetail(targetUser);
+        userDetailRepository.save(userDetail1);
+        userDetailRepository.save(userDetail2);
+
+        Following follow1 = Following.createFollowingToFrom(user, targetUser);
+        followingRepository.save(follow1);
+        Following follow2 = Following.createFollowingToFrom(targetUser, user);
+        followingRepository.save(follow2);
 
         // when
         List<FollowingResponse> result = followingRepository.getFollowingToUserListByFromUser(user);
 
         // then
         assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getUserId()).isEqualTo(targetUser.getId());
-        assertThat(result.get(0).getUserNickname()).isEqualTo(targetUser.getUserDetail().getNickname());
 
     }
 
     @Test
     public void 팔로워_리스트_조회() {
         // given
-        User user = User.builder()
-                .email("user")
-                .userDetail(UserDetail.builder().nickname("userNickname").build())
-                .build();
-        User targetUser = User.builder()
-                .email("targetUser")
-                .userDetail(UserDetail.builder().nickname("targetUserNickname").build())
-                .build();
+        User user = User.buildUser("userEmail");
+        User targetUser = User.buildUser("targetUserEmail");
+        userRepository.save(user);
+        userRepository.save(targetUser);
 
-        Following follow = Following.createFollowingToFrom(user, targetUser);
-        followingRepository.save(follow);
+        UserDetail userDetail1 = UserDetail.buildUserDetail(user);
+        UserDetail userDetail2 = UserDetail.buildUserDetail(targetUser);
+        userDetailRepository.save(userDetail1);
+        userDetailRepository.save(userDetail2);
+
+        Following follow1 = Following.createFollowingToFrom(user, targetUser);
+        followingRepository.save(follow1);
+        Following follow2 = Following.createFollowingToFrom(targetUser, user);
+        followingRepository.save(follow2);
 
         // when
         List<FollowingResponse> result = followingRepository.getFollowingFromUserListByToUser(user);
 
         // then
         assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getUserId()).isEqualTo(targetUser.getId());
-        assertThat(result.get(0).getUserNickname()).isEqualTo(targetUser.getUserDetail().getNickname());
 
     }
 

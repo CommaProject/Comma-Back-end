@@ -56,18 +56,15 @@ public class User implements UserDetails {
     @Convert(converter = BooleanConverter.class)
     private Boolean delFlag = false;
 
-    @Setter
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "user_detail_id")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     private UserDetail userDetail;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @Builder.Default
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private List<FavoriteArtist> favoriteArtist = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.PERSIST , mappedBy = "user")
     @Builder.Default
+    @OneToMany(cascade = CascadeType.PERSIST , mappedBy = "user")
     private List<History> history = new ArrayList<>();
 
     public void addFavoriteArtist(String artist) {
@@ -89,18 +86,9 @@ public class User implements UserDetails {
         this.history.add(historyEntity);
     }
 
-    public static User buildUserForRegister(final RegisterRequest registerRequest, final UserType userType) {
+    public static User buildUser(String email) {
         return User.builder()
-                .email(registerRequest.getEmail())
-                .password(registerRequest.getPassword())
-                .type(userType)
-                .role(UserRole.USER)
-                .build();
-    }
-
-    public static User buildUser() {
-        return User.builder()
-                .email("email@email.com")
+                .email(email)
                 .password("password")
                 .type(UserType.GENERAL_USER)
                 .role(UserRole.USER)

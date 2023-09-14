@@ -1,6 +1,7 @@
 package com.team.comma.domain.user.user.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.comma.domain.user.detail.repository.UserDetailRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.team.comma.domain.user.detail.domain.QUserDetail.userDetail;
 import static com.team.comma.domain.user.user.domain.QUser.user;
@@ -28,72 +30,61 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Autowired
-    private JPAQueryFactory queryFactory;
-
-    private String userEmail = "email@naver.com";
-    private String userPassword = "password";
+    private UserDetailRepository userDetailRepository;
 
     @Test
     @DisplayName("사용자 등록")
-    public void registUser() {
+    public void save() {
         // given
-        User userEntity = getUserEntity();
+        User userEntity = User.buildUser("userEmail");
 
         // when
         User result = userRepository.save(userEntity);
 
         // then
-        assertThat(result.getEmail()).isEqualTo(userEmail);
-        assertThat(result.getPassword()).isEqualTo(userPassword);
+        assertThat(result.getEmail()).isEqualTo(userEntity.getEmail());
+        assertThat(result.getPassword()).isEqualTo(userEntity.getPassword());
     }
 
     @Test
-    @DisplayName("사용자 탐색")
-    public void findUser() {
+    public void findUserByEmail() {
         // given
-        User userEntity = getUserEntity();
+        User userEntity = User.buildUser("userEmail");
 
         // when
         userRepository.save(userEntity);
-        User result = queryFactory.select(user)
-                .from(user)
-                .leftJoin(user.userDetail)
-                .fetchJoin()
-                .where(user.email.eq(userEntity.getEmail()))
-                .fetchFirst();
+        Optional<User> result = userRepository.findUserByEmail(userEntity.getEmail());
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getEmail()).isEqualTo(userEmail);
+        assertThat(result.get().getEmail()).isEqualTo(userEntity.getEmail());
     }
 
     @Test
     @DisplayName("이름과 닉네임으로 연관된 사용자 탐색")
     public void findUserByNickNameAndName() {
         // given
-        User userEntity1 = getUserEntity();
-        userEntity1.setUserDetail(UserDetail.builder().name("a01").nickname("b02").build());
-        User userEntity2 = getUserEntity();
-        userEntity2.setUserDetail(UserDetail.builder().name("b01").nickname("a02").build());
-        User userEntity3 = getUserEntity();
-        userEntity3.setUserDetail(UserDetail.builder().name("c01").nickname("c02").build());
+        User userEntity1 = User.buildUser("userEmail1");
+        User userEntity2 = User.buildUser("userEmail2");
+        User userEntity3 = User.buildUser("userEmail3");
 
         userRepository.save(userEntity1);
         userRepository.save(userEntity2);
         userRepository.save(userEntity3);
 
+        UserDetail userDetail1 = UserDetail.buildUserDetail(userEntity1);
+        UserDetail userDetail2 = UserDetail.buildUserDetail(userEntity2);
+        UserDetail userDetail3 = UserDetail.buildUserDetail(userEntity3);
+
+        userDetailRepository.save(userDetail1);
+        userDetailRepository.save(userDetail2);
+        userDetailRepository.save(userDetail3);
+
         // when
-        List<User> result = queryFactory.select(user).from(user).join(user.userDetail).fetchJoin()
-                .where(userDetail.name.eq("b01").or(userDetail.nickname.eq("c02")))
-                .fetch();
+        List<User> result = userRepository.searchUserByUserNameAndNickName("nickname");
 
         // then
-        assertThat(result.size()).isEqualTo(2);
-    }
-
-    private User getUserEntity() {
-        return User.builder().email(userEmail).password(userPassword).type(UserType.GENERAL_USER)
-            .role(UserRole.USER).build();
+        assertThat(result.size()).isEqualTo(3);
     }
 
 }

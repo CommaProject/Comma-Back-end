@@ -75,7 +75,7 @@ class UserServiceTest {
         // given
         LoginRequest login = getLoginRequest();
         Optional<User> userEntity = getOauthUserEntity();
-        doReturn(userEntity).when(userRepository).findByEmail(userEmail);
+        doReturn(userEntity).when(userRepository).findUserByEmail(userEmail);
 
         // when
         Throwable thrown = catchThrowable(() -> userService.login(login , null));
@@ -85,7 +85,7 @@ class UserServiceTest {
             .hasMessage("일반 사용자는 OAuth 계정으로 로그인할 수 없습니다.");
 
         // verify
-        verify(userRepository, times(1)).findByEmail(userEmail);
+        verify(userRepository, times(1)).findUserByEmail(userEmail);
     }
 
     @Test
@@ -96,7 +96,7 @@ class UserServiceTest {
         User user = User.builder().email(userEmail).password("unknown").role(UserRole.USER)
                 .build();
         Optional<User> optionalUser = Optional.of(user);
-        doReturn(optionalUser).when(userRepository).findByEmail(loginRequest.getEmail());
+        doReturn(optionalUser).when(userRepository).findUserByEmail(loginRequest.getEmail());
 
         // when
         Throwable thrown = catchThrowable(() -> userService.login(loginRequest , null));
@@ -111,7 +111,7 @@ class UserServiceTest {
     void notExistUserLoginExceptionTest() {
         // given
         LoginRequest login = getLoginRequest();
-        doReturn(Optional.empty()).when(userRepository).findByEmail(login.getEmail());
+        doReturn(Optional.empty()).when(userRepository).findUserByEmail(login.getEmail());
 
         // when
         Throwable thrown = catchThrowable(() -> userService.login(login , null));
@@ -120,7 +120,7 @@ class UserServiceTest {
         assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
 
         // verify
-        verify(userRepository, times(1)).findByEmail(login.getEmail());
+        verify(userRepository, times(1)).findUserByEmail(login.getEmail());
     }
 
     @Test
@@ -130,7 +130,7 @@ class UserServiceTest {
         Optional<User> user = getUserEntity();
         Token token = Token.builder().accessToken("accessTokenData").refreshToken("refreshTokenData").build();
 
-        doReturn(user).when(userRepository).findByEmail(userEmail);
+        doReturn(user).when(userRepository).findUserByEmail(userEmail);
         doReturn(token).when(jwtService).createJwtToken(user.get());
 
         LoginRequest request = getLoginRequest();
@@ -148,7 +148,7 @@ class UserServiceTest {
     void existUserException() {
         // given
         RegisterRequest registerRequest = getRegisterRequest();
-        doReturn(getUserEntity()).when(userRepository).findByEmail(any(String.class));
+        doReturn(getUserEntity()).when(userRepository).findUserByEmail(any(String.class));
 
         // when
         Throwable thrown = catchThrowable(() -> userService.register(registerRequest));
@@ -164,7 +164,7 @@ class UserServiceTest {
         // given
         RegisterRequest registerRequest = getRegisterRequest();
         Optional<User> userEntity = getUserEntity();
-        doReturn(Optional.empty()).when(userRepository).findByEmail(registerRequest.getEmail());
+        doReturn(Optional.empty()).when(userRepository).findUserByEmail(registerRequest.getEmail());
         doReturn(userEntity.get()).when(userRepository).save(any(User.class));
 
         // when
@@ -184,7 +184,7 @@ class UserServiceTest {
     void getUserInfoByCookieButNotExistendUser() {
         // given
         doReturn("accessToken").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
+        doReturn(Optional.empty()).when(userRepository).findUserByEmail(any(String.class));
 
         // when
         Throwable thrown = catchThrowable(() -> userService.getUserByCookie("accessToken"));
@@ -198,7 +198,7 @@ class UserServiceTest {
     void getUserInfoByCookie() {
         // given
         doReturn("accessToken").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(getUserEntity()).when(userRepository).findByEmail(any(String.class));
+        doReturn(getUserEntity()).when(userRepository).findUserByEmail(any(String.class));
 
         // when
         MessageResponse result = userService.getUserByCookie("accessToken");

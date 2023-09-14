@@ -76,7 +76,7 @@ public class UserDetailServiceTest {
     @DisplayName("사용자 정보 저장 성공")
     void createProfile_success() throws AccountException {
         // given
-        User user = User.buildUser();
+        User user = User.buildUser("userEmail");
         doReturn("accessToken").when(jwtTokenProvider).getUserPk(any(String.class));
         doReturn(user).when(userService).findUserOrThrow(any(String.class));
 
@@ -88,6 +88,11 @@ public class UserDetailServiceTest {
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+    }
+
+    @Test
+    void findUserDetailOrThrow_success() {
+
     }
 
 }

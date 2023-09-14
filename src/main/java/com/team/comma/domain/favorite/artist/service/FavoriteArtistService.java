@@ -28,7 +28,7 @@ public class FavoriteArtistService {
 
     public MessageResponse isFavoriteArtist(String token , String artistName) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
         boolean isAddedArtist = false;
 
@@ -49,7 +49,7 @@ public class FavoriteArtistService {
     @Transactional
     public MessageResponse createFavoriteArtist(String token , String artistName) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         if(isAddedFavoriteArtist(user , artistName)) {
@@ -64,7 +64,7 @@ public class FavoriteArtistService {
     @Transactional
     public MessageResponse deleteFavoriteArtist(String token , String artistName) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         favoriteArtistRepository.deleteByUser(user , artistName);
@@ -74,7 +74,7 @@ public class FavoriteArtistService {
 
     public MessageResponse findAllFavoriteArtist(final String accessToken) throws AccountException{
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         List<FavoriteArtistResponse> favoriteArtistResponses = findAllFavoriteArtistByUser(user);
