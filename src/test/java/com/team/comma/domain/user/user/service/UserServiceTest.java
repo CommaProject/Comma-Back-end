@@ -1,13 +1,9 @@
 package com.team.comma.domain.user.user.service;
 
-import com.team.comma.domain.user.history.dto.HistoryRequest;
 import com.team.comma.domain.user.history.service.HistoryService;
-import com.team.comma.domain.user.detail.domain.UserDetail;
-import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.dto.LoginRequest;
-import com.team.comma.domain.user.user.dto.RegisterRequest;
+import com.team.comma.domain.user.user.dto.UserRequest;
 import com.team.comma.domain.user.user.dto.UserResponse;
 import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
@@ -57,10 +53,6 @@ class UserServiceTest {
     @Mock
     private HistoryService historyService;
 
-
-    private final String userEmail = "email@naver.com";
-    private final String userPassword = "password";
-
     private MockHttpServletRequest request; // request mock
 
     @BeforeEach
@@ -71,11 +63,12 @@ class UserServiceTest {
 
     @Test
     @DisplayName("일반 사용자가 OAuth2.0 계정에 접근 시 오류")
-    void deniedToGeralUserAccessOAuthUser() throws AccountException {
+    void deniedToGeralUserAccessOAuthUser() {
         // given
-        LoginRequest login = getLoginRequest();
-        Optional<User> userEntity = getOauthUserEntity();
-        doReturn(userEntity).when(userRepository).findUserByEmail(userEmail);
+        UserRequest login = UserRequest.buildUserRequest("userEmail");
+
+        User userEntity = buildOauthUserEntity();
+        doReturn(Optional.of(userEntity)).when(userRepository).findUserByEmail("userEmail");
 
         // when
         Throwable thrown = catchThrowable(() -> userService.login(login , null));
@@ -85,16 +78,16 @@ class UserServiceTest {
             .hasMessage("일반 사용자는 OAuth 계정으로 로그인할 수 없습니다.");
 
         // verify
-        verify(userRepository, times(1)).findUserByEmail(userEmail);
+        verify(userRepository, times(1)).findUserByEmail("userEmail");
     }
 
     @Test
     @DisplayName("사용자 로그인 예외 _ 일치하지 않은 비밀번호")
-    void loginException_notEqualPassword() throws AccountException {
+    void loginException_notEqualPassword() {
         // given
-        LoginRequest loginRequest = getLoginRequest();
-        User user = User.builder().email(userEmail).password("unknown").role(UserRole.USER)
-                .build();
+        UserRequest loginRequest = UserRequest.buildUserRequest("userEmail");
+
+        User user = buildUserEntity("userEmail", "password123");
         Optional<User> optionalUser = Optional.of(user);
         doReturn(optionalUser).when(userRepository).findUserByEmail(loginRequest.getEmail());
 
@@ -110,7 +103,7 @@ class UserServiceTest {
     @DisplayName("사용자 로그인 예외 _ 존재하지 않은 사용자")
     void notExistUserLoginExceptionTest() {
         // given
-        LoginRequest login = getLoginRequest();
+        UserRequest login = UserRequest.buildUserRequest("userEmail");
         doReturn(Optional.empty()).when(userRepository).findUserByEmail(login.getEmail());
 
         // when
@@ -127,13 +120,13 @@ class UserServiceTest {
     @DisplayName("사용자 로그인 성공")
     void loginUserTest() throws AccountException {
         // given
-        Optional<User> user = getUserEntity();
-        Token token = Token.builder().accessToken("accessTokenData").refreshToken("refreshTokenData").build();
+        User user = buildUserEntity("userEmail", "password");
+        Token token = Token.builder().accessToken("accessToken").refreshToken("refreshToken").build();
 
-        doReturn(user).when(userRepository).findUserByEmail(userEmail);
-        doReturn(token).when(jwtService).createJwtToken(user.get());
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail("userEmail");
+        doReturn(token).when(jwtService).createJwtToken(user);
 
-        LoginRequest request = getLoginRequest();
+        UserRequest request = UserRequest.buildUserRequest("userEmail");
         HttpServletResponse responseMock = Mockito.mock(HttpServletResponse.class);
 
         // when
@@ -147,11 +140,13 @@ class UserServiceTest {
     @DisplayName("회원 가입 예외_존재하는 회원")
     void existUserException() {
         // given
-        RegisterRequest registerRequest = getRegisterRequest();
-        doReturn(getUserEntity()).when(userRepository).findUserByEmail(any(String.class));
+        UserRequest userRequest = UserRequest.buildUserRequest("userEmail");
+
+        User user = buildUserEntity("userEmail", "password");
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(any(String.class));
 
         // when
-        Throwable thrown = catchThrowable(() -> userService.register(registerRequest));
+        Throwable thrown = catchThrowable(() -> userService.register(userRequest));
 
         // then
         assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("이미 존재하는 계정입니다.");
@@ -162,21 +157,22 @@ class UserServiceTest {
     @DisplayName("사용자 회원 가입 성공")
     void registUser() throws AccountException {
         // given
-        RegisterRequest registerRequest = getRegisterRequest();
-        Optional<User> userEntity = getUserEntity();
-        doReturn(Optional.empty()).when(userRepository).findUserByEmail(registerRequest.getEmail());
-        doReturn(userEntity.get()).when(userRepository).save(any(User.class));
+        UserRequest userRequest = UserRequest.buildUserRequest("userEmail");
+
+        User user = buildUserEntity("userEmail", "password");
+        doReturn(user).when(userRepository).save(any(User.class));
+        doReturn(Optional.empty()).when(userRepository).findUserByEmail(userRequest.getEmail());
 
         // when
-        MessageResponse message = userService.register(registerRequest);
+        MessageResponse message = userService.register(userRequest);
 
         // then
-        UserResponse user = (UserResponse) message.getData();
+        UserResponse result = (UserResponse) message.getData();
 
         assertThat(message.getCode()).isEqualTo(1);
         assertThat(message.getMessage()).isEqualTo("성공적으로 가입되었습니다.");
-        assertThat(user).isNotNull();
-        assertThat(user.getEmail()).isEqualTo(userEntity.get().getEmail());
+        assertThat(result).isNotNull();
+        assertThat(result.getEmail()).isEqualTo(user.getEmail());
     }
 
     @Test
@@ -187,7 +183,7 @@ class UserServiceTest {
         doReturn(Optional.empty()).when(userRepository).findUserByEmail(any(String.class));
 
         // when
-        Throwable thrown = catchThrowable(() -> userService.getUserByCookie("accessToken"));
+        Throwable thrown = catchThrowable(() -> userService.getUserInformation("accessToken"));
 
         // then
         assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
@@ -197,64 +193,67 @@ class UserServiceTest {
     @DisplayName("AccessToken 쿠키로 사용자 정보 가져오기")
     void getUserInfoByCookie() {
         // given
+        User user = buildUserEntity("userEmail", "password");
+
         doReturn("accessToken").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(getUserEntity()).when(userRepository).findUserByEmail(any(String.class));
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(any(String.class));
 
         // when
-        MessageResponse result = userService.getUserByCookie("accessToken");
+        MessageResponse result = userService.getUserInformation("accessToken");
 
         // then
         assertThat(result).isNotNull();
-        assertThat(((UserResponse) result.getData()).getEmail()).isEqualTo(userEmail);
+        assertThat(((UserResponse) result.getData()).getEmail()).isEqualTo("userEmail");
     }
 
     @Test
     @DisplayName("사용자 이름이나 닉네임으로 사용자 탐색")
-    void searchUserByNameAndNickNameTest() {
+    void searchUserByNameAndNickNameTest() throws AccountException {
         // given
-        List<User> userList = Arrays.asList(getUserEntity().get() , getUserEntity().get() , getUserEntity().get());
-        doReturn(userList).when(userRepository).searchUserByUserNameAndNickName(any(String.class));
-        doReturn(null).when(historyService).addHistory(any(HistoryRequest.class) , any(String.class));
+        User user = buildUserEntity("userEmail", "password");
+        List<User> userList = Arrays.asList(user , user , user);
+        doReturn(userList).when(userRepository).findAllUsersByNameAndNickName(any(String.class));
 
         // when
-        MessageResponse result = userService.searchUserByNameAndNickName("name" , "token");
+        MessageResponse result = userService.findAllUsersBySearchWord("name" , "token");
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(((List<UserResponse>) result.getData()).size()).isEqualTo(3);
     }
 
-    private Optional<User> getUserEntity() {
-        User user = User.builder().id(0L).email(userEmail).password(userPassword).userDetail(createUserDetail())
-                .role(UserRole.USER).build();
+    @Test
+    void modifyUserPassword_success() throws AccountException {
+        // given
+        String accessToken = "accessToken";
+        User user = buildUserEntity("userEmail", "password");
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(accessToken);
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
 
-        return Optional.of(user);
+        // when
+        MessageResponse result = userService.modifyUserPassword(accessToken, "change_password");
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(user.getPassword()).isEqualTo("change_password");
     }
 
-    private UserDetail createUserDetail() {
-        return UserDetail.builder()
-                .id(0L)
-                .name("name")
-                .allPublicFlag(false)
-                .calenderPublicFlag(false)
-                .favoritePublicFlag(false)
-                .nickname("nickName")
-                .profileImageUrl("url")
+    public User buildOauthUserEntity() {
+        return User.builder()
+                .id(1L)
+                .email("userEmail")
+                .type(UserType.OAUTH_USER)
+                .password("password")
                 .build();
     }
 
-    private LoginRequest getLoginRequest() {
-        return LoginRequest.builder().email(userEmail).password(userPassword).build();
-    }
-
-    private RegisterRequest getRegisterRequest() {
-        return RegisterRequest.builder().email(userEmail).password(userPassword).build();
-    }
-
-    public Optional<User> getOauthUserEntity() {
-        User user = User.builder().id(0L).email(userEmail).type(UserType.OAUTH_USER).password(null).build();
-
-        return Optional.of(user);
+    public User buildUserEntity(String email, String password) {
+        return User.builder()
+                .id(1L)
+                .email(email)
+                .type(UserType.GENERAL_USER)
+                .password(password)
+                .build();
     }
 
 }

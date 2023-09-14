@@ -81,7 +81,7 @@ public class UserRepositoryTest {
         userDetailRepository.save(userDetail3);
 
         // when
-        List<User> result = userRepository.searchUserByUserNameAndNickName("nickname");
+        List<User> result = userRepository.findAllUsersByNameAndNickName("nickname");
 
         // then
         assertThat(result.size()).isEqualTo(3);

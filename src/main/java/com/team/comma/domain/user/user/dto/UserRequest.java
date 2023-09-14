@@ -9,7 +9,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class RegisterRequest {
+public class UserRequest {
 
     private String email;
     private String password;
@@ -20,6 +20,19 @@ public class RegisterRequest {
                 .password(password)
                 .type(userType)
                 .role(UserRole.USER)
+                .build();
+    }
+
+    public static UserRequest buildUserRequest(final String email) {
+        return UserRequest.builder()
+                .email(email)
+                .password("password")
+                .build();
+    }
+
+    public static UserRequest buildUserModifyRequest(final String password) {
+        return UserRequest.builder()
+                .password(password)
                 .build();
     }
 

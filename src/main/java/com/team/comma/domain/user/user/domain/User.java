@@ -5,11 +5,9 @@ import com.team.comma.domain.user.history.domain.History;
 import com.team.comma.domain.user.detail.domain.UserDetail;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
-import com.team.comma.domain.user.user.dto.RegisterRequest;
 import com.team.comma.global.converter.BooleanConverter;
 import jakarta.persistence.*;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -67,6 +65,10 @@ public class User implements UserDetails {
     @OneToMany(cascade = CascadeType.PERSIST , mappedBy = "user")
     private List<History> history = new ArrayList<>();
 
+    public void modifyPassword(String password){
+        this.password = password;
+    }
+
     public void addFavoriteArtist(String artist) {
         FavoriteArtist artistData = FavoriteArtist.builder()
             .artistName(artist)
@@ -104,13 +106,13 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return email;
     }
 
     @Override
-    public String getUsername() {
-        return email;
+    public String getPassword() {
+        return password;
     }
 
     @Override

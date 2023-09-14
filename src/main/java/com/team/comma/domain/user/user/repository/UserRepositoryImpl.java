@@ -16,7 +16,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<User> searchUserByUserNameAndNickName(String name) {
+    public List<User> findAllUsersByNameAndNickName(String name) {
         return queryFactory.select(user).from(user).leftJoin(user.userDetail).fetchJoin()
                 .where(userDetail.nickname.eq(name)
                         .or(userDetail.name.eq(name)))

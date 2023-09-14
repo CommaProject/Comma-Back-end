@@ -6,8 +6,7 @@ import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.dto.LoginRequest;
-import com.team.comma.domain.user.user.dto.RegisterRequest;
+import com.team.comma.domain.user.user.dto.UserRequest;
 import com.team.comma.domain.user.user.dto.UserResponse;
 import com.team.comma.domain.user.user.service.UserService;
 import com.team.comma.global.gson.GsonUtil;
@@ -48,6 +47,7 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
@@ -83,10 +83,11 @@ class UserControllerTest {
     void loginRequestSuccess() throws Exception {
         // given
         String api = "/login";
-        LoginRequest request = getLoginRequest();
-        UserResponse response = getUserResponse();
+
+        UserRequest request = UserRequest.buildUserRequest("userEmail");
+        UserResponse response = UserResponse.buildUserResponse("userEmail");
         MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, response);
-        doReturn(message).when(userService).login(any(LoginRequest.class) , any(HttpServletResponse.class));
+        doReturn(message).when(userService).login(any(UserRequest.class) , any(HttpServletResponse.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -114,7 +115,7 @@ class UserControllerTest {
                                 fieldWithPath("data.delFlag").description("탈퇴 여부 True -> 탈퇴한 사용자"),
                                 fieldWithPath("data.role").description("사용자 권한"),
                                 fieldWithPath("data.userId").description("사용자 Id 데이터"),
-                                fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
+                                fieldWithPath("data.profileImageUrl").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.joinDate").description("가입 날짜"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임")
@@ -137,8 +138,8 @@ class UserControllerTest {
     void loginRequestFail_notExistUser() throws Exception {
         // given
         String api = "/login";
-        LoginRequest request = getLoginRequest();
-        doThrow(new AccountException("정보가 올바르지 않습니다.")).when(userService).login(any(LoginRequest.class) , any(HttpServletResponse.class));
+        UserRequest request = UserRequest.buildUserRequest("email");
+        doThrow(new AccountException("정보가 올바르지 않습니다.")).when(userService).login(any(UserRequest.class) , any(HttpServletResponse.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -176,9 +177,10 @@ class UserControllerTest {
     void registUserSuccess() throws Exception {
         // given
         final String api = "/register";
-        LoginRequest request = getLoginRequest();
-        UserResponse response = getUserResponse();
-        doReturn(MessageResponse.of(REGISTER_SUCCESS, response)).when(userService).register(any(RegisterRequest.class));
+
+        UserRequest request = UserRequest.buildUserRequest("userEmail");
+        UserResponse response = UserResponse.buildUserResponse("userEmail");
+        doReturn(MessageResponse.of(REGISTER_SUCCESS, response)).when(userService).register(any(UserRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -205,7 +207,7 @@ class UserControllerTest {
                                 fieldWithPath("data.delFlag").description("탈퇴 여부 True -> 탈퇴한 사용자"),
                                 fieldWithPath("data.role").description("사용자 권한"),
                                 fieldWithPath("data.userId").description("사용자 Id 데이터"),
-                                fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
+                                fieldWithPath("data.profileImageUrl").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임"),
                                 fieldWithPath("data.joinDate").description("가입 날짜")
@@ -227,8 +229,8 @@ class UserControllerTest {
     void registUserFail_existUserException() throws Exception {
         // given
         final String api = "/register";
-        LoginRequest request = getLoginRequest();
-        doThrow(new AccountException("이미 존재하는 계정입니다.")).when(userService).register(any(RegisterRequest.class));
+        UserRequest request = UserRequest.buildUserRequest("email");
+        doThrow(new AccountException("이미 존재하는 계정입니다.")).when(userService).register(any(UserRequest.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -266,7 +268,7 @@ class UserControllerTest {
     void getUserInfoByAccessTokenFail_NotExistUser() throws Exception {
         // given
         final String api = "/user/information";
-        doThrow(new UserException(NOT_FOUNT_USER)).when(userService).getUserByCookie(any(String.class));
+        doThrow(new UserException(NOT_FOUNT_USER)).when(userService).getUserInformation(any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -303,7 +305,7 @@ class UserControllerTest {
         // given
         final String api = "/user/information";
         doThrow(new TokenForgeryException("알 수 없는 토큰이거나 , 변조되었습니다."))
-                .when(userService).getUserByCookie(any(String.class));
+                .when(userService).getUserInformation(any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -347,7 +349,7 @@ class UserControllerTest {
                 .role(UserRole.USER)
                 .build();
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS, user);
-        doReturn(messageResponse).when(userService).getUserByCookie(any(String.class));
+        doReturn(messageResponse).when(userService).getUserInformation(any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -373,7 +375,7 @@ class UserControllerTest {
                                 fieldWithPath("data.delFlag").description("탈퇴 여부 True -> 탈퇴한 사용자"),
                                 fieldWithPath("data.role").description("사용자 권한"),
                                 fieldWithPath("data.userId").description("사용자 Id 데이터"),
-                                fieldWithPath("data.profileImage").description("사용자 프로필 이미지 URL"),
+                                fieldWithPath("data.profileImageUrl").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data.name").description("사용자 이름"),
                                 fieldWithPath("data.nickName").description("사용자 닉네임"),
                                 fieldWithPath("data.joinDate").description("가입 날짜")
@@ -393,9 +395,14 @@ class UserControllerTest {
     void searchUserByNameAndNickName() throws Exception {
         // given
         String api = "/user/{name}";
-        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS
-                , Arrays.asList(getUserResponse(), getUserResponse(), getUserResponse()));
-        doReturn(messageResponse).when(userService).searchUserByNameAndNickName("name", "token");
+
+        User user = User.buildUser("email");
+        MessageResponse messageResponse = MessageResponse.of(
+                REQUEST_SUCCESS, Arrays.asList(
+                        UserResponse.buildUserResponse("userEmail"),
+                        UserResponse.buildUserResponse("userEmail"),
+                        UserResponse.buildUserResponse("userEmail")));
+        doReturn(messageResponse).when(userService).findAllUsersBySearchWord("name", "token");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -423,7 +430,7 @@ class UserControllerTest {
                                 fieldWithPath("data[].delFlag").description("탈퇴 여부 True -> 탈퇴한 사용자"),
                                 fieldWithPath("data[].role").description("사용자 권한"),
                                 fieldWithPath("data[].userId").description("사용자 Id 데이터"),
-                                fieldWithPath("data[].profileImage").description("사용자 프로필 이미지 URL"),
+                                fieldWithPath("data[].profileImageUrl").description("사용자 프로필 이미지 URL"),
                                 fieldWithPath("data[].name").description("사용자 이름"),
                                 fieldWithPath("data[].nickName").description("사용자 닉네임"),
                                 fieldWithPath("data[].joinDate").description("가입 날짜")
@@ -439,28 +446,48 @@ class UserControllerTest {
         assertThat(((List<UserResponse>) response.getData()).size()).isEqualTo(3);
     }
 
+    @Test
+    void modifyUserPassword_success() throws Exception {
+        // given
+        String api = "/user";
 
-    public LoginRequest getLoginRequest() {
-        return LoginRequest.builder()
-                .email(userEmail)
-                .password(userPassword)
-                .build();
-    }
+        doReturn(MessageResponse.of(REQUEST_SUCCESS))
+                .when(userService).modifyUserPassword("accessToken", "change_password");
 
-    private User getUserEntity() {
-        return User.builder().email(userEmail).password(userPassword)
-                .role(UserRole.USER).build();
-    }
+        UserRequest request = UserRequest.buildUserModifyRequest("change_password");
 
-    private UserResponse getUserResponse() {
-        return UserResponse.builder()
-                .email(userEmail)
-                .password(userPassword)
-                .role(UserRole.USER)
-                .delFlag(false)
-                .profileImage("s3 Image URL")
-                .userId(0)
-                .build();
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                patch(api)
+                        .cookie(new Cookie("accessToken", "accessToken"))
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("user/modify-password-success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("accessToken 명")
+                        ),
+                        requestFields(
+                                fieldWithPath("password").description("변경 할 패스워드")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터")
+                        )
+                )
+        );
+        final MessageResponse response = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
     }
 
 }
