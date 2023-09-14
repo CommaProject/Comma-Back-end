@@ -214,13 +214,13 @@ class UserControllerTest {
                         )
                 )
         );
-        final MessageResponse responseResult = gson.fromJson(
+        final MessageResponse result = gson.fromJson(
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 new TypeToken<MessageResponse<UserResponse>>() {}.getType());
 
-        UserResponse userResponse = (UserResponse) responseResult.getData();
-        assertThat(responseResult.getCode()).isEqualTo(REGISTER_SUCCESS.getCode());
-        assertThat(responseResult.getMessage()).isEqualTo("성공적으로 가입되었습니다.");
+        UserResponse userResponse = (UserResponse) result.getData();
+        assertThat(result.getCode()).isEqualTo(REGISTER_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo("성공적으로 가입되었습니다.");
         assertThat(userResponse.getEmail()).isEqualTo(request.getEmail());
     }
 
