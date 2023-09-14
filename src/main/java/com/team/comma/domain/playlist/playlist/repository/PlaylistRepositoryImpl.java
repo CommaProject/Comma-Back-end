@@ -8,10 +8,12 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.user.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,6 +78,18 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
                                 .innerJoin(playlistTrack.playlist , playlist).on(playlist.id.eq(playlistId))
                                 .innerJoin(playlistTrack.track , track)
                 )).execute();
+    }
+
+    @Override
+    public List<Playlist> findAllPlaylistsByAlertTime(LocalTime time) {
+        LocalTime start = LocalTime.of(time.getHour() , time.getMinute() - 5).withNano(0);
+        LocalTime end = LocalTime.of(time.getHour() , time.getMinute() + 5).withNano(0);
+
+        return queryFactory.select(playlist)
+                .from(playlist)
+                .innerJoin(playlist.user).fetchJoin()
+                .where(playlist.alarmStartTime.goe(start).and(playlist.alarmStartTime.loe(end)))
+                .fetch();
     }
 
     @Override

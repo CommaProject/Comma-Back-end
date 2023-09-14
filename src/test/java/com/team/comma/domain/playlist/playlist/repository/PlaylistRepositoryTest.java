@@ -13,6 +13,8 @@ import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.config.TestConfig;
+
+import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,6 +167,30 @@ class PlaylistRepositoryTest {
         assertThat(durationSum).isEqualTo(3000L);
     }
 
+    @Test
+    void 플레이리스트_알람재생시간_가져오기() {
+        // given
+        User user = buildUser();
+        userRepository.save(user);
+        Playlist playlist = buildPlaylist(user , "title" , LocalTime.of(5 , 20));
+        playlistRepository.save(playlist);
+
+        Playlist playlist1 = buildPlaylist(user , "title" , LocalTime.of(5 , 20));
+        playlistRepository.save(playlist1);
+
+        Playlist playlist2 = buildPlaylist(user , "title" , LocalTime.of(7 , 30));
+        playlistRepository.save(playlist2);
+
+        Playlist playlist3 = buildPlaylist(user , "title" , LocalTime.of(9 , 10));
+        playlistRepository.save(playlist3);
+
+        // when
+        List<Playlist> result = playlistRepository.findAllPlaylistsByAlertTime(LocalTime.of(5 , 20));
+
+        // then
+        assertThat(result.size()).isEqualTo(2);
+    }
+
     private User buildUser() {
         return User.builder()
                 .email(userEmail)
@@ -176,6 +202,15 @@ class PlaylistRepositoryTest {
     private Playlist buildPlaylist(User user, String title) {
         return Playlist.builder()
                 .playlistTitle(title)
+                .alarmFlag(true)
+                .user(user)
+                .build();
+    }
+
+    private Playlist buildPlaylist(User user, String title , LocalTime time) {
+        return Playlist.builder()
+                .playlistTitle(title)
+                .alarmStartTime(time)
                 .alarmFlag(true)
                 .user(user)
                 .build();
