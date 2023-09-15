@@ -54,6 +54,7 @@ public class User implements UserDetails {
     @Convert(converter = BooleanConverter.class)
     private Boolean delFlag = false;
 
+    @Setter
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     private UserDetail userDetail;
 

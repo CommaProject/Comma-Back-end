@@ -32,7 +32,7 @@ public class AlertService {
 
     public void subscribeAlert(String accessToken) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);

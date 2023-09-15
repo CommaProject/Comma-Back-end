@@ -1,10 +1,5 @@
 package com.team.comma.domain.playlist.playlist.repository;
 
-import static com.team.comma.domain.playlist.playlist.domain.QPlaylist.playlist;
-import static com.team.comma.domain.playlist.track.domain.QPlaylistTrack.playlistTrack;
-import static com.team.comma.domain.track.track.domain.QTrack.track;
-
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -16,6 +11,12 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+
+import static com.team.comma.domain.user.detail.domain.QUserDetail.userDetail;
+import static com.team.comma.domain.playlist.playlist.domain.QPlaylist.playlist;
+import static com.team.comma.domain.playlist.track.domain.QPlaylistTrack.playlistTrack;
+import static com.team.comma.domain.track.track.domain.QTrack.track;
+import static com.team.comma.domain.user.user.domain.QUser.user;
 
 @RequiredArgsConstructor
 public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
@@ -90,7 +91,8 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
 
         return queryFactory.select(playlist)
                 .from(playlist)
-                .innerJoin(playlist.user).fetchJoin()
+                .innerJoin(playlist.user , user)
+                .innerJoin(user.userDetail , userDetail).on(userDetail.popupAlertFlag.eq(true))
                 .where(playlist.alarmStartTime.goe(start).and(playlist.alarmStartTime.loe(end)))
                 .fetch();
     }
