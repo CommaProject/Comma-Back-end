@@ -8,6 +8,8 @@ import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.playlist.track.repository.PlaylistTrackRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.repository.TrackRepository;
+import com.team.comma.domain.user.detail.domain.UserDetail;
+import com.team.comma.domain.user.detail.repository.UserDetailRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
@@ -36,6 +38,9 @@ class PlaylistRepositoryTest {
 
     @Autowired
     private TrackRepository trackRepository;
+
+    @Autowired
+    private UserDetailRepository userDetailRepository;
 
     private final String userEmail = "email@naver.com";
     private final String title = "test playlist";
@@ -170,25 +175,53 @@ class PlaylistRepositoryTest {
     @Test
     void 플레이리스트_알람재생시간_가져오기() {
         // given
-        User user = buildUser();
-        userRepository.save(user);
-        Playlist playlist = buildPlaylist(user , "title" , LocalTime.of(5 , 20));
+        User user_false = buildUser();
+        UserDetail userDetail_false = buildUserDetail(user_false , false);
+
+        User user_true = buildUser();
+        UserDetail userDetail_true = buildUserDetail(user_true , true);
+
+        userDetailRepository.save(userDetail_true);
+        userDetailRepository.save(userDetail_false);
+        userRepository.save(user_false);
+        userRepository.save(user_true);
+
+        Playlist playlist4 = buildPlaylist(user_true , "title4" , LocalTime.of(5 , 10));
+        playlistRepository.save(playlist4);
+
+        Playlist playlist5 = buildPlaylist(user_true , "title5" , LocalTime.of(5 , 30));
+        playlistRepository.save(playlist5);
+
+        Playlist playlist6 = buildPlaylist(user_false , "title6" , LocalTime.of(5 , 20));
+        playlistRepository.save(playlist6);
+
+        Playlist playlist = buildPlaylist(user_true , "title" , LocalTime.of(5 , 20));
         playlistRepository.save(playlist);
 
-        Playlist playlist1 = buildPlaylist(user , "title" , LocalTime.of(5 , 20));
+        Playlist playlist1 = buildPlaylist(user_true , "title1" , LocalTime.of(5 , 20));
         playlistRepository.save(playlist1);
 
-        Playlist playlist2 = buildPlaylist(user , "title" , LocalTime.of(7 , 30));
+        Playlist playlist2 = buildPlaylist(user_true , "title2" , LocalTime.of(7 , 30));
         playlistRepository.save(playlist2);
 
-        Playlist playlist3 = buildPlaylist(user , "title" , LocalTime.of(9 , 10));
+        Playlist playlist3 = buildPlaylist(user_true , "title3" , LocalTime.of(9 , 10));
         playlistRepository.save(playlist3);
 
         // when
         List<Playlist> result = playlistRepository.findAllPlaylistsByAlertTime(LocalTime.of(5 , 20));
-
+        System.out.println(result.get(0).getPlaylistTitle());
         // then
         assertThat(result.size()).isEqualTo(2);
+    }
+
+    public UserDetail buildUserDetail(User user , boolean popup) {
+        return UserDetail.builder()
+                .name("name")
+                .nickname("nickname")
+                .profileImageUrl("S3 url")
+                .popupAlertFlag(popup)
+                .user(user)
+                .build();
     }
 
     private User buildUser() {
