@@ -30,15 +30,21 @@ public class AlertService {
     private final PlaylistRepository playlistRepository;
     private Map<Long , SseEmitter> session = new HashMap<>();
 
-    public void subscribeAlert(String accessToken) {
+    public SseEmitter subscribeAlert(String accessToken) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
         User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
+
+        if(session.containsKey(user.getId())) {
+            session.remove(user.getId());
+        }
         session.put(user.getId() , emitter);
 
         sendToClient(emitter , user.getId() , "EventStream Created. [userId = " + user.getId() + " ]");
+
+        return emitter;
     }
 
     @Scheduled(cron = "0 0/10 * * * *")
