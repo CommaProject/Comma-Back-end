@@ -1,6 +1,6 @@
-package com.team.comma.domain.alert.service;
+package com.team.comma.domain.playlist.alert.service;
 
-import com.team.comma.domain.alert.dto.AlertResponse;
+import com.team.comma.domain.playlist.alert.dto.AlertResponse;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.exception.UserException;

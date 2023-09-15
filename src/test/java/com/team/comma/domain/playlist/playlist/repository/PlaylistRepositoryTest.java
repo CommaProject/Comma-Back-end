@@ -2,7 +2,7 @@ package com.team.comma.domain.playlist.playlist.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.team.comma.domain.alert.dto.AlertResponse;
+import com.team.comma.domain.playlist.alert.dto.AlertResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;

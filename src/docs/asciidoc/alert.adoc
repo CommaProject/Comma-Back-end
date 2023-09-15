@@ -8,6 +8,8 @@
 
 link:main.html[main 화면]
 
+== 플레이리스트 알림 API
+
 === 알림을 위한 SSE 서버 연결
 
 ==== 성공

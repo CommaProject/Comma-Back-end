@@ -1,7 +1,6 @@
 package com.team.comma.domain.playlist.playlist.repository;
 
-import com.team.comma.domain.alert.dto.AlertResponse;
-import com.team.comma.domain.playlist.playlist.domain.Playlist;
+import com.team.comma.domain.playlist.alert.dto.AlertResponse;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.user.user.domain.User;
 

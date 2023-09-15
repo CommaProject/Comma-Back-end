@@ -1,7 +1,8 @@
-package com.team.comma.domain.alert.controller;
+package com.team.comma.domain.playlist.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.alert.service.AlertService;
+import com.team.comma.domain.playlist.alert.controller.AlertController;
+import com.team.comma.domain.playlist.alert.service.AlertService;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;

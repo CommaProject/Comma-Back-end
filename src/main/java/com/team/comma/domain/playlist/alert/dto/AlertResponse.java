@@ -1,4 +1,4 @@
-package com.team.comma.domain.alert.dto;
+package com.team.comma.domain.playlist.alert.dto;
 
 import lombok.*;
 

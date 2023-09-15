@@ -1,6 +1,6 @@
-package com.team.comma.domain.alert.controller;
+package com.team.comma.domain.playlist.alert.controller;
 
-import com.team.comma.domain.alert.service.AlertService;
+import com.team.comma.domain.playlist.alert.service.AlertService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
