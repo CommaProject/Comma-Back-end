@@ -34,7 +34,7 @@ public class AlertDayRepositoryTest {
     @Test
     void saveAll_Success() {
         // given
-        User user = User.buildUser();
+        User user = User.buildUser("userEmail");
         Playlist playlist = Playlist.buildPlaylist(user);
         List<AlertDay> alertDayList = List.of(
                 AlertDay.buildAlertDay(playlist, DayOfWeek.of(1)),
@@ -51,7 +51,7 @@ public class AlertDayRepositoryTest {
     @Test
     void findAllByPlaylist() {
         // given
-        User user = User.buildUser();
+        User user = User.buildUser("userEmail");
         userRepository.save(user);
 
         Playlist playlist = Playlist.buildPlaylist(user);
@@ -73,7 +73,7 @@ public class AlertDayRepositoryTest {
     @Test
     void deleteAllAlertDaysByPlaylist_Success() {
         // given
-        User user = User.buildUser();
+        User user = User.buildUser("userEmail");
         userRepository.save(user);
 
         Playlist playlist = Playlist.buildPlaylist(user);

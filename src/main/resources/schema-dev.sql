@@ -33,19 +33,6 @@ DROP TABLE IF EXISTS user_tb;
 SET FOREIGN_KEY_CHECKS = 1;
 
 
-CREATE TABLE user_detail_tb
-(
-    id                   BIGINT  NOT NULL AUTO_INCREMENT,
-    name                 VARCHAR(10),
-    nickname             VARCHAR(10),
-    profile_image_url    VARCHAR(50),
-    popup_alert_flag     VARCHAR(10) NOT NULL,
-    favorite_public_flag VARCHAR(10) NOT NULL,
-    calender_public_flag VARCHAR(10) NOT NULL,
-    all_public_flag      VARCHAR(10) NOT NULL,
-    PRIMARY KEY (id)
-);
-
 CREATE TABLE user_tb
 (
     id       BIGINT NOT NULL AUTO_INCREMENT,
@@ -55,11 +42,24 @@ CREATE TABLE user_tb
     type     VARCHAR(255),
     del_flag varchar(255),
     join_date DATE,
-    user_detail_id BIGINT ,
-    FOREIGN KEY (user_detail_id) REFERENCES user_detail_tb (id),
+    user_detail_id BIGINT,
     PRIMARY KEY (id)
 );
 
+CREATE TABLE user_detail_tb
+(
+    id                   BIGINT NOT NULL AUTO_INCREMENT,
+    name                 VARCHAR(10),
+    nickname             VARCHAR(10),
+    profile_image_url    VARCHAR(100),
+    popup_alert_flag     VARCHAR(10) NOT NULL,
+    favorite_public_flag VARCHAR(10) NOT NULL,
+    calender_public_flag VARCHAR(10) NOT NULL,
+    all_public_flag      VARCHAR(10) NOT NULL,
+    user_id              BIGINT,
+    FOREIGN KEY (user_id) REFERENCES user_tb (id),
+    PRIMARY KEY (id)
+);
 
 CREATE TABLE playlist_tb
 (
@@ -210,8 +210,8 @@ CREATE TABLE refresh_token_tb
 INSERT INTO user_detail_tb
 (name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag)
 VALUES
-    ('name', 'nickname', 'url', 'Y', 'Y', 'Y', 'Y'),
-    ('name2', 'nickname2', 'url', 'Y', 'Y', 'Y', 'Y');
+    ('name', 'nickname', 'no profile image', 'Y', 'Y', 'Y', 'Y'),
+    ('name2', 'nickname2', 'no profile image', 'Y', 'Y', 'Y', 'Y');
 
 INSERT INTO user_tb
 (email, password, `role`, `type`, del_flag, join_date, user_detail_id)

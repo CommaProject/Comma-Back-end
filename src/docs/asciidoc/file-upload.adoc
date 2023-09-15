@@ -1,0 +1,25 @@
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+
+== 메인 화면
+
+link:main.html[main 화면]
+
+== File Upload API
+
+=== 파일 S3 업로드(이미지만 가능)
+
+==== 성공
+
+===== Request
+
+include::{snippets}/file-upload/upload-success/http-request.adoc[]
+include::{snippets}/file-upload/upload-success/request-cookies.adoc[]
+include::{snippets}/file-upload/upload-success/request-parts.adoc[]
+
+===== Response
+
+include::{snippets}/file-upload/upload-success/http-response.adoc[]
+include::{snippets}/file-upload/upload-success/response-fields.adoc[]

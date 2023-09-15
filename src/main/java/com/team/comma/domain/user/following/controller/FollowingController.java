@@ -29,7 +29,7 @@ public class FollowingController {
     @GetMapping("/type/{followingType}")
     public ResponseEntity<MessageResponse> getFollowingList(
             @CookieValue String accessToken,
-            @PathVariable FollowingType followingType) throws AccountException {
+            @PathVariable FollowingType followingType) {
         return ResponseEntity.ok()
                 .body(followingService.getFollowingUserList(accessToken, followingType));
     }

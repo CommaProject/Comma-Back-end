@@ -209,7 +209,7 @@ public class ArchiveControllerTest {
     public void findArchiveByDate() throws Exception {
         // given
         final String api = "/archives/{startDate}/{endDate}";
-        User user = User.buildUser();
+        User user = User.buildUser("userEmail");
         Track track = buildTrack();
         Playlist playlist = buildPlaylist(user);
         playlist.addPlaylistTrack(track);

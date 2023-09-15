@@ -62,7 +62,7 @@ public class FollowingService {
         User userTo = userRepository.findById(toUserId)
                 .orElseThrow(() -> new AccountException("해당 사용자를 찾을 수 없습니다."));
 
-        User userFrom = userRepository.findByEmail(fromUserEmail)
+        User userFrom = userRepository.findUserByEmail(fromUserEmail)
                 .orElseThrow(() -> new AccountException("대상 사용자를 찾을 수 없습니다."));
 
         Following following = Following.createFollowingToFrom(userTo , userFrom);
@@ -96,7 +96,7 @@ public class FollowingService {
 
     public MessageResponse getFollowingUserList(String token, FollowingType followingType) {
         String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         List<FollowingResponse> returnResponses;
@@ -138,7 +138,7 @@ public class FollowingService {
 
     public MessageResponse countFollowings(final String accessToken) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
 
         FollowingCountResponse response = FollowingCountResponse.of(

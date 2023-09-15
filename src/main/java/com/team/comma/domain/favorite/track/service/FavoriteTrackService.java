@@ -31,7 +31,7 @@ public class FavoriteTrackService {
     @Transactional
     public MessageResponse createFavoriteTrack(String accessToken , FavoriteTrackRequest favoriteTrackRequest) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         FavoriteTrack result = FavoriteTrack.buildFavoriteTrack(user , trackService.findTrackOrSave(favoriteTrackRequest.getSpotifyTrackId()));
@@ -42,7 +42,7 @@ public class FavoriteTrackService {
 
     public MessageResponse findAllFavoriteTrack(final String accessToken) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         List<FavoriteTrackResponse> favoriteTrackResponses = findAllFavoriteTrackByUser(user);

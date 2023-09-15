@@ -37,7 +37,7 @@ public class ArchiveService {
     @Transactional
     public MessageResponse createArchive(final String token , final ArchiveRequest archiveRequest) throws AccountException {
         final String userEmail = jwtTokenProvider.getUserPk(token);
-        final User user = userRepository.findByEmail(userEmail)
+        final User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
         final Playlist playlist = playlistRepository.findById(archiveRequest.getPlaylistId())
                 .orElseThrow(() -> new PlaylistException("Playlist를 찾을 수 없습니다."));
@@ -50,7 +50,7 @@ public class ArchiveService {
 
     public MessageResponse findArchiveByDate(final String token, LocalDate startDate, LocalDate endDate) throws AccountException {
         final String userEmail = jwtTokenProvider.getUserPk(token);
-        final User user = userRepository.findByEmail(userEmail)
+        final User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         List<ArchiveResponse> archiveResponses = findArchiveByDateTime(
