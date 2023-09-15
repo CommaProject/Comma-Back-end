@@ -25,6 +25,6 @@ include::{snippets}/alert/alert/http-response.adoc[]
 
 ===== Response
 
-### 필독 : 하단의 code , message , data 없이 data 안에 있는 데이터가 전송됩니다. 따라서 playlistId 추출할 때 data.playlistId 가 아닌 playlistId 로 추출하시면 됩니다.
+- 필독 : 하단의 code , message , data 없이 data 안에 있는 데이터가 전송됩니다. 따라서 playlistId 추출할 때 data.playlistId 가 아닌 playlistId 로 추출하시면 됩니다.
 
 include::{snippets}/playlist/find-success/http-response.adoc[]
