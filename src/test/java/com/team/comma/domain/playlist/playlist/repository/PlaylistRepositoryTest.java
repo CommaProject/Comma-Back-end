@@ -2,6 +2,7 @@ package com.team.comma.domain.playlist.playlist.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.team.comma.domain.alert.dto.AlertResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
@@ -185,30 +186,38 @@ class PlaylistRepositoryTest {
         userDetailRepository.save(userDetail_false);
         userRepository.save(user_false);
         userRepository.save(user_true);
+        Track track = trackRepository.save(buildTrackWithDurationTimeMs(1000));
 
         Playlist playlist4 = buildPlaylist(user_true , "title4" , LocalTime.of(5 , 10));
+        playlist4.addPlaylistTrack(track);
         playlistRepository.save(playlist4);
 
         Playlist playlist5 = buildPlaylist(user_true , "title5" , LocalTime.of(5 , 30));
+        playlist5.addPlaylistTrack(track);
         playlistRepository.save(playlist5);
 
         Playlist playlist6 = buildPlaylist(user_false , "title6" , LocalTime.of(5 , 20));
+        playlist6.addPlaylistTrack(track);
         playlistRepository.save(playlist6);
 
         Playlist playlist = buildPlaylist(user_true , "title" , LocalTime.of(5 , 20));
+        playlist.addPlaylistTrack(track);
         playlistRepository.save(playlist);
 
         Playlist playlist1 = buildPlaylist(user_true , "title1" , LocalTime.of(5 , 20));
+        playlist1.addPlaylistTrack(track);
         playlistRepository.save(playlist1);
 
         Playlist playlist2 = buildPlaylist(user_true , "title2" , LocalTime.of(7 , 30));
+        playlist2.addPlaylistTrack(track);
         playlistRepository.save(playlist2);
 
         Playlist playlist3 = buildPlaylist(user_true , "title3" , LocalTime.of(9 , 10));
+        playlist3.addPlaylistTrack(track);
         playlistRepository.save(playlist3);
 
         // when
-        List<Playlist> result = playlistRepository.findAllPlaylistsByAlertTime(LocalTime.of(5 , 20));
+        List<AlertResponse> result = playlistRepository.findAllPlaylistsByAlertTime(LocalTime.of(5 , 20));
         System.out.println(result.get(0).getPlaylistTitle());
         // then
         assertThat(result.size()).isEqualTo(2);

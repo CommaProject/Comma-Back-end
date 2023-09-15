@@ -1,5 +1,6 @@
 package com.team.comma.domain.playlist.playlist.repository;
 
+import com.team.comma.domain.alert.dto.AlertResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.user.user.domain.User;
@@ -20,6 +21,6 @@ public interface PlaylistRepositoryCustom {
 
     long updateRecommendCountByPlaylistId(long playlistId);
 
-    List<Playlist> findAllPlaylistsByAlertTime(LocalTime time);
+    List<AlertResponse> findAllPlaylistsByAlertTime(LocalTime time);
 
 }

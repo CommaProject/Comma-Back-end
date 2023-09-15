@@ -1,5 +1,6 @@
 package com.team.comma.domain.alert.service;
 
+import com.team.comma.domain.alert.dto.AlertResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
@@ -49,13 +50,13 @@ public class AlertService {
 
     @Scheduled(cron = "0 0/10 * * * *")
     public void sendPlaylistAtSpecificTime() {
-        List<Playlist> result = playlistRepository.findAllPlaylistsByAlertTime(LocalTime.now());
+        List<AlertResponse> result = playlistRepository.findAllPlaylistsByAlertTime(LocalTime.now());
 
-        for(Playlist playlist : result) {
-            long id = playlist.getUser().getId();
+        for(AlertResponse playlist : result) {
+            long id = playlist.getUserId();
 
             SseEmitter sseEmitter = session.get(id);
-            sendToClient(sseEmitter , id , PlaylistResponse.of(playlist , "image" , 0L));
+            sendToClient(sseEmitter , id , playlist);
         }
     }
 

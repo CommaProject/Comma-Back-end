@@ -3,6 +3,7 @@ package com.team.comma.domain.playlist.playlist.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.team.comma.domain.alert.dto.AlertResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.user.user.domain.User;
@@ -85,15 +86,28 @@ public class PlaylistRepositoryImpl implements PlaylistRepositoryCustom {
     }
 
     @Override
-    public List<Playlist> findAllPlaylistsByAlertTime(LocalTime time) {
-        LocalTime start = LocalTime.of(time.getHour() , time.getMinute() - 5).withNano(0);
-        LocalTime end = LocalTime.of(time.getHour() , time.getMinute() + 5).withNano(0);
+    public List<AlertResponse> findAllPlaylistsByAlertTime(LocalTime time) {
+        LocalTime start = LocalTime.of(time.getHour(), time.getMinute() - 5).withNano(0);
+        LocalTime end = LocalTime.of(time.getHour(), time.getMinute() + 5).withNano(0);
 
-        return queryFactory.select(playlist)
+        return queryFactory.select(Projections.constructor(
+                        AlertResponse.class,
+                        user.id,
+                        playlist.id,
+                        playlist.playlistTitle,
+                        playlist.alarmFlag,
+                        playlist.alarmStartTime,
+                        playlist.playlistTrackList.size(),
+                        track.albumImageUrl.max(),
+                        track.durationTimeMs.sum().coalesce(0).longValue()
+                ))
                 .from(playlist)
-                .innerJoin(playlist.user , user)
-                .innerJoin(user.userDetail , userDetail).on(userDetail.popupAlertFlag.eq(true))
+                .innerJoin(playlist.user, user)
+                .innerJoin(user.userDetail, userDetail).on(userDetail.popupAlertFlag.eq(true))
+                .innerJoin(playlist.playlistTrackList, playlistTrack)
+                .innerJoin(playlistTrack.track, track)
                 .where(playlist.alarmStartTime.goe(start).and(playlist.alarmStartTime.loe(end)))
+                .groupBy(playlist)
                 .fetch();
     }
 
