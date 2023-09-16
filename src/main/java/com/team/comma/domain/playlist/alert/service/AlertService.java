@@ -46,6 +46,19 @@ public class AlertService {
         return emitter;
     }
 
+    // FIXME - 추후 주석 해제
+    // @Scheduled(cron = "0 0/10 * * * *")
+    public void sendPlaylistAtSpecificTime() {
+        List<AlertResponse> result = playlistRepository.findAllPlaylistsByAlertTime(LocalTime.now());
+
+        for(AlertResponse playlist : result) {
+            long id = playlist.getUserId();
+
+            SseEmitter sseEmitter = session.get(id);
+            sendToClient(sseEmitter , id , playlist);
+        }
+    }
+
     private void sendToClient(SseEmitter emitter, long id, Object data) {
         try {
             emitter.send(SseEmitter.event()
