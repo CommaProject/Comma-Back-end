@@ -33,6 +33,7 @@
 * link:playlist-track.html[PlaylistTrack]
 * link:archive.html[Archive]
 * link:recommend.html[Recommend]
+* link:alert.html[Alert]
 
 === Track 문서
 
