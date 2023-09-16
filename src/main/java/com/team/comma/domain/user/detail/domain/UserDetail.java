@@ -51,12 +51,15 @@ public class UserDetail {
     private User user;
 
     public static UserDetail buildUserDetail(User user) {
-        return UserDetail.builder()
+        UserDetail detail = UserDetail.builder()
                 .name("name")
                 .nickname("nickname")
                 .profileImageUrl("S3 url")
                 .user(user)
                 .build();
+
+        user.setUserDetail(detail);
+        return detail;
     }
 
     public void modifyUserDetail(final UserDetailRequest request){

@@ -1,0 +1,32 @@
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+
+== 메인 화면
+
+link:main.html[main 화면]
+
+== 플레이리스트 알림 API
+
+=== 알림을 위한 SSE 서버 연결
+
+==== 성공
+
+===== Request
+
+include::{snippets}/alert/alert/http-request.adoc[]
+include::{snippets}/alert/alert/request-cookies.adoc[]
+
+===== Response
+
+include::{snippets}/alert/alert/http-response.adoc[]
+
+=== 매 알림 마다 오는 응답
+
+===== Response
+
+- 필독 : 하단의 code , message , data 없이 data 안에 있는 데이터가 전송됩니다. 따라서 playlistId 추출할 때 data.playlistId 가 아닌 playlistId 로 추출하시면 됩니다.
+
+include::{snippets}/playlist/find-success/http-response.adoc[]
