@@ -1,6 +1,6 @@
 package com.team.comma.domain.playlist.playlist.service;
 
-import com.team.comma.domain.alertday.service.AlertDayService;
+import com.team.comma.domain.playlist.alertDay.service.AlertDayService;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistModifyRequest;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;

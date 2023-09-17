@@ -1,7 +1,7 @@
-package com.team.comma.domain.alertday.service;
+package com.team.comma.domain.playlist.alertDay.service;
 
 import com.team.comma.domain.playlist.alertDay.domain.AlertDay;
-import com.team.comma.domain.alertday.repository.AlertDayRepository;
+import com.team.comma.domain.playlist.alertDay.repository.AlertDayRepository;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

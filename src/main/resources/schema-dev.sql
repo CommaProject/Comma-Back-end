@@ -42,7 +42,6 @@ CREATE TABLE user_tb
     type     VARCHAR(255),
     del_flag varchar(255),
     join_date DATE,
-    user_detail_id BIGINT,
     PRIMARY KEY (id)
 );
 
@@ -57,8 +56,8 @@ CREATE TABLE user_detail_tb
     calender_public_flag VARCHAR(10) NOT NULL,
     all_public_flag      VARCHAR(10) NOT NULL,
     user_id              BIGINT,
-    FOREIGN KEY (user_id) REFERENCES user_tb (id),
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES user_tb (id)
 );
 
 CREATE TABLE playlist_tb
@@ -206,18 +205,17 @@ CREATE TABLE refresh_token_tb
     PRIMARY KEY (id)
 );
 
+INSERT INTO user_tb
+(email, password, `role`, `type`, del_flag, join_date)
+VALUES
+    ('testEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-21'),
+    ('toUserEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-25');
 
 INSERT INTO user_detail_tb
-(name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag)
+(name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag, user_id)
 VALUES
-    ('name', 'nickname', 'no profile image', 'Y', 'Y', 'Y', 'Y'),
-    ('name2', 'nickname2', 'no profile image', 'Y', 'Y', 'Y', 'Y');
-
-INSERT INTO user_tb
-(email, password, `role`, `type`, del_flag, join_date, user_detail_id)
-VALUES
-    ('testEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-21', 1),
-    ('toUserEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-25', 2);
+    ('name', 'nickname', 'no profile image', 'Y', 'Y', 'Y', 'Y', 1),
+    ('name2', 'nickname2', 'no profile image', 'Y', 'Y', 'Y', 'Y', 2);
 
 INSERT INTO track_tb
 (track_title, duration_time_ms, recommend_count, album_image_url, spotify_track_id, spotify_track_href)

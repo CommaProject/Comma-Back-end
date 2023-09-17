@@ -1,13 +1,10 @@
 package com.team.comma.domain.playlist.alertday.service;
 
-import com.team.comma.domain.alertday.service.AlertDayService;
+import com.team.comma.domain.playlist.alertDay.service.AlertDayService;
 import com.team.comma.domain.playlist.alertDay.domain.AlertDay;
-import com.team.comma.domain.alertday.repository.AlertDayRepository;
+import com.team.comma.domain.playlist.alertDay.repository.AlertDayRepository;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
-import com.team.comma.domain.playlist.playlist.service.PlaylistService;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.repository.UserRepository;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.DayOfWeek;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.doReturn;
