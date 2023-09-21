@@ -3,10 +3,10 @@ package com.team.comma.spotify.service;
 import com.neovisionaries.i18n.CountryCode;
 import com.team.comma.domain.artist.service.ArtistService;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.spotify.dto.ArtistResponse;
+import com.team.comma.spotify.dto.SearchArtistResponse;
 import com.team.comma.spotify.support.SpotifyAuthorization;
 import com.team.comma.spotify.support.SpotifySearchCommand;
-import com.team.comma.domain.track.track.dto.SearchTrackResponse;
+import com.team.comma.spotify.dto.SearchTrackResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.domain.track.track.domain.Track.buildTrack;
-import static com.team.comma.domain.track.track.dto.SearchTrackResponse.createTrackResponse;
+import static com.team.comma.spotify.dto.SearchTrackResponse.createTrackResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -46,9 +46,9 @@ public class SearchService {
 
         Paging<Artist> artistsPaging = (Paging<Artist>) executeResult;
 
-        ArrayList<ArtistResponse> result = new ArrayList<>();
+        ArrayList<SearchArtistResponse> result = new ArrayList<>();
         for (Artist artist : artistsPaging.getItems()) {
-            result.add(ArtistResponse.createArtistResponse(artist));
+            result.add(SearchArtistResponse.createArtistResponse(artist));
         }
 
         return MessageResponse.of(REQUEST_SUCCESS , result);

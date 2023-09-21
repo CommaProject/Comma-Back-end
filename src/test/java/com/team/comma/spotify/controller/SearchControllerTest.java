@@ -2,9 +2,9 @@ package com.team.comma.spotify.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.spotify.dto.ArtistResponse;
+import com.team.comma.spotify.dto.SearchArtistResponse;
 import com.team.comma.spotify.service.SearchService;
-import com.team.comma.domain.track.track.dto.SearchTrackResponse;
+import com.team.comma.spotify.dto.SearchTrackResponse;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -269,12 +269,12 @@ public class SearchControllerTest {
                 .build();
     }
 
-    public ArtistResponse createArtistResponse() {
+    public SearchArtistResponse createArtistResponse() {
         Image image1 = new Image.Builder().setHeight(640).setWidth(640).setUrl("https://i.scdn.co/image/ab67616d0000b273d3430c9daa4cf3572627c420").build();
         Image image2 = new Image.Builder().setHeight(300).setWidth(300).setUrl("https://i.scdn.co/image/ab67616d00001e02d3430c9daa4cf3572627c420").build();
         Image image3 = new Image.Builder().setHeight(64).setWidth(64).setUrl("https://i.scdn.co/image/ab67616d00004851d3430c9daa4cf3572627c420").build();
 
-        return ArtistResponse.builder()
+        return SearchArtistResponse.builder()
                 .artistId("57htMBtzpppc1yoXgjbslj")
                 .artistName("Park hyo shin")
                 .genres(new String[]{"korean pop"})

@@ -1,4 +1,4 @@
-package com.team.comma.domain.track.track.dto;
+package com.team.comma.spotify.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
