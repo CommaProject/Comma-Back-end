@@ -1,20 +1,13 @@
 package com.team.comma.domain.user.user.domain;
 
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
-import com.team.comma.domain.favorite.genre.domain.FavoriteGenre;
 import com.team.comma.domain.user.history.domain.History;
-import com.team.comma.domain.user.profile.domain.UserDetail;
-import com.team.comma.domain.user.user.constant.UserType;
+import com.team.comma.domain.user.detail.domain.UserDetail;
 import com.team.comma.domain.user.user.constant.UserRole;
-import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
-import com.team.comma.domain.favorite.genre.domain.FavoriteGenre;
-import com.team.comma.domain.user.history.domain.History;
 import com.team.comma.domain.user.user.constant.UserType;
-import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.global.converter.BooleanConverter;
 import jakarta.persistence.*;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -62,31 +55,19 @@ public class User implements UserDetails {
     private Boolean delFlag = false;
 
     @Setter
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "user_detail_id")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     private UserDetail userDetail;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @Builder.Default
-    private List<FavoriteGenre> favoriteGenre = new ArrayList<>();
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    @Builder.Default
     private List<FavoriteArtist> favoriteArtist = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.PERSIST , mappedBy = "user")
     @Builder.Default
+    @OneToMany(cascade = CascadeType.PERSIST , mappedBy = "user")
     private List<History> history = new ArrayList<>();
 
-    // 연관관계 편의 메서드
-    public void addFavoriteGenre(String genre) {
-        FavoriteGenre genreData = FavoriteGenre.builder()
-            .genreName(genre)
-            .user(this)
-            .build();
-
-        favoriteGenre.add(genreData);
+    public void modifyPassword(String password){
+        this.password = password;
     }
 
     public void addFavoriteArtist(String artist) {
@@ -108,6 +89,15 @@ public class User implements UserDetails {
         this.history.add(historyEntity);
     }
 
+    public static User buildUser(String email) {
+        return User.builder()
+                .email(email)
+                .password("password")
+                .type(UserType.GENERAL_USER)
+                .role(UserRole.USER)
+                .build();
+    }
+
     // JWT Security
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -117,13 +107,13 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return email;
     }
 
     @Override
-    public String getUsername() {
-        return email;
+    public String getPassword() {
+        return password;
     }
 
     @Override
@@ -146,12 +136,4 @@ public class User implements UserDetails {
         return true;
     }
 
-    public static User buildUser(){
-        return User.builder()
-                .email("email@email.com")
-                .password("password")
-                .type(UserType.GENERAL_USER)
-                .role(UserRole.USER)
-                .build();
-    }
 }

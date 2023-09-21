@@ -2,7 +2,7 @@ package com.team.comma.domain.user.following.service;
 
 import com.team.comma.domain.user.following.constant.FollowingType;
 import com.team.comma.domain.user.following.dto.FollowingCountResponse;
-import com.team.comma.domain.user.profile.domain.UserDetail;
+import com.team.comma.domain.user.detail.domain.UserDetail;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.following.domain.Following;
 import com.team.comma.domain.user.following.dto.FollowingResponse;
@@ -46,10 +46,9 @@ public class FollowingServiceTest {
     public void blockUserSuccess() {
         // given
         doNothing().when(followingRepository).blockFollowedUser(1L);
-        doReturn("toUserEmail").when(jwtTokenProvider).getUserPk("token");
 
         // when
-        MessageResponse result = followingService.blockFollowedUser("token" , 1L);
+        MessageResponse result = followingService.blockFollowedUser(1L);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -61,10 +60,9 @@ public class FollowingServiceTest {
     public void unblockUserSuccess() {
         // given
         doNothing().when(followingRepository).unblockFollowedUser(1L);
-        doReturn("toUserEmail").when(jwtTokenProvider).getUserPk("token");
 
         // when
-        MessageResponse result = followingService.unblockFollowedUser("token" , 1L);
+        MessageResponse result = followingService.unblockFollowedUser(1L);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -106,7 +104,7 @@ public class FollowingServiceTest {
         doReturn("fromUserEmail").when(jwtTokenProvider).getUserPk("token");
         doReturn(Optional.empty()).when(followingRepository).getFollowedMeUserByEmail(1L , "fromUserEmail");
         doReturn(Optional.of(User.builder().build())).when(userRepository).findById(1L);
-        doReturn(Optional.empty()).when(userRepository).findByEmail("fromUserEmail");
+        doReturn(Optional.empty()).when(userRepository).findUserByEmail("fromUserEmail");
 
         // when
         Throwable thrown = catchThrowable(() -> followingService.addFollow("token" , 1L));
@@ -177,7 +175,7 @@ public class FollowingServiceTest {
 
         User user = buildUserWithIdAndEmail(1L, "user");
         User targetUser = buildUserWithIdAndEmail(2L, "targetUser");
-        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         Following following = buildFollowingWithIdAndUserFromTo(1L, user, targetUser);
@@ -201,7 +199,7 @@ public class FollowingServiceTest {
         User user = buildUserWithIdAndEmail(1L, "user");
         User targetUser = buildUserWithIdAndEmail(2L, "targetUser");
 
-        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         Following followed = buildFollowingWithIdAndUserFromTo(1L, targetUser, user);
@@ -225,7 +223,7 @@ public class FollowingServiceTest {
         User user = buildUserWithIdAndEmail(1L, "user");
         User targetUser = buildUserWithIdAndEmail(2L, "targetUser");
 
-        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         Following following = buildFollowingWithIdAndUserFromTo(1L, user, targetUser);
@@ -253,7 +251,7 @@ public class FollowingServiceTest {
         User user = buildUserWithIdAndEmail(1L, "user");
         User targetUser = buildUserWithIdAndEmail(2L, "targetUser");
 
-        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         Following following = buildFollowingWithIdAndUserFromTo(1L, user, targetUser);

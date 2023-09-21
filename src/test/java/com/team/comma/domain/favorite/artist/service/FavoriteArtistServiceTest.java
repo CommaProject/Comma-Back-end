@@ -3,6 +3,7 @@ package com.team.comma.domain.favorite.artist.service;
 import com.team.comma.domain.favorite.artist.dto.FavoriteArtistResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.global.common.constant.ResponseCodeEnum;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -50,13 +52,13 @@ public class FavoriteArtistServiceTest {
     public void addArtistFail_notFountUser() {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.empty()).when(userRepository).findByEmail("userEmail");
+        doReturn(Optional.empty()).when(userRepository).findUserByEmail("userEmail");
 
         // when
         Throwable thrown = catchThrowable(() -> favoriteArtistService.createFavoriteArtist("token" , "artistName"));
 
         // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
+        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
     }
 
     @Test
@@ -64,7 +66,7 @@ public class FavoriteArtistServiceTest {
     public void addArtistFail_alreadyAddedArtist() {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(User.builder().build())).when(userRepository).findByEmail("userEmail");
+        doReturn(Optional.of(User.builder().build())).when(userRepository).findUserByEmail("userEmail");
         doReturn(Optional.of(FavoriteArtist.builder().build())).when(favoriteArtistRepository).findFavoriteArtistByUser(any(User.class) , any(String.class));
 
         // when
@@ -79,7 +81,7 @@ public class FavoriteArtistServiceTest {
     public void addArtistSuccess() throws AccountException {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(User.builder().build())).when(userRepository).findByEmail("userEmail");
+        doReturn(Optional.of(User.builder().build())).when(userRepository).findUserByEmail("userEmail");
         doReturn(Optional.empty()).when(favoriteArtistRepository).findFavoriteArtistByUser(any(User.class) , any(String.class));
 
         // when
@@ -94,13 +96,13 @@ public class FavoriteArtistServiceTest {
     public void deleteArtistFail_notFountUser() {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.empty()).when(userRepository).findByEmail("userEmail");
+        doReturn(Optional.empty()).when(userRepository).findUserByEmail("userEmail");
 
         // when
         Throwable thrown = catchThrowable(() -> favoriteArtistService.deleteFavoriteArtist("token" , "artistName"));
 
         // then
-        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
+        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
     }
 
     @Test
@@ -108,7 +110,7 @@ public class FavoriteArtistServiceTest {
     public void deleteArtistSuccess() throws AccountException {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(User.builder().build())).when(userRepository).findByEmail("userEmail");
+        doReturn(Optional.of(User.builder().build())).when(userRepository).findUserByEmail("userEmail");
 
         // when
         MessageResponse result = favoriteArtistService.deleteFavoriteArtist("token" , "artistName");
@@ -123,7 +125,7 @@ public class FavoriteArtistServiceTest {
     public void isAddedArtist_false(Optional<FavoriteArtist> optional , boolean isAdded) throws AccountException {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(User.builder().build())).when(userRepository).findByEmail("userEmail");
+        doReturn(Optional.of(User.builder().build())).when(userRepository).findUserByEmail("userEmail");
         doReturn(optional).when(favoriteArtistRepository).findFavoriteArtistByUser(any(User.class) , any(String.class));
 
         // when
@@ -159,7 +161,7 @@ public class FavoriteArtistServiceTest {
         FavoriteArtistResponse favoriteArtistResponse = FavoriteArtistResponse.of(favoriteArtist);
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk("accessToken");
-        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
         doReturn(List.of(favoriteArtistResponse)).when(favoriteArtistRepository).findAllFavoriteArtistByUser(user);
 
         // when

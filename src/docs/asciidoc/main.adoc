@@ -18,7 +18,7 @@
 === User 문서
 
 * link:user.html[User]
-* link:profile.html[Profile]
+* link:user-detail.html[UserDetail]
 * link:followship.html[Followship]
 * link:history.html[History]
 
@@ -30,15 +30,20 @@
 === Playlist 문서
 
 * link:playlist.html[Playlist]
-* link:playlist-track.html[Playlist-Track]
+* link:playlist-track.html[PlaylistTrack]
 * link:archive.html[Archive]
 * link:recommend.html[Recommend]
+* link:alert.html[Alert]
 
 === Track 문서
 
-// * link:track[Track]
-* link:play-count.html[Play-count]
+* link:track.html[Track]
+* link:play-count.html[PlayCount]
 
 === Spotify 문서
 
 * link:spotify.html[Spotify]
+
+=== S3 문서
+
+* link:file-upload.html[FileUpload]

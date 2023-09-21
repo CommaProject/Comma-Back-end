@@ -1,5 +1,6 @@
 package com.team.comma.global.exception;
 
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.following.exception.FollowingException;
 import com.team.comma.domain.favorite.artist.exception.FavoriteArtistException;
@@ -29,7 +30,7 @@ import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
 public class GeneralExceptionHandler {
 
     @ExceptionHandler({UsernameNotFoundException.class, AccountException.class , S3Exception.class
-            , FollowingException.class , FavoriteArtistException.class , TrackException.class})
+            , FollowingException.class , FavoriteArtistException.class , TrackException.class , UserException.class})
     public ResponseEntity<MessageResponse> handleBadRequest(Exception e) {
         MessageResponse message = MessageResponse.of(SIMPLE_REQUEST_FAILURE.getCode() ,
             e.getMessage());

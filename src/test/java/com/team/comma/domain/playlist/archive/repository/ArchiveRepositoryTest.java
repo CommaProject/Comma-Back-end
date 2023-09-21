@@ -65,7 +65,7 @@ public class ArchiveRepositoryTest {
     @DisplayName("아카이브 날짜로 조회")
     public void findAllArchiveByDate() {
         // given
-        User user = userRepository.save(User.buildUser());
+        User user = userRepository.save(User.buildUser("userEmail"));
         Track track = trackRepository.save(buildTrack());
         Playlist playlist = playlistRepository.save(Playlist.buildPlaylist(user));
         PlaylistTrack playlistTrack = playlistTrackRepository.save(PlaylistTrack.builder().playlist(playlist).track(track).build());

@@ -8,8 +8,6 @@ DROP TABLE IF EXISTS archive_tb;
 
 DROP TABLE IF EXISTS favorite_artist_tb;
 
-DROP TABLE IF EXISTS favorite_genre_tb;
-
 DROP TABLE IF EXISTS favorite_track_tb;
 
 DROP TABLE IF EXISTS following_tb;
@@ -44,22 +42,6 @@ CREATE TABLE artist_tb
     PRIMARY KEY (id)
 );
 
-CREATE TABLE user_detail_tb
-(
-    id                   BIGINT  NOT NULL AUTO_INCREMENT,
-    sex                  VARCHAR(10),
-    age                  INT ,
-    recommend_time       TIME,
-    name                 VARCHAR(10),
-    nickname             VARCHAR(10),
-    profile_image_url    VARCHAR(50),
-    popup_alert_flag     VARCHAR(10) NOT NULL,
-    favorite_public_flag VARCHAR(10) NOT NULL,
-    calender_public_flag VARCHAR(10) NOT NULL,
-    all_public_flag      VARCHAR(10) NOT NULL,
-    PRIMARY KEY (id)
-);
-
 CREATE TABLE user_tb
 (
     id       BIGINT NOT NULL AUTO_INCREMENT,
@@ -69,11 +51,23 @@ CREATE TABLE user_tb
     type     VARCHAR(255),
     del_flag varchar(255),
     join_date DATE,
-    user_detail_id BIGINT ,
-    FOREIGN KEY (user_detail_id) REFERENCES user_detail_tb (id),
     PRIMARY KEY (id)
 );
 
+CREATE TABLE user_detail_tb
+(
+    id                   BIGINT NOT NULL AUTO_INCREMENT,
+    name                 VARCHAR(10),
+    nickname             VARCHAR(10),
+    profile_image_url    VARCHAR(100),
+    popup_alert_flag     VARCHAR(10) NOT NULL,
+    favorite_public_flag VARCHAR(10) NOT NULL,
+    calender_public_flag VARCHAR(10) NOT NULL,
+    all_public_flag      VARCHAR(10) NOT NULL,
+    user_id              BIGINT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES user_tb (id)
+);
 
 CREATE TABLE playlist_tb
 (
@@ -144,21 +138,10 @@ CREATE TABLE favorite_artist_tb
     FOREIGN KEY (user_id) REFERENCES user_tb (id)
 );
 
-CREATE TABLE favorite_genre_tb
-(
-    id              BIGINT      NOT NULL auto_increment,
-    genre_name      VARCHAR(45) NOT NULL,
-    genre_image_url VARCHAR(50),
-    user_id         BIGINT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES user_tb (id)
-);
-
 CREATE TABLE favorite_track_tb
 (
     id            BIGINT NOT NULL AUTO_INCREMENT,
     play_count    INTEGER,
-    favorite_flag BOOLEAN,
     user_id       BIGINT,
     track_id      BIGINT,
     PRIMARY KEY (id),
@@ -184,11 +167,9 @@ CREATE TABLE recommend_tb
     comment        TEXT,
     play_count     INTEGER DEFAULT 0,
     playlist_id    BIGINT,
-    from_user_id BIGINT,
     to_user_id   BIGINT,
     PRIMARY KEY (id),
     FOREIGN KEY (playlist_id) REFERENCES playlist_tb (id),
-    FOREIGN KEY (from_user_id) REFERENCES user_tb (id),
     FOREIGN KEY (to_user_id) REFERENCES user_tb (id)
 );
 
@@ -231,18 +212,17 @@ CREATE TABLE refresh_token_tb
     PRIMARY KEY (id)
 );
 
+INSERT INTO user_tb
+(email, password, `role`, `type`, del_flag, join_date)
+VALUES
+    ('testEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-21'),
+    ('toUserEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-25');
 
 INSERT INTO user_detail_tb
-(sex, age, recommend_time, name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag)
+(name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag, user_id)
 VALUES
-    ('male', 20, NULL, 'name', 'nickname', 'url', 'Y', 'Y', 'Y', 'Y'),
-    ('female', 20, NULL, 'name2', 'nickname2', 'url', 'Y', 'Y', 'Y', 'Y');
-
-INSERT INTO user_tb
-(email, password, `role`, `type`, del_flag, join_date, user_detail_id)
-VALUES
-    ('testEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-21', 1),
-    ('toUserEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-25', 2);
+    ('name', 'nickname', 'no profile image', 'Y', 'Y', 'Y', 'Y', 1),
+    ('name2', 'nickname2', 'no profile image', 'Y', 'Y', 'Y', 'Y', 2);
 
 INSERT INTO track_tb
 (id , track_title, duration_time_ms, recommend_count, album_image_url, spotify_track_id, spotify_track_href)
@@ -282,8 +262,8 @@ VALUES
     ('archive2', 0, '2023-08-29 12:00:00', 1, 1);
 
 INSERT INTO favorite_track_tb
-(play_count, favorite_flag, user_id, track_id)
-VALUES(0, 1, 1, 1);
+(play_count, user_id, track_id)
+VALUES(0, 1, 1);
 
 INSERT INTO favorite_artist_tb
 (artist_name, artist_image_url, user_id)

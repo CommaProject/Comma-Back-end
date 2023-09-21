@@ -6,8 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 
-import com.team.comma.domain.alertday.service.AlertDayService;
 import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.playlist.alertDay.service.AlertDayService;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
@@ -61,8 +61,8 @@ class PlaylistServiceTest {
         Track track = Track.builder().build();
         doReturn(track).when(trackService).findTrackOrSave(spotifyTrackId);
 
-        User user = User.buildUser();
-        doReturn(Optional.of(user)).when(userRepository).findByEmail(any());
+        User user = User.buildUser("userEmail");
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(any());
 
         // when
         final MessageResponse result = playlistService.createPlaylist(token, spotifyTrackId);
@@ -75,10 +75,10 @@ class PlaylistServiceTest {
     @Test
     public void 플레이리스트_조회_성공() throws AccountException {
         // given
-        final User user = buildUserWithEmail();
+        final User user = User.buildUser("userEmail");
         final Optional<User> optionalUser = Optional.of(user);
 
-        final TrackArtist trackArtist = buildTrackArtist(buildTrack() , buildArtist());
+        final TrackArtist trackArtist = buildTrackArtist(buildTrack(), buildArtist());
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
 
@@ -89,7 +89,7 @@ class PlaylistServiceTest {
 
         final List<PlaylistResponse> playlistResponseList = List.of(playlistResponse);
 
-        doReturn(optionalUser).when(userRepository).findByEmail(userEmail);
+        doReturn(optionalUser).when(userRepository).findUserByEmail(userEmail);
         doReturn(userEmail).when(jwtTokenProvider).getUserPk(token);
         doReturn(playlistResponseList).when(playlistRepository).findAllPlaylistsByUser(user);
 
@@ -117,11 +117,11 @@ class PlaylistServiceTest {
     @Test
     public void 단일_플레이리스트_조회() {
         // given
-        final TrackArtist trackArtist = buildTrackArtist(buildTrack() , buildArtist());
+        final TrackArtist trackArtist = buildTrackArtist(buildTrack(), buildArtist());
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
         final PlaylistResponse playlistResponse = PlaylistResponse.of(buildUserPlaylist(
-                Arrays.asList(playlistTrack)),
+                        Arrays.asList(playlistTrack)),
                 "representative album image url",
                 21000L);
         doReturn(Optional.ofNullable(playlistResponse)).when(playlistRepository).findPlaylistByPlaylistId(30);
@@ -149,7 +149,7 @@ class PlaylistServiceTest {
     @Test
     public void 플레이리스트_알람설정변경_성공() {
         // given
-        final TrackArtist trackArtist = buildTrackArtist(buildTrack() , buildArtist());
+        final TrackArtist trackArtist = buildTrackArtist(buildTrack(), buildArtist());
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
         final Playlist playlist = buildUserPlaylist(Arrays.asList(playlistTrack));
@@ -181,7 +181,7 @@ class PlaylistServiceTest {
     @Test
     public void 플레이리스트_삭제_성공() {
         // given
-        final TrackArtist trackArtist = buildTrackArtist(buildTrack() , buildArtist());
+        final TrackArtist trackArtist = buildTrackArtist(buildTrack(), buildArtist());
         final Track track = buildTrack(Arrays.asList(trackArtist));
         final PlaylistTrack playlistTrack = buildPlaylistTrack(track);
         final Playlist userPlaylist = buildUserPlaylist(Arrays.asList(playlistTrack));
@@ -205,11 +205,11 @@ class PlaylistServiceTest {
         final int TOTAL_DURATION_TIME = 100;
 
         doReturn(TOTAL_DURATION_TIME)
-            .when(playlistRepository).findTotalDurationTimeMsByPlaylistId(PLAYLIST_ID);
+                .when(playlistRepository).findTotalDurationTimeMsByPlaylistId(PLAYLIST_ID);
 
         //when
         MessageResponse<Integer> totalDurationTimeMsDto = playlistService.findTotalDurationTimeMsByPlaylist(
-            PLAYLIST_ID);
+                PLAYLIST_ID);
 
         //then
         assertThat(totalDurationTimeMsDto.getData()).isEqualTo(TOTAL_DURATION_TIME);
@@ -222,10 +222,10 @@ class PlaylistServiceTest {
                 .playlistId(1L)
                 .playlistTitle("플리제목수정")
                 .alarmStartTime(LocalTime.now())
-                .alarmDays(List.of(1,2,3))
+                .alarmDays(List.of(1, 2, 3))
                 .build();
 
-        User user = User.buildUser();
+        User user = User.buildUser(userEmail);
         Playlist playlist = Playlist.buildPlaylist(user);
         doReturn(Optional.of(playlist)).when(playlistRepository).findById(anyLong());
 
@@ -240,13 +240,14 @@ class PlaylistServiceTest {
     public void 플레이리스트_제목_수정() {
         //given
         PlaylistModifyRequest playlistRequest = PlaylistModifyRequest.builder()
-            .playlistId(1L)
-            .playlistTitle("플리제목수정")
-            .alarmStartTime(LocalTime.now())
-            .build();
+                .playlistId(1L)
+                .playlistTitle("플리제목수정")
+                .alarmStartTime(LocalTime.now())
+                .build();
 
-        doReturn(Optional.of(buildPlaylist()))
-            .when(playlistRepository).findById(playlistRequest.getPlaylistId());
+        User user = User.buildUser("userEmail");
+        doReturn(Optional.of(Playlist.buildPlaylist(user)))
+                .when(playlistRepository).findById(playlistRequest.getPlaylistId());
 
         //when
         MessageResponse messageResponse = playlistService.modifyPlaylistTitle(playlistRequest);
@@ -254,16 +255,6 @@ class PlaylistServiceTest {
         //then
         assertThat(messageResponse.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(messageResponse.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-    private Playlist buildPlaylist() {
-        return Playlist.builder()
-            .user(buildUserWithEmail())
-            .build();
-    }
-
-    private User buildUserWithEmail() {
-        return User.builder().email(userEmail).build();
     }
 
     private Playlist buildUserPlaylist(List<PlaylistTrack> playlistTrackList) {
@@ -288,7 +279,7 @@ class PlaylistServiceTest {
                 .build();
     }
 
-    private TrackArtist buildTrackArtist(Track track , Artist artist){
+    private TrackArtist buildTrackArtist(Track track, Artist artist) {
         return TrackArtist.builder()
                 .id(1L)
                 .artist(artist)

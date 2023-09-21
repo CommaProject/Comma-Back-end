@@ -1,25 +1,26 @@
 package com.team.comma.domain.playlist.playlist.service;
 
-import com.team.comma.domain.alertday.service.AlertDayService;
-import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
-import com.team.comma.domain.playlist.playlist.dto.PlaylistModifyRequest;
-import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
+import com.team.comma.domain.playlist.alertDay.service.AlertDayService;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
+import com.team.comma.domain.playlist.playlist.dto.PlaylistModifyRequest;
+import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
+import com.team.comma.domain.playlist.playlist.repository.PlaylistRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
-
-import java.util.List;
-import javax.security.auth.login.AccountException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
+import java.util.List;
+
+import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
+import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
 @RequiredArgsConstructor
@@ -32,10 +33,10 @@ public class PlaylistService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AlertDayService alertDayService;
 
-    public MessageResponse createPlaylist(final String accessToken, final String spotifyTrackId) throws AccountException {
+    public MessageResponse createPlaylist(final String accessToken, final String spotifyTrackId) {
         String userName = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(userName)
-                .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
+        User user = userRepository.findUserByEmail(userName)
+                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         Track track = trackService.findTrackOrSave(spotifyTrackId);
 
@@ -46,10 +47,10 @@ public class PlaylistService {
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
-    public MessageResponse findAllPlaylists(final String accessToken) throws AccountException {
+    public MessageResponse findAllPlaylists(final String accessToken) {
         String userName = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(userName)
-            .orElseThrow(() -> new AccountException("정보가 올바르지 않습니다."));
+        User user = userRepository.findUserByEmail(userName)
+            .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         return MessageResponse.of(REQUEST_SUCCESS,
                 playlistRepository.findAllPlaylistsByUser(user));

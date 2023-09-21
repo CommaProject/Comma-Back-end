@@ -71,65 +71,16 @@ public class TrackControllerTest {
     }
 
     @Test
-    @DisplayName("유저가 좋아요 누른 트랙 탐색")
-    public void findTrackByFavoriteTrack() throws Exception {
-        // given
-        final String url = "/tracks/users/favorites";
-        TrackResponse trackResponse = buildTrackResponse("title" , "id");
-
-        ArtistResponse artist = ArtistResponse.createArtist("artistId" , "artist");
-
-        List<TrackArtistResponse> data = new ArrayList<>();
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
-        data.add(trackArtistResponse);
-
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , data)).when(trackService).findTrackByFavoriteTrack(any(String.class));
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(url)
-                        .cookie(new Cookie("accessToken", "accessToken"))
-        );
-
-        // then
-        resultActions.andExpect(status().isOk()).andDo(
-                document("track/favoriteTrack",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestCookies(
-                                cookieWithName("accessToken").description("사용자 access token")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터"),
-                                fieldWithPath("data.[].track.id").description("트랙 Id"),
-                                fieldWithPath("data.[].track.trackTitle").description("트랙 제목"),
-                                fieldWithPath("data.[].track.durationTimeMs").description("트랙 재생 시간"),
-                                fieldWithPath("data.[].track.recommendCount").description("트랙 추천 횟수"),
-                                fieldWithPath("data.[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
-                                fieldWithPath("data.[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
-                                fieldWithPath("data.[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
-                                fieldWithPath("data.[].artists.spotifyArtistName").description("트랙 아티스트 명")
-                        )
-                )
-        );
-        final MessageResponse result = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-    @Test
     @DisplayName("추천 받은 인기 트랙")
     public void findTrackByMostFavorite() throws Exception {
         // given
-        final String url = "/tracks/favorites";
-        TrackResponse trackResponse = buildTrackResponse("title" , "id");
+        final String url = "/tracks/recommend";
+        List<Track> tracks = new ArrayList<>();
+        for(int i = 0; i < 2; i++) {
+            tracks.add(buildTrack("title" , "spotifyId"));
+        }
 
+        TrackResponse trackResponse = buildTrackResponse("title" , "spotifyId");
         ArtistResponse artist = ArtistResponse.createArtist("artistId" , "artist");
 
         List<TrackArtistResponse> data = new ArrayList<>();
@@ -171,8 +122,6 @@ public class TrackControllerTest {
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
-
-
 
     private Track buildTrack(String title, String spotifyId) {
         return Track.builder()

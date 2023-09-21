@@ -6,6 +6,7 @@ import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
@@ -13,9 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.security.auth.login.AccountException;
 import java.util.List;
 
+import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
@@ -28,10 +29,10 @@ public class FavoriteTrackService {
     private final FavoriteTrackRepository favoriteTrackRepository;
 
     @Transactional
-    public MessageResponse createFavoriteTrack(String accessToken , FavoriteTrackRequest favoriteTrackRequest) throws AccountException {
+    public MessageResponse createFavoriteTrack(String accessToken , FavoriteTrackRequest favoriteTrackRequest) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
+        User user = userRepository.findUserByEmail(userEmail)
+                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         FavoriteTrack result = FavoriteTrack.buildFavoriteTrack(user , trackService.findTrackOrSave(favoriteTrackRequest.getSpotifyTrackId()));
         favoriteTrackRepository.save(result);
@@ -39,10 +40,10 @@ public class FavoriteTrackService {
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
-    public MessageResponse findAllFavoriteTrack(final String accessToken) throws AccountException {
+    public MessageResponse findAllFavoriteTrack(final String accessToken) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new AccountException("사용자 정보를 찾을 수 없습니다."));
+        User user = userRepository.findUserByEmail(userEmail)
+                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
         List<FavoriteTrackResponse> favoriteTrackResponses = findAllFavoriteTrackByUser(user);
 

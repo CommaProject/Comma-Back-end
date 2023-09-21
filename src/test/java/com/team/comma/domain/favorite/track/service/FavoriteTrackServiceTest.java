@@ -56,7 +56,7 @@ public class FavoriteTrackServiceTest {
     void createFavoriteTrackFail_UserNotFound() {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
+        doReturn(Optional.empty()).when(userRepository).findUserByEmail(any(String.class));
 
         // when
         Throwable throwable = catchThrowable(() -> favoriteTrackService.createFavoriteTrack("token", null));
@@ -74,7 +74,7 @@ public class FavoriteTrackServiceTest {
                 .build();
 
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(buildUser())).when(userRepository).findByEmail(any(String.class));
+        doReturn(Optional.of(buildUser())).when(userRepository).findUserByEmail(any(String.class));
         doReturn(buildTrack("title" , "spotifyAPI")).when(trackService).findTrackOrSave(favoriteTrackRequest.getSpotifyTrackId());
 
         // when
@@ -124,7 +124,7 @@ public class FavoriteTrackServiceTest {
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(accessToken);
-        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
         doReturn(List.of(favoriteTrackResponse)).when(favoriteTrackRepository).findAllFavoriteTrackByUser(user);
 
         // when

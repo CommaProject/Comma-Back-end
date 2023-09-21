@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static com.team.comma.domain.user.user.domain.QUser.user;
+import static com.team.comma.domain.playlist.playlist.domain.QPlaylist.playlist;
 import static com.querydsl.jpa.JPAExpressions.select;
 import static com.team.comma.domain.playlist.recommend.constant.RecommendType.ANONYMOUS;
 import static com.team.comma.domain.playlist.recommend.domain.QRecommend.recommend;
@@ -21,13 +23,14 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
 
     @Override
     public List<RecommendResponse> getRecommendsByToUser(User requestUser) {
+
         return queryFactory.select(
                         Projections.constructor(
                                 RecommendResponse.class,
                                 recommend.id,
                                 recommend.comment,
-                                recommend.fromUser.userDetail.nickname,
-                                recommend.fromUser.userDetail.profileImageUrl,
+                                user.userDetail.nickname,
+                                user.userDetail.profileImageUrl,
                                 recommend.playlist.id,
                                 recommend.playlist.playlistTitle,
                                 select(playlistTrack.track.albumImageUrl)
@@ -41,6 +44,8 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
                                 recommend.playCount
                         ))
                 .from(recommend)
+                .innerJoin(recommend.playlist , playlist)
+                .innerJoin(playlist.user , user)
                 .where(recommend.toUser.eq(requestUser))
                 .orderBy(recommend.id.desc())
                 .fetch();
@@ -68,7 +73,8 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
                                 recommend.playCount
                         ))
                 .from(recommend)
-                .where(recommend.fromUser.eq(requestUser))
+                .innerJoin(recommend.playlist , playlist)
+                .innerJoin(playlist.user , user).on(user.eq(requestUser))
                 .orderBy(recommend.id.desc())
                 .fetch();
     }
@@ -80,8 +86,8 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
                                 RecommendResponse.class,
                                 recommend.id,
                                 recommend.comment,
-                                recommend.fromUser.userDetail.nickname,
-                                recommend.fromUser.userDetail.profileImageUrl,
+                                user.userDetail.nickname,
+                                user.userDetail.profileImageUrl,
                                 recommend.playlist.id,
                                 recommend.playlist.playlistTitle,
                                 select(playlistTrack.track.albumImageUrl)
@@ -95,6 +101,8 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
                                 recommend.playCount
                         ))
                 .from(recommend)
+                .innerJoin(recommend.playlist , playlist)
+                .innerJoin(playlist.user , user)
                 .where(recommend.recommendType.eq(ANONYMOUS))
                 .orderBy(recommend.id.desc())
                 .fetch();

@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface UserRepositoryCustom {
 
-    List<User> searchUserByUserNameAndNickName(String name);
-    Optional<User> findByEmail(String email);
+    List<User> findAllUsersByNameAndNickName(String name);
 
 }

@@ -1,8 +1,8 @@
 package com.team.comma.domain.user.following.controller;
 
 import com.team.comma.domain.user.following.constant.FollowingType;
-import com.team.comma.domain.user.following.service.FollowingService;
 import com.team.comma.domain.user.following.dto.FollowingRequest;
+import com.team.comma.domain.user.following.service.FollowingService;
 import com.team.comma.global.common.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,7 +29,7 @@ public class FollowingController {
     @GetMapping("/type/{followingType}")
     public ResponseEntity<MessageResponse> getFollowingList(
             @CookieValue String accessToken,
-            @PathVariable FollowingType followingType) throws AccountException {
+            @PathVariable FollowingType followingType) {
         return ResponseEntity.ok()
                 .body(followingService.getFollowingUserList(accessToken, followingType));
     }
@@ -51,18 +51,16 @@ public class FollowingController {
 
     @PatchMapping("/unblocks")
     public ResponseEntity<MessageResponse> unBlockFollow(
-            @CookieValue String accessToken,
             @RequestBody FollowingRequest followingRequest) {
         return ResponseEntity.ok()
-                .body(followingService.unblockFollowedUser(accessToken , followingRequest.getFollowingId()));
+                .body(followingService.unblockFollowedUser(followingRequest.getFollowingId()));
     }
 
     @DeleteMapping
     public ResponseEntity<MessageResponse> blockFollow(
-            @CookieValue String accessToken,
             @RequestBody FollowingRequest followingRequest) {
         return ResponseEntity.ok()
-                .body(followingService.blockFollowedUser(accessToken , followingRequest.getFollowingId()));
+                .body(followingService.blockFollowedUser(followingRequest.getFollowingId()));
     }
 
 }
