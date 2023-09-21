@@ -51,7 +51,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             throw new OAuth2EmailNotFoundException("OAuth2 계정의 이메일을 찾을 수 없습니다.");
         }
 
-        return userRepository.findUserByEmail(attributes.getEmail())
+        return userRepository.findByEmail(attributes.getEmail())
             .orElseGet(() -> createAndSaveUser(attributes));
     }
 

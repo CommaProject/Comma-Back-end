@@ -109,13 +109,13 @@ include::{snippets}/playlist/modify-title-fail-playlist-not-found/response-field
 
 ===== Request
 
-include::{snippets}/playlist/modify-success/http-request.adoc[]
-include::{snippets}/playlist/modify-success/request-fields.adoc[]
+include::{snippets}/playlist/modify-alert-day-time-success/http-request.adoc[]
+include::{snippets}/playlist/modify-alert-day-time-success/request-fields.adoc[]
 
 ===== Response
 
-include::{snippets}/playlist/modify-success/http-response.adoc[]
-include::{snippets}/playlist/modify-success/response-fields.adoc[]
+include::{snippets}/playlist/modify-alert-day-time-success/http-response.adoc[]
+include::{snippets}/playlist/modify-alert-day-time-success/response-fields.adoc[]
 
 ---
 

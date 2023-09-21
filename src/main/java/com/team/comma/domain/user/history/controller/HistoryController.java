@@ -17,12 +17,6 @@ public class HistoryController {
 
     private final HistoryService historyService;
 
-    @PostMapping("/histories")
-    public ResponseEntity<MessageResponse> addHistory(@RequestBody HistoryRequest historyRequest
-            , @CookieValue("accessToken") String token) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(historyService.addHistory(historyRequest , token));
-    }
-
     @GetMapping("/histories")
     public ResponseEntity<MessageResponse> getHistoryListByToken(@CookieValue("accessToken") String token) throws AccountException {
         return ResponseEntity.ok().body(historyService.getHistoryList(token));
@@ -36,6 +30,12 @@ public class HistoryController {
     @DeleteMapping("/all-histories")
     public ResponseEntity<MessageResponse> deleteUserAllHistory(@CookieValue("accessToken") String token) throws AccountException {
         return ResponseEntity.ok().body(historyService.deleteAllHistory(token));
+    }
+
+    @PostMapping("/histories")
+    public ResponseEntity<MessageResponse> addHistory(@RequestBody HistoryRequest historyRequest
+            , @CookieValue("accessToken") String token) throws AccountException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(historyService.addHistory(historyRequest , token));
     }
 
 }

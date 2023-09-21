@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ResponseCodeEnum {
     REQUEST_SUCCESS("요청이 성공적으로 수행되었습니다.", 1),
-    NOT_FOUNT_USER("사용자 정보를 찾을 수 없습니다." , -1),
     REQUEST_TYPE_MISMATCH("요청 타입이 잘못되었습니다.", -1),
     REQUEST_ENTITY_NOT_FOUND("해당 엔티티가 존재하지 않습니다.", -1),
     SIMPLE_REQUEST_FAILURE("요청을 처리하던 중 오류가 발생했습니다." , -1),

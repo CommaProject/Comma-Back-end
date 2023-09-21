@@ -14,19 +14,19 @@ public class PlayCountController {
 
     private final PlayCountService playCountService;
 
+    @PatchMapping("/play-count/{trackId}")
+    public MessageResponse modifyPlayCount(@CookieValue String accessToken , @PathVariable String trackId) throws AccountException {
+        return playCountService.modifyPlayCount(accessToken , trackId);
+    }
+
     @GetMapping
     public MessageResponse findMostListenedTrack(@CookieValue String accessToken) {
         return playCountService.findMostListenedTrack(accessToken);
     }
 
     @GetMapping("/friends")
-    public MessageResponse findMostedTrackByFriend(@CookieValue String accessToken) {
+    public MessageResponse findMostListenedTrackByFriend(@CookieValue String accessToken) {
         return playCountService.findMostListenedTrackByFriend(accessToken);
-    }
-
-    @PatchMapping("/play-count/{trackId}")
-    public MessageResponse modifyPlayCount(@CookieValue String accessToken , @PathVariable String trackId) throws AccountException {
-        return playCountService.modifyPlayCount(accessToken , trackId);
     }
 
 }

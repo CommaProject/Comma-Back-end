@@ -74,6 +74,7 @@ include::{snippets}/following/addFail-notFoundException/response-fields.adoc[]
 
 include::{snippets}/following/blockSuccess/http-request.adoc[]
 include::{snippets}/following/blockSuccess/request-fields.adoc[]
+include::{snippets}/following/blockSuccess/request-cookies.adoc[]
 
 ===== response
 
@@ -90,6 +91,7 @@ include::{snippets}/following/blockSuccess/response-fields.adoc[]
 
 include::{snippets}/following/unblockSuccess/http-request.adoc[]
 include::{snippets}/following/unblockSuccess/request-fields.adoc[]
+include::{snippets}/following/unblockSuccess/request-cookies.adoc[]
 
 ===== response
 
@@ -105,8 +107,8 @@ include::{snippets}/following/unblockSuccess/response-fields.adoc[]
 ===== request
 
 include::{snippets}/following/isFollow-true/http-request.adoc[]
+include::{snippets}/following/isFollow-true/request-fields.adoc[]
 include::{snippets}/following/isFollow-true/request-cookies.adoc[]
-include::{snippets}/following/isFollow-true/path-parameters.adoc[]
 
 ===== response
 
@@ -118,6 +120,7 @@ include::{snippets}/following/isFollow-true/response-fields.adoc[]
 ===== request
 
 include::{snippets}/following/isFollow-false/http-request.adoc[]
+include::{snippets}/following/isFollow-false/request-fields.adoc[]
 include::{snippets}/following/isFollow-false/request-cookies.adoc[]
 
 ===== response
@@ -135,7 +138,7 @@ include::{snippets}/following/isFollow-false/response-fields.adoc[]
 
 include::{snippets}/following/listSuccess/http-request.adoc[]
 include::{snippets}/following/listSuccess/request-cookies.adoc[]
-include::{snippets}/following/listSuccess/path-parameters.adoc[]
+include::{snippets}/following/listSuccess/request-fields.adoc[]
 
 ===== response
 

@@ -1,12 +1,11 @@
 package com.team.comma.domain.user.history.service;
 
+import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.history.dto.HistoryRequest;
 import com.team.comma.domain.user.history.repository.HistoryRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
-import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -49,14 +47,14 @@ public class HistoryServiceTest {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(Optional.empty()).when(userRepository).findUserByEmail(any(String.class));
+        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
         HistoryRequest request = HistoryRequest.builder().searchHistory("history").build();
 
         // when
         Throwable thrown = catchThrowable(() -> spotifyHistoryService.addHistory(request , token));
 
         // then
-        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
+        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
     }
 
     @Test
@@ -66,7 +64,7 @@ public class HistoryServiceTest {
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
         Optional<User> user = createUserEntity();
-        doReturn(user).when(userRepository).findUserByEmail(any(String.class));
+        doReturn(user).when(userRepository).findByEmail(any(String.class));
         HistoryRequest request = HistoryRequest.builder().searchHistory("history").build();
 
         // when
@@ -84,23 +82,23 @@ public class HistoryServiceTest {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(Optional.empty()).when(userRepository).findUserByEmail(any(String.class));
+        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
 
         // when
         Throwable thrown = catchThrowable(() -> spotifyHistoryService.getHistoryList(token));
 
         // then
-        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
+        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
     }
 
     @Test
     @DisplayName("사용자 Token에 대해 History 가져오기")
-    public void getHistoryByUserToken() {
+    public void getHistoryByUserToken() throws AccountException {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
         Optional<User> user = createUserEntity();
-        doReturn(user).when(userRepository).findUserByEmail(any(String.class));
+        doReturn(user).when(userRepository).findByEmail(any(String.class));
         doReturn(Arrays.asList("history1" , "history2" , "history3")).when(spotifyHistoryRepository)
                 .getHistoryListByUserEmail(any(String.class));
         // when
@@ -119,12 +117,12 @@ public class HistoryServiceTest {
         // given
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
-        doReturn(Optional.empty()).when(userRepository).findUserByEmail(any(String.class));
+        doReturn(Optional.empty()).when(userRepository).findByEmail(any(String.class));
         // when
         Throwable thrown = catchThrowable(() -> spotifyHistoryService.deleteAllHistory(token));
 
         // then
-        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
+        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
     }
 
     @Test
@@ -134,7 +132,7 @@ public class HistoryServiceTest {
         String token = "token";
         doReturn("user").when(jwtTokenProvider).getUserPk(any(String.class));
         Optional<User> user = createUserEntity();
-        doReturn(user).when(userRepository).findUserByEmail(any(String.class));
+        doReturn(user).when(userRepository).findByEmail(any(String.class));
         doNothing().when(spotifyHistoryRepository).deleteAllHistoryByUser(any(User.class));
 
         // when

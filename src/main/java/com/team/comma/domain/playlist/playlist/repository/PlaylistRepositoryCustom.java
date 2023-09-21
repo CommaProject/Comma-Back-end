@@ -1,10 +1,8 @@
 package com.team.comma.domain.playlist.playlist.repository;
 
-import com.team.comma.domain.playlist.alert.dto.AlertResponse;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
 import com.team.comma.domain.user.user.domain.User;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,9 +15,4 @@ public interface PlaylistRepositoryCustom {
     List<PlaylistResponse> findAllPlaylistsByUser(User user);
 
     Optional<PlaylistResponse> findPlaylistByPlaylistId(long playlistId);
-
-    long updateRecommendCountByPlaylistId(long playlistId);
-
-    List<AlertResponse> findAllPlaylistsByAlertTime(LocalTime time);
-
 }

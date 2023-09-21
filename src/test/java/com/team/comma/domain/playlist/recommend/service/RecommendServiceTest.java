@@ -1,6 +1,7 @@
 package com.team.comma.domain.playlist.recommend.service;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
+import static com.team.comma.global.common.constant.ResponseCodeEnum.PLAYLIST_NOT_FOUND;
+import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.team.comma.global.common.dto.MessageResponse;
@@ -14,7 +15,7 @@ import com.team.comma.domain.playlist.recommend.dto.RecommendRequest;
 import com.team.comma.domain.playlist.recommend.repository.RecommendRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.detail.domain.UserDetail;
+import com.team.comma.domain.user.profile.domain.UserDetail;
 import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ public class RecommendServiceTest {
         final Throwable thrown = catchThrowable(() -> recommendService.addRecommend(token, recommendRequest));
 
         // then
-        assertThat(thrown.getMessage()).isEqualTo(NOT_FOUNT_USER.getMessage());
+        assertThat(thrown.getMessage()).isEqualTo("사용자 정보가 올바르지 않습니다.");
 
     }
 
@@ -62,7 +63,7 @@ public class RecommendServiceTest {
     void 추천_저장_실패_추천_받는_사용자_정보_찾을수없음() {
         // given
         final User fromUser = buildUserWithEmailAndDetail("fromUser");
-        doReturn(Optional.of(fromUser)).when(userRepository).findUserByEmail(fromUser.getEmail());
+        doReturn(Optional.of(fromUser)).when(userRepository).findByEmail(fromUser.getEmail());
         doReturn(fromUser.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         final RecommendRequest recommendRequest = buildRequest();
@@ -82,7 +83,7 @@ public class RecommendServiceTest {
     void 추천_저장_실패_플레이리스트_찾을수없음() {
         // given
         final User fromUser = buildUserWithEmailAndDetail("fromUser");
-        doReturn(Optional.of(fromUser)).when(userRepository).findUserByEmail(fromUser.getEmail());
+        doReturn(Optional.of(fromUser)).when(userRepository).findByEmail(fromUser.getEmail());
         doReturn(fromUser.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         final RecommendRequest recommendRequest = buildRequest();
@@ -99,13 +100,13 @@ public class RecommendServiceTest {
     void 추천_저장_실패_사용자에게_이미_추천한_플레이리스트() {
         // given
         final User fromUser = buildUserWithEmailAndDetail("fromUser");
-        doReturn(Optional.of(fromUser)).when(userRepository).findUserByEmail(fromUser.getEmail());
+        doReturn(Optional.of(fromUser)).when(userRepository).findByEmail(fromUser.getEmail());
         doReturn(fromUser.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         final RecommendRequest recommendRequest = buildRequest();
 
         final User toUser = buildUserWithEmailAndDetail(recommendRequest.getRecommendToEmail());
-        doReturn(Optional.of(toUser)).when(userRepository).findUserByEmail(toUser.getEmail());
+        doReturn(Optional.of(toUser)).when(userRepository).findByEmail(toUser.getEmail());
 
         final Playlist playlist = buildPlaylistWithId(recommendRequest.getRecommendPlaylistId());
         doReturn(Optional.of(playlist)).when(playlistRepository).findById(playlist.getId());
@@ -124,13 +125,13 @@ public class RecommendServiceTest {
     void 추천_저장_성공() throws Exception {
         // given
         final User fromUser = buildUserWithEmailAndDetail("fromUser");
-        doReturn(Optional.of(fromUser)).when(userRepository).findUserByEmail(fromUser.getEmail());
+        doReturn(Optional.of(fromUser)).when(userRepository).findByEmail(fromUser.getEmail());
         doReturn(fromUser.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         final RecommendRequest recommendRequest = buildRequest();
 
         final User toUser = buildUserWithEmailAndDetail(recommendRequest.getRecommendToEmail());
-        doReturn(Optional.of(toUser)).when(userRepository).findUserByEmail(toUser.getEmail());
+        doReturn(Optional.of(toUser)).when(userRepository).findByEmail(toUser.getEmail());
 
         final Playlist playlist = buildPlaylistWithId(recommendRequest.getRecommendPlaylistId());
         doReturn(Optional.of(playlist)).when(playlistRepository).findById(playlist.getId());
@@ -153,14 +154,14 @@ public class RecommendServiceTest {
         final Throwable thrown = catchThrowable(() -> recommendService.getRecommendList(token, recommendListRequest));
 
         // then
-        assertThat(thrown.getMessage()).isEqualTo(NOT_FOUNT_USER.getMessage());
+        assertThat(thrown.getMessage()).isEqualTo("사용자 정보가 올바르지 않습니다.");
     }
 
     @Test
     void 추천_받은_리스트_조회_성공() throws AccountException {
         // given
         final User user = buildUserWithEmailAndDetail("toUser");
-        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.RECIEVED).build();
@@ -177,7 +178,7 @@ public class RecommendServiceTest {
     void 추천_보낸_리스트_조회_성공() throws AccountException {
         // given
         final User user = buildUserWithEmailAndDetail("toUser");
-        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.RECIEVED).build();
@@ -194,7 +195,7 @@ public class RecommendServiceTest {
     void 익명_추천_리스트_조회_성공() throws AccountException {
         // given
         final User user = buildUserWithEmailAndDetail("toUser");
-        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
 
         final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.ANONYMOUS).build();
@@ -229,7 +230,7 @@ public class RecommendServiceTest {
         final Track track = Track.builder().id(1L).build();
         playlist.addPlaylistTrack(track);
 
-        final Recommend recommend = buildRecommend(toUser, playlist);
+        final Recommend recommend = buildRecommend(fromUser, toUser, playlist);
         doReturn(Optional.of(recommend)).when(recommendRepository).findById(recommend.getId());
 
         // when
@@ -254,9 +255,10 @@ public class RecommendServiceTest {
                 .build();
     }
 
-    private Recommend buildRecommend(User toUser, Playlist playlist) {
+    private Recommend buildRecommend(User fromUser, User toUser, Playlist playlist) {
         return Recommend.builder()
                 .id(1L)
+                .fromUser(fromUser)
                 .toUser(toUser)
                 .recommendType(RecommendType.FOLLOWING)
                 .comment("test recommend")

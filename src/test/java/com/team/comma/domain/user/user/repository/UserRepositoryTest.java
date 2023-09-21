@@ -1,11 +1,10 @@
 package com.team.comma.domain.user.user.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.team.comma.domain.user.detail.repository.UserDetailRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.detail.domain.UserDetail;
+import com.team.comma.domain.user.profile.domain.UserDetail;
 import com.team.comma.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,9 +14,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
-import java.util.Optional;
 
-import static com.team.comma.domain.user.detail.domain.QUserDetail.userDetail;
+import static com.team.comma.domain.user.profile.domain.QUserDetail.userDetail;
 import static com.team.comma.domain.user.user.domain.QUser.user;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,61 +28,72 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Autowired
-    private UserDetailRepository userDetailRepository;
+    private JPAQueryFactory queryFactory;
+
+    private String userEmail = "email@naver.com";
+    private String userPassword = "password";
 
     @Test
     @DisplayName("사용자 등록")
-    public void save() {
+    public void registUser() {
         // given
-        User userEntity = User.buildUser("userEmail");
+        User userEntity = getUserEntity();
 
         // when
         User result = userRepository.save(userEntity);
 
         // then
-        assertThat(result.getEmail()).isEqualTo(userEntity.getEmail());
-        assertThat(result.getPassword()).isEqualTo(userEntity.getPassword());
+        assertThat(result.getEmail()).isEqualTo(userEmail);
+        assertThat(result.getPassword()).isEqualTo(userPassword);
     }
 
     @Test
-    public void findUserByEmail() {
+    @DisplayName("사용자 탐색")
+    public void findUser() {
         // given
-        User userEntity = User.buildUser("userEmail");
+        User userEntity = getUserEntity();
 
         // when
         userRepository.save(userEntity);
-        Optional<User> result = userRepository.findUserByEmail(userEntity.getEmail());
+        User result = queryFactory.select(user)
+                .from(user)
+                .leftJoin(user.userDetail)
+                .fetchJoin()
+                .where(user.email.eq(userEntity.getEmail()))
+                .fetchFirst();
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.get().getEmail()).isEqualTo(userEntity.getEmail());
+        assertThat(result.getEmail()).isEqualTo(userEmail);
     }
 
     @Test
     @DisplayName("이름과 닉네임으로 연관된 사용자 탐색")
     public void findUserByNickNameAndName() {
         // given
-        User userEntity1 = User.buildUser("userEmail1");
-        User userEntity2 = User.buildUser("userEmail2");
-        User userEntity3 = User.buildUser("userEmail3");
+        User userEntity1 = getUserEntity();
+        userEntity1.setUserDetail(UserDetail.builder().name("a01").nickname("b02").build());
+        User userEntity2 = getUserEntity();
+        userEntity2.setUserDetail(UserDetail.builder().name("b01").nickname("a02").build());
+        User userEntity3 = getUserEntity();
+        userEntity3.setUserDetail(UserDetail.builder().name("c01").nickname("c02").build());
 
         userRepository.save(userEntity1);
         userRepository.save(userEntity2);
         userRepository.save(userEntity3);
 
-        UserDetail userDetail1 = UserDetail.buildUserDetail(userEntity1);
-        UserDetail userDetail2 = UserDetail.buildUserDetail(userEntity2);
-        UserDetail userDetail3 = UserDetail.buildUserDetail(userEntity3);
-
-        userDetailRepository.save(userDetail1);
-        userDetailRepository.save(userDetail2);
-        userDetailRepository.save(userDetail3);
-
         // when
-        List<User> result = userRepository.findAllUsersByNameAndNickName("nickname");
+        List<User> result = queryFactory.select(user).from(user).join(user.userDetail).fetchJoin()
+                .where(userDetail.name.eq("b01").or(userDetail.nickname.eq("c02")))
+                .fetch();
 
         // then
-        assertThat(result.size()).isEqualTo(3);
+        assertThat(result.size()).isEqualTo(2);
+    }
+
+    private User getUserEntity() {
+        return User.builder().email(userEmail).password(userPassword).type(UserType.GENERAL_USER)
+            .role(UserRole.USER).build();
     }
 
 }

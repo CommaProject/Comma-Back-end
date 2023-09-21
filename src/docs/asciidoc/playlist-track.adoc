@@ -85,3 +85,9 @@ include::{snippets}/playlist/track/delete-success/request-fields.adoc[]
 
 include::{snippets}/playlist/track/delete-success/http-response.adoc[]
 include::{snippets}/playlist/track/delete-success/response-fields.adoc[]
+
+==== 실패 - 존재하지 않는 트랙
+
+===== Response
+
+include::{snippets}/playlist/track/delete-fail-track-not-found/http-response.adoc[]

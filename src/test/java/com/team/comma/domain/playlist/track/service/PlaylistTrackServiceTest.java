@@ -44,7 +44,7 @@ class PlaylistTrackServiceTest {
     @Test
     void createPlaylistTrack_Success() {
         // given
-        User user = User.buildUser("userEmail");
+        User user = User.buildUser();
         Track track = buildTrack("track title");
         Playlist playlist = Playlist.buildPlaylist(user);
 
@@ -95,7 +95,7 @@ class PlaylistTrackServiceTest {
     @Test
     void modifyPlaylistTrackSequence_Success() {
         // given
-        User user = User.buildUser("userEmail");
+        User user = User.buildUser();
         Playlist playlist = Playlist.buildPlaylist(user);
         Track track = buildTrack("title");
         PlaylistTrack playlistTrack1 = PlaylistTrack.buildPlaylistTrack(playlist,track);
@@ -122,7 +122,7 @@ class PlaylistTrackServiceTest {
     @Test
     void modifyPlaylistTrackAlarmFlag_Success() {
         // given
-        User user = User.buildUser("userEmail");
+        User user = User.buildUser();
         Track track = buildTrack("track title");
         Playlist playlist = Playlist.buildPlaylist(user);
         PlaylistTrack playlistTrack = PlaylistTrack.buildPlaylistTrack(playlist,track);
@@ -142,7 +142,7 @@ class PlaylistTrackServiceTest {
         //given
         final List<Long> playlistTrackIdList = List.of(1L, 2L, 3L);
 
-        User user = User.buildUser("userEmail");
+        User user = User.buildUser();
         Playlist playlist = Playlist.buildPlaylist(user);
         Track track = buildTrack("title");
         PlaylistTrack playlistTrack1 = PlaylistTrack.buildPlaylistTrack(playlist,track);

@@ -20,8 +20,9 @@ public class RecommendRequest {
     private String recommendToEmail;
     private String comment;
 
-    public Recommend toRecommendEntity(User toUser, Playlist playlist){
+    public Recommend toRecommendEntity(User fromUser, User toUser, Playlist playlist){
         return Recommend.builder()
+                .fromUser(fromUser)
                 .toUser(toUser)
                 .recommendType(recommendType)
                 .comment(comment)
@@ -30,4 +31,13 @@ public class RecommendRequest {
                 .build();
     }
 
+    public Recommend toRecommendEntity(User fromUser, Playlist playlist){
+        return Recommend.builder()
+                .fromUser(fromUser)
+                .recommendType(recommendType)
+                .comment(comment)
+                .playlist(playlist)
+                .playCount(0L)
+                .build();
+    }
 }

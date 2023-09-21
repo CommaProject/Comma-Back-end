@@ -23,7 +23,6 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -50,8 +49,6 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureRestDocs
@@ -294,7 +291,7 @@ public class FavoriteArtistControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders
+                MockMvcRequestBuilders
                         .get(api, "artistName")
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken" , "token")));
@@ -306,9 +303,6 @@ public class FavoriteArtistControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
-                        ),
-                        pathParameters(
-                                parameterWithName("artistName").description("아티스트 명")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -334,7 +328,7 @@ public class FavoriteArtistControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders
+                MockMvcRequestBuilders
                         .get(api, "artistName")
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken" , "token")));
@@ -346,9 +340,6 @@ public class FavoriteArtistControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
-                        ),
-                        pathParameters(
-                                parameterWithName("artistName").description("아티스트 명")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),

@@ -9,21 +9,19 @@ link:main.html[main 화면]
 
 == Play-count API
 
----
-
 === 내가 가장 많이 들은 곡 조회
 
 ==== 성공
 
 ===== Request
 
-include::{snippets}/play-count/find-most-listened-track-success/http-request.adoc[]
-include::{snippets}/play-count/find-most-listened-track-success/request-cookies.adoc[]
+include::{snippets}/track/mostListenTrackByMe/http-request.adoc[]
+include::{snippets}/track/mostListenTrackByMe/request-cookies.adoc[]
 
 ===== Response
 
-include::{snippets}/play-count/find-most-listened-track-success/http-response.adoc[]
-include::{snippets}/play-count/find-most-listened-track-success/response-fields.adoc[]
+include::{snippets}/track/mostListenTrackByMe/http-response.adoc[]
+include::{snippets}/track/mostListenTrackByMe/response-fields.adoc[]
 
 ---
 
@@ -33,38 +31,10 @@ include::{snippets}/play-count/find-most-listened-track-success/response-fields.
 
 ===== Request
 
-include::{snippets}/play-count/find-most-listened-track-friend-success/http-request.adoc[]
-include::{snippets}/play-count/find-most-listened-track-friend-success/request-cookies.adoc[]
+include::{snippets}/track/mostListenTrackByFriend/http-request.adoc[]
+include::{snippets}/track/mostListenTrackByFriend/request-cookies.adoc[]
 
 ===== Response
 
-include::{snippets}/play-count/find-most-listened-track-friend-success/http-response.adoc[]
-include::{snippets}/play-count/find-most-listened-track-friend-success/response-fields.adoc[]
-
----
-
-=== 트랙 play count 증가
-
-==== 성공
-
-===== Request
-
-include::{snippets}/play-count/modify-success/http-request.adoc[]
-include::{snippets}/play-count/modify-success/request-cookies.adoc[]
-
-===== Response
-
-include::{snippets}/play-count/modify-success/http-response.adoc[]
-include::{snippets}/play-count/modify-success/response-fields.adoc[]
-
-==== 실패 - 트랙 찾을 수 없음
-
-===== Request
-
-include::{snippets}/play-count/modify-fail-track-not-found/http-request.adoc[]
-include::{snippets}/play-count/modify-fail-track-not-found/request-cookies.adoc[]
-
-===== Response
-
-include::{snippets}/play-count/modify-fail-track-not-found/http-response.adoc[]
-include::{snippets}/play-count/modify-fail-track-not-found/response-fields.adoc[]
+include::{snippets}/track/mostListenTrackByFriend/http-response.adoc[]
+include::{snippets}/track/mostListenTrackByFriend/response-fields.adoc[]

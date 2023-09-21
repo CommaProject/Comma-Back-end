@@ -8,16 +8,3 @@
 link:main.html[main 화면]
 
 == Track API
-
-=== 가장 많이 추천 된 트랙 조회
-
-==== 성공
-
-===== Request
-
-include::{snippets}/track/mostListenTrackByRecommendTrack/http-request.adoc[]
-
-===== Response
-
-include::{snippets}/track/mostListenTrackByRecommendTrack/http-response.adoc[]
-include::{snippets}/track/mostListenTrackByRecommendTrack/response-fields.adoc[]

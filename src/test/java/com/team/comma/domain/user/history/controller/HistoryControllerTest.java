@@ -1,7 +1,6 @@
 package com.team.comma.domain.user.history.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.history.dto.HistoryRequest;
 import com.team.comma.domain.user.history.dto.HistoryResponse;
@@ -32,7 +31,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
+import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -73,7 +73,7 @@ public class HistoryControllerTest {
         // given
         final String api = "/spotify/histories";
         HistoryRequest request = HistoryRequest.builder().searchHistory("history").build();
-        doThrow(new UserException(NOT_FOUNT_USER)).when(spotifyHistoryService).addHistory(request, "token");
+        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(spotifyHistoryService).addHistory(request, "token");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -157,7 +157,7 @@ public class HistoryControllerTest {
     public void getHistoryFail_notFountUser() throws Exception {
         // given
         final String api = "/spotify/histories";
-        doThrow(new UserException(NOT_FOUNT_USER)).when(spotifyHistoryService).getHistoryList("token");
+        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(spotifyHistoryService).getHistoryList("token");
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -274,7 +274,7 @@ public class HistoryControllerTest {
     public void deleteAllHistoryFail_notFountUser() throws Exception {
         // given
         final String api = "/spotify/all-histories";
-        doThrow(new UserException(NOT_FOUNT_USER)).when(spotifyHistoryService).deleteAllHistory("token");
+        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(spotifyHistoryService).deleteAllHistory("token");
 
         // when
         final ResultActions resultActions = mockMvc.perform(

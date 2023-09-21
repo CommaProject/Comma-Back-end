@@ -24,7 +24,8 @@ include::{snippets}/user/register/request-fields.adoc[]
 include::{snippets}/user/register/http-response.adoc[]
 include::{snippets}/user/register/response-fields.adoc[]
 
-==== 실패 - 이미 존재하는 계정
+==== 실패
+- 이미 존재하는 계정
 
 ===== Request
 
@@ -51,6 +52,7 @@ include::{snippets}/user/login/request-fields.adoc[]
 
 include::{snippets}/user/login/http-response.adoc[]
 include::{snippets}/user/login/response-fields.adoc[]
+include::{snippets}/user/login/response-cookies.adoc[]
 
 ==== 실패 - 잘못된 정보 입력
 
@@ -66,43 +68,6 @@ include::{snippets}/user/login-Fail/wrongInfo/response-fields.adoc[]
 
 ---
 
-=== 사용자 정보 조회
-
-==== 성공
-
-===== Request
-
-include::{snippets}/user/getUserInfoByToken/http-request.adoc[]
-
-===== Response
-
-include::{snippets}/user/getUserInfoByToken/http-response.adoc[]
-include::{snippets}/user/getUserInfoByToken/response-fields.adoc[]
-
-==== 실패 - AccessToken 없음
-
-===== Request
-
-include::{snippets}/user/getUserInfoByToken-Fail/notExistToken/http-request.adoc[]
-
-===== Response
-
-include::{snippets}/user/getUserInfoByToken-Fail/notExistToken/http-response.adoc[]
-include::{snippets}/user/getUserInfoByToken-Fail/notExistToken/response-fields.adoc[]
-
-==== 실패 - 존재 하지 않는 사용자
-
-===== Request
-
-include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/http-request.adoc[]
-
-===== Response
-
-include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/http-response.adoc[]
-include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/response-fields.adoc[]
-
----
-
 === 사용자 검색
 
 ==== 성공
@@ -110,27 +75,10 @@ include::{snippets}/user/getUserInfoByToken-Fail/notExistUser/response-fields.ad
 ===== Request
 
 include::{snippets}/user/searchUser/http-request.adoc[]
-include::{snippets}/user/searchUser/path-parameters.adoc[]
+include::{snippets}/user/searchUser/query-parameters.adoc[]
 include::{snippets}/user/searchUser/request-cookies.adoc[]
 
 ===== Response
 
 include::{snippets}/user/searchUser/http-response.adoc[]
 include::{snippets}/user/searchUser/response-fields.adoc[]
-
----
-
-=== 사용자 패스워드 변경
-
-==== 성공
-
-===== Request
-
-include::{snippets}/user/modify-password-success/http-request.adoc[]
-include::{snippets}/user/modify-password-success/request-cookies.adoc[]
-include::{snippets}/user/modify-password-success/request-fields.adoc[]
-
-===== Response
-
-include::{snippets}/user/modify-password-success/http-response.adoc[]
-include::{snippets}/user/modify-password-success/response-fields.adoc[]

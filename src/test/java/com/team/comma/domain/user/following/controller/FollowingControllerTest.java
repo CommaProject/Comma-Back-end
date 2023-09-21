@@ -2,7 +2,7 @@ package com.team.comma.domain.user.following.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.user.following.constant.FollowingType;
-import com.team.comma.domain.user.detail.domain.UserDetail;
+import com.team.comma.domain.user.profile.domain.UserDetail;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.user.following.domain.Following;
 import com.team.comma.domain.user.following.dto.FollowingRequest;
@@ -23,7 +23,6 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -52,8 +51,6 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureRestDocs
@@ -259,20 +256,24 @@ public class FollowingControllerTest {
         final String api = "/followings";
         FollowingRequest request = FollowingRequest.builder().followingId(1L).build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS);
-        doReturn(message).when(followingService).blockFollowedUser(1L);
+        doReturn(message).when(followingService).blockFollowedUser("accessToken" , 1L);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
                         .delete(api)
                         .content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "accessToken")));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
                 document("following/blockSuccess",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
                         requestFields(
                                 fieldWithPath("followingId").description("following 관계 id"),
                                 fieldWithPath("toUserId").ignored()
@@ -299,20 +300,24 @@ public class FollowingControllerTest {
         final String api = "/followings/unblocks";
         FollowingRequest request = FollowingRequest.builder().followingId(1L).build();
         MessageResponse message = MessageResponse.of(REQUEST_SUCCESS);
-        doReturn(message).when(followingService).unblockFollowedUser(1L);
+        doReturn(message).when(followingService).unblockFollowedUser("accessToken" , 1L);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders
                         .patch(api)
                         .content(gson.toJson(request))
-                        .contentType(MediaType.APPLICATION_JSON));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken" , "accessToken")));
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
                 document("following/unblockSuccess",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
                         requestFields(
                                 fieldWithPath("followingId").description("following 관계 id"),
                                 fieldWithPath("toUserId").ignored()
@@ -342,7 +347,7 @@ public class FollowingControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders
+                MockMvcRequestBuilders
                         .get(api, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken" , "accessToken")));
@@ -352,9 +357,6 @@ public class FollowingControllerTest {
                 document("following/isFollow-true",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("toUserId").description("대상 아이디 식별자 값")
-                        ),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
                         ),
@@ -383,7 +385,7 @@ public class FollowingControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders
+                MockMvcRequestBuilders
                         .get(api, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken" , "accessToken")));
@@ -393,9 +395,6 @@ public class FollowingControllerTest {
                 document("following/isFollow-false",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("toUserId").description("대상 아이디 식별자 값")
-                        ),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
                         ),
@@ -432,7 +431,7 @@ public class FollowingControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.get(api, FOLLOWING)
+                MockMvcRequestBuilders.get(api, FOLLOWING)
                         .cookie(new Cookie("accessToken" , token))
                         .contentType(MediaType.APPLICATION_JSON));
 
@@ -441,9 +440,6 @@ public class FollowingControllerTest {
                 document("following/listSuccess",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("followingType").description("팔로우 여부 (FOLLOWING , FOLLOWED , BOTH)")
-                        ),
                         requestCookies(
                                 cookieWithName("accessToken").description("리스트 조회 할 사용자의 accessToken")
                         ),

@@ -5,7 +5,6 @@ import com.team.comma.domain.playlist.archive.dto.ArchiveResponse;
 import com.team.comma.domain.playlist.track.repository.PlaylistTrackRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.repository.TrackRepository;
-import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.domain.playlist.archive.dto.ArchiveRequest;
 import com.team.comma.domain.playlist.archive.repository.ArchiveRepository;
@@ -29,7 +28,6 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
@@ -64,13 +62,13 @@ public class ArchiveServiceTest {
     public void addArchiveFail_notFoundUser() {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.empty()).when(userRepository).findUserByEmail("userEmail");
+        doReturn(Optional.empty()).when(userRepository).findByEmail("userEmail");
 
         // when
         Throwable thrown = catchThrowable(() -> archiveService.createArchive("token" , null));
 
         // then
-        assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
+        assertThat(thrown).isInstanceOf(AccountException.class).hasMessage("사용자를 찾을 수 없습니다.");
     }
 
     @Test
@@ -78,7 +76,7 @@ public class ArchiveServiceTest {
     public void addArchiveFail_notFoundPlaylist() {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(User.builder().build())).when(userRepository).findUserByEmail("userEmail");
+        doReturn(Optional.of(User.builder().build())).when(userRepository).findByEmail("userEmail");
         doReturn(Optional.empty()).when(playlistRepository).findById(0L);
         ArchiveRequest archiveRequest = ArchiveRequest.builder().playlistId(0L).build();
 
@@ -94,7 +92,7 @@ public class ArchiveServiceTest {
     public void addArchiveSuccess() throws AccountException {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(User.builder().build())).when(userRepository).findUserByEmail("userEmail");
+        doReturn(Optional.of(User.builder().build())).when(userRepository).findByEmail("userEmail");
         doReturn(Optional.of(Playlist.builder().build())).when(playlistRepository).findById(0L);
         ArchiveRequest archiveRequest = ArchiveRequest.builder().playlistId(0L).build();
 
@@ -109,7 +107,7 @@ public class ArchiveServiceTest {
     @DisplayName("아카이브 DateTime으로 조회")
     public void findArchiveByDateTime() {
         // given
-        User user = User.buildUser("userEmail");
+        User user = User.buildUser();
         Track track = buildTrack();
         Playlist playlist = buildPlaylist(user);
         playlist.addPlaylistTrack(track);
@@ -133,7 +131,7 @@ public class ArchiveServiceTest {
     @DisplayName("아카이브 Date로 조회")
     public void findArchiveByDate() throws AccountException {
         // given
-        User user = User.buildUser("userEmail");
+        User user = User.buildUser();
         Track track = buildTrack();
         Playlist playlist = buildPlaylist(user);
         playlist.addPlaylistTrack(track);
@@ -147,7 +145,7 @@ public class ArchiveServiceTest {
         LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
+        doReturn(Optional.of(user)).when(userRepository).findByEmail(user.getEmail());
         doReturn(List.of(archiveResponse)).when(archiveRepository).findArchiveByDateTime(user, startDateTime, endDateTime);
 
 

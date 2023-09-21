@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.spotify.dto.ArtistResponse;
 import com.team.comma.spotify.service.SearchService;
-import com.team.comma.domain.track.track.dto.TrackResponse;
+import com.team.comma.domain.track.track.dto.SearchTrackResponse;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -171,7 +171,7 @@ public class SearchControllerTest {
                 resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
                 MessageResponse.class);
 
-        ArrayList<TrackResponse> trackResult = (ArrayList<TrackResponse>) result.getData();
+        ArrayList<SearchTrackResponse> trackResult = (ArrayList<SearchTrackResponse>) result.getData();
 
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(trackResult.size()).isEqualTo(1);
@@ -251,12 +251,12 @@ public class SearchControllerTest {
         assertThat(artistResult.size()).isEqualTo(3);
     }
 
-    public TrackResponse createTrackResponse() {
+    public SearchTrackResponse createTrackResponse() {
         Image image1 = new Image.Builder().setHeight(640).setWidth(640).setUrl("https://i.scdn.co/image/ab67616d0000b2737645cbd0f9fefff1771ea50c").build();
         Image image2 = new Image.Builder().setHeight(300).setWidth(300).setUrl("https://i.scdn.co/image/ab67616d00001e027645cbd0f9fefff1771ea50c").build();
         Image image3 = new Image.Builder().setHeight(64).setWidth(64).setUrl("https://i.scdn.co/image/ab67616d000048517645cbd0f9fefff1771ea50c").build();
 
-        return TrackResponse.builder()
+        return SearchTrackResponse.builder()
                 .trackId("6tohHT5sQRMjdWHMNn190u")
                 .trackName("Wild Flower")
                 .artist("Park Hyo Shin")

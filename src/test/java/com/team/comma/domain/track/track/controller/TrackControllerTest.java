@@ -1,10 +1,14 @@
 package com.team.comma.domain.track.track.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.track.track.service.TrackService;
+import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +43,8 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.requestCo
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureRestDocs
@@ -66,16 +71,72 @@ public class TrackControllerTest {
     }
 
     @Test
+    @DisplayName("유저가 좋아요 누른 트랙 탐색")
+    public void findTrackByFavoriteTrack() throws Exception {
+        // given
+        final String url = "/tracks/users/favorites";
+        TrackResponse trackResponse = buildTrackResponse("title" , "id");
+
+        ArtistResponse artist = ArtistResponse.createArtist("artistId" , "artist");
+
+        List<TrackArtistResponse> data = new ArrayList<>();
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
+        data.add(trackArtistResponse);
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , data)).when(trackService).findTrackByFavoriteTrack(any(String.class));
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .cookie(new Cookie("accessToken", "accessToken"))
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("track/favoriteTrack",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 access token")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터"),
+                                fieldWithPath("data.[].track.id").description("트랙 Id"),
+                                fieldWithPath("data.[].track.trackTitle").description("트랙 제목"),
+                                fieldWithPath("data.[].track.durationTimeMs").description("트랙 재생 시간"),
+                                fieldWithPath("data.[].track.recommendCount").description("트랙 추천 횟수"),
+                                fieldWithPath("data.[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
+                                fieldWithPath("data.[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
+                                fieldWithPath("data.[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
+                                fieldWithPath("data.[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
+                                fieldWithPath("data.[].artists.spotifyArtistName").description("트랙 아티스트 명")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+    }
+
+    @Test
     @DisplayName("추천 받은 인기 트랙")
     public void findTrackByMostFavorite() throws Exception {
         // given
-        final String url = "/tracks/recommend";
-        List<Track> tracks = new ArrayList<>();
-        for(int i = 0; i < 2; i++) {
-            tracks.add(buildTrack("title" , "spotifyId"));
-        }
+        final String url = "/tracks/favorites";
+        TrackResponse trackResponse = buildTrackResponse("title" , "id");
 
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , tracks)).when(trackService).findTrackByMostFavorite();
+        ArtistResponse artist = ArtistResponse.createArtist("artistId" , "artist");
+
+        List<TrackArtistResponse> data = new ArrayList<>();
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
+        data.add(trackArtistResponse);
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , data)).when(trackService).findTrackByMostFavorite();
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -91,17 +152,15 @@ public class TrackControllerTest {
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("메세지"),
                                 fieldWithPath("data").description("데이터"),
-                                fieldWithPath("data.[].id").description("트랙 테이블 ID"),
-                                fieldWithPath("data.[].trackTitle").description("트랙 이름"),
-                                fieldWithPath("data.[].durationTimeMs").description("트랙 재생 시간"),
-                                fieldWithPath("data.[].recommendCount").description("트랙 추천 횟수"),
-                                fieldWithPath("data.[].albumImageUrl").description("트랙 이미지 주소"),
-                                fieldWithPath("data.[].spotifyTrackId").description("스포티파이 트랙 ID"),
-                                fieldWithPath("data.[].spotifyTrackHref").description("아티스트 트랙 재생 주소"),
-                                fieldWithPath("data.[].trackArtistList").description("아티스트 목록"),
-                                fieldWithPath("data.[].trackArtistList[].id").description("제공되지 않는 데이터입니다."),
-                                fieldWithPath("data.[].trackArtistList[].artistName").description("아티스트 명"),
-                                fieldWithPath("data.[].trackArtistList[].track").description("제공되지 않는 데이터입니다.")
+                                fieldWithPath("data.[].track.id").description("트랙 Id"),
+                                fieldWithPath("data.[].track.trackTitle").description("트랙 제목"),
+                                fieldWithPath("data.[].track.durationTimeMs").description("트랙 재생 시간"),
+                                fieldWithPath("data.[].track.recommendCount").description("트랙 추천 횟수"),
+                                fieldWithPath("data.[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
+                                fieldWithPath("data.[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
+                                fieldWithPath("data.[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
+                                fieldWithPath("data.[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
+                                fieldWithPath("data.[].artists.spotifyArtistName").description("트랙 아티스트 명")
                         )
                 )
         );
@@ -113,6 +172,8 @@ public class TrackControllerTest {
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
     }
 
+
+
     private Track buildTrack(String title, String spotifyId) {
         return Track.builder()
                 .trackTitle(title)
@@ -120,13 +181,43 @@ public class TrackControllerTest {
                 .albumImageUrl("url")
                 .spotifyTrackHref("spotifyTrackHref")
                 .spotifyTrackId(spotifyId)
-                .trackArtistList(Arrays.asList(buildTrackArtist()))
+                .trackArtistList(Arrays.asList(buildTrackArtist(buildTrack() , buildArtist())))
                 .build();
     }
 
-    public TrackArtist buildTrackArtist() {
+    public TrackArtist buildTrackArtist(Track track , Artist artist) {
         return TrackArtist.builder()
-                .artistName("artist")
+                .track(track)
+                .artist(artist)
+                .build();
+    }
+
+    private TrackResponse buildTrackResponse(String title, String spotifyId) {
+        return TrackResponse.builder()
+                .id(1L)
+                .trackTitle(title)
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId(spotifyId)
+                .build();
+    }
+
+    private Track buildTrack() {
+        return Track.builder()
+                .id(1L)
+                .trackTitle("title")
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId("spotifyId")
+                .build();
+    }
+
+    private Artist buildArtist() {
+        return Artist.builder()
+                .spotifyArtistId("artistId")
+                .spotifyArtistName("artistName")
                 .build();
     }
 

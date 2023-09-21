@@ -1,8 +1,11 @@
 package com.team.comma.domain.track.playcount.controller;
 
 import com.google.gson.Gson;
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.service.PlayCountService;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.track.track.exception.TrackException;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
@@ -41,7 +44,6 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.requestCo
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -72,98 +74,8 @@ public class PlayCountControllerTest {
     }
 
     @Test
-    public void findMostListenedTrack_Success() throws Exception {
-        // given
-        final String url = "/tracks";
-        List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
-        for(int i = 0; i < 2; i++) {
-            trackPlayCountResponses.add(buildTrackPlayCountResponse());
-        }
-
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(playCountService).findMostListenedTrack(any(String.class));
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(url)
-                        .cookie(new Cookie("accessToken", "accessToken"))
-        );
-
-        // then
-        resultActions.andExpect(status().isOk()).andDo(
-                document("play-count/find-most-listened-track-success",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestCookies(
-                                cookieWithName("accessToken").description("사용자 access token")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터"),
-                                fieldWithPath("data.[].playCount").description("재생 횟수"),
-                                fieldWithPath("data.[].trackId").description("스포티파이 트랙 ID"),
-                                fieldWithPath("data.[].trackImageUrl").description("트랙 이미지 URL"),
-                                fieldWithPath("data.[].trackName").description("트랙 이름"),
-                                fieldWithPath("data.[].trackArtist").description("트랙 아티스트")
-                        )
-                )
-        );
-        final MessageResponse result = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-    @Test
-    public void findMostListenedTrackByFriend_Success() throws Exception {
-        // given
-        final String url = "/tracks/friends";
-        List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
-        for(int i = 0; i < 2; i++) {
-            trackPlayCountResponses.add(buildTrackPlayCountResponse());
-        }
-
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(playCountService).findMostListenedTrackByFriend(any(String.class));
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(url)
-                        .cookie(new Cookie("accessToken", "accessToken"))
-        );
-
-        // then
-        resultActions.andExpect(status().isOk()).andDo(
-                document("play-count/find-most-listened-track-friend-success",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestCookies(
-                                cookieWithName("accessToken").description("사용자 access token")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터"),
-                                fieldWithPath("data.[].playCount").description("재생 횟수"),
-                                fieldWithPath("data.[].trackId").description("스포티파이 트랙 ID"),
-                                fieldWithPath("data.[].trackImageUrl").description("트랙 이미지 URL"),
-                                fieldWithPath("data.[].trackName").description("트랙 이름"),
-                                fieldWithPath("data.[].trackArtist").description("트랙 아티스트")
-                        )
-                )
-        );
-        final MessageResponse result = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-
-    @Test
-    public void modifyPlayCount_Success() throws Exception {
+    @DisplayName("트랙 추천 수 증가")
+    public void countPlayCount() throws Exception {
         // given
         final String url = "/tracks/play-count/{trackId}";
         doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(playCountService).modifyPlayCount(any(String.class) , any(String.class));
@@ -176,7 +88,7 @@ public class PlayCountControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("play-count/modify-success",
+                document("track/addTrackListenedCount",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -201,7 +113,106 @@ public class PlayCountControllerTest {
     }
 
     @Test
-    public void modifyPlayCount_Fail_TrackNotFound() throws Exception {
+    @DisplayName("내가 가장 많이 들은 곡")
+    public void findMostListenedTrack() throws Exception {
+        // given
+        final String url = "/tracks";
+        List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
+        for(int i = 0; i < 2; i++) {
+            trackPlayCountResponses.add(buildTrackPlayCountResponse(buildTrackResponse()));
+        }
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(playCountService).findMostListenedTrack(any(String.class));
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .cookie(new Cookie("accessToken", "accessToken"))
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("track/mostListenTrackByMe",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 access token")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터"),
+                                fieldWithPath("data.[].playCount").description("재생 횟수"),
+                                fieldWithPath("data.[].track.id").description("스포티파이 트랙 키 값"),
+                                fieldWithPath("data.[].track.trackTitle").description("트랙 이름"),
+                                fieldWithPath("data.[].track.durationTimeMs").description("트랙 재생 시간"),
+                                fieldWithPath("data.[].track.recommendCount").description("트랙 추천 횟수"),
+                                fieldWithPath("data.[].track.albumImageUrl").description("앨범 이미지 URL"),
+                                fieldWithPath("data.[].track.spotifyTrackId").description("스포티파이 트랙 ID"),
+                                fieldWithPath("data.[].track.spotifyTrackHref").description("스포티파이 트랙 주소")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+    }
+
+    @Test
+    @DisplayName("친구가 가장 많이 들은 곡")
+    public void findMostListenedTrackByFriend() throws Exception {
+        // given
+        final String url = "/tracks/friends";
+        List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
+        for(int i = 0; i < 2; i++) {
+            trackPlayCountResponses.add(buildTrackPlayCountResponse(buildTrackResponse()));
+        }
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(playCountService).findMostListenedTrackByFriend(any(String.class));
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.get(url)
+                        .cookie(new Cookie("accessToken", "accessToken"))
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("track/mostListenTrackByFriend",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 access token")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터"),
+                                fieldWithPath("data.[].playCount").description("재생 횟수"),
+                                fieldWithPath("data.[].track.id").description("스포티파이 트랙 키 값"),
+                                fieldWithPath("data.[].track.trackTitle").description("트랙 이름"),
+                                fieldWithPath("data.[].track.durationTimeMs").description("트랙 재생 시간"),
+                                fieldWithPath("data.[].track.recommendCount").description("트랙 추천 횟수"),
+                                fieldWithPath("data.[].track.albumImageUrl").description("앨범 이미지 URL"),
+                                fieldWithPath("data.[].track.spotifyTrackId").description("스포티파이 트랙 ID"),
+                                fieldWithPath("data.[].track.spotifyTrackHref").description("스포티파이 트랙 주소")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+    }
+
+    @Test
+    @DisplayName("트랙 추천 수 증가 실패 _ 트랙 탐색 실패")
+    public void countPlayCountFail_notFountTrack() throws Exception {
         // given
         final String url = "/tracks/play-count/{trackId}";
         doThrow(new TrackException("트랙을 찾을 수 없습니다.")).when(playCountService).modifyPlayCount(any(String.class) , any(String.class));
@@ -214,7 +225,7 @@ public class PlayCountControllerTest {
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
-                document("play-count/modify-fail-track-not-found",
+                document("track/addTrackListenedCountFail-notFountTrack",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
@@ -238,13 +249,22 @@ public class PlayCountControllerTest {
         assertThat(result.getMessage()).isEqualTo("트랙을 찾을 수 없습니다.");
     }
 
-    public TrackPlayCountResponse buildTrackPlayCountResponse() {
+    public TrackPlayCountResponse buildTrackPlayCountResponse(TrackResponse trackResponse) {
         return TrackPlayCountResponse.builder()
                 .playCount(0)
-                .trackId("trackId")
-                .trackImageUrl("images")
-                .trackName("trackName")
-                .trackArtist("trackArtist")
+                .track(trackResponse)
+                .build();
+    }
+
+    public TrackResponse buildTrackResponse() {
+        return TrackResponse.builder()
+                .albumImageUrl("albumImageURL")
+                .durationTimeMs(30)
+                .recommendCount(1L)
+                .trackTitle("title")
+                .spotifyTrackHref("href")
+                .spotifyTrackId("id")
+                .id(30L)
                 .build();
     }
 

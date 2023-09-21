@@ -37,6 +37,27 @@ public class TrackServiceTest {
     TrackRepository trackRepository;
 
     @Test
+    @DisplayName("좋아요 표기한 곡 탐색")
+    void findTrackByFavoriteTrack() {
+        // given
+        List<Track> tracks = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            tracks.add(buildTrack("title", "trackId"));
+        }
+
+        doReturn(tracks).when(favoriteTrackRepository).findFavoriteTrackByEmail(any(String.class));
+        doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
+
+        // when
+        MessageResponse result = trackService.findTrackByFavoriteTrack("token");
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+        assertThat(((List) result.getData()).size()).isEqualTo(5);
+    }
+
+    @Test
     @DisplayName("가장 많은 추천 곡 가져오기")
     void findTrackMostRecommended() throws AccountException {
         // given
