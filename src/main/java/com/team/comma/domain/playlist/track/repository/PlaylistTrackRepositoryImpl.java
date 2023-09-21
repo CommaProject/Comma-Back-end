@@ -40,8 +40,8 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
                                         track.spotifyTrackHref
                                 ),
                                 Projections.constructor(ArtistResponse.class,
-                                        artist.spotifyArtistId.max(),
-                                        artist.spotifyArtistName.max()
+                                        artist.spotifyArtistId.min(),
+                                        artist.spotifyArtistName.min()
                                 )))))
                 .from(playlistTrack)
                 .innerJoin(playlistTrack.track , track)
