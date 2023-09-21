@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.common.dto.MessageResponse;
@@ -342,23 +343,6 @@ public class RecommendControllerTest {
                 .recommendType(RecommendType.FOLLOWING)
                 .recommendToEmail("toUserEmail")
                 .comment("test recommend")
-                .build();
-    }
-
-    private Track buildTrack(String title, String spotifyId) {
-        return Track.builder()
-                .trackTitle(title)
-                .recommendCount(0L)
-                .albumImageUrl("url")
-                .spotifyTrackHref("spotifyTrackHref")
-                .spotifyTrackId(spotifyId)
-                .trackArtistList(Arrays.asList(buildTrackArtist()))
-                .build();
-    }
-
-    public TrackArtist buildTrackArtist() {
-        return TrackArtist.builder()
-                .artistName("artist")
                 .build();
     }
 

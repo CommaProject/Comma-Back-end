@@ -1,12 +1,15 @@
 package com.team.comma.domain.favorite.track.service;
 
+import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackRequest;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
-import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
@@ -87,9 +90,11 @@ public class FavoriteTrackServiceTest {
         // given
         User user = buildUser();
         Track track = buildTrack("track title", "spotify id");
+        TrackResponse trackResponse = buildTrackResponse("title" , "spotifyId");
+
+        ArtistResponse artist = ArtistResponse.createArtist("artistId" ,"artist");
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        TrackArtist trackArtist = buildTrackArtist(track);
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackArtist);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(List.of(favoriteTrackResponse)).when(favoriteTrackRepository).findAllFavoriteTrackByUser(user);
@@ -109,10 +114,13 @@ public class FavoriteTrackServiceTest {
         String accessToken = "accessToken";
         User user = buildUser();
         Track track = buildTrack("track title", "spotify id");
-        track.addTrackArtistList("artist name");
+        TrackResponse trackResponse = buildTrackResponse("title" , "spotifyId");
+
+        Artist artist = Artist.createArtist("artistId" , "artist name");
+        ArtistResponse artistResponse = ArtistResponse.createArtist("artistId" , "artist name");
+        track.addTrackArtistList(artist);
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        TrackArtist trackArtist = buildTrackArtist(track);
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackArtist);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artistResponse);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(accessToken);
@@ -146,11 +154,14 @@ public class FavoriteTrackServiceTest {
                 .build();
     }
 
-    public TrackArtist buildTrackArtist(Track track) {
-        return TrackArtist.builder()
+    private TrackResponse buildTrackResponse(String title, String spotifyId) {
+        return TrackResponse.builder()
                 .id(1L)
-                .track(track)
-                .artistName("artist name")
+                .trackTitle(title)
+                .recommendCount(0L)
+                .albumImageUrl("url")
+                .spotifyTrackHref("spotifyTrackHref")
+                .spotifyTrackId(spotifyId)
                 .build();
     }
 

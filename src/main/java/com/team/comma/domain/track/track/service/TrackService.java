@@ -1,10 +1,9 @@
 package com.team.comma.domain.track.track.service;
 
-import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
 import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.track.track.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.global.jwt.support.JwtTokenProvider;
 import com.team.comma.spotify.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class TrackService {
     private final SearchService searchService;
 
     public MessageResponse findTrackByMostFavorite() {
-        List<Track> result = trackRepository.findTrackMostRecommended();
+        List<TrackArtistResponse> result = trackRepository.findTrackMostRecommended();
 
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }

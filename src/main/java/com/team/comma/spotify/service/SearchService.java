@@ -1,13 +1,15 @@
 package com.team.comma.spotify.service;
 
 import com.neovisionaries.i18n.CountryCode;
+import com.team.comma.domain.artist.service.ArtistService;
 import com.team.comma.global.common.dto.MessageResponse;
-import com.team.comma.spotify.dto.ArtistResponse;
+import com.team.comma.spotify.dto.SearchArtistResponse;
 import com.team.comma.spotify.support.SpotifyAuthorization;
 import com.team.comma.spotify.support.SpotifySearchCommand;
-import com.team.comma.domain.track.track.dto.TrackResponse;
+import com.team.comma.spotify.dto.SearchTrackResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.domain.track.track.domain.Track.buildTrack;
-import static com.team.comma.domain.track.track.dto.TrackResponse.createTrackResponse;
+import static com.team.comma.spotify.dto.SearchTrackResponse.createTrackResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,7 @@ public class SearchService {
 
     private final SpotifyAuthorization spotifyAuthorization;
     private final SpotifySearchCommand spotifySearchCommand;
+    private final ArtistService artistService;
 
     public MessageResponse searchArtistList(String artistName , String token) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
@@ -43,9 +46,9 @@ public class SearchService {
 
         Paging<Artist> artistsPaging = (Paging<Artist>) executeResult;
 
-        ArrayList<ArtistResponse> result = new ArrayList<>();
+        ArrayList<SearchArtistResponse> result = new ArrayList<>();
         for (Artist artist : artistsPaging.getItems()) {
-            result.add(ArtistResponse.createArtistResponse(artist));
+            result.add(SearchArtistResponse.createArtistResponse(artist));
         }
 
         return MessageResponse.of(REQUEST_SUCCESS , result);
@@ -61,7 +64,7 @@ public class SearchService {
         }
 
         Paging<Track> artistsPaging = (Paging<Track>) executeResult;
-        ArrayList<TrackResponse> result = new ArrayList<>();
+        ArrayList<SearchTrackResponse> result = new ArrayList<>();
         for (Track track : artistsPaging.getItems()) {
             result.add(createTrackResponse(track));
         }
@@ -69,6 +72,7 @@ public class SearchService {
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
+    @Transactional
     public com.team.comma.domain.track.track.domain.Track searchTrackByTrackId(String trackId) {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
         GetTrackRequest getTrackRequest = spotifyApi.getTrack(trackId).build();
@@ -79,7 +83,7 @@ public class SearchService {
         }
 
         Track track = (Track) executeResult;
-        return buildTrack(track);
+        return buildTrack(track , artistService);
     }
 
     public MessageResponse searchGenreList() {

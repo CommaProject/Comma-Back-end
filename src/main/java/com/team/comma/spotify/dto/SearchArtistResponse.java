@@ -9,7 +9,7 @@ import se.michaelthelin.spotify.model_objects.specification.Image;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class ArtistResponse {
+public class SearchArtistResponse {
 
     private String artistId;
     private String artistName;
@@ -17,8 +17,8 @@ public class ArtistResponse {
     private Image[] images;
     private int popularity;
 
-    public static ArtistResponse createArtistResponse(Artist artist) {
-        return ArtistResponse.builder()
+    public static SearchArtistResponse createArtistResponse(Artist artist) {
+        return SearchArtistResponse.builder()
             .artistId(artist.getId())
             .artistName(artist.getName())
             .genres(artist.getGenres())
