@@ -37,14 +37,14 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                                 track.spotifyTrackHref
                         ),
                         Projections.constructor(ArtistResponse.class,
-                                artist.spotifyArtistId,
-                                artist.spotifyArtistName
+                                artist.spotifyArtistId.max(),
+                                artist.spotifyArtistName.max()
                         ))).from(favoriteTrack)
                 .join(favoriteTrack.user, user).on(user.email.eq(userEmail))
                 .innerJoin(favoriteTrack.track, track)
                 .innerJoin(track.trackArtistList, trackArtist)
                 .innerJoin(trackArtist.artist, artist)
-                .groupBy(favoriteTrack)
+                .groupBy(favoriteTrack , track)
                 .fetch();
     }
 
@@ -67,15 +67,15 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                                                         track.spotifyTrackHref
                                                 ),
                                                 Projections.constructor(ArtistResponse.class,
-                                                        artist.spotifyArtistId,
-                                                        artist.spotifyArtistName
+                                                        artist.spotifyArtistId.max(),
+                                                        artist.spotifyArtistName.max()
                                                 )))))
                 .from(favoriteTrack)
                 .innerJoin(favoriteTrack.track, track)
                 .innerJoin(track.trackArtistList, trackArtist)
                 .innerJoin(trackArtist.artist, artist)
                 .where(favoriteTrack.user.eq(user))
-                .groupBy(favoriteTrack)
+                .groupBy(favoriteTrack , track)
                 .orderBy(favoriteTrack.id.desc())
                 .fetch();
     }

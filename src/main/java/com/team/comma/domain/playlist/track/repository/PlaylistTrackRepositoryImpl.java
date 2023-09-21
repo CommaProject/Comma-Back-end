@@ -40,15 +40,15 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
                                         track.spotifyTrackHref
                                 ),
                                 Projections.constructor(ArtistResponse.class,
-                                        artist.spotifyArtistId,
-                                        artist.spotifyArtistName
+                                        artist.spotifyArtistId.max(),
+                                        artist.spotifyArtistName.max()
                                 )))))
                 .from(playlistTrack)
                 .innerJoin(playlistTrack.track , track)
                 .innerJoin(track.trackArtistList , trackArtist)
                 .innerJoin(trackArtist.artist , artist)
                 .where(playlistTrack.playlist.eq(playlist))
-                .groupBy(track.id)
+                .groupBy(playlistTrack , track)
                 .orderBy(playlistTrack.playSequence.asc())
                 .fetch();
     }
