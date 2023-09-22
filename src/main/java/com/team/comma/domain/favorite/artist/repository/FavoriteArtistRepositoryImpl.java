@@ -31,18 +31,6 @@ public class FavoriteArtistRepositoryImpl implements FavoriteArtistRepositoryCus
     }
 
     @Override
-    @Transactional
-    public void deleteByUser(User user , String artistName) {
-        queryFactory.delete(favoriteArtist)
-                .where(favoriteArtist.id.eq(
-                        JPAExpressions.select(favoriteArtist.id).from(favoriteArtist)
-                                .innerJoin(favoriteArtist.user , qUser).on(qUser.eq(user))
-                                .where(favoriteArtist.artistName.eq(artistName))
-                ))
-                .execute();
-    }
-
-    @Override
     public Optional<FavoriteArtist> findFavoriteArtistByUser(User user, String artistName) {
         FavoriteArtist result = queryFactory.select(favoriteArtist).from(favoriteArtist)
                 .innerJoin(favoriteArtist.user , qUser).on(qUser.eq(user))

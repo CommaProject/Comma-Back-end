@@ -46,6 +46,7 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWit
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -205,15 +206,13 @@ public class FavoriteArtistControllerTest {
     @DisplayName("사용자 아티스트 삭제 실패 _ 찾을 수 없는 사용자")
     public void deleteFavoriteArtistFail_notFoundUser() throws Exception {
         // given
-        final String api = "/favorite/artist";
-        FavoriteArtistRequest request = FavoriteArtistRequest.builder().artistName("artistName").build();
-        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(favoriteArtistService).deleteFavoriteArtist("token" , "artistName");
+        final String api = "/favorite/artist/{favoriteArtistId}";
+
+        doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(favoriteArtistService).deleteFavoriteArtist("token" , 1L);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .delete(api)
-                        .content(gson.toJson(request))
+                        delete(api, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken" , "token")));
 
@@ -224,9 +223,6 @@ public class FavoriteArtistControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
-                        ),
-                        requestFields(
-                                fieldWithPath("artistName").description("artist 이름")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -247,15 +243,13 @@ public class FavoriteArtistControllerTest {
     @DisplayName("사용자 아티스트 삭제 성공")
     public void deleteFavoriteArtistSuccess() throws Exception {
         // given
-        final String api = "/favorite/artist";
-        FavoriteArtistRequest request = FavoriteArtistRequest.builder().artistName("artistName").build();
-        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(favoriteArtistService).deleteFavoriteArtist("token" , "artistName");
+        final String api = "/favorite/artist/{favoriteArtistId}";
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(favoriteArtistService).deleteFavoriteArtist("token" , 1L);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders
-                        .delete(api)
-                        .content(gson.toJson(request))
+                        delete(api, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .cookie(new Cookie("accessToken" , "token")));
 
@@ -266,9 +260,6 @@ public class FavoriteArtistControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
-                        ),
-                        requestFields(
-                                fieldWithPath("artistName").description("artist 이름")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),

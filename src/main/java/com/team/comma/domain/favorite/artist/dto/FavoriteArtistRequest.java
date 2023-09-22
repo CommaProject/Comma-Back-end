@@ -8,4 +8,5 @@ import lombok.*;
 @AllArgsConstructor
 public class FavoriteArtistRequest {
     private String artistName;
+//    private long favoriteArtistId;
 }

@@ -10,8 +10,6 @@ import java.util.Optional;
 public interface FavoriteArtistRepositoryCustom {
     List<String> findFavoriteArtistListByUser(User user);
 
-    void deleteByUser(User user , String artistName);
-
     Optional<FavoriteArtist> findFavoriteArtistByUser(User user , String artistName);
 
     List<FavoriteArtistResponse> findAllFavoriteArtistByUser(User user);

@@ -39,12 +39,12 @@ public class FavoriteArtistController {
                 .body(favoriteArtistService.isFavoriteArtist(accessToken , artistName));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{favoriteArtistId}")
     public ResponseEntity deleteFavoriteArtist(
             @CookieValue String accessToken,
-            @RequestBody FavoriteArtistRequest favoriteArtistRequest) throws AccountException {
+            @PathVariable long favoriteArtistId) throws AccountException {
         return ResponseEntity.ok()
-                .body(favoriteArtistService.deleteFavoriteArtist(accessToken , favoriteArtistRequest.getArtistName()));
+                .body(favoriteArtistService.deleteFavoriteArtist(accessToken , favoriteArtistId));
     }
 
 }

@@ -26,6 +26,30 @@ public class FavoriteArtistService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
+    @Transactional
+    public MessageResponse createFavoriteArtist(String token , String artistName) throws AccountException {
+        String userEmail = jwtTokenProvider.getUserPk(token);
+        User user = userRepository.findUserByEmail(userEmail)
+                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
+
+        if(isAddedFavoriteArtist(user , artistName)) {
+            throw new FavoriteArtistException("이미 추가된 관심 아티스트입니다.");
+        }
+
+        user.addFavoriteArtist(artistName);
+
+        return MessageResponse.of(REQUEST_SUCCESS);
+    }
+
+    public MessageResponse findAllFavoriteArtist(final String accessToken) throws AccountException{
+        String userEmail = jwtTokenProvider.getUserPk(accessToken);
+        User user = userRepository.findUserByEmail(userEmail)
+                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
+
+        return MessageResponse.of(REQUEST_SUCCESS,
+                favoriteArtistRepository.findAllFavoriteArtistByUser(user));
+    }
+
     public MessageResponse isFavoriteArtist(String token , String artistName) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(token);
         User user = userRepository.findUserByEmail(userEmail)
@@ -42,48 +66,19 @@ public class FavoriteArtistService {
     public boolean isAddedFavoriteArtist(User user , String artistName) {
         if(favoriteArtistRepository.findFavoriteArtistByUser(user , artistName).isPresent()) {
             return true;
-        };
+        }
         return false;
     }
 
     @Transactional
-    public MessageResponse createFavoriteArtist(String token , String artistName) throws AccountException {
+    public MessageResponse deleteFavoriteArtist(String token , long favoriteArtistId) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(token);
         User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
 
-        if(isAddedFavoriteArtist(user , artistName)) {
-            throw new FavoriteArtistException("이미 추가된 관심 아티스트입니다.");
-        }
-
-        user.addFavoriteArtist(artistName);
+        favoriteArtistRepository.deleteById(favoriteArtistId);
 
         return MessageResponse.of(REQUEST_SUCCESS);
-    }
-
-    @Transactional
-    public MessageResponse deleteFavoriteArtist(String token , String artistName) throws AccountException {
-        String userEmail = jwtTokenProvider.getUserPk(token);
-        User user = userRepository.findUserByEmail(userEmail)
-                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
-
-        favoriteArtistRepository.deleteByUser(user , artistName);
-
-        return MessageResponse.of(REQUEST_SUCCESS);
-    }
-
-    public MessageResponse findAllFavoriteArtist(final String accessToken) throws AccountException{
-        String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findUserByEmail(userEmail)
-                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
-
-        List<FavoriteArtistResponse> favoriteArtistResponses = findAllFavoriteArtistByUser(user);
-
-        return MessageResponse.of(REQUEST_SUCCESS, favoriteArtistResponses);
-    }
-
-    public List<FavoriteArtistResponse> findAllFavoriteArtistByUser(final User user) {
-        return favoriteArtistRepository.findAllFavoriteArtistByUser(user);
     }
 
 }

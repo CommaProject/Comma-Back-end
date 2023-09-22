@@ -53,15 +53,16 @@ public class FavoriteArtistRepositoryTest {
         // given
         User userEntity = User.builder().email("email").build();
         userRepository.save(userEntity);
-        userEntity.addFavoriteArtist("artist");
+
+        FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(userEntity, "artist name");
+        favoriteArtist = favoriteArtistRepository.save(favoriteArtist);
 
         // when
-        favoriteArtistRepository.deleteByUser(userEntity , "artist");
+        favoriteArtistRepository.deleteById(favoriteArtist.getId());
 
         // then
-        FavoriteArtist result = favoriteArtistRepository.findFavoriteArtistByUser(userEntity , "artist").orElse(null);
-
-        assertThat(result).isNull();
+        List<FavoriteArtistResponse> result = favoriteArtistRepository.findAllFavoriteArtistByUser(userEntity);
+        assertThat(result.size()).isEqualTo(0);
 
     }
 

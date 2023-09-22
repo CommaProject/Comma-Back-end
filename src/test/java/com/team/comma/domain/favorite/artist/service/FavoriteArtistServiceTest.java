@@ -99,7 +99,7 @@ public class FavoriteArtistServiceTest {
         doReturn(Optional.empty()).when(userRepository).findUserByEmail("userEmail");
 
         // when
-        Throwable thrown = catchThrowable(() -> favoriteArtistService.deleteFavoriteArtist("token" , "artistName"));
+        Throwable thrown = catchThrowable(() -> favoriteArtistService.deleteFavoriteArtist("token" , 1L));
 
         // then
         assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
@@ -113,7 +113,7 @@ public class FavoriteArtistServiceTest {
         doReturn(Optional.of(User.builder().build())).when(userRepository).findUserByEmail("userEmail");
 
         // when
-        MessageResponse result = favoriteArtistService.deleteFavoriteArtist("token" , "artistName");
+        MessageResponse result = favoriteArtistService.deleteFavoriteArtist("token" , 1L);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -134,22 +134,6 @@ public class FavoriteArtistServiceTest {
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getData()).isEqualTo(isAdded);
-    }
-
-    @Test
-    @DisplayName("아티스트 좋아요 리스트 조회")
-    public void findAllByUser() {
-        // given
-        User user = buildUser();
-        FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, "artistName");
-        doReturn(List.of(favoriteArtist)).when(favoriteArtistRepository).findAllFavoriteArtistByUser(user);
-
-        // when
-        List<FavoriteArtistResponse> result = favoriteArtistService.findAllFavoriteArtistByUser(user);
-
-        // then
-        assertThat(result.size()).isEqualTo(1);
-
     }
 
     @Test
