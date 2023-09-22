@@ -1,9 +1,7 @@
 package com.team.comma.domain.playlist.track.dto;
 
-import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collections;

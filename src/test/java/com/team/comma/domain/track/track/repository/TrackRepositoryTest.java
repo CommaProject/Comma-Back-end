@@ -3,7 +3,7 @@ package com.team.comma.domain.track.track.repository;
 import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.artist.repository.ArtistRepository;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.global.config.TestConfig;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;

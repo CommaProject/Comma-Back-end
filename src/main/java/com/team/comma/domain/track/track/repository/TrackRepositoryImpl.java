@@ -3,7 +3,7 @@ package com.team.comma.domain.track.track.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.artist.dto.ArtistResponse;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.dto.TrackResponse;
 import lombok.RequiredArgsConstructor;
 

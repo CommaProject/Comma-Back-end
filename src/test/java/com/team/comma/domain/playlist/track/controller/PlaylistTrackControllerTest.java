@@ -12,7 +12,7 @@ import com.team.comma.domain.playlist.track.dto.PlaylistTrackSingleRequest;
 import com.team.comma.domain.playlist.track.service.PlaylistTrackService;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;

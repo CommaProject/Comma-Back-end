@@ -6,7 +6,7 @@ import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.track.artist.repository.TrackArtistRepository;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;

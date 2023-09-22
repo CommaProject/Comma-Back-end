@@ -9,7 +9,7 @@ import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.favorite.track.service.FavoriteTrackService;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
@@ -36,7 +36,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 

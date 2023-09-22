@@ -4,7 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.user.user.domain.User;
 import lombok.RequiredArgsConstructor;

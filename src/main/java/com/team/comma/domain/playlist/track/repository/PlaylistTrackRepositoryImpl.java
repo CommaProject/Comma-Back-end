@@ -5,7 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.dto.TrackResponse;
 import lombok.RequiredArgsConstructor;
 

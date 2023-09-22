@@ -1,7 +1,7 @@
 package com.team.comma.domain.track.track.service;
 
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.spotify.service.SearchService;
