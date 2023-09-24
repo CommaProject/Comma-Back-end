@@ -42,6 +42,7 @@ import java.util.List;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -52,6 +53,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureRestDocs
@@ -96,7 +99,7 @@ public class FavoriteTrackControllerTest {
 
         // then
         resultActions.andExpect(status().isBadRequest()).andDo(
-                document("favorite/create-favorite-track-fail",
+                document("favorite/track/create-fail-user-not-found",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
@@ -139,8 +142,8 @@ public class FavoriteTrackControllerTest {
         );
 
         // then
-        resultActions.andExpect(status().isOk()).andDo(
-                document("favorite/create-favorite-track",
+        resultActions.andExpect(status().isCreated()).andDo(
+                document("favorite/track/create-success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
@@ -166,7 +169,7 @@ public class FavoriteTrackControllerTest {
 
     @Test
     @DisplayName("트랙 좋아요 리스트 조회")
-    public void findAllFavoriteTrack() throws Exception {
+    public void findAllFavoriteTrack_Success() throws Exception {
         // given
         final String url = "/favorite/track";
 
@@ -190,7 +193,7 @@ public class FavoriteTrackControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("favorite/find-all-favorite-track",
+                document("favorite/track/find-all-success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
@@ -210,6 +213,45 @@ public class FavoriteTrackControllerTest {
                                 fieldWithPath("data.[].trackArtistResponses[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
                                 fieldWithPath("data.[].trackArtistResponses[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
                                 fieldWithPath("data.[].trackArtistResponses[].artists.artistName").description("트랙 아티스트 명")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+    }
+
+    @Test
+    void deleteFavoriteTrack_Success() throws Exception {
+        // given
+        final String url = "/favorite/track/{favoriteTrackId}";
+        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(favoriteTrackService).deleteFavoriteTrack(any(String.class), anyLong());
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.delete(url, 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken", "accessToken"))
+        );
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("favorite/track/delete-success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 access token")
+                        ),
+                        pathParameters(
+                                parameterWithName("favoriteTrackId").description("트랙 좋아요 Id")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터")
                         )
                 )
         );

@@ -20,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,7 +51,7 @@ public class FavoriteTrackRepositoryTest {
     void saveFavoriteTrack() {
         // given
         User user = userRepository.save(buildUser());
-        Track track = buildTrack("track title");
+        Track track = trackRepository.save(buildTrack("track title"));
         FavoriteTrack favoriteTrack = FavoriteTrack.buildFavoriteTrack(user, track);
 
         // when
@@ -113,6 +114,22 @@ public class FavoriteTrackRepositoryTest {
 
         // then
         assertThat(result.size()).isEqualTo(3);
+    }
+
+    @Test
+    void deleteFavoriteTrack() {
+        // given
+        User user = userRepository.save(buildUser());
+        Track track = trackRepository.save(buildTrack("track title"));
+        FavoriteTrack favoriteTrack = favoriteTrackRepository.save(FavoriteTrack.buildFavoriteTrack(user, track));
+
+        // when
+        favoriteTrackRepository.delete(favoriteTrack);
+
+        // then
+        Optional<FavoriteTrack> result = favoriteTrackRepository.findById(favoriteTrack.getId());
+        assertThat(result).isNotPresent();
+
     }
 
     private Track buildTrack(String title) {
