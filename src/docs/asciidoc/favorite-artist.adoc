@@ -92,7 +92,7 @@ include::{snippets}/favoriteArtist/isAddedArtist-false/response-fields.adoc[]
 ===== request
 
 include::{snippets}/favoriteArtist/deleteSuccess/http-request.adoc[]
-
+include::{snippets}/favoriteArtist/deleteSuccess/path-parameters.adoc[]
 include::{snippets}/favoriteArtist/deleteSuccess/request-cookies.adoc[]
 
 ===== response
