@@ -2,7 +2,6 @@ package com.team.comma.domain.track.track.service;
 
 import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.artist.service.ArtistService;
-import com.team.comma.domain.track.artist.service.TrackArtistService;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.repository.TrackRepository;
