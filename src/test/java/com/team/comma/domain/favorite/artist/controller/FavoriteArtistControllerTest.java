@@ -186,6 +186,9 @@ public class FavoriteArtistControllerTest {
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
                         ),
+                        pathParameters(
+                                parameterWithName("favoriteArtistId").description("아티스트 좋아요 Id")
+                        ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메세지"),
@@ -222,6 +225,9 @@ public class FavoriteArtistControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
+                        ),
+                        pathParameters(
+                                parameterWithName("favoriteArtistId").description("아티스트 좋아요 Id")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
