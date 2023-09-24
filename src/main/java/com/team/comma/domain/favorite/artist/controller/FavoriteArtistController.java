@@ -21,7 +21,7 @@ public class FavoriteArtistController {
             @CookieValue String accessToken,
             @RequestBody FavoriteArtistRequest favoriteArtistRequest) throws AccountException {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(favoriteArtistService.createFavoriteArtist(accessToken, favoriteArtistRequest.getArtistName()));
+                .body(favoriteArtistService.createFavoriteArtist(accessToken, favoriteArtistRequest.getSpotifyArtistId()));
     }
 
     @GetMapping

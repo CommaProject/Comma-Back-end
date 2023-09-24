@@ -41,7 +41,7 @@ public class PlaylistTrackRepositoryImpl implements PlaylistTrackRepositoryCusto
                                 ),
                                 Projections.constructor(ArtistResponse.class,
                                         artist.spotifyArtistId.min(),
-                                        artist.spotifyArtistName.min()
+                                        artist.artistName.min()
                                 )))))
                 .from(playlistTrack)
                 .innerJoin(playlistTrack.track , track)

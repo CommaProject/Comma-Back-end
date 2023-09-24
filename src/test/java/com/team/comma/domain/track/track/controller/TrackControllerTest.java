@@ -79,10 +79,11 @@ public class TrackControllerTest {
         }
 
         TrackResponse trackResponse = buildTrackResponse("title" , "spotifyId");
-        ArtistResponse artist = ArtistResponse.createArtist("artistId" , "artist");
+        Artist artist = Artist.createArtist("artistId", "artist");
+        ArtistResponse artistResponse = ArtistResponse.createArtistResponse(artist);
 
         List<TrackArtistResponse> data = new ArrayList<>();
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artistResponse);
         data.add(trackArtistResponse);
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS , data)).when(trackService).findTrackByMostFavorite();
@@ -109,7 +110,7 @@ public class TrackControllerTest {
                                 fieldWithPath("data.[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
                                 fieldWithPath("data.[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
-                                fieldWithPath("data.[].artists.spotifyArtistName").description("트랙 아티스트 명")
+                                fieldWithPath("data.[].artists.artistName").description("트랙 아티스트 명")
                         )
                 )
         );
@@ -164,7 +165,7 @@ public class TrackControllerTest {
     private Artist buildArtist() {
         return Artist.builder()
                 .spotifyArtistId("artistId")
-                .spotifyArtistName("artistName")
+                .artistName("artistName")
                 .build();
     }
 

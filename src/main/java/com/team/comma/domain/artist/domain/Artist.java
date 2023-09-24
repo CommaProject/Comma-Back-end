@@ -19,12 +19,19 @@ public class Artist {
     private String spotifyArtistId;
 
     @Column(length = 30)
-    private String spotifyArtistName;
+    private String artistName;
 
-    public static Artist createArtist(String artistId , String artistName) {
+    public static Artist createArtist(String spotifyArtistId , String artistName) {
         return Artist.builder()
-                .spotifyArtistId(artistId)
-                .spotifyArtistName(artistName)
+                .spotifyArtistId(spotifyArtistId)
+                .artistName(artistName)
+                .build();
+    }
+
+    public static Artist createArtistWithSpotifyArtist(se.michaelthelin.spotify.model_objects.specification.Artist artist) {
+        return Artist.builder()
+                .spotifyArtistId(artist.getId())
+                .artistName(artist.getName())
                 .build();
     }
 }

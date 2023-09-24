@@ -1,5 +1,6 @@
 package com.team.comma.domain.user.user.domain;
 
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
 import com.team.comma.domain.user.history.domain.History;
 import com.team.comma.domain.user.detail.domain.UserDetail;
@@ -70,9 +71,9 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public void addFavoriteArtist(String artist) {
+    public void addFavoriteArtist(Artist artist) {
         FavoriteArtist artistData = FavoriteArtist.builder()
-            .artistName(artist)
+            .artist(artist)
             .user(this)
             .build();
 

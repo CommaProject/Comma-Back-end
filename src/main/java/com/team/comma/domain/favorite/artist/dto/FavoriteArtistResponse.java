@@ -1,5 +1,6 @@
 package com.team.comma.domain.favorite.artist.dto;
 
+import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,14 +13,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class FavoriteArtistResponse {
     private long favoriteArtistId;
-
-    private String artistName;
-    private String artistImageUrl;
+    private ArtistResponse artistResponse;
 
     private FavoriteArtistResponse(FavoriteArtist favoriteArtist) {
         this.favoriteArtistId = favoriteArtist.getId();
-        this.artistName = favoriteArtist.getArtistName();
-        this.artistImageUrl = favoriteArtist.getArtistImageUrl();
+        this.artistResponse = ArtistResponse.createArtistResponse(favoriteArtist.getArtist());
     }
 
     public static FavoriteArtistResponse of(FavoriteArtist favoriteArtist) {

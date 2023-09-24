@@ -1,5 +1,9 @@
 package com.team.comma.domain.favorite.artist.service;
 
+import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.service.ArtistService;
+import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
+import com.team.comma.domain.favorite.artist.dto.FavoriteArtistRequest;
 import com.team.comma.domain.favorite.artist.dto.FavoriteArtistResponse;
 import com.team.comma.domain.favorite.artist.exception.FavoriteArtistException;
 import com.team.comma.domain.favorite.artist.repository.FavoriteArtistRepository;
@@ -23,20 +27,19 @@ import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUC
 public class FavoriteArtistService {
 
     private final FavoriteArtistRepository favoriteArtistRepository;
+    private final ArtistService artistService;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
 
     @Transactional
-    public MessageResponse createFavoriteArtist(String token , String artistName) throws AccountException {
+    public MessageResponse createFavoriteArtist(String token , String spotifyArtistId) throws AccountException {
         String userEmail = jwtTokenProvider.getUserPk(token);
         User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
+        Artist artist = artistService.findArtistOrSave(spotifyArtistId);
 
-        if(isAddedFavoriteArtist(user , artistName)) {
-            throw new FavoriteArtistException("이미 추가된 관심 아티스트입니다.");
-        }
-
-        user.addFavoriteArtist(artistName);
+        FavoriteArtist favoriteArtist = FavoriteArtist.createFavoriteArtist(user, artist);
+        favoriteArtistRepository.save(favoriteArtist);
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }

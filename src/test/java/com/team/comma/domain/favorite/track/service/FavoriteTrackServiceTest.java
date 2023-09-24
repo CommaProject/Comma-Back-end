@@ -91,9 +91,10 @@ public class FavoriteTrackServiceTest {
         Track track = buildTrack("track title", "spotify id");
         TrackResponse trackResponse = buildTrackResponse("title" , "spotifyId");
 
-        ArtistResponse artist = ArtistResponse.createArtist("artistId" ,"artist");
+        Artist artist = Artist.createArtist("artistId" ,"artist");
+        ArtistResponse artistResponse = ArtistResponse.createArtistResponse(artist);
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artistResponse);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(List.of(favoriteTrackResponse)).when(favoriteTrackRepository).findAllFavoriteTrackByUser(user);
@@ -116,7 +117,7 @@ public class FavoriteTrackServiceTest {
         TrackResponse trackResponse = buildTrackResponse("title" , "spotifyId");
 
         Artist artist = Artist.createArtist("artistId" , "artist name");
-        ArtistResponse artistResponse = ArtistResponse.createArtist("artistId" , "artist name");
+        ArtistResponse artistResponse = ArtistResponse.createArtistResponse(artist);
         track.addTrackArtistList(artist);
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artistResponse);

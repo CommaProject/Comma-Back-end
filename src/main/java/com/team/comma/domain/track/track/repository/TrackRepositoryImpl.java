@@ -41,7 +41,7 @@ public class TrackRepositoryImpl implements TrackRepositoryCustom {
                         ),
                         Projections.constructor(ArtistResponse.class,
                                 artist.spotifyArtistId.min(),
-                                artist.spotifyArtistName.min()
+                                artist.artistName.min()
                         )
                 )).from(track)
                 .innerJoin(track.trackArtistList, trackArtist)

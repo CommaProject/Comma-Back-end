@@ -1,5 +1,6 @@
 package com.team.comma.domain.favorite.artist.domain;
 
+import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.user.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,21 +29,25 @@ public class FavoriteArtist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 50)
-    private String artistName;
-
-    @Column(length = 100)
-    private String artistImageUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "artist_id")
+    private Artist artist;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    public static FavoriteArtist buildFavoriteArtist(User user, String artistName) {
+    public static FavoriteArtist createFavoriteArtist(User user, Artist artist) {
+        return FavoriteArtist.builder()
+                .artist(artist)
+                .user(user)
+                .build();
+    }
+
+    public static FavoriteArtist buildFavoriteArtist(User user, Artist artist) {
         return FavoriteArtist.builder()
                 .id(1L)
-                .artistName(artistName)
-                .artistImageUrl("url")
+                .artist(artist)
                 .user(user)
                 .build();
     }

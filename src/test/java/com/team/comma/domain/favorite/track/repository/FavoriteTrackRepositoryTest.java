@@ -128,7 +128,7 @@ public class FavoriteTrackRepositoryTest {
     public Artist buildArtist() {
         return Artist.builder()
                 .spotifyArtistId("artistId")
-                .spotifyArtistName("artist")
+                .artistName("artist")
                 .build();
     }
 

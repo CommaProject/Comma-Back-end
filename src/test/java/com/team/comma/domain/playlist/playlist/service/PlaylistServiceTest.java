@@ -300,7 +300,7 @@ class PlaylistServiceTest {
 
     private Artist buildArtist() {
         return Artist.builder()
-                .spotifyArtistName("artistName")
+                .artistName("artistName")
                 .build();
     }
 

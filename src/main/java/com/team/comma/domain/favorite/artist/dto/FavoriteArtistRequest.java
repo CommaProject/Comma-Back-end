@@ -7,6 +7,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class FavoriteArtistRequest {
-    private String artistName;
-//    private long favoriteArtistId;
+
+    private String spotifyArtistId;
+
 }
