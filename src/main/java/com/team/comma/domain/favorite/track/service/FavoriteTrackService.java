@@ -53,7 +53,7 @@ public class FavoriteTrackService {
 
     public FavoriteTrack findFavoriteTrackOrThrow(final long favoriteTrackId) {
         return favoriteTrackRepository.findById(favoriteTrackId)
-                .orElseThrow(() -> new EntityNotFoundException("좋아효 표시 한 트랙을 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("좋아요 표시 한 트랙을 찾을 수 없습니다."));
     }
 
     public MessageResponse deleteFavoriteTrack(final String accessToken, final long favoriteTrackId) {

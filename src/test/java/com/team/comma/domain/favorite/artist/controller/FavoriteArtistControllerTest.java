@@ -168,7 +168,7 @@ public class FavoriteArtistControllerTest {
     @DisplayName("사용자 아티스트 삭제 실패 _ 찾을 수 없는 사용자")
     public void deleteFavoriteArtistFail_notFoundUser() throws Exception {
         // given
-        final String api = "/favorite/artist/{favoriteArtistId}";
+        final String api = "/favorite/artist/{id}";
 
         doThrow(new AccountException("사용자를 찾을 수 없습니다.")).when(favoriteArtistService).deleteFavoriteArtist("token" , 1L);
 
@@ -187,7 +187,7 @@ public class FavoriteArtistControllerTest {
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
                         ),
                         pathParameters(
-                                parameterWithName("favoriteArtistId").description("아티스트 좋아요 Id")
+                                parameterWithName("id").description("favorite artist Id")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -208,7 +208,7 @@ public class FavoriteArtistControllerTest {
     @DisplayName("사용자 아티스트 삭제 성공")
     public void deleteFavoriteArtistSuccess() throws Exception {
         // given
-        final String api = "/favorite/artist/{favoriteArtistId}";
+        final String api = "/favorite/artist/{id}";
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(favoriteArtistService).deleteFavoriteArtist("token" , 1L);
 
@@ -227,7 +227,7 @@ public class FavoriteArtistControllerTest {
                                 cookieWithName("accessToken").description("사용자 인증에 필요한 accessToken")
                         ),
                         pathParameters(
-                                parameterWithName("favoriteArtistId").description("아티스트 좋아요 Id")
+                                parameterWithName("id").description("favorite artist Id")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),

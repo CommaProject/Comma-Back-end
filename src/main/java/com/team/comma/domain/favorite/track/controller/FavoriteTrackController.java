@@ -29,12 +29,12 @@ public class FavoriteTrackController {
                 .body(favoriteTrackService.findAllFavoriteTrack(accessToken));
     }
 
-    @DeleteMapping("/{favoriteTrackId}")
+    @DeleteMapping("/{id}")
     public ResponseEntity deleteFavoriteTrack(
             @CookieValue String accessToken,
-            @PathVariable long favoriteTrackId) {
+            @PathVariable long id) {
         return ResponseEntity.ok()
-                .body(favoriteTrackService.deleteFavoriteTrack(accessToken, favoriteTrackId));
+                .body(favoriteTrackService.deleteFavoriteTrack(accessToken, id));
     }
 
 }

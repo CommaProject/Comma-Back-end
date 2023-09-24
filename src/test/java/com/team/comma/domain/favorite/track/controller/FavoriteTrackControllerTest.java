@@ -227,7 +227,7 @@ public class FavoriteTrackControllerTest {
     @Test
     void deleteFavoriteTrack_Success() throws Exception {
         // given
-        final String url = "/favorite/track/{favoriteTrackId}";
+        final String url = "/favorite/track/{id}";
         doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(favoriteTrackService).deleteFavoriteTrack(any(String.class), anyLong());
 
         // when
@@ -246,7 +246,7 @@ public class FavoriteTrackControllerTest {
                                 cookieWithName("accessToken").description("사용자 access token")
                         ),
                         pathParameters(
-                                parameterWithName("favoriteTrackId").description("트랙 좋아요 Id")
+                                parameterWithName("id").description("favorite track id")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
