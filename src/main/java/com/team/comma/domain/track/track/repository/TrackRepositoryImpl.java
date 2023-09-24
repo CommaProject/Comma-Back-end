@@ -3,7 +3,7 @@ package com.team.comma.domain.track.track.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.artist.dto.ArtistResponse;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.dto.TrackResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -41,7 +41,7 @@ public class TrackRepositoryImpl implements TrackRepositoryCustom {
                         ),
                         Projections.constructor(ArtistResponse.class,
                                 artist.spotifyArtistId.min(),
-                                artist.spotifyArtistName.min()
+                                artist.artistName.min()
                         )
                 )).from(track)
                 .innerJoin(track.trackArtistList, trackArtist)

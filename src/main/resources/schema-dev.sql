@@ -38,7 +38,7 @@ CREATE TABLE artist_tb
 (
     id                   BIGINT  NOT NULL AUTO_INCREMENT,
     spotify_artist_id            VARCHAR(50),
-    spotify_artist_name          VARCHAR(30),
+    artist_name          VARCHAR(30),
     PRIMARY KEY (id)
 );
 
@@ -131,10 +131,10 @@ CREATE TABLE archive_tb
 CREATE TABLE favorite_artist_tb
 (
     id               BIGINT NOT NULL AUTO_INCREMENT,
-    artist_name      VARCHAR(50),
-    artist_image_url VARCHAR(100),
+    artist_id        BIGINT,
     user_id          BIGINT,
     PRIMARY KEY (id),
+    FOREIGN KEY (artist_id) REFERENCES artist_tb (id),
     FOREIGN KEY (user_id) REFERENCES user_tb (id)
 );
 
@@ -235,12 +235,13 @@ INSERT INTO track_play_count_tb
 VALUES(1, 1, 1);
 
 INSERT INTO artist_tb
-(id , spotify_artist_id , spotify_artist_name)
-VALUE(5 , 'artistId' , 'artistName');
+(spotify_artist_id , artist_name)
+VALUE
+    ('artistId' , 'artistName');
 
 INSERT INTO track_artist_tb
 (artist_id , track_id)
-VALUES(5, 1);
+VALUES(1, 1);
 
 INSERT INTO playlist_tb
 (playlist_title, alarm_start_time, alarm_flag, del_flag, user_id)
@@ -266,8 +267,7 @@ INSERT INTO favorite_track_tb
 VALUES(0, 1, 1);
 
 INSERT INTO favorite_artist_tb
-(artist_name, artist_image_url, user_id)
+(artist_id, user_id)
 VALUES
-    ('New Jeans', 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228', 1),
-    ('BTS', 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228', 1);
+    (1, 1);
 

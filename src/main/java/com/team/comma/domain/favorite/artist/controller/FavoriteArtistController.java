@@ -21,7 +21,7 @@ public class FavoriteArtistController {
             @CookieValue String accessToken,
             @RequestBody FavoriteArtistRequest favoriteArtistRequest) throws AccountException {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(favoriteArtistService.createFavoriteArtist(accessToken, favoriteArtistRequest.getArtistName()));
+                .body(favoriteArtistService.createFavoriteArtist(accessToken, favoriteArtistRequest.getSpotifyArtistId()));
     }
 
     @GetMapping
@@ -39,12 +39,12 @@ public class FavoriteArtistController {
                 .body(favoriteArtistService.isFavoriteArtist(accessToken , artistName));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity deleteFavoriteArtist(
             @CookieValue String accessToken,
-            @RequestBody FavoriteArtistRequest favoriteArtistRequest) throws AccountException {
+            @PathVariable long id) throws AccountException {
         return ResponseEntity.ok()
-                .body(favoriteArtistService.deleteFavoriteArtist(accessToken , favoriteArtistRequest.getArtistName()));
+                .body(favoriteArtistService.deleteFavoriteArtist(accessToken , id));
     }
 
 }

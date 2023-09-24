@@ -6,14 +6,15 @@ import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackRequest;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
-import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
+import com.team.comma.domain.user.user.service.UserService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
@@ -27,11 +28,14 @@ import javax.security.auth.login.AccountException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class FavoriteTrackServiceTest {
@@ -49,14 +53,14 @@ public class FavoriteTrackServiceTest {
     JwtTokenProvider jwtTokenProvider;
 
     @Mock
-    UserRepository userRepository;
+    UserService userService;
 
     @Test
     @DisplayName("좋아요 트랙 설정 실패 _ 사용자 정보 찾기 실패")
     void createFavoriteTrackFail_UserNotFound() {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.empty()).when(userRepository).findUserByEmail(any(String.class));
+        doThrow(new UserException(NOT_FOUNT_USER)).when(userService).findUserOrThrow(any(String.class));
 
         // when
         Throwable throwable = catchThrowable(() -> favoriteTrackService.createFavoriteTrack("token", null));
@@ -70,18 +74,18 @@ public class FavoriteTrackServiceTest {
     void createFavoriteTrack() throws AccountException {
         // given
         FavoriteTrackRequest favoriteTrackRequest = FavoriteTrackRequest.builder()
-                .spotifyTrackId("id")
+                .spotifyTrackId("spotifyTrackId")
                 .build();
 
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(buildUser())).when(userRepository).findUserByEmail(any(String.class));
+        doReturn(buildUser()).when(userService).findUserOrThrow(any(String.class));
         doReturn(buildTrack("title" , "spotifyAPI")).when(trackService).findTrackOrSave(favoriteTrackRequest.getSpotifyTrackId());
 
         // when
         MessageResponse result = favoriteTrackService.createFavoriteTrack("token", favoriteTrackRequest);
 
         // then
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
     }
 
     @Test
@@ -92,9 +96,10 @@ public class FavoriteTrackServiceTest {
         Track track = buildTrack("track title", "spotify id");
         TrackResponse trackResponse = buildTrackResponse("title" , "spotifyId");
 
-        ArtistResponse artist = ArtistResponse.createArtist("artistId" ,"artist");
+        Artist artist = Artist.createArtist("artistId" ,"artist");
+        ArtistResponse artistResponse = ArtistResponse.createArtistResponse(artist);
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artistResponse);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(List.of(favoriteTrackResponse)).when(favoriteTrackRepository).findAllFavoriteTrackByUser(user);
@@ -117,14 +122,14 @@ public class FavoriteTrackServiceTest {
         TrackResponse trackResponse = buildTrackResponse("title" , "spotifyId");
 
         Artist artist = Artist.createArtist("artistId" , "artist name");
-        ArtistResponse artistResponse = ArtistResponse.createArtist("artistId" , "artist name");
+        ArtistResponse artistResponse = ArtistResponse.createArtistResponse(artist);
         track.addTrackArtistList(artist);
         FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artistResponse);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(accessToken);
-        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
+        doReturn(user).when(userService).findUserOrThrow(user.getEmail());
         doReturn(List.of(favoriteTrackResponse)).when(favoriteTrackRepository).findAllFavoriteTrackByUser(user);
 
         // when
@@ -133,6 +138,27 @@ public class FavoriteTrackServiceTest {
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
 
+    }
+
+    @Test
+    void deleteFavoriteTrack() {
+        // given
+        User user = User.buildUser("email");
+        Track track = Track.createTrack("title", 10000, "url", "trackId", "href");
+        FavoriteTrack favoriteTrack = FavoriteTrack.buildFavoriteTrack(user, track);
+
+        doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk("token");
+        doReturn(user).when(userService).findUserOrThrow(any(String.class));
+        doReturn(Optional.of(favoriteTrack)).when(favoriteTrackRepository).findById(anyLong());
+
+        // when
+        MessageResponse result = favoriteTrackService.deleteFavoriteTrack("token", anyLong());
+
+        // then
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+
+        Optional<FavoriteTrack> resultFavoriteTrack = favoriteTrackRepository.findById(favoriteTrack.getId());
+        assertThat(resultFavoriteTrack).isNotPresent();
     }
 
     private FavoriteTrack buildFavoriteTrackWithTrackAndUser(Track track, User user){

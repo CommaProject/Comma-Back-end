@@ -1,12 +1,15 @@
 package com.team.comma.domain.track.track.service;
 
+import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.service.ArtistService;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.spotify.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 
 import java.util.List;
 
@@ -17,6 +20,7 @@ import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUC
 public class TrackService {
 
     private final TrackRepository trackRepository;
+    private final ArtistService artistService;
     private final SearchService searchService;
 
     public MessageResponse findTrackByMostFavorite() {
@@ -31,7 +35,16 @@ public class TrackService {
     }
 
     public Track saveTrack(final String spotifyTrackId) {
-        return trackRepository.save(searchService.searchTrackByTrackId(spotifyTrackId));
+        se.michaelthelin.spotify.model_objects.specification
+                .Track spotifyTrack = searchService.getTrackByTrackId(spotifyTrackId);
+
+        Track track = Track.createTrackWithSpotifyTrack(spotifyTrack);
+        for(ArtistSimplified artistSimplified : spotifyTrack.getArtists()){
+            Artist artist = artistService.findArtistOrSave(artistSimplified.getId());
+            track.addTrackArtistList(artist);
+        }
+
+        return trackRepository.save(track);
     }
 
 }

@@ -4,7 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.user.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                         ),
                         Projections.constructor(ArtistResponse.class,
                                 artist.spotifyArtistId.min(),
-                                artist.spotifyArtistName.min()
+                                artist.artistName.min()
                         ))).from(favoriteTrack)
                 .join(favoriteTrack.user, user).on(user.email.eq(userEmail))
                 .innerJoin(favoriteTrack.track, track)
@@ -68,7 +68,7 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                                                 ),
                                                 Projections.constructor(ArtistResponse.class,
                                                         artist.spotifyArtistId.min(),
-                                                        artist.spotifyArtistName.min()
+                                                        artist.artistName.min()
                                                 )))))
                 .from(favoriteTrack)
                 .innerJoin(favoriteTrack.track, track)

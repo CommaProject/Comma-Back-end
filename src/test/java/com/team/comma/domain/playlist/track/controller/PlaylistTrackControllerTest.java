@@ -12,7 +12,7 @@ import com.team.comma.domain.playlist.track.dto.PlaylistTrackSingleRequest;
 import com.team.comma.domain.playlist.track.service.PlaylistTrackService;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
@@ -206,7 +206,7 @@ class PlaylistTrackControllerTest {
                                 fieldWithPath("data.[].trackArtistList[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].trackArtistList[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
                                 fieldWithPath("data.[].trackArtistList[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
-                                fieldWithPath("data.[].trackArtistList[].artists.spotifyArtistName").description("트랙 아티스트 명")
+                                fieldWithPath("data.[].trackArtistList[].artists.artistName").description("트랙 아티스트 명")
                         )
                 )
         );
@@ -394,7 +394,7 @@ class PlaylistTrackControllerTest {
 
     private ArtistResponse buildArtist() {
         return ArtistResponse.builder()
-                .spotifyArtistName("artistName")
+                .artistName("artistName")
                 .build();
     }
 

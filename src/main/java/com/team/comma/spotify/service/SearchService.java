@@ -1,7 +1,6 @@
 package com.team.comma.spotify.service;
 
 import com.neovisionaries.i18n.CountryCode;
-import com.team.comma.domain.artist.service.ArtistService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.spotify.dto.SearchArtistResponse;
 import com.team.comma.spotify.support.SpotifyAuthorization;
@@ -14,6 +13,7 @@ import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.requests.data.artists.GetArtistRequest;
 import se.michaelthelin.spotify.requests.data.browse.miscellaneous.GetAvailableGenreSeedsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchArtistsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchTracksRequest;
@@ -22,9 +22,9 @@ import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 import javax.security.auth.login.AccountException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
-import static com.team.comma.domain.track.track.domain.Track.buildTrack;
 import static com.team.comma.spotify.dto.SearchTrackResponse.createTrackResponse;
 
 @Service
@@ -33,7 +33,6 @@ public class SearchService {
 
     private final SpotifyAuthorization spotifyAuthorization;
     private final SpotifySearchCommand spotifySearchCommand;
-    private final ArtistService artistService;
 
     public MessageResponse searchArtistList(String artistName , String token) throws AccountException {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
@@ -52,6 +51,18 @@ public class SearchService {
         }
 
         return MessageResponse.of(REQUEST_SUCCESS , result);
+    }
+
+    public Artist getArtistByArtistId(String artistId) {
+        SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
+        GetArtistRequest getArtistRequest = spotifyApi.getArtist(artistId).build();
+
+        Object executeResult = spotifySearchCommand.executeCommand(getArtistRequest);
+        if(executeResult instanceof SpotifyApi) {
+            return getArtistByArtistId(artistId);
+        }
+
+        return (Artist) executeResult;
     }
 
     public MessageResponse searchTrackList(String trackName , String token) throws AccountException {
@@ -73,17 +84,18 @@ public class SearchService {
     }
 
     @Transactional
-    public com.team.comma.domain.track.track.domain.Track searchTrackByTrackId(String trackId) {
+    public Track getTrackByTrackId(String trackId) {
         SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
         GetTrackRequest getTrackRequest = spotifyApi.getTrack(trackId).build();
 
         Object executeResult = spotifySearchCommand.executeCommand(getTrackRequest);
         if(executeResult instanceof SpotifyApi) {
-            return searchTrackByTrackId(trackId);
+            return getTrackByTrackId(trackId);
         }
 
         Track track = (Track) executeResult;
-        return buildTrack(track , artistService);
+
+        return (Track) executeResult;
     }
 
     public MessageResponse searchGenreList() {

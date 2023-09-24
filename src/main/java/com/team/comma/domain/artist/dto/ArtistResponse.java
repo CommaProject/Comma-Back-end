@@ -1,5 +1,6 @@
 package com.team.comma.domain.artist.dto;
 
+import com.team.comma.domain.artist.domain.Artist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,12 +14,12 @@ public class ArtistResponse {
 
     private String spotifyArtistId;
 
-    private String spotifyArtistName;
+    private String artistName;
 
-    public static ArtistResponse createArtist(String artistId, String artist) {
+    public static ArtistResponse createArtistResponse(Artist artist) {
         return ArtistResponse.builder()
-                .spotifyArtistId(artistId)
-                .spotifyArtistName(artist)
+                .spotifyArtistId(artist.getSpotifyArtistId())
+                .artistName(artist.getArtistName())
                 .build();
     }
 }

@@ -1,15 +1,12 @@
 package com.team.comma.domain.favorite.track.dto;
 
-import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.favorite.track.domain.FavoriteTrack;
-import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

@@ -16,27 +16,29 @@ link:main.html[main 화면]
 
 ===== request
 
-include::{snippets}/favorite/create-favorite-track/http-request.adoc[]
-include::{snippets}/favorite/create-favorite-track/request-cookies.adoc[]
-include::{snippets}/favorite/create-favorite-track/request-fields.adoc[]
+include::{snippets}/favorite/track/create-success/http-request.adoc[]
+include::{snippets}/favorite/track/create-success/request-cookies.adoc[]
+include::{snippets}/favorite/track/create-success/request-fields.adoc[]
 
 ===== response
 
-include::{snippets}/favorite/create-favorite-track/http-response.adoc[]
-include::{snippets}/favorite/create-favorite-track/response-fields.adoc[]
+include::{snippets}/favorite/track/create-success/http-response.adoc[]
+include::{snippets}/favorite/track/create-success/response-fields.adoc[]
 
 ==== 실패 - 찾을 수 없는 사용자
 
 ===== request
 
-include::{snippets}/favorite/create-favorite-track/http-request.adoc[]
-include::{snippets}/favorite/create-favorite-track/request-cookies.adoc[]
-include::{snippets}/favorite/create-favorite-track/request-fields.adoc[]
+include::{snippets}/favorite/track/create-fail-user-not-found/http-request.adoc[]
+include::{snippets}/favorite/track/create-fail-user-not-found//request-cookies.adoc[]
+include::{snippets}/favorite/track/create-fail-user-not-found//request-fields.adoc[]
 
 ===== response
 
-include::{snippets}/favorite/create-favorite-track-fail/http-response.adoc[]
-include::{snippets}/favorite/create-favorite-track-fail/response-fields.adoc[]
+include::{snippets}/favorite/track/create-fail-user-not-found//http-response.adoc[]
+include::{snippets}/favorite/track/create-fail-user-not-found//response-fields.adoc[]
+
+---
 
 === 트랙 좋아요 리스트 조회
 
@@ -44,10 +46,27 @@ include::{snippets}/favorite/create-favorite-track-fail/response-fields.adoc[]
 
 ===== request
 
-include::{snippets}/favorite/find-all-favorite-track/http-request.adoc[]
-include::{snippets}/favorite/find-all-favorite-track/request-cookies.adoc[]
+include::{snippets}/favorite/track/find-all-success/http-request.adoc[]
+include::{snippets}/favorite/track/find-all-success/request-cookies.adoc[]
 
 ===== response
 
-include::{snippets}/favorite/find-all-favorite-track/http-response.adoc[]
-include::{snippets}/favorite/find-all-favorite-track/response-fields.adoc[]
+include::{snippets}/favorite/track/find-all-success/http-response.adoc[]
+include::{snippets}/favorite/track/find-all-success/response-fields.adoc[]
+
+---
+
+=== 트랙 좋아요 삭제
+
+==== 성공
+
+===== request
+
+include::{snippets}/favorite/track/delete-success/http-request.adoc[]
+include::{snippets}/favorite/track/delete-success/path-parameters.adoc[]
+include::{snippets}/favorite/track/delete-success/request-cookies.adoc[]
+
+===== response
+
+include::{snippets}/favorite/track/delete-success/http-response.adoc[]
+include::{snippets}/favorite/track/delete-success/response-fields.adoc[]

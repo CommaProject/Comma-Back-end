@@ -5,12 +5,11 @@ import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.track.dto.TrackResponse;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
-import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,6 @@ import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUC
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -81,10 +79,11 @@ public class TrackControllerTest {
         }
 
         TrackResponse trackResponse = buildTrackResponse("title" , "spotifyId");
-        ArtistResponse artist = ArtistResponse.createArtist("artistId" , "artist");
+        Artist artist = Artist.createArtist("artistId", "artist");
+        ArtistResponse artistResponse = ArtistResponse.createArtistResponse(artist);
 
         List<TrackArtistResponse> data = new ArrayList<>();
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artist);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , artistResponse);
         data.add(trackArtistResponse);
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS , data)).when(trackService).findTrackByMostFavorite();
@@ -111,7 +110,7 @@ public class TrackControllerTest {
                                 fieldWithPath("data.[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
                                 fieldWithPath("data.[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
-                                fieldWithPath("data.[].artists.spotifyArtistName").description("트랙 아티스트 명")
+                                fieldWithPath("data.[].artists.artistName").description("트랙 아티스트 명")
                         )
                 )
         );
@@ -166,7 +165,7 @@ public class TrackControllerTest {
     private Artist buildArtist() {
         return Artist.builder()
                 .spotifyArtistId("artistId")
-                .spotifyArtistName("artistName")
+                .artistName("artistName")
                 .build();
     }
 

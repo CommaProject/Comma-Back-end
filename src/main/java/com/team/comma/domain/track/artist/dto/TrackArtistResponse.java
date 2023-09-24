@@ -1,6 +1,7 @@
-package com.team.comma.domain.track.track.dto;
+package com.team.comma.domain.track.artist.dto;
 
 import com.team.comma.domain.artist.dto.ArtistResponse;
+import com.team.comma.domain.track.track.dto.TrackResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

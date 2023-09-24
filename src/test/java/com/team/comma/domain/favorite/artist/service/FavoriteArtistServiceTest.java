@@ -1,6 +1,9 @@
 package com.team.comma.domain.favorite.artist.service;
 
+import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.service.ArtistService;
 import com.team.comma.domain.favorite.artist.dto.FavoriteArtistResponse;
+import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.exception.UserException;
@@ -32,6 +35,7 @@ import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUC
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +44,8 @@ public class FavoriteArtistServiceTest {
     @InjectMocks
     FavoriteArtistService favoriteArtistService;
 
+    @Mock
+    ArtistService artistService;
     @Mock
     FavoriteArtistRepository favoriteArtistRepository;
     @Mock
@@ -62,30 +68,14 @@ public class FavoriteArtistServiceTest {
     }
 
     @Test
-    @DisplayName("아티스트 추가 실패 _ 이미 추가된 아티스트")
-    public void addArtistFail_alreadyAddedArtist() {
-        // given
-        doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        doReturn(Optional.of(User.builder().build())).when(userRepository).findUserByEmail("userEmail");
-        doReturn(Optional.of(FavoriteArtist.builder().build())).when(favoriteArtistRepository).findFavoriteArtistByUser(any(User.class) , any(String.class));
-
-        // when
-        Throwable thrown = catchThrowable(() -> favoriteArtistService.createFavoriteArtist("token" , "artistName"));
-
-        // then
-        assertThat(thrown).isInstanceOf(FavoriteArtistException.class).hasMessage("이미 추가된 관심 아티스트입니다.");
-    }
-
-    @Test
     @DisplayName("아티스트 추가 성공")
     public void addArtistSuccess() throws AccountException {
         // given
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
         doReturn(Optional.of(User.builder().build())).when(userRepository).findUserByEmail("userEmail");
-        doReturn(Optional.empty()).when(favoriteArtistRepository).findFavoriteArtistByUser(any(User.class) , any(String.class));
 
         // when
-        MessageResponse result = favoriteArtistService.createFavoriteArtist("token" , "artistName");
+        MessageResponse result = favoriteArtistService.createFavoriteArtist("token" , "spotifyArtistId");
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -99,7 +89,7 @@ public class FavoriteArtistServiceTest {
         doReturn(Optional.empty()).when(userRepository).findUserByEmail("userEmail");
 
         // when
-        Throwable thrown = catchThrowable(() -> favoriteArtistService.deleteFavoriteArtist("token" , "artistName"));
+        Throwable thrown = catchThrowable(() -> favoriteArtistService.deleteFavoriteArtist("token" , 1L));
 
         // then
         assertThat(thrown).isInstanceOf(UserException.class).hasMessage(NOT_FOUNT_USER.getMessage());
@@ -113,7 +103,7 @@ public class FavoriteArtistServiceTest {
         doReturn(Optional.of(User.builder().build())).when(userRepository).findUserByEmail("userEmail");
 
         // when
-        MessageResponse result = favoriteArtistService.deleteFavoriteArtist("token" , "artistName");
+        MessageResponse result = favoriteArtistService.deleteFavoriteArtist("token" , 1L);
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -137,27 +127,12 @@ public class FavoriteArtistServiceTest {
     }
 
     @Test
-    @DisplayName("아티스트 좋아요 리스트 조회")
-    public void findAllByUser() {
-        // given
-        User user = buildUser();
-        FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, "artistName");
-        doReturn(List.of(favoriteArtist)).when(favoriteArtistRepository).findAllFavoriteArtistByUser(user);
-
-        // when
-        List<FavoriteArtistResponse> result = favoriteArtistService.findAllFavoriteArtistByUser(user);
-
-        // then
-        assertThat(result.size()).isEqualTo(1);
-
-    }
-
-    @Test
     @DisplayName("아티스트 좋아요 Response 리스트 조회")
     public void findALlFavoriteArtist() throws AccountException {
         // given
         User user = buildUser();
-        FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, "artistName");
+        Artist artist = Artist.createArtist("artistId", "artist");
+        FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, artist);
         FavoriteArtistResponse favoriteArtistResponse = FavoriteArtistResponse.of(favoriteArtist);
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk("accessToken");

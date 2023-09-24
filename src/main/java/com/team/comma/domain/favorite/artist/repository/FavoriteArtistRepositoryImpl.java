@@ -1,14 +1,13 @@
 package com.team.comma.domain.favorite.artist.repository;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
 import com.team.comma.domain.favorite.artist.dto.FavoriteArtistResponse;
 import com.team.comma.domain.user.user.domain.QUser;
 import com.team.comma.domain.user.user.domain.User;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -24,29 +23,17 @@ public class FavoriteArtistRepositoryImpl implements FavoriteArtistRepositoryCus
 
     @Override
     public List<String> findFavoriteArtistListByUser(User user) {
-        return queryFactory.select(favoriteArtist.artistName)
+        return queryFactory.select(favoriteArtist.artist.artistName)
                 .from(favoriteArtist)
                 .where(favoriteArtist.user.eq(user))
                 .fetch();
     }
 
     @Override
-    @Transactional
-    public void deleteByUser(User user , String artistName) {
-        queryFactory.delete(favoriteArtist)
-                .where(favoriteArtist.id.eq(
-                        JPAExpressions.select(favoriteArtist.id).from(favoriteArtist)
-                                .innerJoin(favoriteArtist.user , qUser).on(qUser.eq(user))
-                                .where(favoriteArtist.artistName.eq(artistName))
-                ))
-                .execute();
-    }
-
-    @Override
     public Optional<FavoriteArtist> findFavoriteArtistByUser(User user, String artistName) {
         FavoriteArtist result = queryFactory.select(favoriteArtist).from(favoriteArtist)
                 .innerJoin(favoriteArtist.user , qUser).on(qUser.eq(user))
-                .where(favoriteArtist.artistName.eq(artistName))
+                .where(favoriteArtist.artist.artistName.eq(artistName))
                 .fetchOne();
 
         return Optional.ofNullable(result);
@@ -58,8 +45,11 @@ public class FavoriteArtistRepositoryImpl implements FavoriteArtistRepositoryCus
                 Projections.constructor(
                         FavoriteArtistResponse.class,
                         favoriteArtist.id,
-                        favoriteArtist.artistName,
-                        favoriteArtist.artistImageUrl))
+                        Projections.constructor(
+                                ArtistResponse.class,
+                                favoriteArtist.artist.spotifyArtistId,
+                                favoriteArtist.artist.artistName
+                        )))
                 .from(favoriteArtist)
                 .where(favoriteArtist.user.eq(user))
                 .fetch();

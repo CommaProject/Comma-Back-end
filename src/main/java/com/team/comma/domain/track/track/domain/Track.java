@@ -55,7 +55,17 @@ public class Track {
         trackArtistList.add(trackArtist);
     }
 
-    public static Track buildTrack(se.michaelthelin.spotify.model_objects.specification.Track track , ArtistService artistService) {
+    public static Track createTrack(String trackTitle, int durationTimeMs, String albumImageUrl, String spotifyTrackId, String spotifyTrackHref) {
+        return Track.builder()
+                .trackTitle(trackTitle)
+                .durationTimeMs(durationTimeMs)
+                .albumImageUrl(albumImageUrl)
+                .spotifyTrackId(spotifyTrackId)
+                .spotifyTrackHref(spotifyTrackHref)
+                .build();
+    }
+
+    public static Track createTrackWithSpotifyTrack(se.michaelthelin.spotify.model_objects.specification.Track track) {
         Track trackEntity = Track.builder()
                 .trackTitle(track.getName())
                 .durationTimeMs(track.getDurationMs())
@@ -63,12 +73,6 @@ public class Track {
                 .spotifyTrackId(track.getId())
                 .spotifyTrackHref(track.getHref())
                 .build();
-
-
-        for(ArtistSimplified artistSimplified : track.getArtists()) {
-            Artist artist = artistService.findArtistOrSave(artistSimplified.getId() , artistSimplified.getName());
-            trackEntity.addTrackArtistList(artist);
-        }
 
         return trackEntity;
     }

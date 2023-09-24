@@ -1,5 +1,7 @@
 package com.team.comma.domain.favorite.artist.repository;
 
+import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.repository.ArtistRepository;
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
 import com.team.comma.domain.favorite.artist.dto.FavoriteArtistResponse;
 import com.team.comma.domain.user.user.constant.UserRole;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -29,6 +32,9 @@ public class FavoriteArtistRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    ArtistRepository artistRepository;
+
     private String userEmail = "email@naver.com";
     private String userPassword = "password";
 
@@ -37,14 +43,14 @@ public class FavoriteArtistRepositoryTest {
     public void addFavoriteArtist() {
         // given
         User user = User.builder().build();
-        FavoriteArtist favoriteArtist = FavoriteArtist.builder().artistImageUrl("URL").artistName("name").user(user).build();
+        Artist artist = Artist.createArtist("spotifyId", "artistName");
+        FavoriteArtist favoriteArtist = FavoriteArtist.builder().artist(artist).user(user).build();
 
         // when
         FavoriteArtist result = favoriteArtistRepository.save(favoriteArtist);
 
         // then
-        assertThat(result.getArtistName()).isEqualTo("name");
-        assertThat(result.getArtistImageUrl()).isEqualTo("URL");
+        assertThat(result.getArtist().getArtistName()).isEqualTo("artistName");
     }
 
     @Test
@@ -53,15 +59,17 @@ public class FavoriteArtistRepositoryTest {
         // given
         User userEntity = User.builder().email("email").build();
         userRepository.save(userEntity);
-        userEntity.addFavoriteArtist("artist");
+
+        Artist artist = Artist.createArtist("spotifyId", "artistName");
+        FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(userEntity, artist);
+        favoriteArtist = favoriteArtistRepository.save(favoriteArtist);
 
         // when
-        favoriteArtistRepository.deleteByUser(userEntity , "artist");
+        favoriteArtistRepository.deleteById(favoriteArtist.getId());
 
         // then
-        FavoriteArtist result = favoriteArtistRepository.findFavoriteArtistByUser(userEntity , "artist").orElse(null);
-
-        assertThat(result).isNull();
+        List<FavoriteArtistResponse> result = favoriteArtistRepository.findAllFavoriteArtistByUser(userEntity);
+        assertThat(result.size()).isEqualTo(0);
 
     }
 
@@ -70,10 +78,16 @@ public class FavoriteArtistRepositoryTest {
     public void getFavoriteArtistRepository() {
         // given
         User user = buildUser();
+        Artist artist1 = Artist.createArtist("spotifyId", "artist1");
+        Artist artist2 = Artist.createArtist("spotifyId", "artist2");
+        Artist artist3 = Artist.createArtist("spotifyId", "artist3");
+        user.addFavoriteArtist(artist1);
+        user.addFavoriteArtist(artist2);
+        user.addFavoriteArtist(artist3);
+        artistRepository.save(artist1);
+        artistRepository.save(artist2);
+        artistRepository.save(artist3);
         userRepository.save(user);
-        user.addFavoriteArtist("artist1");
-        user.addFavoriteArtist("artist2");
-        user.addFavoriteArtist("artist3");
 
         // when
         List<String> result = favoriteArtistRepository.findFavoriteArtistListByUser(user);
@@ -86,12 +100,15 @@ public class FavoriteArtistRepositoryTest {
     @DisplayName("유저가 추가한 하나의 아티스트 가져오기")
     public void getFavoriteArtistByUser() {
         // given
+        Artist artist = Artist.createArtist("spotifyId", "artist");
+        artistRepository.save(artist);
+
         User user = buildUser();
         userRepository.save(user);
-        user.addFavoriteArtist("artist1");
+        user.addFavoriteArtist(artist);
 
         // when
-        FavoriteArtist result = favoriteArtistRepository.findFavoriteArtistByUser(user , "artist1").orElse(null);
+        Optional<FavoriteArtist> result = favoriteArtistRepository.findFavoriteArtistByUser(user , "artist1");
 
         // then
         assertThat(result).isNotNull();
@@ -102,8 +119,10 @@ public class FavoriteArtistRepositoryTest {
     public void findAllByUser() {
         // given
         User user = buildUser();
-        FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, "artist name");
+        Artist artist = Artist.createArtist("spotifyId", "artistName");
+        FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, artist);
         userRepository.save(user);
+        artistRepository.save(artist);
         favoriteArtistRepository.save(favoriteArtist);
 
         // when

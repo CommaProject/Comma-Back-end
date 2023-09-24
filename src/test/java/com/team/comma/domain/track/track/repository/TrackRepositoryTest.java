@@ -3,7 +3,7 @@ package com.team.comma.domain.track.track.repository;
 import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.artist.repository.ArtistRepository;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.dto.TrackArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.global.config.TestConfig;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
@@ -120,7 +120,7 @@ public class TrackRepositoryTest {
         // given
         Track tracks1 = buildTrack("track1" , "id1");
         Track tracks2 = buildTrack("track2" , "id2");
-        Artist artist = Artist.builder().spotifyArtistId("artistId").spotifyArtistName("artist").build();
+        Artist artist = Artist.builder().spotifyArtistId("artistId").artistName("artist").build();
         artistRepository.save(artist);
         
         tracks1.addTrackArtistList(artist);

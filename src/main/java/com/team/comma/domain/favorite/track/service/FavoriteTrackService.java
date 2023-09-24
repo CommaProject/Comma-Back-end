@@ -6,17 +6,16 @@ import com.team.comma.domain.favorite.track.dto.FavoriteTrackResponse;
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.exception.UserException;
-import com.team.comma.domain.user.user.repository.UserRepository;
+import com.team.comma.domain.user.user.service.UserService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
@@ -24,15 +23,14 @@ import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUC
 public class FavoriteTrackService {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final TrackService trackService;
     private final FavoriteTrackRepository favoriteTrackRepository;
 
     @Transactional
     public MessageResponse createFavoriteTrack(String accessToken , FavoriteTrackRequest favoriteTrackRequest) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findUserByEmail(userEmail)
-                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
+        User user = userService.findUserOrThrow(userEmail);
 
         FavoriteTrack result = FavoriteTrack.buildFavoriteTrack(user , trackService.findTrackOrSave(favoriteTrackRequest.getSpotifyTrackId()));
         favoriteTrackRepository.save(result);
@@ -42,8 +40,7 @@ public class FavoriteTrackService {
 
     public MessageResponse findAllFavoriteTrack(final String accessToken) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        User user = userRepository.findUserByEmail(userEmail)
-                .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
+        User user = userService.findUserOrThrow(userEmail);
 
         List<FavoriteTrackResponse> favoriteTrackResponses = findAllFavoriteTrackByUser(user);
 
@@ -52,6 +49,21 @@ public class FavoriteTrackService {
 
     public List<FavoriteTrackResponse> findAllFavoriteTrackByUser(final User user) {
         return favoriteTrackRepository.findAllFavoriteTrackByUser(user);
+    }
+
+    public FavoriteTrack findFavoriteTrackOrThrow(final long favoriteTrackId) {
+        return favoriteTrackRepository.findById(favoriteTrackId)
+                .orElseThrow(() -> new EntityNotFoundException("좋아요 표시 한 트랙을 찾을 수 없습니다."));
+    }
+
+    public MessageResponse deleteFavoriteTrack(final String accessToken, final long favoriteTrackId) {
+        String userEmail = jwtTokenProvider.getUserPk(accessToken);
+        User user = userService.findUserOrThrow(userEmail);
+        FavoriteTrack favoriteTrack = findFavoriteTrackOrThrow(favoriteTrackId);
+
+        favoriteTrackRepository.delete(favoriteTrack);
+
+        return MessageResponse.of(REQUEST_SUCCESS);
     }
 
 }
