@@ -19,8 +19,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -55,6 +57,9 @@ class UserServiceTest {
 
     private MockHttpServletRequest request; // request mock
 
+    @Spy
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @BeforeEach
     void setup() {
         request = new MockHttpServletRequest();
@@ -65,7 +70,7 @@ class UserServiceTest {
     @DisplayName("일반 사용자가 OAuth2.0 계정에 접근 시 오류")
     void deniedToGeralUserAccessOAuthUser() {
         // given
-        UserRequest login = UserRequest.buildUserRequest("userEmail");
+        UserRequest login = UserRequest.buildUserRequest("userEmail" , "password");
 
         User userEntity = buildOauthUserEntity();
         doReturn(Optional.of(userEntity)).when(userRepository).findUserByEmail("userEmail");
@@ -85,11 +90,10 @@ class UserServiceTest {
     @DisplayName("사용자 로그인 예외 _ 일치하지 않은 비밀번호")
     void loginException_notEqualPassword() {
         // given
-        UserRequest loginRequest = UserRequest.buildUserRequest("userEmail");
+        UserRequest loginRequest = UserRequest.buildUserRequest("userEmail" , "password");
 
         User user = buildUserEntity("userEmail", "password123");
-        Optional<User> optionalUser = Optional.of(user);
-        doReturn(optionalUser).when(userRepository).findUserByEmail(loginRequest.getEmail());
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail(loginRequest.getEmail());
 
         // when
         Throwable thrown = catchThrowable(() -> userService.login(loginRequest , null));
@@ -103,7 +107,7 @@ class UserServiceTest {
     @DisplayName("사용자 로그인 예외 _ 존재하지 않은 사용자")
     void notExistUserLoginExceptionTest() {
         // given
-        UserRequest login = UserRequest.buildUserRequest("userEmail");
+        UserRequest login = UserRequest.buildUserRequest("userEmail" , "password");
         doReturn(Optional.empty()).when(userRepository).findUserByEmail(login.getEmail());
 
         // when
@@ -120,13 +124,13 @@ class UserServiceTest {
     @DisplayName("사용자 로그인 성공")
     void loginUserTest() throws AccountException {
         // given
-        User user = buildUserEntity("userEmail", "password");
+        User user = buildUserEntity("userEmail", bCryptPasswordEncoder.encode("password"));
         Token token = Token.builder().accessToken("accessToken").refreshToken("refreshToken").build();
 
         doReturn(Optional.of(user)).when(userRepository).findUserByEmail("userEmail");
         doReturn(token).when(jwtService).createJwtToken(user);
 
-        UserRequest request = UserRequest.buildUserRequest("userEmail");
+        UserRequest request = UserRequest.buildUserRequest("userEmail" , "password");
         HttpServletResponse responseMock = Mockito.mock(HttpServletResponse.class);
 
         // when
@@ -140,7 +144,7 @@ class UserServiceTest {
     @DisplayName("회원 가입 예외_존재하는 회원")
     void existUserException() {
         // given
-        UserRequest userRequest = UserRequest.buildUserRequest("userEmail");
+        UserRequest userRequest = UserRequest.buildUserRequest("userEmail" , "password");
 
         User user = buildUserEntity("userEmail", "password");
         doReturn(Optional.of(user)).when(userRepository).findUserByEmail(any(String.class));
@@ -155,11 +159,10 @@ class UserServiceTest {
 
     @Test
     @DisplayName("사용자 회원 가입 성공")
-    void registUser() throws AccountException {
+    void registerUser() throws AccountException {
         // given
-        UserRequest userRequest = UserRequest.buildUserRequest("userEmail");
-
-        User user = buildUserEntity("userEmail", "password");
+        UserRequest userRequest = UserRequest.buildUserRequest("userEmail" , "password132132");
+        User user = buildUserEntity("userEmail", bCryptPasswordEncoder.encode("password132132"));
         doReturn(user).when(userRepository).save(any(User.class));
         doReturn(Optional.empty()).when(userRepository).findUserByEmail(userRequest.getEmail());
 
@@ -173,6 +176,7 @@ class UserServiceTest {
         assertThat(message.getMessage()).isEqualTo("성공적으로 가입되었습니다.");
         assertThat(result).isNotNull();
         assertThat(result.getEmail()).isEqualTo(user.getEmail());
+        assertThat(bCryptPasswordEncoder.matches( "password132132" , result.getPassword())).isEqualTo(true);
     }
 
     @Test
@@ -223,6 +227,17 @@ class UserServiceTest {
     }
 
     @Test
+    void modifyUserPassword_Fail_Logout_status() {
+        // given
+
+        // when
+        Throwable throwable = catchThrowable(() -> userService.modifyUserPassword(null, "change_password"));
+
+        // then
+        assertThat(throwable.getMessage()).isEqualTo("로그인이 되어있지 않습니다.");
+    }
+
+    @Test
     void modifyUserPassword_success() throws AccountException {
         // given
         String accessToken = "accessToken";
@@ -234,8 +249,10 @@ class UserServiceTest {
         MessageResponse result = userService.modifyUserPassword(accessToken, "change_password");
 
         // then
+        String newPassword = userRepository.findUserByEmail("userEmail").get().getPassword();
+
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(user.getPassword()).isEqualTo("change_password");
+        assertThat(bCryptPasswordEncoder.matches("change_password" , newPassword)).isEqualTo(true);
     }
 
     public User buildOauthUserEntity() {

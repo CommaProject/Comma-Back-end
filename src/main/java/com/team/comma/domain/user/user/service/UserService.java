@@ -12,6 +12,7 @@ import com.team.comma.global.jwt.support.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
@@ -29,6 +30,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
     public MessageResponse login(final UserRequest loginRequest, HttpServletResponse response)
@@ -40,7 +42,7 @@ public class UserService {
             throw new AccountException("일반 사용자는 OAuth 계정으로 로그인할 수 없습니다.");
         }
 
-        if (!user.getPassword().equals(loginRequest.getPassword())) {
+        if (!bCryptPasswordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new UserException(NOT_FOUNT_USER);
         }
 
@@ -53,7 +55,8 @@ public class UserService {
     public MessageResponse register(final UserRequest userRequest) throws AccountException {
         findUserThenThrow(userRequest.getEmail());
 
-        User buildEntity = userRequest.toUserEntity(UserType.GENERAL_USER);
+        String encodedPassword = bCryptPasswordEncoder.encode(userRequest.getPassword());
+        User buildEntity = userRequest.toUserEntity(UserType.GENERAL_USER , encodedPassword);
         User user = userRepository.save(buildEntity);
 
         return MessageResponse.of(REGISTER_SUCCESS, UserResponse.of(user));
@@ -101,7 +104,7 @@ public class UserService {
 
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
         User user = findUserOrThrow(userEmail);
-        user.modifyPassword(password);
+        user.modifyPassword(bCryptPasswordEncoder.encode(password));
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }

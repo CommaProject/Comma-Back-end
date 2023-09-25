@@ -14,19 +14,19 @@ public class UserRequest {
     private String email;
     private String password;
 
-    public User toUserEntity(final UserType userType) {
+    public User toUserEntity(final UserType userType , final String encodedPassword) {
         return User.builder()
                 .email(email)
-                .password(password)
+                .password(encodedPassword)
                 .type(userType)
                 .role(UserRole.USER)
                 .build();
     }
 
-    public static UserRequest buildUserRequest(final String email) {
+    public static UserRequest buildUserRequest(final String email, final String password) {
         return UserRequest.builder()
                 .email(email)
-                .password("password")
+                .password(password)
                 .build();
     }
 
