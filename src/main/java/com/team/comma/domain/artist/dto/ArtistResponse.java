@@ -1,5 +1,6 @@
 package com.team.comma.domain.artist.dto;
 
+import com.team.comma.domain.artist.domain.Artist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
