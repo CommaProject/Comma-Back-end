@@ -21,10 +21,14 @@ public class Artist {
     @Column(length = 30)
     private String artistName;
 
-    public static Artist createArtist(String spotifyArtistId , String artistName) {
+    @Column(length = 100)
+    private String artistImageUrl;
+
+    public static Artist createArtist(String spotifyArtistId, String artistName, String artistImageUrl) {
         return Artist.builder()
                 .spotifyArtistId(spotifyArtistId)
                 .artistName(artistName)
+                .artistImageUrl(artistImageUrl)
                 .build();
     }
 
@@ -32,6 +36,7 @@ public class Artist {
         return Artist.builder()
                 .spotifyArtistId(artist.getId())
                 .artistName(artist.getName())
+                .artistImageUrl(artist.getImages()[0].getUrl())
                 .build();
     }
 }

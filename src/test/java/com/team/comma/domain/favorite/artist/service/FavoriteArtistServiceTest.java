@@ -131,7 +131,7 @@ public class FavoriteArtistServiceTest {
     public void findALlFavoriteArtist() throws AccountException {
         // given
         User user = buildUser();
-        Artist artist = Artist.createArtist("artistId", "artist");
+        Artist artist = Artist.createArtist("artistId", "artist", "artistImageUrl");
         FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, artist);
         FavoriteArtistResponse favoriteArtistResponse = FavoriteArtistResponse.of(favoriteArtist);
 

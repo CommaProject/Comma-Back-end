@@ -43,7 +43,7 @@ public class FavoriteArtistRepositoryTest {
     public void addFavoriteArtist() {
         // given
         User user = User.builder().build();
-        Artist artist = Artist.createArtist("spotifyId", "artistName");
+        Artist artist = Artist.createArtist("spotifyId", "artistName", "artistImageUrl");
         FavoriteArtist favoriteArtist = FavoriteArtist.builder().artist(artist).user(user).build();
 
         // when
@@ -60,7 +60,7 @@ public class FavoriteArtistRepositoryTest {
         User userEntity = User.builder().email("email").build();
         userRepository.save(userEntity);
 
-        Artist artist = Artist.createArtist("spotifyId", "artistName");
+        Artist artist = Artist.createArtist("spotifyId", "artistName", "artistImageUrl");
         FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(userEntity, artist);
         favoriteArtist = favoriteArtistRepository.save(favoriteArtist);
 
@@ -78,9 +78,9 @@ public class FavoriteArtistRepositoryTest {
     public void getFavoriteArtistRepository() {
         // given
         User user = buildUser();
-        Artist artist1 = Artist.createArtist("spotifyId", "artist1");
-        Artist artist2 = Artist.createArtist("spotifyId", "artist2");
-        Artist artist3 = Artist.createArtist("spotifyId", "artist3");
+        Artist artist1 = Artist.createArtist("spotifyId", "artist1", "artistImageUrl");
+        Artist artist2 = Artist.createArtist("spotifyId", "artist2", "artistImageUrl");
+        Artist artist3 = Artist.createArtist("spotifyId", "artist3", "artistImageUrl");
         user.addFavoriteArtist(artist1);
         user.addFavoriteArtist(artist2);
         user.addFavoriteArtist(artist3);
@@ -100,7 +100,7 @@ public class FavoriteArtistRepositoryTest {
     @DisplayName("유저가 추가한 하나의 아티스트 가져오기")
     public void getFavoriteArtistByUser() {
         // given
-        Artist artist = Artist.createArtist("spotifyId", "artist");
+        Artist artist = Artist.createArtist("spotifyId", "artist", "artistImageUrl");
         artistRepository.save(artist);
 
         User user = buildUser();
@@ -119,7 +119,7 @@ public class FavoriteArtistRepositoryTest {
     public void findAllByUser() {
         // given
         User user = buildUser();
-        Artist artist = Artist.createArtist("spotifyId", "artistName");
+        Artist artist = Artist.createArtist("spotifyId", "artistName", "artistImageUrl");
         FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, artist);
         userRepository.save(user);
         artistRepository.save(artist);
