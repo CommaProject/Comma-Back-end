@@ -14,10 +14,10 @@ public class UserRequest {
     private String email;
     private String password;
 
-    public User toUserEntity(final UserType userType) {
+    public User toUserEntity(final UserType userType , String encodedPassword) {
         return User.builder()
                 .email(email)
-                .password(password)
+                .password(encodedPassword)
                 .type(userType)
                 .role(UserRole.USER)
                 .build();
@@ -27,6 +27,13 @@ public class UserRequest {
         return UserRequest.builder()
                 .email(email)
                 .password("password")
+                .build();
+    }
+
+    public static UserRequest buildUserRequest(final String email , String password) {
+        return UserRequest.builder()
+                .email(email)
+                .password(password)
                 .build();
     }
 
