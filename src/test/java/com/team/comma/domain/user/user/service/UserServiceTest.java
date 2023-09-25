@@ -70,7 +70,7 @@ class UserServiceTest {
     @DisplayName("일반 사용자가 OAuth2.0 계정에 접근 시 오류")
     void deniedToGeralUserAccessOAuthUser() {
         // given
-        UserRequest login = UserRequest.buildUserRequest("userEmail");
+        UserRequest login = UserRequest.buildUserRequest("userEmail" , "password");
 
         User userEntity = buildOauthUserEntity();
         doReturn(Optional.of(userEntity)).when(userRepository).findUserByEmail("userEmail");
@@ -90,7 +90,7 @@ class UserServiceTest {
     @DisplayName("사용자 로그인 예외 _ 일치하지 않은 비밀번호")
     void loginException_notEqualPassword() {
         // given
-        UserRequest loginRequest = UserRequest.buildUserRequest("userEmail");
+        UserRequest loginRequest = UserRequest.buildUserRequest("userEmail" , "password");
 
         User user = buildUserEntity("userEmail", "password123");
         doReturn(Optional.of(user)).when(userRepository).findUserByEmail(loginRequest.getEmail());
@@ -107,7 +107,7 @@ class UserServiceTest {
     @DisplayName("사용자 로그인 예외 _ 존재하지 않은 사용자")
     void notExistUserLoginExceptionTest() {
         // given
-        UserRequest login = UserRequest.buildUserRequest("userEmail");
+        UserRequest login = UserRequest.buildUserRequest("userEmail" , "password");
         doReturn(Optional.empty()).when(userRepository).findUserByEmail(login.getEmail());
 
         // when
@@ -144,7 +144,7 @@ class UserServiceTest {
     @DisplayName("회원 가입 예외_존재하는 회원")
     void existUserException() {
         // given
-        UserRequest userRequest = UserRequest.buildUserRequest("userEmail");
+        UserRequest userRequest = UserRequest.buildUserRequest("userEmail" , "password");
 
         User user = buildUserEntity("userEmail", "password");
         doReturn(Optional.of(user)).when(userRepository).findUserByEmail(any(String.class));

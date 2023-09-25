@@ -84,7 +84,7 @@ class UserControllerTest {
         // given
         String api = "/login";
 
-        UserRequest request = UserRequest.buildUserRequest("userEmail");
+        UserRequest request = UserRequest.buildUserRequest("userEmail" , "password");
         UserResponse response = UserResponse.buildUserResponse("userEmail");
         MessageResponse message = MessageResponse.of(LOGIN_SUCCESS, response);
         doReturn(message).when(userService).login(any(UserRequest.class) , any(HttpServletResponse.class));
@@ -138,7 +138,7 @@ class UserControllerTest {
     void loginRequestFail_notExistUser() throws Exception {
         // given
         String api = "/login";
-        UserRequest request = UserRequest.buildUserRequest("email");
+        UserRequest request = UserRequest.buildUserRequest("email" , "password");
         doThrow(new AccountException("정보가 올바르지 않습니다.")).when(userService).login(any(UserRequest.class) , any(HttpServletResponse.class));
 
         // when
@@ -178,7 +178,7 @@ class UserControllerTest {
         // given
         final String api = "/register";
 
-        UserRequest request = UserRequest.buildUserRequest("userEmail");
+        UserRequest request = UserRequest.buildUserRequest("userEmail" , "password");
         UserResponse response = UserResponse.buildUserResponse("userEmail");
         doReturn(MessageResponse.of(REGISTER_SUCCESS, response)).when(userService).register(any(UserRequest.class));
 
@@ -229,7 +229,7 @@ class UserControllerTest {
     void registUserFail_existUserException() throws Exception {
         // given
         final String api = "/register";
-        UserRequest request = UserRequest.buildUserRequest("email");
+        UserRequest request = UserRequest.buildUserRequest("email" , "password");
         doThrow(new AccountException("이미 존재하는 계정입니다.")).when(userService).register(any(UserRequest.class));
 
         // when

@@ -14,7 +14,7 @@ public class UserRequest {
     private String email;
     private String password;
 
-    public User toUserEntity(final UserType userType , String encodedPassword) {
+    public User toUserEntity(final UserType userType , final String encodedPassword) {
         return User.builder()
                 .email(email)
                 .password(encodedPassword)
@@ -23,14 +23,7 @@ public class UserRequest {
                 .build();
     }
 
-    public static UserRequest buildUserRequest(final String email) {
-        return UserRequest.builder()
-                .email(email)
-                .password("password")
-                .build();
-    }
-
-    public static UserRequest buildUserRequest(final String email , String password) {
+    public static UserRequest buildUserRequest(final String email, final String password) {
         return UserRequest.builder()
                 .email(email)
                 .password(password)
