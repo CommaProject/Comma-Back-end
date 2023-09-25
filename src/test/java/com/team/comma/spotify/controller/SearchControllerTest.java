@@ -72,7 +72,7 @@ public class SearchControllerTest {
     @DisplayName("가수명 검색하기")
     public void searchBySinger() throws Exception {
         // given
-        final String api = "/spotify/artists/{artist}";
+        final String api = "/spotify/artists/{artist-name}";
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
                 new ArrayList<>(Arrays.asList(
                         createArtistResponse()
@@ -94,7 +94,7 @@ public class SearchControllerTest {
                                 cookieWithName("accessToken").description("History 등록에 필요한 accessToken")
                         ),
                         pathParameters(
-                                parameterWithName("artist").description("아티스트 명")
+                                parameterWithName("artist-name").description("아티스트 명")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -122,7 +122,7 @@ public class SearchControllerTest {
     @DisplayName("트랙명 검색하기")
     public void searchByTrack() throws Exception {
         // given
-        final String api = "/spotify/tracks/{track}";
+        final String api = "/spotify/tracks/{track-name}";
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
                 new ArrayList<>(Arrays.asList(
                         createTrackResponse()
@@ -145,7 +145,7 @@ public class SearchControllerTest {
                                 cookieWithName("accessToken").description("History 등록에 필요한 accessToken")
                         ),
                         pathParameters(
-                                parameterWithName("track").description("트랙 이름 또는 아티스트 이름")
+                                parameterWithName("track-name").description("트랙 이름 또는 아티스트 이름")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
