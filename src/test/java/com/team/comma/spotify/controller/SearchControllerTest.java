@@ -180,7 +180,7 @@ public class SearchControllerTest {
     @DisplayName("가수의 트랙 리스트 상세 검색")
     public void searchTrackListByArtist() throws Exception {
         // given
-        final String api = "/spotify/tracks/artist/{id}";
+        final String api = "/spotify/artist/{id}/tracks";
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
                 new ArrayList<>(Arrays.asList(
                         createTrackResponse()

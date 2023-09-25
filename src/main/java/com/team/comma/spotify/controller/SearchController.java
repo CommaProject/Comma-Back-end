@@ -22,6 +22,13 @@ public class SearchController {
         return ResponseEntity.ok().body(spotifyService.searchArtistList(artistName , accessToken));
     }
 
+    @GetMapping("/artist/{id}/tracks")
+    public ResponseEntity<MessageResponse> searchTrackListByArtist(
+            @PathVariable String id,
+            @CookieValue("accessToken") String accessToken) throws AccountException {
+        return ResponseEntity.ok().body(spotifyService.searchTrackListByArtist(id, accessToken));
+    }
+
     @GetMapping("/tracks/{track-name}")
     public ResponseEntity<MessageResponse> searchTrackList(
             @PathVariable("track-name") String trackName,
@@ -29,12 +36,6 @@ public class SearchController {
         return ResponseEntity.ok().body(spotifyService.searchTrackList(trackName , accessToken));
     }
 
-    @GetMapping("/artist/{id}/tracks")
-    public ResponseEntity<MessageResponse> searchTrackListByArtist(
-            @PathVariable String id,
-            @CookieValue("accessToken") String accessToken) throws AccountException {
-        return ResponseEntity.ok().body(spotifyService.searchTrackListByArtist(id, accessToken));
-    }
 
     @GetMapping("/genre")
     public ResponseEntity<MessageResponse> searchGenreList() {
