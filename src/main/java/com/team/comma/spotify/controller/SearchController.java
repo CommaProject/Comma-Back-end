@@ -29,7 +29,7 @@ public class SearchController {
         return ResponseEntity.ok().body(spotifyService.searchTrackList(trackName , accessToken));
     }
 
-    @GetMapping("/tracks/artist/{id}")
+    @GetMapping("/artist/{id}/tracks")
     public ResponseEntity<MessageResponse> searchTrackListByArtist(
             @PathVariable String id,
             @CookieValue("accessToken") String accessToken) throws AccountException {
@@ -42,7 +42,8 @@ public class SearchController {
     }
 
     @GetMapping("/artist")
-    public ResponseEntity<MessageResponse> searchArtistListByYear(@RequestParam int offset) {
+    public ResponseEntity<MessageResponse> searchArtistListByYear(
+            @RequestParam int offset) {
         return ResponseEntity.ok().body(spotifyService.searchArtistListByYear(offset));
     }
 
