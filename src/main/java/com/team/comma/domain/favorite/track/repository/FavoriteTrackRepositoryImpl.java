@@ -38,7 +38,8 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                         ),
                         Projections.constructor(ArtistResponse.class,
                                 artist.spotifyArtistId.min(),
-                                artist.artistName.min()
+                                artist.artistName.min(),
+                                artist.artistImageUrl.min()
                         ))).from(favoriteTrack)
                 .join(favoriteTrack.user, user).on(user.email.eq(userEmail))
                 .innerJoin(favoriteTrack.track, track)
@@ -68,7 +69,8 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
                                                 ),
                                                 Projections.constructor(ArtistResponse.class,
                                                         artist.spotifyArtistId.min(),
-                                                        artist.artistName.min()
+                                                        artist.artistName.min(),
+                                                        artist.artistImageUrl.min()
                                                 )))))
                 .from(favoriteTrack)
                 .innerJoin(favoriteTrack.track, track)

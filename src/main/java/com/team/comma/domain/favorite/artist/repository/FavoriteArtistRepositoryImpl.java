@@ -48,7 +48,8 @@ public class FavoriteArtistRepositoryImpl implements FavoriteArtistRepositoryCus
                         Projections.constructor(
                                 ArtistResponse.class,
                                 favoriteArtist.artist.spotifyArtistId,
-                                favoriteArtist.artist.artistName
+                                favoriteArtist.artist.artistName,
+                                favoriteArtist.artist.artistImageUrl
                         )))
                 .from(favoriteArtist)
                 .where(favoriteArtist.user.eq(user))

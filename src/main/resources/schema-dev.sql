@@ -36,9 +36,10 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE artist_tb
 (
-    id                   BIGINT  NOT NULL AUTO_INCREMENT,
-    spotify_artist_id            VARCHAR(50),
-    artist_name          VARCHAR(30),
+    id                  BIGINT  NOT NULL AUTO_INCREMENT,
+    spotify_artist_id   VARCHAR(50),
+    artist_name         VARCHAR(30),
+    artist_image_url    VARCHAR(100),
     PRIMARY KEY (id)
 );
 
