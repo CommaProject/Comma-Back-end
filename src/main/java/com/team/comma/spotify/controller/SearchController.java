@@ -36,7 +36,6 @@ public class SearchController {
         return ResponseEntity.ok().body(spotifyService.searchTrackList(trackName , accessToken));
     }
 
-
     @GetMapping("/genre")
     public ResponseEntity<MessageResponse> searchGenreList() {
         return ResponseEntity.ok().body(spotifyService.searchGenreList());
