@@ -10,10 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import se.michaelthelin.spotify.SpotifyApi;
-import se.michaelthelin.spotify.model_objects.specification.Artist;
-import se.michaelthelin.spotify.model_objects.specification.Paging;
-import se.michaelthelin.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.model_objects.specification.*;
+import se.michaelthelin.spotify.requests.data.albums.GetAlbumsTracksRequest;
 import se.michaelthelin.spotify.requests.data.artists.GetArtistRequest;
+import se.michaelthelin.spotify.requests.data.artists.GetArtistsAlbumsRequest;
+import se.michaelthelin.spotify.requests.data.artists.GetArtistsTopTracksRequest;
 import se.michaelthelin.spotify.requests.data.browse.miscellaneous.GetAvailableGenreSeedsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchArtistsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchTracksRequest;
@@ -22,7 +23,6 @@ import se.michaelthelin.spotify.requests.data.tracks.GetTrackRequest;
 import javax.security.auth.login.AccountException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.spotify.dto.SearchTrackResponse.createTrackResponse;
@@ -44,7 +44,6 @@ public class SearchService {
         }
 
         Paging<Artist> artistsPaging = (Paging<Artist>) executeResult;
-
         ArrayList<SearchArtistResponse> result = new ArrayList<>();
         for (Artist artist : artistsPaging.getItems()) {
             result.add(SearchArtistResponse.createArtistResponse(artist));
@@ -74,9 +73,9 @@ public class SearchService {
             return searchTrackList(trackName , token);
         }
 
-        Paging<Track> artistsPaging = (Paging<Track>) executeResult;
+        Paging<Track> tracksPaging = (Paging<Track>) executeResult;
         ArrayList<SearchTrackResponse> result = new ArrayList<>();
-        for (Track track : artistsPaging.getItems()) {
+        for (Track track : tracksPaging.getItems()) {
             result.add(createTrackResponse(track));
         }
 
@@ -93,9 +92,52 @@ public class SearchService {
             return getTrackByTrackId(trackId);
         }
 
-        Track track = (Track) executeResult;
-
         return (Track) executeResult;
+    }
+
+    public ArrayList<TrackSimplified> getTracksByAlbumId(String albumId) {
+        SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
+        GetAlbumsTracksRequest getAlbumsTracksRequest = spotifyApi.getAlbumsTracks(albumId).market(CountryCode.KR).build();
+        Object executeResult = spotifySearchCommand.executeCommand(getAlbumsTracksRequest);
+
+        if(executeResult instanceof SpotifyApi) {
+            return getTracksByAlbumId(albumId);
+        }
+
+        Paging<TrackSimplified> tracksPaging = (Paging<TrackSimplified>) executeResult;
+        ArrayList<TrackSimplified> result = new ArrayList<>();
+        for (TrackSimplified track : tracksPaging.getItems()) {
+            result.add(track);
+        }
+
+        return result;
+    }
+    public MessageResponse searchTrackListByArtist(String spotifyArtistId , String token) throws AccountException {
+        ArrayList<SearchTrackResponse> result = new ArrayList<>();
+
+        Paging<AlbumSimplified> artistsAlbums = getAlbumsByArtistId(spotifyArtistId);
+        for(AlbumSimplified albumSimplified : artistsAlbums.getItems()) {
+            ArrayList<TrackSimplified> trackSimplifiedList= getTracksByAlbumId(albumSimplified.getId());
+            for(TrackSimplified trackSimplified : trackSimplifiedList) {
+                result.add(createTrackResponse(trackSimplified, albumSimplified));
+            }
+        }
+
+        return MessageResponse.of(REQUEST_SUCCESS, result);
+    }
+
+    public Paging<AlbumSimplified> getAlbumsByArtistId(String artistId) {
+        SpotifyApi spotifyApi = spotifyAuthorization.getSpotifyApi();
+        GetArtistsAlbumsRequest getArtistsAlbumsRequest = spotifyApi.getArtistsAlbums(artistId).market(CountryCode.KR).build();
+
+        Object executeResult = spotifySearchCommand.executeCommand(getArtistsAlbumsRequest);
+        if(executeResult instanceof SpotifyApi) {
+            return getAlbumsByArtistId(artistId);
+        }
+
+        Paging<AlbumSimplified> albumsPaging = (Paging<AlbumSimplified>) executeResult;
+
+        return albumsPaging;
     }
 
     public MessageResponse searchGenreList() {

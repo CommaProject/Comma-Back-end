@@ -160,7 +160,6 @@ public class SearchControllerTest {
                                 fieldWithPath("data[].images[].height").description("이미지 Height"),
                                 fieldWithPath("data[].images[].width").description("이미지 Width"),
                                 fieldWithPath("data[].images[].url").description("이미지 URL"),
-                                fieldWithPath("data[].popularity").description("인기도"),
                                 fieldWithPath("data[].releaseData").description("출시 일"),
                                 fieldWithPath("data[].durationMinute").description("곡 재생 시간 ( 분 )"),
                                 fieldWithPath("data[].durationSecond").description("곡 재생 시간 ( 초 )")
@@ -264,7 +263,6 @@ public class SearchControllerTest {
                 .albumId("4aLnzOsnBf5gqTDMJn3XLz")
                 .previewUrl("https://p.scdn.co/mp3-preview/a2d5d6880809b93ccb3149ebef43d582597cfd1c?cid=f6d89d8d397049678cbbf45f829dd85a")
                 .images(new Image[]{image1, image2, image3})
-                .popularity(42)
                 .releaseData("2014-03-28")
                 .build();
     }

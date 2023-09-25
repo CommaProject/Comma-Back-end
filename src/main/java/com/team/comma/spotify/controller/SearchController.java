@@ -16,13 +16,24 @@ public class SearchController {
     private final SearchService spotifyService;
 
     @GetMapping("/artist/{artist}")
-    public ResponseEntity<MessageResponse> searchArtistList(@PathVariable String artist , @CookieValue("accessToken") String accessToken) throws AccountException {
+    public ResponseEntity<MessageResponse> searchArtistList(
+            @PathVariable String artist,
+            @CookieValue("accessToken") String accessToken) throws AccountException {
         return ResponseEntity.ok().body(spotifyService.searchArtistList(artist , accessToken));
     }
 
     @GetMapping("/track/{track}")
-    public ResponseEntity<MessageResponse> searchTrackList(@PathVariable String track , @CookieValue("accessToken") String accessToken) throws AccountException {
+    public ResponseEntity<MessageResponse> searchTrackList(
+            @PathVariable String track,
+            @CookieValue("accessToken") String accessToken) throws AccountException {
         return ResponseEntity.ok().body(spotifyService.searchTrackList(track , accessToken));
+    }
+
+    @GetMapping("/track/artist/{id}")
+    public ResponseEntity<MessageResponse> searchTrackListByArtist(
+            @PathVariable String id,
+            @CookieValue("accessToken") String accessToken) throws AccountException {
+        return ResponseEntity.ok().body(spotifyService.searchTrackListByArtist(id, accessToken));
     }
 
     @GetMapping("/genre")
