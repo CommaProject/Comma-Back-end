@@ -249,7 +249,10 @@ class UserServiceTest {
         MessageResponse result = userService.modifyUserPassword(accessToken, "change_password");
 
         // then
+        String newPassword = userRepository.findUserByEmail("userEmail").get().getPassword();
+
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(bCryptPasswordEncoder.matches("change_password" , newPassword)).isEqualTo(true);
     }
 
     public User buildOauthUserEntity() {
