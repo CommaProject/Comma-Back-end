@@ -16,10 +16,13 @@ public class ArtistResponse {
 
     private String artistName;
 
+    private String artistImageUrl;
+
     public static ArtistResponse createArtistResponse(Artist artist) {
         return ArtistResponse.builder()
                 .spotifyArtistId(artist.getSpotifyArtistId())
                 .artistName(artist.getArtistName())
+                .artistImageUrl(artist.getArtistImageUrl())
                 .build();
     }
 }

@@ -72,7 +72,7 @@ public class SearchControllerTest {
     @DisplayName("가수명 검색하기")
     public void searchBySinger() throws Exception {
         // given
-        final String api = "/spotify/artist/{artist}";
+        final String api = "/spotify/artists/{artist-name}";
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
                 new ArrayList<>(Arrays.asList(
                         createArtistResponse()
@@ -87,19 +87,19 @@ public class SearchControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("spotify/searchArtist",
+                document("spotify/artists/search-success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("History 등록에 필요한 accessToken")
                         ),
                         pathParameters(
-                                parameterWithName("artist").description("아티스트 명")
+                                parameterWithName("artist-name").description("아티스트 명")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메세지"),
-                                fieldWithPath("data[].artistId").description("Spotify 아티스트 아이디"),
+                                fieldWithPath("data[].artistId").description("Spotify 아티스트 Id"),
                                 fieldWithPath("data[].artistName").description("가수 명"),
                                 fieldWithPath("data[].genres[]").description("아티스트의 장르 [배열]"),
                                 fieldWithPath("data[].images[]").description("아티스트 이미지 정보"),
@@ -122,7 +122,7 @@ public class SearchControllerTest {
     @DisplayName("트랙명 검색하기")
     public void searchByTrack() throws Exception {
         // given
-        final String api = "/spotify/track/{track}";
+        final String api = "/spotify/tracks/{track-name}";
         MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
                 new ArrayList<>(Arrays.asList(
                         createTrackResponse()
@@ -138,19 +138,19 @@ public class SearchControllerTest {
 
         // then
         resultActions.andExpect(status().isOk()).andDo(
-                document("spotify/searchTrack",
+                document("spotify/tracks/search-success",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestCookies(
                                 cookieWithName("accessToken").description("History 등록에 필요한 accessToken")
                         ),
                         pathParameters(
-                                parameterWithName("track").description("트랙 이름 또는 아티스트 이름")
+                                parameterWithName("track-name").description("트랙 이름 또는 아티스트 이름")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메세지"),
-                                fieldWithPath("data[].trackId").description("Spotify 트랙 아이디"),
+                                fieldWithPath("data[].trackId").description("Spotify 트랙 Id"),
                                 fieldWithPath("data[].trackName").description("트랙 명"),
                                 fieldWithPath("data[].artist").description("아티스트 명"),
                                 fieldWithPath("data[].artistId").description("아티스트 Id"),
@@ -160,7 +160,64 @@ public class SearchControllerTest {
                                 fieldWithPath("data[].images[].height").description("이미지 Height"),
                                 fieldWithPath("data[].images[].width").description("이미지 Width"),
                                 fieldWithPath("data[].images[].url").description("이미지 URL"),
-                                fieldWithPath("data[].popularity").description("인기도"),
+                                fieldWithPath("data[].releaseData").description("출시 일"),
+                                fieldWithPath("data[].durationMinute").description("곡 재생 시간 ( 분 )"),
+                                fieldWithPath("data[].durationSecond").description("곡 재생 시간 ( 초 )")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        ArrayList<SearchTrackResponse> trackResult = (ArrayList<SearchTrackResponse>) result.getData();
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(trackResult.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("가수의 트랙 리스트 상세 검색")
+    public void searchTrackListByArtist() throws Exception {
+        // given
+        final String api = "/spotify/artist/{id}/tracks";
+        MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS,
+                new ArrayList<>(Arrays.asList(
+                        createTrackResponse()
+                )));
+
+        doReturn(messageResponse).when(spotifyService).searchTrackListByArtist(any(String.class), any(String.class));
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders
+                        .get(api, "3HqSLMAZ3g3d5poNaI7GOU")
+                        .cookie(new Cookie("accessToken", "token")));
+
+        // then
+        resultActions.andExpect(status().isOk()).andDo(
+                document("spotify/tracks/search-by-artist-success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("History 등록에 필요한 accessToken")
+                        ),
+                        pathParameters(
+                                parameterWithName("id").description("Spotify 아티스트 Id")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메세지"),
+                                fieldWithPath("data[].trackId").description("Spotify 트랙 Id"),
+                                fieldWithPath("data[].trackName").description("트랙 명"),
+                                fieldWithPath("data[].artist").description("아티스트 명"),
+                                fieldWithPath("data[].artistId").description("아티스트 Id"),
+                                fieldWithPath("data[].albumId").description("앨범 Id"),
+                                fieldWithPath("data[].previewUrl").description("1분 미리 듣기"),
+                                fieldWithPath("data[].images[]").description("Track 이미지 데이터"),
+                                fieldWithPath("data[].images[].height").description("이미지 Height"),
+                                fieldWithPath("data[].images[].width").description("이미지 Width"),
+                                fieldWithPath("data[].images[].url").description("이미지 URL"),
                                 fieldWithPath("data[].releaseData").description("출시 일"),
                                 fieldWithPath("data[].durationMinute").description("곡 재생 시간 ( 분 )"),
                                 fieldWithPath("data[].durationSecond").description("곡 재생 시간 ( 초 )")
@@ -264,7 +321,6 @@ public class SearchControllerTest {
                 .albumId("4aLnzOsnBf5gqTDMJn3XLz")
                 .previewUrl("https://p.scdn.co/mp3-preview/a2d5d6880809b93ccb3149ebef43d582597cfd1c?cid=f6d89d8d397049678cbbf45f829dd85a")
                 .images(new Image[]{image1, image2, image3})
-                .popularity(42)
                 .releaseData("2014-03-28")
                 .build();
     }

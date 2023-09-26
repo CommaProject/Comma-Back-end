@@ -330,7 +330,7 @@ public class FavoriteArtistControllerTest {
         // given
         final String api = "/favorite/artist";
         User user = buildUser();
-        Artist artist = Artist.createArtist("spotifyId", "artistName");
+        Artist artist = Artist.createArtist("spotifyId", "artistName", "artistImageUrl");
         FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, artist);
         FavoriteArtistResponse favoriteArtistResponse = FavoriteArtistResponse.of(favoriteArtist);
 
@@ -357,7 +357,8 @@ public class FavoriteArtistControllerTest {
                                 fieldWithPath("data").description("응답 데이터"),
                                 fieldWithPath("data.[].favoriteArtistId").description("아티스트 좋아요 Id"),
                                 fieldWithPath("data.[].artistResponse.spotifyArtistId").description("스포티파이 아티스트 Id"),
-                                fieldWithPath("data.[].artistResponse.artistName").description("아티스트 이름")
+                                fieldWithPath("data.[].artistResponse.artistName").description("아티스트 이름"),
+                                fieldWithPath("data.[].artistResponse.artistImageUrl").description("아티스트 이미지 URL")
                         )
                 )
         );

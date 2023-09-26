@@ -15,14 +15,14 @@ link:main.html[main 화면]
 
 ===== Request
 
-include::{snippets}/spotify/searchArtist/http-request.adoc[]
-include::{snippets}/spotify/searchArtist/path-parameters.adoc[]
-include::{snippets}/spotify/searchArtist/request-cookies.adoc[]
+include::{snippets}/spotify/artists/search-success/http-request.adoc[]
+include::{snippets}/spotify/artists/search-success/path-parameters.adoc[]
+include::{snippets}/spotify/artists/search-success/request-cookies.adoc[]
 
 ===== Response
 
-include::{snippets}/spotify/searchArtist/http-response.adoc[]
-include::{snippets}/spotify/searchArtist/response-fields.adoc[]
+include::{snippets}/spotify/artists/search-success/http-response.adoc[]
+include::{snippets}/spotify/artists/search-success/response-fields.adoc[]
 
 ---
 
@@ -32,14 +32,31 @@ include::{snippets}/spotify/searchArtist/response-fields.adoc[]
 
 ===== Request
 
-include::{snippets}/spotify/searchTrack/http-request.adoc[]
-include::{snippets}/spotify/searchTrack/path-parameters.adoc[]
-include::{snippets}/spotify/searchTrack/request-cookies.adoc[]
+include::{snippets}/spotify/tracks/search-success/http-request.adoc[]
+include::{snippets}/spotify/tracks/search-success/path-parameters.adoc[]
+include::{snippets}/spotify/tracks/search-success/request-cookies.adoc[]
 
 ===== Response
 
-include::{snippets}/spotify/searchTrack/http-response.adoc[]
-include::{snippets}/spotify/searchTrack/response-fields.adoc[]
+include::{snippets}/spotify/tracks/search-success/http-response.adoc[]
+include::{snippets}/spotify/tracks/search-success/response-fields.adoc[]
+
+---
+
+=== 아티스트의 트랙 검색
+
+==== 성공
+
+===== Request
+
+include::{snippets}/spotify/tracks/search-by-artist-success/http-request.adoc[]
+include::{snippets}/spotify/tracks/search-by-artist-success/path-parameters.adoc[]
+include::{snippets}/spotify/tracks/search-by-artist-success/request-cookies.adoc[]
+
+===== Response
+
+include::{snippets}/spotify/tracks/search-by-artist-success/http-response.adoc[]
+include::{snippets}/spotify/tracks/search-by-artist-success/response-fields.adoc[]
 
 ---
 

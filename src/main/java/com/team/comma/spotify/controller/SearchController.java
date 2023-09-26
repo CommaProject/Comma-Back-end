@@ -15,14 +15,25 @@ public class SearchController {
 
     private final SearchService spotifyService;
 
-    @GetMapping("/artist/{artist}")
-    public ResponseEntity<MessageResponse> searchArtistList(@PathVariable String artist , @CookieValue("accessToken") String accessToken) throws AccountException {
-        return ResponseEntity.ok().body(spotifyService.searchArtistList(artist , accessToken));
+    @GetMapping("/artists/{artist-name}")
+    public ResponseEntity<MessageResponse> searchArtistList(
+            @PathVariable("artist-name") String artistName,
+            @CookieValue("accessToken") String accessToken) throws AccountException {
+        return ResponseEntity.ok().body(spotifyService.searchArtistList(artistName , accessToken));
     }
 
-    @GetMapping("/track/{track}")
-    public ResponseEntity<MessageResponse> searchTrackList(@PathVariable String track , @CookieValue("accessToken") String accessToken) throws AccountException {
-        return ResponseEntity.ok().body(spotifyService.searchTrackList(track , accessToken));
+    @GetMapping("/artist/{id}/tracks")
+    public ResponseEntity<MessageResponse> searchTrackListByArtist(
+            @PathVariable String id,
+            @CookieValue("accessToken") String accessToken) throws AccountException {
+        return ResponseEntity.ok().body(spotifyService.searchTrackListByArtist(id, accessToken));
+    }
+
+    @GetMapping("/tracks/{track-name}")
+    public ResponseEntity<MessageResponse> searchTrackList(
+            @PathVariable("track-name") String trackName,
+            @CookieValue("accessToken") String accessToken) throws AccountException {
+        return ResponseEntity.ok().body(spotifyService.searchTrackList(trackName , accessToken));
     }
 
     @GetMapping("/genre")
@@ -31,7 +42,8 @@ public class SearchController {
     }
 
     @GetMapping("/artist")
-    public ResponseEntity<MessageResponse> searchArtistListByYear(@RequestParam int offset) {
+    public ResponseEntity<MessageResponse> searchArtistListByYear(
+            @RequestParam int offset) {
         return ResponseEntity.ok().body(spotifyService.searchArtistListByYear(offset));
     }
 
