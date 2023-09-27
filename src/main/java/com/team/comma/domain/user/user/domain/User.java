@@ -37,7 +37,7 @@ public class User implements UserDetails {
     @Column(length = 100, nullable = false)
     private String email;
 
-    @Column(length = 50)
+    @Column(length = 100)
     private String password;
 
     @Temporal(TemporalType.DATE)

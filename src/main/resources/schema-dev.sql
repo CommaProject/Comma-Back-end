@@ -47,7 +47,7 @@ CREATE TABLE user_tb
 (
     id       BIGINT NOT NULL AUTO_INCREMENT,
     email    VARCHAR(100) not null,
-    password VARCHAR(50),
+    password VARCHAR(100),
     role     VARCHAR(255),
     type     VARCHAR(255),
     del_flag varchar(255),
@@ -212,63 +212,3 @@ CREATE TABLE refresh_token_tb
     key_email VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );
-
-INSERT INTO user_tb
-(email, password, `role`, `type`, del_flag, join_date)
-VALUES
-    ('testEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-21'),
-    ('toUserEmail', 'password', 'USER', 'GENERAL_USER', 'N', '2023-08-25');
-
-INSERT INTO user_detail_tb
-(name, nickname, profile_image_url, popup_alert_flag, favorite_public_flag, calender_public_flag, all_public_flag, user_id)
-VALUES
-    ('name', 'nickname', 'no profile image', 'Y', 'Y', 'Y', 'Y', 1),
-    ('name2', 'nickname2', 'no profile image', 'Y', 'Y', 'Y', 'Y', 2);
-
-INSERT INTO track_tb
-(id , track_title, duration_time_ms, recommend_count, album_image_url, spotify_track_id, spotify_track_href)
-VALUES
-    (1 , 'test track', 210000, 0, 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228', 'id123', 'href'),
-    (2 , 'test track2', 210000, 0, 'https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228', 'id1234', 'href');
-
-INSERT INTO track_play_count_tb
-(play_count, track_id, user_id)
-VALUES(1, 1, 1);
-
-INSERT INTO artist_tb
-(spotify_artist_id , artist_name)
-VALUE
-    ('artistId' , 'artistName');
-
-INSERT INTO track_artist_tb
-(artist_id , track_id)
-VALUES(1, 1);
-
-INSERT INTO playlist_tb
-(playlist_title, alarm_start_time, alarm_flag, del_flag, user_id)
-VALUES
-    ('test playlist', '12:00:00', 1, 'N', 1),
-    ('test playlist2', '13:00:00', 1, 'N', 1);
-
-INSERT INTO playlist_track_tb
-(play_sequence, play_flag, track_alarm_flag, playlist_id, track_id)
-VALUES
-    (1, 1, 1, 1, 1),
-    (1, 1, 1, 2, 1),
-    (1, 1, 1, 2, 2);
-
-INSERT INTO archive_tb
-(comment, public_flag, create_date, user_id, playlist_id)
-VALUES
-    ('archive1', 0, '2023-08-28 12:00:00', 1, 1),
-    ('archive2', 0, '2023-08-29 12:00:00', 1, 1);
-
-INSERT INTO favorite_track_tb
-(play_count, user_id, track_id)
-VALUES(0, 1, 1);
-
-INSERT INTO favorite_artist_tb
-(artist_id, user_id)
-VALUES
-    (1, 1);
-
