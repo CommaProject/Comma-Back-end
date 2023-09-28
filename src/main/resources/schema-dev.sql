@@ -197,7 +197,6 @@ CREATE TABLE history_tb
 CREATE TABLE track_play_count_tb
 (
     id               BIGINT NOT NULL AUTO_INCREMENT,
-    play_count       INTEGER DEFAULT 1,
     track_id         BIGINT,
     user_id          BIGINT,
     PRIMARY KEY (id),

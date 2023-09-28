@@ -1,32 +1,39 @@
 package com.team.comma.domain.track.playcount.controller;
 
+import com.team.comma.domain.track.playcount.dto.TrackPlayCountRequest;
 import com.team.comma.domain.track.playcount.service.PlayCountService;
-import com.team.comma.global.common.dto.MessageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountException;
 
-@RequestMapping(value = "/tracks")
+@RequestMapping(value = "/track/play-count")
 @RestController
 @RequiredArgsConstructor
 public class PlayCountController {
 
     private final PlayCountService playCountService;
 
+    @PostMapping
+    public ResponseEntity creatTrackPlay(
+            @CookieValue String accessToken,
+            @RequestBody TrackPlayCountRequest trackPlayCountRequest) throws AccountException {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(playCountService.createTrackPlay(accessToken, trackPlayCountRequest.getSpotifyTrackId()));
+    }
+
     @GetMapping
-    public MessageResponse findMostListenedTrack(@CookieValue String accessToken) {
-        return playCountService.findMostListenedTrack(accessToken);
+    public ResponseEntity findMostListenedTrack(@CookieValue String accessToken) {
+        return ResponseEntity.ok()
+                .body(playCountService.findMostListenedTrack(accessToken));
     }
 
     @GetMapping("/friends")
-    public MessageResponse findMostedTrackByFriend(@CookieValue String accessToken) {
-        return playCountService.findMostListenedTrackByFriend(accessToken);
-    }
-
-    @PatchMapping("/play-count/{trackId}")
-    public MessageResponse modifyPlayCount(@CookieValue String accessToken , @PathVariable String trackId) throws AccountException {
-        return playCountService.modifyPlayCount(accessToken , trackId);
+    public ResponseEntity findMostedTrackByFriend(@CookieValue String accessToken) {
+        return ResponseEntity.ok()
+                .body(playCountService.findMostListenedTrackByFriend(accessToken));
     }
 
 }

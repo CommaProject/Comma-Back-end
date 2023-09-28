@@ -29,11 +29,18 @@ public class FavoriteTrack {
     @ManyToOne(fetch = FetchType.LAZY)
     private Track track;
 
-    public static FavoriteTrack buildFavoriteTrack(User user , Track track) {
+    public static FavoriteTrack createFavoriteTrack(User user, Track track) {
         return FavoriteTrack.builder()
                 .user(user)
                 .track(track)
                 .build();
+    }
+
+    public static FavoriteTrack buildFavoriteTrack(User user, Track track) {
+        return FavoriteTrack.builder()
+                .id(1L)
+                .user(user)
+                .track(track).build();
     }
 
 }

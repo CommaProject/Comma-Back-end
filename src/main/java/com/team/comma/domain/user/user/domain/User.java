@@ -67,8 +67,30 @@ public class User implements UserDetails {
     @OneToMany(cascade = CascadeType.PERSIST , mappedBy = "user")
     private List<History> history = new ArrayList<>();
 
-    public void modifyPassword(String password){
-        this.password = password;
+    public static User buildUser(Long id, String email, String password, UserType type) {
+        return User.builder()
+                .id(id)
+                .email(email)
+                .password(password)
+                .type(type)
+                .role(UserRole.USER)
+                .build();
+    }
+
+    public static User createUser(String email, String password, UserType type) {
+        return buildUser(null, email, password, type);
+    }
+
+    public static User createUser(Long id) {
+        return buildUser(id, "email", "password", UserType.GENERAL_USER);
+    }
+
+    public static User createUser(String email) {
+        return buildUser(null, email, "password", UserType.GENERAL_USER);
+    }
+
+    public static User createUser() {
+        return buildUser(null, "email", "password", UserType.GENERAL_USER);
     }
 
     public void addFavoriteArtist(Artist artist) {
@@ -90,13 +112,8 @@ public class User implements UserDetails {
         this.history.add(historyEntity);
     }
 
-    public static User buildUser(String email) {
-        return User.builder()
-                .email(email)
-                .password("password")
-                .type(UserType.GENERAL_USER)
-                .role(UserRole.USER)
-                .build();
+    public void modifyPassword(String password){
+        this.password = password;
     }
 
     // JWT Security

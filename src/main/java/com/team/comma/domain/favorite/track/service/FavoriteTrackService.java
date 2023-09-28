@@ -32,7 +32,7 @@ public class FavoriteTrackService {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
         User user = userService.findUserOrThrow(userEmail);
 
-        FavoriteTrack result = FavoriteTrack.buildFavoriteTrack(user , trackService.findTrackOrSave(favoriteTrackRequest.getSpotifyTrackId()));
+        FavoriteTrack result = FavoriteTrack.createFavoriteTrack(user , trackService.findTrackOrSave(favoriteTrackRequest.getSpotifyTrackId()));
         favoriteTrackRepository.save(result);
 
         return MessageResponse.of(REQUEST_SUCCESS);
@@ -56,6 +56,7 @@ public class FavoriteTrackService {
                 .orElseThrow(() -> new EntityNotFoundException("좋아요 표시 한 트랙을 찾을 수 없습니다."));
     }
 
+    @Transactional
     public MessageResponse deleteFavoriteTrack(final String accessToken, final long favoriteTrackId) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
         User user = userService.findUserOrThrow(userEmail);

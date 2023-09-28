@@ -23,32 +23,6 @@ public class FavoriteTrackRepositoryImpl implements FavoriteTrackRepositoryCusto
 
     private final JPAQueryFactory jpaQueryFactory;
 
-
-    @Override
-    public List<TrackArtistResponse> findFavoriteTrackByEmail(String userEmail) {
-        return jpaQueryFactory.select(Projections.constructor(TrackArtistResponse.class,
-                        Projections.constructor(TrackResponse.class,
-                                track.id,
-                                track.trackTitle,
-                                track.durationTimeMs,
-                                track.recommendCount,
-                                track.albumImageUrl,
-                                track.spotifyTrackId,
-                                track.spotifyTrackHref
-                        ),
-                        Projections.constructor(ArtistResponse.class,
-                                artist.spotifyArtistId.min(),
-                                artist.artistName.min(),
-                                artist.artistImageUrl.min()
-                        ))).from(favoriteTrack)
-                .join(favoriteTrack.user, user).on(user.email.eq(userEmail))
-                .innerJoin(favoriteTrack.track, track)
-                .innerJoin(track.trackArtistList, trackArtist)
-                .innerJoin(trackArtist.artist, artist)
-                .groupBy(favoriteTrack , track)
-                .fetch();
-    }
-
     @Override
     public List<FavoriteTrackResponse> findAllFavoriteTrackByUser(User user) {
         return jpaQueryFactory.select(

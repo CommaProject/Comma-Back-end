@@ -38,7 +38,7 @@ public class TrackService {
         se.michaelthelin.spotify.model_objects.specification
                 .Track spotifyTrack = searchService.getTrackByTrackId(spotifyTrackId);
 
-        Track track = Track.createTrackWithSpotifyTrack(spotifyTrack);
+        Track track = Track.createTrack(spotifyTrack);
         for(ArtistSimplified artistSimplified : spotifyTrack.getArtists()){
             Artist artist = artistService.findArtistOrSave(artistSimplified.getId());
             track.addTrackArtistList(artist);

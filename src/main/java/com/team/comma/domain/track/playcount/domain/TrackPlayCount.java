@@ -19,9 +19,6 @@ public class TrackPlayCount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Builder.Default
-    private Integer playCount = 1;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "track_id")
     private Track track;
@@ -30,16 +27,11 @@ public class TrackPlayCount {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    public static TrackPlayCount createTrackPlayCount(Track track , User user) {
+    public static TrackPlayCount createTrackPlayCount(Track track, User user) {
         return TrackPlayCount.builder()
                 .track(track)
                 .user(user)
                 .build();
-    }
-
-
-    public void updatePlayCount() {
-        this.playCount += 1;
     }
 
 }

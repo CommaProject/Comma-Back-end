@@ -28,7 +28,7 @@ public class UserDetailRepositoryTest {
     @Test
     public void save() {
         // given
-        User user = User.buildUser("userEmail");
+        User user = User.createUser();
         UserDetail userDetail = UserDetail.buildUserDetail(user);
 
         // when
@@ -43,7 +43,7 @@ public class UserDetailRepositoryTest {
     @Test
     public void findUserDetailByUser() {
         // given
-        User user = User.buildUser("userEmail");
+        User user = User.createUser();
         UserDetail userDetail = UserDetail.buildUserDetail(user);
         userRepository.save(user);
         userDetailRepository.save(userDetail);

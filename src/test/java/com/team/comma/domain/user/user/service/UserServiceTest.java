@@ -1,5 +1,6 @@
 package com.team.comma.domain.user.user.service;
 
+import com.team.comma.domain.user.detail.domain.UserDetail;
 import com.team.comma.domain.user.history.service.HistoryService;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
@@ -72,8 +73,8 @@ class UserServiceTest {
         // given
         UserRequest login = UserRequest.buildUserRequest("userEmail" , "password");
 
-        User userEntity = buildOauthUserEntity();
-        doReturn(Optional.of(userEntity)).when(userRepository).findUserByEmail("userEmail");
+        User user = User.createUser("userEmail", "password", UserType.OAUTH_USER);
+        doReturn(Optional.of(user)).when(userRepository).findUserByEmail("userEmail");
 
         // when
         Throwable thrown = catchThrowable(() -> userService.login(login , null));
@@ -92,7 +93,7 @@ class UserServiceTest {
         // given
         UserRequest loginRequest = UserRequest.buildUserRequest("userEmail" , "password");
 
-        User user = buildUserEntity("userEmail", "password123");
+        User user = User.createUser("userEmail");
         doReturn(Optional.of(user)).when(userRepository).findUserByEmail(loginRequest.getEmail());
 
         // when
@@ -124,13 +125,16 @@ class UserServiceTest {
     @DisplayName("사용자 로그인 성공")
     void loginUserTest() throws AccountException {
         // given
-        User user = buildUserEntity("userEmail", bCryptPasswordEncoder.encode("password"));
         Token token = Token.builder().accessToken("accessToken").refreshToken("refreshToken").build();
+
+        User user = User.createUser(1L);
+        user.modifyPassword(bCryptPasswordEncoder.encode("password132132"));
+        UserDetail userDetail = UserDetail.buildUserDetail(user);
 
         doReturn(Optional.of(user)).when(userRepository).findUserByEmail("userEmail");
         doReturn(token).when(jwtService).createJwtToken(user);
 
-        UserRequest request = UserRequest.buildUserRequest("userEmail" , "password");
+        UserRequest request = UserRequest.buildUserRequest("userEmail" , "password132132");
         HttpServletResponse responseMock = Mockito.mock(HttpServletResponse.class);
 
         // when
@@ -146,7 +150,7 @@ class UserServiceTest {
         // given
         UserRequest userRequest = UserRequest.buildUserRequest("userEmail" , "password");
 
-        User user = buildUserEntity("userEmail", "password");
+        User user = User.createUser("userEmail");
         doReturn(Optional.of(user)).when(userRepository).findUserByEmail(any(String.class));
 
         // when
@@ -162,7 +166,11 @@ class UserServiceTest {
     void registerUser() throws AccountException {
         // given
         UserRequest userRequest = UserRequest.buildUserRequest("userEmail" , "password132132");
-        User user = buildUserEntity("userEmail", bCryptPasswordEncoder.encode("password132132"));
+
+        User user = User.createUser(1L);
+        user.modifyPassword(bCryptPasswordEncoder.encode("password132132"));
+        UserDetail userDetail = UserDetail.buildUserDetail(user);
+
         doReturn(user).when(userRepository).save(any(User.class));
         doReturn(Optional.empty()).when(userRepository).findUserByEmail(userRequest.getEmail());
 
@@ -197,7 +205,8 @@ class UserServiceTest {
     @DisplayName("AccessToken 쿠키로 사용자 정보 가져오기")
     void getUserInfoByCookie() {
         // given
-        User user = buildUserEntity("userEmail", "password");
+        User user = User.createUser(1L);
+        UserDetail userDetail = UserDetail.buildUserDetail(user);
 
         doReturn("accessToken").when(jwtTokenProvider).getUserPk(any(String.class));
         doReturn(Optional.of(user)).when(userRepository).findUserByEmail(any(String.class));
@@ -207,19 +216,21 @@ class UserServiceTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(((UserResponse) result.getData()).getEmail()).isEqualTo("userEmail");
+        assertThat(((UserResponse) result.getData()).getEmail()).isEqualTo("email");
     }
 
     @Test
     @DisplayName("사용자 이름이나 닉네임으로 사용자 탐색")
     void searchUserByNameAndNickNameTest() throws AccountException {
         // given
-        User user = buildUserEntity("userEmail", "password");
-        List<User> userList = Arrays.asList(user , user , user);
+        User user = User.createUser(1L);
+        UserDetail userDetail = UserDetail.buildUserDetail(user);
+
+        List<User> userList = Arrays.asList(user, user, user);
         doReturn(userList).when(userRepository).findAllUsersByNameAndNickName(any(String.class));
 
         // when
-        MessageResponse result = userService.findAllUsersBySearchWord("name" , "token");
+        MessageResponse result = userService.findAllUsersBySearchWord("name", "token");
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
@@ -241,7 +252,7 @@ class UserServiceTest {
     void modifyUserPassword_success() throws AccountException {
         // given
         String accessToken = "accessToken";
-        User user = buildUserEntity("userEmail", "password");
+        User user = User.createUser("userEmail");
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(accessToken);
         doReturn(Optional.of(user)).when(userRepository).findUserByEmail(user.getEmail());
 
@@ -253,24 +264,6 @@ class UserServiceTest {
 
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(bCryptPasswordEncoder.matches("change_password" , newPassword)).isEqualTo(true);
-    }
-
-    public User buildOauthUserEntity() {
-        return User.builder()
-                .id(1L)
-                .email("userEmail")
-                .type(UserType.OAUTH_USER)
-                .password("password")
-                .build();
-    }
-
-    public User buildUserEntity(String email, String password) {
-        return User.builder()
-                .id(1L)
-                .email(email)
-                .type(UserType.GENERAL_USER)
-                .password(password)
-                .build();
     }
 
 }

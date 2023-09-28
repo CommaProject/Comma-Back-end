@@ -17,7 +17,7 @@ public class FavoriteArtistResponse {
 
     private FavoriteArtistResponse(FavoriteArtist favoriteArtist) {
         this.favoriteArtistId = favoriteArtist.getId();
-        this.artistResponse = ArtistResponse.createArtistResponse(favoriteArtist.getArtist());
+        this.artistResponse = ArtistResponse.of(favoriteArtist.getArtist());
     }
 
     public static FavoriteArtistResponse of(FavoriteArtist favoriteArtist) {

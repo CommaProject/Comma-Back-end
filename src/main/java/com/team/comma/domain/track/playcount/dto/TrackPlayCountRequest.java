@@ -1,4 +1,4 @@
-package com.team.comma.domain.favorite.track.dto;
+package com.team.comma.domain.track.playcount.dto;
 
 import lombok.*;
 
@@ -6,12 +6,12 @@ import lombok.*;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class FavoriteTrackRequest {
+public class TrackPlayCountRequest {
 
     private String spotifyTrackId;
 
-    public static FavoriteTrackRequest buildFavoriteTrackRequest() {
-        return FavoriteTrackRequest.builder()
+    public static TrackPlayCountRequest buildTrackPlayCountRequest() {
+        return TrackPlayCountRequest.builder()
                 .spotifyTrackId("spotifyTrackId")
                 .build();
     }

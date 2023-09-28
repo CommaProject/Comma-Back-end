@@ -21,7 +21,7 @@ public class ArtistService {
 
     public Artist saveArtist(final String spotifyArtistId) {
         return artistRepository.save(
-                Artist.createArtistWithSpotifyArtist(searchService.getArtistByArtistId(spotifyArtistId)));
+                Artist.createArtist(searchService.getArtistByArtistId(spotifyArtistId)));
     }
 
 }

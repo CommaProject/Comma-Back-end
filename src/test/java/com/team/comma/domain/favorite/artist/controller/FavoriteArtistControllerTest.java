@@ -330,7 +330,7 @@ public class FavoriteArtistControllerTest {
         // given
         final String api = "/favorite/artist";
         User user = buildUser();
-        Artist artist = Artist.createArtist("spotifyId", "artistName", "artistImageUrl");
+        Artist artist = Artist.buildArtist();
         FavoriteArtist favoriteArtist = FavoriteArtist.buildFavoriteArtist(user, artist);
         FavoriteArtistResponse favoriteArtistResponse = FavoriteArtistResponse.of(favoriteArtist);
 

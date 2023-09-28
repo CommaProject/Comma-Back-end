@@ -61,7 +61,7 @@ class PlaylistServiceTest {
         Track track = Track.builder().build();
         doReturn(track).when(trackService).findTrackOrSave(spotifyTrackId);
 
-        User user = User.buildUser("userEmail");
+        User user = User.createUser();
         doReturn(Optional.of(user)).when(userRepository).findUserByEmail(any());
 
         // when
@@ -75,7 +75,7 @@ class PlaylistServiceTest {
     @Test
     public void 플레이리스트_조회_성공() throws AccountException {
         // given
-        final User user = User.buildUser("userEmail");
+        final User user = User.createUser();
         final Optional<User> optionalUser = Optional.of(user);
 
         final TrackArtist trackArtist = buildTrackArtist(buildTrack(), buildArtist());
@@ -225,7 +225,7 @@ class PlaylistServiceTest {
                 .alarmDays(List.of(1, 2, 3))
                 .build();
 
-        User user = User.buildUser(userEmail);
+        User user = User.createUser();
         Playlist playlist = Playlist.buildPlaylist(user);
         doReturn(Optional.of(playlist)).when(playlistRepository).findById(anyLong());
 
@@ -245,7 +245,7 @@ class PlaylistServiceTest {
                 .alarmStartTime(LocalTime.now())
                 .build();
 
-        User user = User.buildUser("userEmail");
+        User user = User.createUser();
         doReturn(Optional.of(Playlist.buildPlaylist(user)))
                 .when(playlistRepository).findById(playlistRequest.getPlaylistId());
 

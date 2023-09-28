@@ -53,49 +53,59 @@ public class InitData {
     public void init() {
         User user1 = User.builder().email("testEmail").password(bCryptPasswordEncoder.encode("password")).role(UserRole.USER).delFlag(false).type(UserType.GENERAL_USER).joinDate(Date.valueOf(LocalDate.of(2023 , 8 , 21))).build();
         User user2 = User.builder().email("toUserEmail").password(bCryptPasswordEncoder.encode("password")).role(UserRole.USER).delFlag(false).type(UserType.GENERAL_USER).joinDate(Date.valueOf(LocalDate.of(2023 , 8 , 25))).build();
-
         UserDetail userDetail1 = UserDetail.builder().name("name").nickname("nickname").profileImageUrl("no profile image").popupAlertFlag(true).favoritePublicFlag(true).calenderPublicFlag(true).allPublicFlag(true).user(user1).build();
         UserDetail userDetail2 = UserDetail.builder().name("name2").nickname("nickname2").profileImageUrl("no profile image").popupAlertFlag(true).favoritePublicFlag(true).calenderPublicFlag(true).allPublicFlag(true).user(user2).build();
         user1.setUserDetail(userDetail1);
         user2.setUserDetail(userDetail2);
-
         userRepository.save(user1);
         userRepository.save(user2);
 
-        Track track1 = Track.builder().id(1L).trackTitle("test track").durationTimeMs(210000).recommendCount(0L).albumImageUrl("https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228").spotifyTrackId("id123").spotifyTrackHref("href").build();
-        Track track2 = Track.builder().id(2L).trackTitle("test track2").durationTimeMs(210000).recommendCount(0L).albumImageUrl("https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228").spotifyTrackId("id1234").spotifyTrackHref("href").build();
+        Artist iu = Artist.builder().spotifyArtistId("3HqSLMAZ3g3d5poNaI7GOU").artistName("IU").artistImageUrl("https://i.scdn.co/image/ab6761610000e5eb006ff3c0136a71bfb9928d34").build();
+        artistRepository.save(iu);
 
-        TrackPlayCount trackPlayCount1 = TrackPlayCount.builder().playCount(1).track(track1).user(user1).build();
+        Track lilac = Track.builder().id(1L).trackTitle("LILAC").durationTimeMs(214253).recommendCount(0L).albumImageUrl("https://i.scdn.co/image/ab67616d0000b2734ed058b71650a6ca2c04adff").spotifyTrackId("5xrtzzzikpG3BLbo4q1Yul").spotifyTrackHref("https://api.spotify.com/v1/tracks/5xrtzzzikpG3BLbo4q1Yul").build();
+        Track celebrity = Track.builder().id(2L).trackTitle("Celebrity").durationTimeMs(195546).recommendCount(0L).albumImageUrl("https://i.scdn.co/image/ab67616d0000b2734ed058b71650a6ca2c04adff").spotifyTrackId("5nCwjUUsmBuNZKn9Xu10Os").spotifyTrackHref("https://api.spotify.com/v1/tracks/5nCwjUUsmBuNZKn9Xu10Os").build();
+        trackRepository.save(lilac);
+        trackRepository.save(celebrity);
 
-        Artist artist = Artist.builder().spotifyArtistId("artistId").artistName("artistName").build();
-        TrackArtist trackArtist = TrackArtist.builder().track(track1).artist(artist).build();
+        TrackArtist lilacIU = TrackArtist.builder().track(lilac).artist(iu).build();
+        TrackArtist celebrityIU = TrackArtist.builder().track(celebrity).artist(iu).build();
+        trackArtistRepository.save(lilacIU);
+        trackArtistRepository.save(celebrityIU);
 
-        Playlist playlist1 = Playlist.builder().playlistTitle("test playlist").alarmStartTime(LocalTime.of(12 , 00)).alarmFlag(true).delFlag(false).user(user1).build();
+        TrackPlayCount lilacCount1 = TrackPlayCount.builder().track(lilac).user(user1).build();
+        TrackPlayCount lilacCount2 = TrackPlayCount.builder().track(lilac).user(user1).build();
+        TrackPlayCount lilacCount3 = TrackPlayCount.builder().track(lilac).user(user1).build();
+        TrackPlayCount celebrityCount1 = TrackPlayCount.builder().track(celebrity).user(user1).build();
+        TrackPlayCount celebrityCount2 = TrackPlayCount.builder().track(celebrity).user(user1).build();
+        trackPlayCountRepository.save(lilacCount1);
+        trackPlayCountRepository.save(lilacCount2);
+        trackPlayCountRepository.save(lilacCount3);
+        trackPlayCountRepository.save(celebrityCount1);
+        trackPlayCountRepository.save(celebrityCount2);
+
+        Playlist playlist1 = Playlist.builder().playlistTitle("test playlist1").alarmStartTime(LocalTime.of(12 , 00)).alarmFlag(true).delFlag(false).user(user1).build();
         Playlist playlist2 = Playlist.builder().playlistTitle("test playlist2").alarmStartTime(LocalTime.of(13 , 00)).alarmFlag(true).delFlag(false).user(user1).build();
-
-        PlaylistTrack playlistTrack1 = PlaylistTrack.builder().playSequence(1).trackAlarmFlag(true).playlist(playlist1).track(track1).build();
-        playlist1.getPlaylistTrackList().add(playlistTrack1);
-        PlaylistTrack playlistTrack2 = PlaylistTrack.builder().playSequence(1).trackAlarmFlag(true).playlist(playlist2).track(track1).build();
-        playlist2.getPlaylistTrackList().add(playlistTrack2);
-        PlaylistTrack playlistTrack3 = PlaylistTrack.builder().playSequence(1).trackAlarmFlag(true).playlist(playlist2).track(track2).build();
-        playlist2.getPlaylistTrackList().add(playlistTrack3);
+        PlaylistTrack playlist1_Track1 = PlaylistTrack.builder().playSequence(1).trackAlarmFlag(true).playlist(playlist1).track(lilac).build();
+        playlist1.getPlaylistTrackList().add(playlist1_Track1);
+        PlaylistTrack playlist1_Track2 = PlaylistTrack.builder().playSequence(1).trackAlarmFlag(true).playlist(playlist1).track(celebrity).build();
+        playlist2.getPlaylistTrackList().add(playlist1_Track2);
+        PlaylistTrack playlist2_Track1 = PlaylistTrack.builder().playSequence(1).trackAlarmFlag(true).playlist(playlist2).track(lilac).build();
+        playlist2.getPlaylistTrackList().add(playlist2_Track1);
+        playlistRepository.save(playlist1);
+        playlistRepository.save(playlist2);
 
         Archive archive1 = Archive.builder().comment("archive1").publicFlag(false).createDate(LocalDateTime.of(2023 , 8 , 28 , 21 , 0 , 0)).user(user1).playlist(playlist1).build();
         Archive archive2 = Archive.builder().comment("archive2").publicFlag(false).createDate(LocalDateTime.of(2023 , 8 , 29 , 21 , 0 , 0)).user(user1).playlist(playlist1).build();
-
-        FavoriteTrack favoriteTrack = FavoriteTrack.builder().user(user1).track(track1).build();
-        FavoriteArtist favoriteArtist = FavoriteArtist.builder().artist(artist).user(user1).build();
-
-        artistRepository.save(artist);
-        trackRepository.save(track1);
-        trackRepository.save(track2);
-        trackArtistRepository.save(trackArtist);
-        trackPlayCountRepository.save(trackPlayCount1);
-        playlistRepository.save(playlist1);
-        playlistRepository.save(playlist2);
         archiveRepository.save(archive1);
         archiveRepository.save(archive2);
-        favoriteTrackRepository.save(favoriteTrack);
+
+        FavoriteTrack favoriteTrack1 = FavoriteTrack.builder().user(user1).track(lilac).build();
+        FavoriteTrack favoriteTrack2 = FavoriteTrack.builder().user(user1).track(celebrity).build();
+        favoriteTrackRepository.save(favoriteTrack1);
+        favoriteTrackRepository.save(favoriteTrack2);
+
+        FavoriteArtist favoriteArtist = FavoriteArtist.builder().user(user1).artist(iu).build();
         favoriteArtistRepository.save(favoriteArtist);
     }
 

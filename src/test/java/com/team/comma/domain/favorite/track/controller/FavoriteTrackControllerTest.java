@@ -173,12 +173,13 @@ public class FavoriteTrackControllerTest {
         // given
         final String url = "/favorite/track";
 
-        User user = buildUser();
-        Track track = buildTrack("track title", "spotifyId");
-        FavoriteTrack favoriteTrack = buildFavoriteTrackWithTrackAndUser(track, user);
-        ArtistResponse trackArtist = buildArtist("artist");
+        User user = User.createUser();
+        Track track = Track.buildTrack();
+        Artist artist = Artist.buildArtist();
+        FavoriteTrack favoriteTrack = FavoriteTrack.buildFavoriteTrack(user, track);
 
-        TrackResponse trackResponse = buildTrackResponse("track title", "spotifyId");
+        ArtistResponse trackArtist = ArtistResponse.of(artist);
+        TrackResponse trackResponse = TrackResponse.of(track);
         TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , trackArtist);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
@@ -211,9 +212,9 @@ public class FavoriteTrackControllerTest {
                                 fieldWithPath("data.[].trackArtistResponses[].track.albumImageUrl").description("트랙 엘범 이미지 URL"),
                                 fieldWithPath("data.[].trackArtistResponses[].track.spotifyTrackId").description("트랙 스포티파이 Id"),
                                 fieldWithPath("data.[].trackArtistResponses[].track.spotifyTrackHref").description("트랙 스포티파이 주소"),
-                                fieldWithPath("data.[].trackArtistResponses[].artists.spotifyArtistId").description("트랙 아티스트 Id"),
-                                fieldWithPath("data.[].trackArtistResponses[].artists.artistName").description("트랙 아티스트 명"),
-                                fieldWithPath("data.[].trackArtistResponses[].artists.artistImageUrl").description("아티스트 이미지 URL")
+                                fieldWithPath("data.[].trackArtistResponses[].artist.spotifyArtistId").description("트랙 아티스트 Id"),
+                                fieldWithPath("data.[].trackArtistResponses[].artist.artistName").description("트랙 아티스트 명"),
+                                fieldWithPath("data.[].trackArtistResponses[].artist.artistImageUrl").description("아티스트 이미지 URL")
                         )
                 )
         );
@@ -262,60 +263,6 @@ public class FavoriteTrackControllerTest {
 
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-    private FavoriteTrack buildFavoriteTrackWithTrackAndUser(Track track, User user){
-        return FavoriteTrack.builder()
-                .id(1L)
-                .track(track)
-                .user(user)
-                .build();
-    }
-
-    private TrackResponse buildTrackResponse(String title, String spotifyId) {
-        return TrackResponse.builder()
-                .id(1L)
-                .trackTitle(title)
-                .recommendCount(0L)
-                .albumImageUrl("url")
-                .spotifyTrackHref("spotifyTrackHref")
-                .spotifyTrackId(spotifyId)
-                .build();
-    }
-
-    private Track buildTrack(String title, String spotifyId) {
-        return Track.builder()
-                .id(1L)
-                .trackTitle(title)
-                .recommendCount(0L)
-                .albumImageUrl("url")
-                .spotifyTrackHref("spotifyTrackHref")
-                .spotifyTrackId(spotifyId)
-                .build();
-    }
-
-    public ArtistResponse buildArtist(String artist) {
-        return ArtistResponse.builder()
-                .spotifyArtistId("spotifyArtistId")
-                .artistName(artist)
-                .build();
-    }
-
-    public TrackArtist buildTrackArtist(Track track , Artist artist) {
-        return TrackArtist.builder()
-                .id(1L)
-                .track(track)
-                .artist(artist)
-                .build();
-    }
-
-    private User buildUser() {
-        return User.builder()
-                .id(1L)
-                .email("email")
-                .password("password")
-                .role(UserRole.USER)
-                .build();
     }
 
 }

@@ -175,8 +175,8 @@ public class FollowingRepositoryTest {
     @Test
     public void 팔로잉_리스트_조회() {
         // given
-        User user = User.buildUser("userEmail");
-        User targetUser = User.buildUser("targetUserEmail");
+        User user = User.createUser("userEmail");
+        User targetUser = User.createUser("targetUserEmail");
         userRepository.save(user);
         userRepository.save(targetUser);
 
@@ -201,8 +201,8 @@ public class FollowingRepositoryTest {
     @Test
     public void 팔로워_리스트_조회() {
         // given
-        User user = User.buildUser("userEmail");
-        User targetUser = User.buildUser("targetUserEmail");
+        User user = User.createUser("userEmail");
+        User targetUser = User.createUser("targetUserEmail");
         userRepository.save(user);
         userRepository.save(targetUser);
 

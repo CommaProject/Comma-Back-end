@@ -8,7 +8,5 @@ import java.util.List;
 
 public interface FavoriteTrackRepositoryCustom {
 
-    List<TrackArtistResponse> findFavoriteTrackByEmail(String userEmail);
-
     List<FavoriteTrackResponse> findAllFavoriteTrackByUser(User user);
 }
