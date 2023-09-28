@@ -80,7 +80,7 @@ public class PlayCountControllerTest {
     public void createTrackPlay_Success() throws Exception {
         // given
         final String url = "/track/play-count";
-        TrackPlayCountRequest request = TrackPlayCountRequest.of();
+        TrackPlayCountRequest request = TrackPlayCountRequest.buildTrackPlayCountRequest();
         doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(playCountService).createTrackPlay(any(String.class) , any(String.class));
 
         // when
