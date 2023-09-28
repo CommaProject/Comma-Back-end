@@ -180,7 +180,7 @@ public class FavoriteTrackControllerTest {
 
         ArtistResponse trackArtist = ArtistResponse.of(artist);
         TrackResponse trackResponse = TrackResponse.of(track);
-        TrackArtistResponse trackArtistResponse = TrackArtistResponse.buildTrackArtistResponse(trackResponse , trackArtist);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse , trackArtist);
         FavoriteTrackResponse favoriteTrackResponse = FavoriteTrackResponse.of(favoriteTrack, List.of(trackArtistResponse));
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS, List.of(favoriteTrackResponse))).when(favoriteTrackService).findAllFavoriteTrack("accessToken");

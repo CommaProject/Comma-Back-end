@@ -25,10 +25,4 @@ public class TrackArtistResponse {
                 .build();
     }
 
-    public static TrackArtistResponse buildTrackArtistResponse(TrackResponse track, ArtistResponse artist) {
-        return TrackArtistResponse.builder()
-                .track(track)
-                .artist(artist)
-                .build();
-    }
 }
