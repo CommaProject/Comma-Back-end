@@ -1,7 +1,7 @@
 package com.team.comma.global.security.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.jwt.exception.TokenForgeryException;
 import com.team.comma.global.jwt.service.JwtService;
 import jakarta.servlet.http.Cookie;
@@ -29,7 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
+import static com.team.comma.global.constant.ResponseCodeEnum.*;
 import static org.apache.http.cookie.SM.SET_COOKIE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

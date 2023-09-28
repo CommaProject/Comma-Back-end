@@ -3,7 +3,7 @@ package com.team.comma.domain.user.following.controller;
 import com.google.gson.Gson;
 import com.team.comma.domain.user.following.constant.FollowingType;
 import com.team.comma.domain.user.detail.domain.UserDetail;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.domain.user.following.domain.Following;
 import com.team.comma.domain.user.following.dto.FollowingRequest;
 import com.team.comma.domain.user.following.dto.FollowingResponse;
@@ -39,8 +39,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.team.comma.domain.user.following.constant.FollowingType.FOLLOWING;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.SIMPLE_REQUEST_FAILURE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -452,8 +452,10 @@ public class FollowingControllerTest {
                                 fieldWithPath("message").description("응답 메세지"),
                                 fieldWithPath("data").description("응답 데이터"),
                                 fieldWithPath("data.[].followingId").description("팔로우 관계 ID"),
-                                fieldWithPath("data.[].userId").description("팔로우 한 사용자 ID"),
-                                fieldWithPath("data.[].userNickname").description("팔로우 대상 사용자 닉네임")
+                                fieldWithPath("data.[].userId").description("사용자 ID"),
+                                fieldWithPath("data.[].userEmail").description("사용자 이메일"),
+                                fieldWithPath("data.[].userNickname").description("사용자 닉네임"),
+                                fieldWithPath("data.[].followForFollow").description("맞팔 여부(0 = 맞팔 아님, 1이상 숫자 = 맞팔 Id")
                         )
                 )
         );

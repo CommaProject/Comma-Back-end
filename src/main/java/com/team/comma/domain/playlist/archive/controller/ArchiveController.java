@@ -2,7 +2,7 @@ package com.team.comma.domain.playlist.archive.controller;
 
 import com.team.comma.domain.playlist.archive.dto.ArchiveRequest;
 import com.team.comma.domain.playlist.archive.service.ArchiveService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

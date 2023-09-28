@@ -6,24 +6,20 @@ import com.team.comma.domain.user.detail.repository.UserDetailRepository;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.service.UserService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
-import com.team.comma.global.s3.service.FileUploadService;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockMultipartFile;
 
 import javax.security.auth.login.AccountException;
 
-import java.io.IOException;
 import java.util.Optional;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.NOT_FOUNT_USER;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;

@@ -1,10 +1,9 @@
 package com.team.comma.domain.playlist.recommend.controller;
 
-import com.team.comma.domain.playlist.recommend.dto.RecommendListRequest;
+import com.team.comma.domain.playlist.recommend.constant.RecommendListType;
 import com.team.comma.domain.playlist.recommend.dto.RecommendRequest;
 import com.team.comma.domain.playlist.recommend.service.RecommendService;
-import com.team.comma.domain.track.track.service.TrackService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,29 +18,30 @@ public class RecommendController {
     private final RecommendService recommendService;
 
     @PostMapping
-    public ResponseEntity<MessageResponse> recommendPlaylist(
+    public ResponseEntity<MessageResponse> createPlaylistRecommend(
             @CookieValue final String accessToken,
             @RequestBody final RecommendRequest recommendRequest
             ) throws AccountException {
         return ResponseEntity.ok().body(
-                recommendService.addRecommend(accessToken, recommendRequest));
+                recommendService.createPlaylistRecommend(accessToken, recommendRequest));
     }
 
-    @GetMapping
-    public ResponseEntity<MessageResponse> recommendList(
+    @GetMapping("/type/{type}")
+    public ResponseEntity<MessageResponse> findAllPlaylistRecommends(
             @CookieValue final String accessToken,
-            @RequestBody final RecommendListRequest recommendListRequest
+            @PathVariable final RecommendListType type
     ) throws AccountException {
         return ResponseEntity.ok().body(
-                recommendService.getRecommendList(accessToken, recommendListRequest));
+                recommendService.findAllPlaylistRecommends(accessToken, type));
     }
 
-    @GetMapping("/{recommendId}")
-    public ResponseEntity<MessageResponse> recommendDetail(
-            @PathVariable final long recommendId
+    @GetMapping("/{id}")
+    public ResponseEntity<MessageResponse> findPlaylistRecommend(
+            @CookieValue final String accessToken,
+            @PathVariable final long id
     ) {
         return ResponseEntity.ok().body(
-                recommendService.getRecommend(recommendId));
+                recommendService.findRecommend(accessToken, id));
     }
 
 }

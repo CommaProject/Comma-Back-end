@@ -3,7 +3,7 @@ package com.team.comma.domain.user.following.controller;
 import com.team.comma.domain.user.following.constant.FollowingType;
 import com.team.comma.domain.user.following.dto.FollowingRequest;
 import com.team.comma.domain.user.following.service.FollowingService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

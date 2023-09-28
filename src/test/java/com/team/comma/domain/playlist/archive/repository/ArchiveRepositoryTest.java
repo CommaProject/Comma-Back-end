@@ -66,8 +66,8 @@ public class ArchiveRepositoryTest {
     public void findAllArchiveByDate() {
         // given
         User user = userRepository.save(User.createUser());
-        Track track = trackRepository.save(buildTrack());
-        Playlist playlist = playlistRepository.save(Playlist.buildPlaylist(user));
+        Track track = trackRepository.save(Track.buildTrack());
+        Playlist playlist = playlistRepository.save(Playlist.createPlaylist(user));
         PlaylistTrack playlistTrack = playlistTrackRepository.save(PlaylistTrack.builder().playlist(playlist).track(track).build());
         Archive archive = archiveRepository.save(Archive.buildArchive(user, "content", playlist));
 
@@ -84,12 +84,4 @@ public class ArchiveRepositoryTest {
         assertThat(result.size()).isEqualTo(1);
     }
 
-    public Track buildTrack(){
-        return Track.builder()
-                .trackTitle("title")
-                .albumImageUrl("url")
-                .spotifyTrackHref("href")
-                .spotifyTrackId("id123")
-                .build();
-    }
 }

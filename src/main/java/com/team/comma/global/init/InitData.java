@@ -1,4 +1,4 @@
-package com.team.comma.global.common.init;
+package com.team.comma.global.init;
 
 import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.artist.repository.ArtistRepository;

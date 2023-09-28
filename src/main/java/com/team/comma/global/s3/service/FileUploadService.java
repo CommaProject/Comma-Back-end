@@ -1,11 +1,10 @@
 package com.team.comma.global.s3.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.service.UserService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import com.team.comma.global.s3.exception.S3Exception;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.UUID;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
 @RequiredArgsConstructor

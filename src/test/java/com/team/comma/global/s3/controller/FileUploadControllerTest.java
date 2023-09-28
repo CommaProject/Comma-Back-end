@@ -1,7 +1,7 @@
 package com.team.comma.global.s3.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.gson.GsonUtil;
 import com.team.comma.global.s3.service.FileUploadService;
 import jakarta.servlet.http.Cookie;
@@ -24,7 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;

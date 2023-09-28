@@ -2,7 +2,7 @@ package com.team.comma.domain.user.history.controller;
 
 import com.team.comma.domain.user.history.dto.HistoryRequest;
 import com.team.comma.domain.user.history.service.HistoryService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

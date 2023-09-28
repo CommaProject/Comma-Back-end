@@ -1,4 +1,4 @@
-package com.team.comma.global.common.constant;
+package com.team.comma.global.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

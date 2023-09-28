@@ -1,19 +1,17 @@
 package com.team.comma.domain.playlist.track.service;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 import com.team.comma.domain.playlist.playlist.service.PlaylistService;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
 import com.team.comma.domain.playlist.track.exception.PlaylistTrackException;
 import com.team.comma.domain.playlist.track.repository.PlaylistTrackRepository;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
 import com.team.comma.domain.track.track.service.TrackService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.track.track.domain.Track;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;

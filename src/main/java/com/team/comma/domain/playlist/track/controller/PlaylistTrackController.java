@@ -4,7 +4,7 @@ import com.team.comma.domain.playlist.track.dto.PlaylistTrackMultipleRequest;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackSingleRequest;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
 import com.team.comma.domain.playlist.track.service.PlaylistTrackService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

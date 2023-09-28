@@ -3,24 +3,20 @@ package com.team.comma.domain.favorite.artist.service;
 import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.artist.service.ArtistService;
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
-import com.team.comma.domain.favorite.artist.dto.FavoriteArtistRequest;
-import com.team.comma.domain.favorite.artist.dto.FavoriteArtistResponse;
-import com.team.comma.domain.favorite.artist.exception.FavoriteArtistException;
 import com.team.comma.domain.favorite.artist.repository.FavoriteArtistRepository;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountException;
-import java.util.List;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.NOT_FOUNT_USER;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
 @RequiredArgsConstructor

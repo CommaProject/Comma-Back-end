@@ -1,6 +1,6 @@
 package com.team.comma.domain.track.track.service;
 
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.favorite.track.repository.FavoriteTrackRepository;
 import com.team.comma.domain.track.track.repository.TrackRepository;
@@ -16,7 +16,7 @@ import javax.security.auth.login.AccountException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;

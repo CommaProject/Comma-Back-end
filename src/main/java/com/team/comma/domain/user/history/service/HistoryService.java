@@ -6,7 +6,7 @@ import com.team.comma.domain.user.history.repository.HistoryRepository;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.NOT_FOUNT_USER;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
 @RequiredArgsConstructor

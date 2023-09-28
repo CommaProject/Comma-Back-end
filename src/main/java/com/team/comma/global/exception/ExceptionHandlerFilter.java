@@ -1,7 +1,7 @@
 package com.team.comma.global.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.jwt.exception.RequireRefreshToken;
 import com.team.comma.global.jwt.exception.TokenForgeryException;
 import jakarta.servlet.FilterChain;
@@ -16,7 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.AUTHORIZATION_ERROR;
+import static com.team.comma.global.constant.ResponseCodeEnum.AUTHORIZATION_ERROR;
 import static com.team.comma.global.jwt.support.CreationCookie.deleteAccessTokenCookie;
 import static com.team.comma.global.jwt.support.CreationCookie.deleteCookie;
 

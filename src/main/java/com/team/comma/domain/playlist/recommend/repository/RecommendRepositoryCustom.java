@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface RecommendRepositoryCustom {
 
-    List<RecommendResponse> getRecommendsByToUser(User user);
+    List<RecommendResponse> findAllRecommendsByToUser(User user);
 
-    List<RecommendResponse> getRecommendsByFromUser(User user);
+    List<RecommendResponse> findAllRecommendsByFromUser(User user);
 
-    List<RecommendResponse> getRecommendsToAnonymous();
-
-    long getRecommendCountByToUserAndPlaylist(Recommend reco);
+    List<RecommendResponse> findAllRecommendsByToAnonymous();
 
     long increasePlayCount(long recommendId);
+
+
 }

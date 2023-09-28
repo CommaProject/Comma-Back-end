@@ -1,7 +1,7 @@
 package com.team.comma.spotify.controller;
 
 import com.google.gson.Gson;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.spotify.dto.SearchArtistResponse;
 import com.team.comma.spotify.service.SearchService;
 import com.team.comma.spotify.dto.SearchTrackResponse;
@@ -30,7 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;

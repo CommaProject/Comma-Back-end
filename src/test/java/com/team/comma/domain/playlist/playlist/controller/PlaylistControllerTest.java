@@ -1,6 +1,6 @@
 package com.team.comma.domain.playlist.playlist.controller;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
+import static com.team.comma.global.constant.ResponseCodeEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -26,7 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.domain.track.track.domain.Track;
+import com.team.comma.domain.user.user.domain.User;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistRequest;
 import com.team.comma.domain.playlist.playlist.dto.PlaylistResponse;
@@ -39,7 +41,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -139,11 +140,15 @@ class PlaylistControllerTest {
         // given
         final String url = "/playlist";
 
-        final List<PlaylistResponse> playlist = Arrays.asList(
-                PlaylistResponse.of(buildPlaylist(), "representative album image url", 21000L),
-                PlaylistResponse.of(buildPlaylist(), "representative album image url", 21000L));
+        final User user = User.createUser();
+        final Track track = Track.buildTrack();
+        Playlist playlist = Playlist.createPlaylist(1L, user);
+        playlist.addPlaylistTrack(track);
+        final List<PlaylistResponse> playlists = Arrays.asList(
+                PlaylistResponse.of(playlist),
+                PlaylistResponse.of(playlist));
 
-        final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlist);
+        final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlists);
 
         doReturn(message).when(playlistService).findAllPlaylists("accessToken");
 
@@ -189,9 +194,13 @@ class PlaylistControllerTest {
         // given
         final String url = "/playlist/{playlistId}";
 
-        final PlaylistResponse playlist = PlaylistResponse.of(buildPlaylist(), "representative album image url", 21000L);
+        final User user = User.createUser();
+        final Track track = Track.buildTrack();
+        Playlist playlist = Playlist.createPlaylist(1L, user);
+        playlist.addPlaylistTrack(track);
+        final PlaylistResponse playlists = PlaylistResponse.of(playlist);
 
-        final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlist);
+        final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, playlists);
 
         doReturn(message).when(playlistService).findPlaylist(30L);
 
@@ -575,12 +584,4 @@ class PlaylistControllerTest {
         assertThat(result.getMessage()).isEqualTo(PLAYLIST_NOT_FOUND.getMessage());
     }
 
-    private Playlist buildPlaylist() {
-        return Playlist.builder()
-            .id(123L)
-            .playlistTitle("test playlist")
-            .alarmFlag(true)
-            .alarmStartTime(LocalTime.now())
-            .build();
-    }
 }

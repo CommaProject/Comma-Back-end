@@ -2,11 +2,13 @@ package com.team.comma.domain.playlist.recommend.dto;
 
 import com.team.comma.domain.playlist.recommend.domain.Recommend;
 import com.team.comma.domain.user.user.domain.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
+@Builder
 public class RecommendResponse {
 
     private final long recommendId;
@@ -22,23 +24,18 @@ public class RecommendResponse {
     private final long trackCount;
     private final long playCount;
 
-    private RecommendResponse(Recommend recommend, User user, long trackCount) {
-        this.recommendId = recommend.getId();
-        this.comment = recommend.getComment();
-
-        this.userNickname = user.getUserDetail().getNickname();
-        this.userProfileImage = user.getUserDetail().getProfileImageUrl();
-
-        this.playlistId = recommend.getPlaylist().getId();
-        this.playlistTitle = recommend.getPlaylist().getPlaylistTitle();
-        this.repAlbumImageUrl = recommend.getPlaylist().getPlaylistTrackList().get(0).getTrack().getAlbumImageUrl();
-
-        this.trackCount = trackCount;
-        this.playCount = recommend.getPlayCount();
-    }
-
-    public static RecommendResponse of(Recommend recommend, User user, long trackCount) {
-        return new RecommendResponse(recommend, user, trackCount);
+    public static RecommendResponse of(Recommend recommend, User user) {
+        return RecommendResponse.builder()
+                .recommendId(recommend.getId())
+                .comment(recommend.getComment())
+                .userNickname(user.getUserDetail().getNickname())
+                .userProfileImage(user.getUserDetail().getProfileImageUrl())
+                .playlistId(recommend.getPlaylist().getId())
+                .playlistTitle(recommend.getPlaylist().getPlaylistTitle())
+                .repAlbumImageUrl(recommend.getPlaylist().getPlaylistTrackList().get(0).getTrack().getAlbumImageUrl())
+                .trackCount(recommend.getPlaylist().getPlaylistTrackList().size())
+                .playCount(recommend.getPlayCount())
+                .build();
     }
 
 }

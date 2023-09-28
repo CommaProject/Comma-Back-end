@@ -36,7 +36,7 @@ public class AlertDayRepositoryTest {
     void saveAll_Success() {
         // given
         User user = User.createUser();
-        Playlist playlist = Playlist.buildPlaylist(user);
+        Playlist playlist = Playlist.createPlaylist(user);
         List<AlertDay> alertDayList = List.of(
                 AlertDay.buildAlertDay(playlist, DayOfWeek.of(1)),
                 AlertDay.buildAlertDay(playlist, DayOfWeek.of(2)));
@@ -55,7 +55,7 @@ public class AlertDayRepositoryTest {
         User user = User.createUser("email", "password", UserType.GENERAL_USER);
         userRepository.save(user);
 
-        Playlist playlist = Playlist.buildPlaylist(user);
+        Playlist playlist = Playlist.createPlaylist(user);
         playlistRepository.save(playlist);
 
         List<AlertDay> alertDayList = List.of(
@@ -77,7 +77,7 @@ public class AlertDayRepositoryTest {
         User user = User.createUser("email", "password", UserType.GENERAL_USER);
         userRepository.save(user);
 
-        Playlist playlist = Playlist.buildPlaylist(user);
+        Playlist playlist = Playlist.createPlaylist(user);
         playlistRepository.save(playlist);
 
         List<AlertDay> alertDayList = List.of(

@@ -2,7 +2,7 @@ package com.team.comma.domain.user.history.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.user.user.exception.UserException;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.domain.user.history.dto.HistoryRequest;
 import com.team.comma.domain.user.history.dto.HistoryResponse;
 import com.team.comma.domain.user.history.service.HistoryService;
@@ -27,12 +27,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.security.auth.login.AccountException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
+import static com.team.comma.global.constant.ResponseCodeEnum.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;

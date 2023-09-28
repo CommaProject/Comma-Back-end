@@ -1,6 +1,6 @@
 package com.team.comma.global.s3.controller;
 
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.s3.service.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

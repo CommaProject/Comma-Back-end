@@ -1,6 +1,6 @@
-package com.team.comma.global.common.dto;
+package com.team.comma.global.message;
 
-import com.team.comma.global.common.constant.ResponseCodeEnum;
+import com.team.comma.global.constant.ResponseCodeEnum;
 import lombok.Getter;
 
 @Getter

@@ -1,7 +1,7 @@
 package com.team.comma.spotify.service;
 
 import com.neovisionaries.i18n.CountryCode;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.spotify.dto.SearchArtistResponse;
 import com.team.comma.spotify.support.SpotifyAuthorization;
 import com.team.comma.spotify.support.SpotifySearchCommand;
@@ -14,7 +14,6 @@ import se.michaelthelin.spotify.model_objects.specification.*;
 import se.michaelthelin.spotify.requests.data.albums.GetAlbumsTracksRequest;
 import se.michaelthelin.spotify.requests.data.artists.GetArtistRequest;
 import se.michaelthelin.spotify.requests.data.artists.GetArtistsAlbumsRequest;
-import se.michaelthelin.spotify.requests.data.artists.GetArtistsTopTracksRequest;
 import se.michaelthelin.spotify.requests.data.browse.miscellaneous.GetAvailableGenreSeedsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchArtistsRequest;
 import se.michaelthelin.spotify.requests.data.search.simplified.SearchTracksRequest;
@@ -24,7 +23,7 @@ import javax.security.auth.login.AccountException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static com.team.comma.spotify.dto.SearchTrackResponse.createTrackResponse;
 
 @Service
