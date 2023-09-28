@@ -27,7 +27,7 @@ public class UserResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy/MM/dd" , timezone = "Asia/Seoul")
     private Date joinDate;
 
-    public static UserResponse createUserResponse(User user) {
+    public static UserResponse of(User user) {
         return UserResponse.builder()
                 .userId(user.getId())
                 .email(user.getEmail())

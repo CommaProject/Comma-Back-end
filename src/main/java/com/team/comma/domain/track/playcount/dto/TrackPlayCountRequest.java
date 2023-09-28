@@ -10,7 +10,7 @@ public class TrackPlayCountRequest {
 
     private String spotifyTrackId;
 
-    public static TrackPlayCountRequest of() {
+    public static TrackPlayCountRequest buildTrackPlayCountRequest() {
         return TrackPlayCountRequest.builder()
                 .spotifyTrackId("spotifyTrackId")
                 .build();
