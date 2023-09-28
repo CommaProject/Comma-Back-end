@@ -47,7 +47,7 @@ include::{snippets}/spotify/saveRecommendFailure/response-fields.adoc[]
 
 include::{snippets}/spotify/selectRecommendList/http-request.adoc[]
 include::{snippets}/spotify/selectRecommendList/request-cookies.adoc[]
-include::{snippets}/spotify/selectRecommendList/request-fields.adoc[]
+include::{snippets}/spotify/selectRecommendList/path-parameters.adoc[]
 
 ===== Response
 
