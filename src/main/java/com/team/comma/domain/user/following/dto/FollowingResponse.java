@@ -15,6 +15,7 @@ public class FollowingResponse {
     private final long userId;
     private final String userEmail;
     private final String userNickname;
+    private final long followForFollow;
 
     public static FollowingResponse of(Following following, FollowingType type) {
         long userId;

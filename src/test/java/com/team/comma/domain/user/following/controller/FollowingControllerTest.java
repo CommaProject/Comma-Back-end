@@ -454,7 +454,8 @@ public class FollowingControllerTest {
                                 fieldWithPath("data.[].followingId").description("팔로우 관계 ID"),
                                 fieldWithPath("data.[].userId").description("사용자 ID"),
                                 fieldWithPath("data.[].userEmail").description("사용자 이메일"),
-                                fieldWithPath("data.[].userNickname").description("사용자 닉네임")
+                                fieldWithPath("data.[].userNickname").description("사용자 닉네임"),
+                                fieldWithPath("data.[].followForFollow").description("맞팔 여부(0 = 맞팔 아님, 1이상 숫자 = 맞팔 Id")
                         )
                 )
         );
