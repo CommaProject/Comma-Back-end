@@ -53,11 +53,13 @@ public class RecommendRepositoryTest {
     @Test
     void 친구에게_추천_저장() {
         // given
-        final User toUser = User.buildUser("toUserEmail");
-        final User fromUser = User.buildUser("fromUserEmail");
-        final Playlist playlist = Playlist.buildPlaylist(fromUser);
+        final User toUser = User.createUser("toUserEmail");
         userRepository.save(toUser);
+
+        final User fromUser = User.createUser("fromUserEmail");
         userRepository.save(fromUser);
+
+        final Playlist playlist = Playlist.buildPlaylist(fromUser);
         playlistRepository.save(playlist);
 
         final Recommend recommend = Recommend.buildRecommend(FOLLOWING, playlist, toUser);
@@ -72,8 +74,8 @@ public class RecommendRepositoryTest {
     @Test
     void 플레이리스트추천시_카운팅() {
         // given
-        final User toUser = User.buildUser("toUserEmail");
-        final User fromUser = User.buildUser("fromUserEmail");
+        final User toUser = User.createUser("toUserEmail");
+        final User fromUser = User.createUser("fromUserEmail");
         userRepository.save(toUser);
         userRepository.save(fromUser);
 
@@ -100,7 +102,7 @@ public class RecommendRepositoryTest {
     @Test
     void 익명에게_추천_저장() {
         // given
-        final User fromUser = userRepository.save(User.buildUser("fromUserEmail"));
+        final User fromUser = userRepository.save(User.createUser());
         final Playlist playlist = playlistRepository.save(Playlist.buildPlaylist(fromUser));
         final Recommend recommend = Recommend.buildRecommend(ANONYMOUS, playlist, null);
 
@@ -114,10 +116,10 @@ public class RecommendRepositoryTest {
     @Test
     void 친구에게_추천_중복_여부_체크() {
         // given
-        final User toUser = User.buildUser("toUserEmail");
+        final User toUser = User.createUser("toUserEmail");
         userRepository.save(toUser);
 
-        final User fromUser = User.buildUser("fromUserEmail");
+        final User fromUser = User.createUser("fromUserEmail");
         userRepository.save(fromUser);
 
         final Playlist playlist = Playlist.buildPlaylist(fromUser);
@@ -136,12 +138,12 @@ public class RecommendRepositoryTest {
     @Test
     void 추천_받은_리스트_조회() {
         // given
-        final User toUser = User.buildUser("toUserEmail");
+        final User toUser = User.createUser("toUserEmail");
         final UserDetail userDetail1 = UserDetail.buildUserDetail(toUser);
         userRepository.save(toUser);
         userDetailRepository.save(userDetail1);
 
-        final User fromUser = User.buildUser("fromUserEmail");
+        final User fromUser = User.createUser("fromUserEmail");
         final UserDetail userDetail2 = UserDetail.buildUserDetail(fromUser);
         userRepository.save(fromUser);
         userDetailRepository.save(userDetail2);
@@ -165,12 +167,12 @@ public class RecommendRepositoryTest {
     @Test
     void 추천_보낸_리스트_조회() {
         // given
-        final User toUser = User.buildUser("toUserEmail");
+        final User toUser = User.createUser("toUserEmail");
         final UserDetail userDetail1 = UserDetail.buildUserDetail(toUser);
         userRepository.save(toUser);
         userDetailRepository.save(userDetail1);
 
-        final User fromUser = User.buildUser("fromUserEmail");
+        final User fromUser = User.createUser("fromUserEmail");
         final UserDetail userDetail2 = UserDetail.buildUserDetail(fromUser);
         userRepository.save(fromUser);
         userDetailRepository.save(userDetail2);
@@ -194,8 +196,8 @@ public class RecommendRepositoryTest {
     @Test
     void 익명_추천_리스트_조회() {
         // given
-        final User toUser = User.buildUser("toUserEmail");
-        final User fromUser = User.buildUser("fromUserEmail");
+        final User toUser = User.createUser("toUserEmail");
+        final User fromUser = User.createUser("fromUserEmail");
         userRepository.save(toUser);
         userRepository.save(fromUser);
 
@@ -223,8 +225,8 @@ public class RecommendRepositoryTest {
     @Test
     void 추천_정보_id로_찾기() {
         // given
-        final User toUser = userRepository.save(User.buildUser("toUserEmail"));
-        final User fromUser = userRepository.save(User.buildUser("fromUserEmail"));
+        final User toUser = userRepository.save(User.createUser("toUserEmail"));
+        final User fromUser = userRepository.save(User.createUser("fromUserEmail"));
         final Playlist playlist = playlistRepository.save(Playlist.buildPlaylist(fromUser));
         final Recommend recommend = recommendRepository.save(Recommend.buildRecommend(FOLLOWING, playlist, toUser));
 
@@ -238,8 +240,8 @@ public class RecommendRepositoryTest {
     @Test
     void 추천_플레이리스트_재생횟수_증가() {
         // given
-        final User toUser = userRepository.save(User.buildUser("toUserEmail"));
-        final User fromUser = userRepository.save(User.buildUser("toFromEmail"));
+        final User toUser = userRepository.save(User.createUser("toUserEmail"));
+        final User fromUser = userRepository.save(User.createUser("fromUserEmail"));
         final Playlist playlist = playlistRepository.save(Playlist.buildPlaylist(fromUser));
         final Recommend recommend = recommendRepository.save(Recommend.buildRecommend(FOLLOWING, playlist, toUser));
 

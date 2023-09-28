@@ -2,6 +2,9 @@ package com.team.comma.domain.track.playcount.controller;
 
 import com.google.gson.Gson;
 import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.dto.ArtistResponse;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
+import com.team.comma.domain.track.playcount.dto.TrackPlayCountRequest;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.service.PlayCountService;
 import com.team.comma.domain.track.track.domain.Track;
@@ -18,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -44,8 +48,7 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.requestCo
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -74,15 +77,59 @@ public class PlayCountControllerTest {
     }
 
     @Test
+    public void createTrackPlay_Success() throws Exception {
+        // given
+        final String url = "/track/play-count";
+        TrackPlayCountRequest request = TrackPlayCountRequest.of();
+        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(playCountService).createTrackPlay(any(String.class) , any(String.class));
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.post(url)
+                        .content(gson.toJson(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .cookie(new Cookie("accessToken", "accessToken"))
+        );
+
+        // then
+        resultActions.andExpect(status().isCreated()).andDo(
+                document("play-count/create-success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestCookies(
+                                cookieWithName("accessToken").description("사용자 access token")
+                        ),
+                        requestFields(
+                                fieldWithPath("spotifyTrackId").description("스포티파이 트랙 ID")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("메세지"),
+                                fieldWithPath("data").description("데이터")
+                        )
+                )
+        );
+        final MessageResponse result = gson.fromJson(
+                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
+                MessageResponse.class);
+
+        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
+        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
+    }
+
+    @Test
     public void findMostListenedTrack_Success() throws Exception {
         // given
-        final String url = "/tracks";
-        List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
-        for(int i = 0; i < 2; i++) {
-            trackPlayCountResponses.add(buildTrackPlayCountResponse(buildTrackResponse()));
-        }
+        final String url = "/track/play-count";
 
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(playCountService).findMostListenedTrack(any(String.class));
+        Artist artist = Artist.buildArtist();
+        Track track = Track.buildTrack();
+        ArtistResponse artistResponse = ArtistResponse.of(artist);
+        TrackResponse trackResponse = TrackResponse.of(track);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse, artistResponse);
+        TrackPlayCountResponse trackPlayCount = TrackPlayCountResponse.of(100, trackArtistResponse);
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , List.of(trackPlayCount))).when(playCountService).findMostListenedTrack(any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -102,13 +149,16 @@ public class PlayCountControllerTest {
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("메세지"),
                                 fieldWithPath("data").description("데이터"),
-                                fieldWithPath("data.[].track.id").description("아이디"),
-                                fieldWithPath("data.[].track.trackTitle").description("트랙 타이틀"),
-                                fieldWithPath("data.[].track.durationTimeMs").description("재생 시간"),
-                                fieldWithPath("data.[].track.recommendCount").description("추천 횟수"),
-                                fieldWithPath("data.[].track.albumImageUrl").description("엘범 이미지 URL"),
-                                fieldWithPath("data.[].track.spotifyTrackId").description("스포티파이 트랙 ID"),
-                                fieldWithPath("data.[].track.spotifyTrackHref").description("스포티 파이 트랙 주소"),
+                                fieldWithPath("data.[].trackArtist.track.id").description("아이디"),
+                                fieldWithPath("data.[].trackArtist.track.trackTitle").description("트랙 타이틀"),
+                                fieldWithPath("data.[].trackArtist.track.durationTimeMs").description("재생 시간"),
+                                fieldWithPath("data.[].trackArtist.track.recommendCount").description("추천 횟수"),
+                                fieldWithPath("data.[].trackArtist.track.albumImageUrl").description("엘범 이미지 URL"),
+                                fieldWithPath("data.[].trackArtist.track.spotifyTrackId").description("스포티파이 트랙 ID"),
+                                fieldWithPath("data.[].trackArtist.track.spotifyTrackHref").description("스포티 파이 트랙 주소"),
+                                fieldWithPath("data.[].trackArtist.artist.spotifyArtistId").description("스포티 파이 트랙 주소"),
+                                fieldWithPath("data.[].trackArtist.artist.artistName").description("스포티 파이 트랙 주소"),
+                                fieldWithPath("data.[].trackArtist.artist.artistImageUrl").description("스포티 파이 트랙 주소"),
                                 fieldWithPath("data.[].playCount").description("재생 횟수")
                         )
                 )
@@ -124,13 +174,16 @@ public class PlayCountControllerTest {
     @Test
     public void findMostListenedTrackByFriend_Success() throws Exception {
         // given
-        final String url = "/tracks/friends";
-        List<TrackPlayCountResponse> trackPlayCountResponses = new ArrayList<>();
-        for(int i = 0; i < 2; i++) {
-            trackPlayCountResponses.add(buildTrackPlayCountResponse(buildTrackResponse()));
-        }
+        final String url = "/track/play-count/friends";
 
-        doReturn(MessageResponse.of(REQUEST_SUCCESS , trackPlayCountResponses)).when(playCountService).findMostListenedTrackByFriend(any(String.class));
+        Artist artist = Artist.buildArtist();
+        Track track = Track.buildTrack();
+        ArtistResponse artistResponse = ArtistResponse.of(artist);
+        TrackResponse trackResponse = TrackResponse.of(track);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse, artistResponse);
+        TrackPlayCountResponse trackPlayCount = TrackPlayCountResponse.of(100, trackArtistResponse);
+
+        doReturn(MessageResponse.of(REQUEST_SUCCESS , List.of(trackPlayCount))).when(playCountService).findMostListenedTrackByFriend(any(String.class));
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -150,13 +203,16 @@ public class PlayCountControllerTest {
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("메세지"),
                                 fieldWithPath("data").description("데이터"),
-                                fieldWithPath("data.[].track.id").description("아이디"),
-                                fieldWithPath("data.[].track.trackTitle").description("트랙 타이틀"),
-                                fieldWithPath("data.[].track.durationTimeMs").description("재생 시간"),
-                                fieldWithPath("data.[].track.recommendCount").description("추천 횟수"),
-                                fieldWithPath("data.[].track.albumImageUrl").description("엘범 이미지 URL"),
-                                fieldWithPath("data.[].track.spotifyTrackId").description("스포티파이 트랙 ID"),
-                                fieldWithPath("data.[].track.spotifyTrackHref").description("스포티 파이 트랙 주소"),
+                                fieldWithPath("data.[].trackArtist.track.id").description("아이디"),
+                                fieldWithPath("data.[].trackArtist.track.trackTitle").description("트랙 타이틀"),
+                                fieldWithPath("data.[].trackArtist.track.durationTimeMs").description("재생 시간"),
+                                fieldWithPath("data.[].trackArtist.track.recommendCount").description("추천 횟수"),
+                                fieldWithPath("data.[].trackArtist.track.albumImageUrl").description("엘범 이미지 URL"),
+                                fieldWithPath("data.[].trackArtist.track.spotifyTrackId").description("스포티파이 트랙 ID"),
+                                fieldWithPath("data.[].trackArtist.track.spotifyTrackHref").description("스포티 파이 트랙 주소"),
+                                fieldWithPath("data.[].trackArtist.artist.spotifyArtistId").description("스포티 파이 트랙 주소"),
+                                fieldWithPath("data.[].trackArtist.artist.artistName").description("스포티 파이 트랙 주소"),
+                                fieldWithPath("data.[].trackArtist.artist.artistImageUrl").description("스포티 파이 트랙 주소"),
                                 fieldWithPath("data.[].playCount").description("재생 횟수")
                         )
                 )
@@ -167,103 +223,6 @@ public class PlayCountControllerTest {
 
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-
-    @Test
-    public void modifyPlayCount_Success() throws Exception {
-        // given
-        final String url = "/tracks/play-count/{trackId}";
-        doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(playCountService).modifyPlayCount(any(String.class) , any(String.class));
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.patch(url , "trackId")
-                        .cookie(new Cookie("accessToken", "accessToken"))
-        );
-
-        // then
-        resultActions.andExpect(status().isOk()).andDo(
-                document("play-count/modify-success",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("trackId").description("스포티파이 트랙 ID")
-                        ),
-                        requestCookies(
-                                cookieWithName("accessToken").description("사용자 access token")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터")
-                        )
-                )
-        );
-        final MessageResponse result = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-    @Test
-    @DisplayName("playcount 증가 실패 _ 찾을 수 없는 트랙")
-    public void modifyPlayCount_Fail_TrackNotFound() throws Exception {
-        // given
-        final String url = "/tracks/play-count/{trackId}";
-        doThrow(new TrackException("트랙을 찾을 수 없습니다.")).when(playCountService).modifyPlayCount(any(String.class) , any(String.class));
-
-        // when
-        final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.patch(url , "trackId")
-                        .cookie(new Cookie("accessToken", "accessToken"))
-        );
-
-        // then
-        resultActions.andExpect(status().isBadRequest()).andDo(
-                document("play-count/modify-fail-track-not-found",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("trackId").description("스포티파이 트랙 ID")
-                        ),
-                        requestCookies(
-                                cookieWithName("accessToken").description("사용자 access token")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("메세지"),
-                                fieldWithPath("data").description("데이터")
-                        )
-                )
-        );
-        final MessageResponse result = gson.fromJson(
-                resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8),
-                MessageResponse.class);
-
-        assertThat(result.getCode()).isEqualTo(SIMPLE_REQUEST_FAILURE.getCode());
-        assertThat(result.getMessage()).isEqualTo("트랙을 찾을 수 없습니다.");
-    }
-
-    public TrackPlayCountResponse buildTrackPlayCountResponse(TrackResponse trackResponse) {
-        return TrackPlayCountResponse.builder()
-                .playCount(0)
-                .track(trackResponse)
-                .build();
-    }
-
-    public TrackResponse buildTrackResponse() {
-        return TrackResponse.builder()
-                .albumImageUrl("albumImageURL")
-                .durationTimeMs(30)
-                .recommendCount(1L)
-                .trackTitle("title")
-                .spotifyTrackHref("href")
-                .spotifyTrackId("id")
-                .id(30L)
-                .build();
     }
 
 }

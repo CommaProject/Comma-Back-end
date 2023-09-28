@@ -30,10 +30,4 @@ public class UserRequest {
                 .build();
     }
 
-    public static UserRequest buildUserModifyRequest(final String password) {
-        return UserRequest.builder()
-                .password(password)
-                .build();
-    }
-
 }

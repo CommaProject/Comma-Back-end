@@ -74,7 +74,7 @@ class UserDetailServiceTest {
     void createUserDetail_success() throws AccountException {
         // given
         String token = "accessToken";
-        User user = User.buildUser("userEmail");
+        User user = User.createUser();
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);
         doReturn(user).when(userService).findUserOrThrow(user.getEmail());
@@ -92,7 +92,7 @@ class UserDetailServiceTest {
     @Test
     void findUserDetailOrThrow_success() throws AccountException {
         // given
-        User user = User.buildUser("userEmail");
+        User user = User.createUser();
         UserDetail userDetail = UserDetail.buildUserDetail(user);
 
         doReturn(Optional.of(userDetail)).when(userDetailRepository).findUserDetailByUser(user);
@@ -109,7 +109,7 @@ class UserDetailServiceTest {
     void modifyUserDetail_success() throws AccountException {
         // given
         String token = "accessToken";
-        User user = User.buildUser("userEmail");
+        User user = User.createUser();
         UserDetail userDetail = UserDetail.buildUserDetail(user);
 
         doReturn(user.getEmail()).when(jwtTokenProvider).getUserPk(token);

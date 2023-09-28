@@ -36,7 +36,7 @@ public class UserRepositoryTest {
     @DisplayName("사용자 등록")
     public void save() {
         // given
-        User userEntity = User.buildUser("userEmail");
+        User userEntity = User.createUser();
 
         // when
         User result = userRepository.save(userEntity);
@@ -49,7 +49,7 @@ public class UserRepositoryTest {
     @Test
     public void findUserByEmail() {
         // given
-        User userEntity = User.buildUser("userEmail");
+        User userEntity = User.createUser();
 
         // when
         userRepository.save(userEntity);
@@ -64,9 +64,9 @@ public class UserRepositoryTest {
     @DisplayName("이름과 닉네임으로 연관된 사용자 탐색")
     public void findUserByNickNameAndName() {
         // given
-        User userEntity1 = User.buildUser("userEmail1");
-        User userEntity2 = User.buildUser("userEmail2");
-        User userEntity3 = User.buildUser("userEmail3");
+        User userEntity1 = User.createUser("userEmail1");
+        User userEntity2 = User.createUser("userEmail2");
+        User userEntity3 = User.createUser("userEmail3");
 
         userRepository.save(userEntity1);
         userRepository.save(userEntity2);

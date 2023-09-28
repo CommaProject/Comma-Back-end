@@ -1,5 +1,8 @@
 package com.team.comma.domain.track.track.dto;
 
+import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.dto.ArtistResponse;
+import com.team.comma.domain.track.track.domain.Track;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,5 +22,17 @@ public class TrackResponse {
     private String albumImageUrl;
     private String spotifyTrackId;
     private String spotifyTrackHref;
+
+    public static TrackResponse of(Track track) {
+        return TrackResponse.builder()
+                .id(track.getId())
+                .trackTitle(track.getTrackTitle())
+                .durationTimeMs(track.getDurationTimeMs())
+                .recommendCount(track.getRecommendCount())
+                .albumImageUrl(track.getAlbumImageUrl())
+                .spotifyTrackId(track.getSpotifyTrackId())
+                .spotifyTrackHref(track.getSpotifyTrackHref())
+                .build();
+    }
 
 }

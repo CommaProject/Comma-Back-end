@@ -109,7 +109,7 @@ public class ArchiveServiceTest {
     @DisplayName("아카이브 DateTime으로 조회")
     public void findArchiveByDateTime() {
         // given
-        User user = User.buildUser("userEmail");
+        User user = User.createUser();
         Track track = buildTrack();
         Playlist playlist = buildPlaylist(user);
         playlist.addPlaylistTrack(track);
@@ -133,7 +133,7 @@ public class ArchiveServiceTest {
     @DisplayName("아카이브 Date로 조회")
     public void findArchiveByDate() throws AccountException {
         // given
-        User user = User.buildUser("userEmail");
+        User user = User.createUser();
         Track track = buildTrack();
         Playlist playlist = buildPlaylist(user);
         playlist.addPlaylistTrack(track);

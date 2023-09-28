@@ -48,7 +48,7 @@ public class UserService {
 
         setCookieFromJwt(response, jwtService.createJwtToken(user));
 
-        return MessageResponse.of(LOGIN_SUCCESS, UserResponse.of(user));
+        return MessageResponse.of(LOGIN_SUCCESS, UserResponse.createUserResponse(user));
     }
 
     @Transactional
@@ -59,7 +59,7 @@ public class UserService {
         User buildEntity = userRequest.toUserEntity(UserType.GENERAL_USER , encodedPassword);
         User user = userRepository.save(buildEntity);
 
-        return MessageResponse.of(REGISTER_SUCCESS, UserResponse.of(user));
+        return MessageResponse.of(REGISTER_SUCCESS, UserResponse.createUserResponse(user));
     }
 
     public void findUserThenThrow(final String email) throws AccountException {
@@ -73,7 +73,7 @@ public class UserService {
         String userEmail = jwtTokenProvider.getUserPk(token);
         User user = findUserOrThrow(userEmail);
 
-        return MessageResponse.of(REQUEST_SUCCESS, UserResponse.of(user));
+        return MessageResponse.of(REQUEST_SUCCESS, UserResponse.createUserResponse(user));
     }
 
     public MessageResponse findAllUsersBySearchWord(final String searchWord, final String accessToken) throws AccountException {
@@ -85,7 +85,7 @@ public class UserService {
         ArrayList<UserResponse> userResponses = new ArrayList<>();
 
         for(User user : userList) {
-            userResponses.add(UserResponse.of(user));
+            userResponses.add(UserResponse.createUserResponse(user));
         }
 
         return MessageResponse.of(REQUEST_SUCCESS, userResponses);

@@ -14,17 +14,16 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class FavoriteTrackResponse {
+
     private long favoriteTrackId;
 
     private List<TrackArtistResponse> trackArtistResponses;
 
-    public FavoriteTrackResponse(FavoriteTrack favoriteTrack, List<TrackArtistResponse> trackArtistList) {
-        this.favoriteTrackId = favoriteTrack.getId();
-        this.trackArtistResponses = trackArtistList;
-    }
-
     public static FavoriteTrackResponse of(FavoriteTrack favoriteTrack, List<TrackArtistResponse> trackArtistList) {
-        return new FavoriteTrackResponse(favoriteTrack, trackArtistList);
+        return FavoriteTrackResponse.builder()
+                .favoriteTrackId(favoriteTrack.getId())
+                .trackArtistResponses(trackArtistList)
+                .build();
     }
 
 }

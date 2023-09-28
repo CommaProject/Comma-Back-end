@@ -9,6 +9,7 @@ import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
+import com.team.comma.domain.user.user.service.UserService;
 import com.team.comma.global.common.dto.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +27,23 @@ import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUC
 @RequiredArgsConstructor
 public class PlayCountService {
 
-    private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
     private final TrackPlayCountRepository trackPlayCountRepository;
-    private final TrackRepository trackRepository;
+
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
     private final TrackService trackService;
+
+    @Transactional
+    public MessageResponse createTrackPlay(String accessToken , String spotifyTrackId) throws AccountException {
+        String userEmail = jwtTokenProvider.getUserPk(accessToken);
+        User user = userService.findUserOrThrow(userEmail);
+        Track track = trackService.findTrackOrSave(spotifyTrackId);
+        TrackPlayCount trackPlayCount = TrackPlayCount.createTrackPlayCount(track, user);
+
+        trackPlayCountRepository.save(trackPlayCount);
+
+        return MessageResponse.of(REQUEST_SUCCESS);
+    }
 
     public MessageResponse findMostListenedTrack(String accessToken) {
         String userEmail = jwtTokenProvider.getUserPk(accessToken);
@@ -46,29 +59,4 @@ public class PlayCountService {
         return MessageResponse.of(REQUEST_SUCCESS , result);
     }
 
-    @Transactional
-    public MessageResponse modifyPlayCount(String accessToken , String trackId) throws AccountException {
-        String userEmail = jwtTokenProvider.getUserPk(accessToken);
-        TrackPlayCount trackPlayCount = findTrackPlayCountOrSave(userEmail , trackId);
-
-        trackPlayCount.updatePlayCount();
-
-        return MessageResponse.of(REQUEST_SUCCESS);
-    }
-
-    public TrackPlayCount findTrackPlayCountOrSave(String userEmail , String trackId) {
-        Optional<TrackPlayCount> trackPlayCount = trackPlayCountRepository.findTrackPlayCountByUserEmail(userEmail , trackId);
-
-        if(!trackPlayCount.isPresent()) {
-            Track track = trackRepository.findBySpotifyTrackId(trackId)
-                    .orElseGet(() -> trackService.findTrackOrSave(trackId));
-
-            User user = userRepository.findUserByEmail(userEmail)
-                    .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
-
-            return trackPlayCountRepository.save(TrackPlayCount.createTrackPlayCount(track , user));
-        }
-
-        return trackPlayCount.get();
-    }
 }

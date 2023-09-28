@@ -8,8 +8,6 @@ import java.util.Optional;
 
 public interface TrackPlayCountRepositoryCustom {
 
-    Optional<TrackPlayCount> findTrackPlayCountByUserEmail(String userEmail , String trackId);
-
     List<TrackPlayCountResponse> findTrackPlayCountByFriend(String userEmail);
 
     List<TrackPlayCountResponse> findTrackPlayCountByMostListenedTrack(String userEmail);

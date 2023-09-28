@@ -16,12 +16,19 @@ public class TrackArtistResponse {
 
     private TrackResponse track;
 
-    private ArtistResponse artists;
+    private ArtistResponse artist;
 
-    public static TrackArtistResponse of(TrackResponse track , ArtistResponse artists) {
+    public static TrackArtistResponse of(TrackResponse track, ArtistResponse artist) {
         return TrackArtistResponse.builder()
                 .track(track)
-                .artists(artists)
+                .artist(artist)
+                .build();
+    }
+
+    public static TrackArtistResponse buildTrackArtistResponse(TrackResponse track, ArtistResponse artist) {
+        return TrackArtistResponse.builder()
+                .track(track)
+                .artist(artist)
                 .build();
     }
 }

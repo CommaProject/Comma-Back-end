@@ -396,7 +396,6 @@ class UserControllerTest {
         // given
         String api = "/user/{name}";
 
-        User user = User.buildUser("email");
         MessageResponse messageResponse = MessageResponse.of(
                 REQUEST_SUCCESS, Arrays.asList(
                         UserResponse.buildUserResponse("userEmail"),
@@ -454,7 +453,7 @@ class UserControllerTest {
         doReturn(MessageResponse.of(REQUEST_SUCCESS))
                 .when(userService).modifyUserPassword("accessToken", "change_password");
 
-        UserRequest request = UserRequest.buildUserModifyRequest("change_password");
+        UserRequest request = UserRequest.buildUserRequest(null, "change_password");
 
         // when
         final ResultActions resultActions = mockMvc.perform(

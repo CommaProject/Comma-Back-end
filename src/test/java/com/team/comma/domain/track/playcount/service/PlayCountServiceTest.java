@@ -1,7 +1,9 @@
 package com.team.comma.domain.track.playcount.service;
 
 import com.team.comma.domain.artist.domain.Artist;
+import com.team.comma.domain.artist.dto.ArtistResponse;
 import com.team.comma.domain.track.artist.domain.TrackArtist;
+import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
 import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
@@ -42,41 +44,18 @@ public class PlayCountServiceTest {
     JwtTokenProvider jwtTokenProvider;
 
     @Test
-    @DisplayName("TrackPlayCount 탐색 실패")
-    void searchTrackPlayCountFail() {
-        // given
-        doThrow(new TrackException("트랙을 찾을 수 없습니다.")).when(trackPlayCountRepository).findTrackPlayCountByUserEmail(any(String.class), any(String.class));
-        doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        // when
-        Throwable thrown = catchThrowable(() -> playCountService.modifyPlayCount("token", "trackId"));
-
-        // then
-        assertThat(thrown.getMessage()).isEqualTo("트랙을 찾을 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("TrackPlayCount 탐색 성공")
-    void searchTrackPlayCount() throws AccountException {
-        // given
-        doReturn(Optional.of(buildTrackPlayCount(buildTrack()))).when(trackPlayCountRepository).findTrackPlayCountByUserEmail(any(String.class), any(String.class));
-        doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
-        // when
-        MessageResponse result = playCountService.modifyPlayCount("token", "trackId");
-
-        // then
-        assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
-        assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-    }
-
-    @Test
     @DisplayName("내가 가장 많이 들은 곡")
     void findMostListenedTrack() {
         // given
-        List<TrackPlayCountResponse> trackPlayCounts = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            trackPlayCounts.add(buildTrackPlayCountResponse(buildTrackResponse()));
-        }
-        doReturn(trackPlayCounts).when(trackPlayCountRepository).findTrackPlayCountByMostListenedTrack(any(String.class));
+        Artist artist = Artist.buildArtist();
+        Track track = Track.buildTrack();
+
+        ArtistResponse artistResponse = ArtistResponse.of(artist);
+        TrackResponse trackResponse = TrackResponse.of(track);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse, artistResponse);
+        TrackPlayCountResponse trackPlayCount = TrackPlayCountResponse.of(100, trackArtistResponse);
+
+        doReturn(List.of(trackPlayCount)).when(trackPlayCountRepository).findTrackPlayCountByMostListenedTrack(any(String.class));
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
 
         // when
@@ -85,18 +64,23 @@ public class PlayCountServiceTest {
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-        assertThat(((List) result.getData()).size()).isEqualTo(5);
+        assertThat(((List<TrackPlayCountResponse>) result.getData())).size().isEqualTo(1);
+        assertThat(((List<TrackPlayCountResponse>) result.getData()).get(0).getPlayCount()).isEqualTo(100);
     }
 
     @Test
     @DisplayName("친구가 가장 많이 들은 곡")
     void findMostListenedTrackByFriend() {
         // given
-        List<TrackPlayCountResponse> trackPlayCounts = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            trackPlayCounts.add(buildTrackPlayCountResponse(buildTrackResponse()));
-        }
-        doReturn(trackPlayCounts).when(trackPlayCountRepository).findTrackPlayCountByFriend(any(String.class));
+        Artist artist = Artist.buildArtist();
+        Track track = Track.buildTrack();
+
+        ArtistResponse artistResponse = ArtistResponse.of(artist);
+        TrackResponse trackResponse = TrackResponse.of(track);
+        TrackArtistResponse trackArtistResponse = TrackArtistResponse.of(trackResponse, artistResponse);
+        TrackPlayCountResponse trackPlayCount = TrackPlayCountResponse.of(100, trackArtistResponse);
+
+        doReturn(List.of(trackPlayCount)).when(trackPlayCountRepository).findTrackPlayCountByFriend(any(String.class));
         doReturn("userEmail").when(jwtTokenProvider).getUserPk("token");
 
         // when
@@ -105,44 +89,8 @@ public class PlayCountServiceTest {
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());
         assertThat(result.getMessage()).isEqualTo(REQUEST_SUCCESS.getMessage());
-        assertThat(((List) result.getData()).size()).isEqualTo(5);
-    }
-
-    public TrackPlayCountResponse buildTrackPlayCountResponse(TrackResponse trackResponse) {
-        return TrackPlayCountResponse.builder()
-                .playCount(0)
-                .track(trackResponse)
-                .build();
-    }
-
-    public TrackResponse buildTrackResponse() {
-        return TrackResponse.builder()
-                .albumImageUrl("albumImageURL")
-                .durationTimeMs(30)
-                .recommendCount(1L)
-                .trackTitle("title")
-                .spotifyTrackHref("href")
-                .spotifyTrackId("id")
-                .id(30L)
-                .build();
-    }
-
-    public TrackPlayCount buildTrackPlayCount(Track track) {
-        return TrackPlayCount.builder()
-                .playCount(0)
-                .track(track)
-                .build();
-    }
-
-    private Track buildTrack() {
-        return Track.builder()
-                .id(1L)
-                .trackTitle("title")
-                .recommendCount(0L)
-                .albumImageUrl("url")
-                .spotifyTrackHref("spotifyTrackHref")
-                .spotifyTrackId("spotifyId")
-                .build();
+        assertThat(((List<TrackPlayCountResponse>) result.getData())).size().isEqualTo(1);
+        assertThat(((List<TrackPlayCountResponse>) result.getData()).get(0).getPlayCount()).isEqualTo(100);
     }
 
 }

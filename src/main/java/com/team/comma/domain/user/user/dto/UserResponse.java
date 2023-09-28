@@ -27,24 +27,18 @@ public class UserResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "yyyy/MM/dd" , timezone = "Asia/Seoul")
     private Date joinDate;
 
-    private UserResponse(User user) {
-        this.userId = user.getId();
-        this.email = user.getEmail();
-        this.password = user.getPassword();
-        this.delFlag = user.getDelFlag();
-        this.role = user.getRole();
-        this.joinDate = user.getJoinDate();
-
-        UserDetail userDetail = user.getUserDetail();
-        if(userDetail != null) {
-            profileImageUrl = userDetail.getProfileImageUrl();
-            name = userDetail.getName();
-            nickName = userDetail.getNickname();
-        }
-    }
-
-    public static UserResponse of(User user) {
-        return new UserResponse(user);
+    public static UserResponse createUserResponse(User user) {
+        return UserResponse.builder()
+                .userId(user.getId())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .delFlag(user.getDelFlag())
+                .role(user.getRole())
+                .joinDate(user.getJoinDate())
+                .profileImageUrl(user.getUserDetail().getProfileImageUrl())
+                .name(user.getUserDetail().getName())
+                .nickName(user.getUserDetail().getNickname())
+                .build();
     }
 
     public static UserResponse buildUserResponse(String email){
