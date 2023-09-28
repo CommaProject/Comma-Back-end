@@ -1,7 +1,7 @@
 package com.team.comma.global.security.controller;
 
-import com.team.comma.global.common.constant.ResponseCodeEnum;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.constant.ResponseCodeEnum;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.jwt.service.JwtService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.AUTHENTICATION_ERROR;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.AUTHORIZATION_ERROR;
+import static com.team.comma.global.constant.ResponseCodeEnum.AUTHENTICATION_ERROR;
+import static com.team.comma.global.constant.ResponseCodeEnum.AUTHORIZATION_ERROR;
 
 @RestController
 @RequiredArgsConstructor

@@ -3,7 +3,7 @@ package com.team.comma.domain.user.following.service;
 import com.team.comma.domain.user.following.constant.FollowingType;
 import com.team.comma.domain.user.following.dto.FollowingCountResponse;
 import com.team.comma.domain.user.detail.domain.UserDetail;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.domain.user.following.domain.Following;
 import com.team.comma.domain.user.following.dto.FollowingResponse;
 import com.team.comma.domain.user.following.exception.FollowingException;
@@ -22,7 +22,7 @@ import javax.security.auth.login.AccountException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;

@@ -1,7 +1,7 @@
 package com.team.comma.global.exception;
 
 import com.team.comma.domain.user.user.exception.UserException;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.domain.user.following.exception.FollowingException;
 import com.team.comma.domain.favorite.artist.exception.FavoriteArtistException;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
@@ -23,7 +23,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import se.michaelthelin.spotify.exceptions.detailed.UnauthorizedException;
 import javax.security.auth.login.AccountException;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
+import static com.team.comma.global.constant.ResponseCodeEnum.*;
 
 
 @RestControllerAdvice

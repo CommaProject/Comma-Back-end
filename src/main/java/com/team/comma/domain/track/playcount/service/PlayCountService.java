@@ -4,13 +4,10 @@ import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.track.track.service.TrackService;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.user.exception.UserException;
-import com.team.comma.domain.user.user.repository.UserRepository;
 import com.team.comma.domain.user.user.service.UserService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,10 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountException;
 import java.util.List;
-import java.util.Optional;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
 @Service
 @RequiredArgsConstructor

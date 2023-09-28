@@ -1,7 +1,7 @@
 package com.team.comma.spotify.controller;
 
 import com.team.comma.spotify.service.SearchService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

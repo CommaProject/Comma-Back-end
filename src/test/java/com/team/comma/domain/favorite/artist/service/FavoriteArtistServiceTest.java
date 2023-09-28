@@ -3,14 +3,12 @@ package com.team.comma.domain.favorite.artist.service;
 import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.artist.service.ArtistService;
 import com.team.comma.domain.favorite.artist.dto.FavoriteArtistResponse;
-import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.exception.UserException;
-import com.team.comma.global.common.constant.ResponseCodeEnum;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.constant.ResponseCodeEnum;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.domain.favorite.artist.domain.FavoriteArtist;
-import com.team.comma.domain.favorite.artist.exception.FavoriteArtistException;
 import com.team.comma.domain.favorite.artist.repository.FavoriteArtistRepository;
 import com.team.comma.domain.user.user.domain.User;
 import com.team.comma.domain.user.user.repository.UserRepository;
@@ -30,12 +28,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.NOT_FOUNT_USER;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.NOT_FOUNT_USER;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)

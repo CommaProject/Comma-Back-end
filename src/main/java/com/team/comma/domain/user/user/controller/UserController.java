@@ -2,7 +2,7 @@ package com.team.comma.domain.user.user.controller;
 
 import com.team.comma.domain.user.user.dto.UserRequest;
 import com.team.comma.domain.user.user.service.UserService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

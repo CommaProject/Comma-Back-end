@@ -2,7 +2,7 @@ package com.team.comma.domain.user.detail.controller;
 
 import com.team.comma.domain.user.detail.dto.UserDetailRequest;
 import com.team.comma.domain.user.detail.service.UserDetailService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

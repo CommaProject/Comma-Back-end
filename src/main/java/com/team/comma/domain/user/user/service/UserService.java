@@ -6,7 +6,7 @@ import com.team.comma.domain.user.user.dto.UserRequest;
 import com.team.comma.domain.user.user.dto.UserResponse;
 import com.team.comma.domain.user.user.exception.UserException;
 import com.team.comma.domain.user.user.repository.UserRepository;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.jwt.service.JwtService;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.*;
+import static com.team.comma.global.constant.ResponseCodeEnum.*;
 import static com.team.comma.global.jwt.support.CreationCookie.setCookieFromJwt;
 
 @Service

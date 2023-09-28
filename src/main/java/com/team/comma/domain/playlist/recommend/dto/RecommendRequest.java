@@ -15,18 +15,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RecommendRequest {
 
-    private long recommendPlaylistId;
     private RecommendType recommendType;
-    private String recommendToEmail;
+    private long playlistId;
     private String comment;
+    private String toUserEmail;
 
-    public Recommend toRecommendEntity(User toUser, Playlist playlist){
-        return Recommend.builder()
-                .toUser(toUser)
-                .recommendType(recommendType)
-                .comment(comment)
-                .playlist(playlist)
-                .playCount(0L)
+    public static RecommendRequest of(Recommend recommend) {
+        return RecommendRequest.builder()
+                .playlistId(recommend.getPlaylist().getId())
+                .recommendType(recommend.getRecommendType())
+                .toUserEmail(recommend.getToUser().getEmail())
+                .comment(recommend.getComment())
                 .build();
     }
 

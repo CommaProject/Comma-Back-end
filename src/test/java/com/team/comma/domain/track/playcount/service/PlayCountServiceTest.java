@@ -2,15 +2,12 @@ package com.team.comma.domain.track.playcount.service;
 
 import com.team.comma.domain.artist.domain.Artist;
 import com.team.comma.domain.artist.dto.ArtistResponse;
-import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.artist.dto.TrackArtistResponse;
-import com.team.comma.domain.track.playcount.domain.TrackPlayCount;
 import com.team.comma.domain.track.playcount.dto.TrackPlayCountResponse;
 import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository;
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.dto.TrackResponse;
-import com.team.comma.domain.track.track.exception.TrackException;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,14 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.security.auth.login.AccountException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;

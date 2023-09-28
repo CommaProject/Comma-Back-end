@@ -63,30 +63,30 @@ public class FollowingRepositoryImpl implements FollowingRepositoryCustom{
 
     @Override
     public List<FollowingResponse> getFollowingToUserListByFromUser(User user) {
-        return queryFactory.select(
-                                Projections.constructor(
-                                    FollowingResponse.class,
-                                    following.id,
-                                    following.userTo.id,
-                                    following.userTo.userDetail.nickname))
-                            .from(following)
-                            .where(following.userFrom.eq(user)
-                                    .and(following.blockFlag.eq(false)))
-                            .fetch();
+        return queryFactory.select(Projections.constructor(
+                FollowingResponse.class,
+                        following.id,
+                        following.userTo.id,
+                        following.userTo.email,
+                        following.userTo.userDetail.nickname))
+                .from(following)
+                .where(following.userFrom.eq(user)
+                        .and(following.blockFlag.eq(false)))
+                .fetch();
     }
 
     @Override
     public List<FollowingResponse> getFollowingFromUserListByToUser(User user) {
-        return queryFactory.select(
-                                Projections.constructor(
-                                        FollowingResponse.class,
-                                        following.id,
-                                        following.userFrom.id,
-                                        following.userFrom.userDetail.nickname))
-                            .from(following)
-                            .where(following.userTo.eq(user)
-                                    .and(following.blockFlag.eq(false)))
-                            .fetch();
+        return queryFactory.select(Projections.constructor(
+                FollowingResponse.class,
+                        following.id,
+                        following.userFrom.id,
+                        following.userFrom.email,
+                        following.userFrom.userDetail.nickname))
+                .from(following)
+                .where(following.userTo.eq(user)
+                        .and(following.blockFlag.eq(false)))
+                .fetch();
     }
 
 }

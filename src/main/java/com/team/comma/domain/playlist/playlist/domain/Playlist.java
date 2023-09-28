@@ -73,10 +73,22 @@ public class Playlist {
         this.alarmFlag = !this.alarmFlag;
     }
 
-    public static Playlist buildPlaylist(User user){
+    public static Playlist buildPlaylist(Long id, User user, String playlistTitle) {
         return Playlist.builder()
-                .playlistTitle("새로운 플레이리스트")
+                .id(id)
+                .playlistTitle(playlistTitle)
+                .alarmStartTime(LocalTime.now())
+                .alarmFlag(true)
+                .delFlag(false)
                 .user(user)
                 .build();
+    }
+
+    public static Playlist createPlaylist(User user) {
+        return buildPlaylist(null, user, "새로운 플레이리스트");
+    }
+
+    public static Playlist createPlaylist(Long id, User user) {
+        return buildPlaylist(id, user, "새로운 플레이리스트");
     }
 }

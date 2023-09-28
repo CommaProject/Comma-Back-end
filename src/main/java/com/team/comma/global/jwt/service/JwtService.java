@@ -1,7 +1,7 @@
 package com.team.comma.global.jwt.service;
 
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.global.jwt.exception.TokenForgeryException;
 import com.team.comma.global.jwt.support.CreationCookie;
 import com.team.comma.global.jwt.support.JwtTokenProvider;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.ACCESS_TOKEN_CREATE;
+import static com.team.comma.global.constant.ResponseCodeEnum.ACCESS_TOKEN_CREATE;
 import static org.apache.http.cookie.SM.SET_COOKIE;
 
 @Service

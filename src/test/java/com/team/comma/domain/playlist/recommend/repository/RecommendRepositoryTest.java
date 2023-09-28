@@ -59,10 +59,10 @@ public class RecommendRepositoryTest {
         final User fromUser = User.createUser("fromUserEmail");
         userRepository.save(fromUser);
 
-        final Playlist playlist = Playlist.buildPlaylist(fromUser);
+        final Playlist playlist = Playlist.createPlaylist(fromUser);
         playlistRepository.save(playlist);
 
-        final Recommend recommend = Recommend.buildRecommend(FOLLOWING, playlist, toUser);
+        final Recommend recommend = Recommend.createRecommend("comment", playlist, toUser);
 
         // when
         final Recommend result = recommendRepository.save(recommend);
@@ -79,9 +79,9 @@ public class RecommendRepositoryTest {
         userRepository.save(toUser);
         userRepository.save(fromUser);
 
-        Track track = trackRepository.save(buildTrack());
-        Track track2 = trackRepository.save(buildTrack());
-        Playlist playlist = Playlist.buildPlaylist(fromUser);
+        Track track = trackRepository.save(Track.buildTrack());
+        Track track2 = trackRepository.save(Track.buildTrack());
+        Playlist playlist = Playlist.createPlaylist(fromUser);
         playlist.addPlaylistTrack(track);
         playlist.addPlaylistTrack(track2);
         Playlist result = playlistRepository.save(playlist);
@@ -103,8 +103,8 @@ public class RecommendRepositoryTest {
     void 익명에게_추천_저장() {
         // given
         final User fromUser = userRepository.save(User.createUser());
-        final Playlist playlist = playlistRepository.save(Playlist.buildPlaylist(fromUser));
-        final Recommend recommend = Recommend.buildRecommend(ANONYMOUS, playlist, null);
+        final Playlist playlist = playlistRepository.save(Playlist.createPlaylist(fromUser));
+        final Recommend recommend = Recommend.createRecommend("test recommend", playlist);
 
         // when
         final Recommend result = recommendRepository.save(recommend);
@@ -122,17 +122,17 @@ public class RecommendRepositoryTest {
         final User fromUser = User.createUser("fromUserEmail");
         userRepository.save(fromUser);
 
-        final Playlist playlist = Playlist.buildPlaylist(fromUser);
+        final Playlist playlist = Playlist.createPlaylist(fromUser);
         playlistRepository.save(playlist);
 
-        final Recommend recommend = Recommend.buildRecommend(FOLLOWING, playlist, toUser);
+        final Recommend recommend = Recommend.createRecommend("comment", playlist, toUser);
         recommendRepository.save(recommend);
 
         // when
-        final long result = recommendRepository.getRecommendCountByToUserAndPlaylist(recommend);
+        final Optional<Recommend> result = recommendRepository.findByPlaylistAndToUser(playlist, toUser);
 
         // then
-        assertThat(result).isEqualTo(1);
+        assertThat(result).isPresent();
     }
 
     @Test
@@ -148,16 +148,16 @@ public class RecommendRepositoryTest {
         userRepository.save(fromUser);
         userDetailRepository.save(userDetail2);
 
-        final Playlist playlist = Playlist.buildPlaylist(fromUser);
+        final Playlist playlist = Playlist.createPlaylist(fromUser);
         playlistRepository.save(playlist);
 
-        final Recommend recommend = Recommend.buildRecommend(FOLLOWING, playlist, toUser);
-        final Recommend recommend2 = Recommend.buildRecommend(FOLLOWING, playlist, toUser);
+        final Recommend recommend = Recommend.createRecommend("comment", playlist, toUser);
+        final Recommend recommend2 = Recommend.createRecommend("comment", playlist, toUser);
         recommendRepository.save(recommend);
         recommendRepository.save(recommend2);
 
         // when
-        final List<RecommendResponse> result = recommendRepository.getRecommendsByToUser(toUser);
+        final List<RecommendResponse> result = recommendRepository.findAllRecommendsByToUser(toUser);
 
         // then
         assertThat(result.size()).isEqualTo(2);
@@ -177,16 +177,16 @@ public class RecommendRepositoryTest {
         userRepository.save(fromUser);
         userDetailRepository.save(userDetail2);
 
-        final Playlist playlist = Playlist.buildPlaylist(fromUser);
+        final Playlist playlist = Playlist.createPlaylist(fromUser);
         playlistRepository.save(playlist);
 
-        final Recommend recommend = Recommend.buildRecommend(FOLLOWING, playlist, toUser);
-        final Recommend recommend2 = Recommend.buildRecommend(FOLLOWING, playlist, toUser);
+        final Recommend recommend = Recommend.createRecommend("comment", playlist, toUser);
+        final Recommend recommend2 = Recommend.createRecommend("comment", playlist, toUser);
         recommendRepository.save(recommend);
         recommendRepository.save(recommend2);
 
         // when
-        final List<RecommendResponse> result = recommendRepository.getRecommendsByFromUser(fromUser);
+        final List<RecommendResponse> result = recommendRepository.findAllRecommendsByFromUser(fromUser);
 
         // then
         assertThat(result.size()).isEqualTo(2);
@@ -206,16 +206,16 @@ public class RecommendRepositoryTest {
         userDetailRepository.save(userDetail1);
         userDetailRepository.save(userDetail2);
 
-        final Playlist playlist = Playlist.buildPlaylist(fromUser);
+        final Playlist playlist = Playlist.createPlaylist(fromUser);
         playlistRepository.save(playlist);
 
-        final Recommend recommend = Recommend.buildRecommend(ANONYMOUS, playlist, null);
-        final Recommend recommend2 = Recommend.buildRecommend(ANONYMOUS, playlist, null);
+        final Recommend recommend = Recommend.createRecommend("comment", playlist);
+        final Recommend recommend2 = Recommend.createRecommend("comment", playlist);
         recommendRepository.save(recommend);
         recommendRepository.save(recommend2);
 
         // when
-        final List<RecommendResponse> result = recommendRepository.getRecommendsToAnonymous();
+        final List<RecommendResponse> result = recommendRepository.findAllRecommendsByToAnonymous();
 
         // then
         assertThat(result.size()).isEqualTo(2);
@@ -227,8 +227,8 @@ public class RecommendRepositoryTest {
         // given
         final User toUser = userRepository.save(User.createUser("toUserEmail"));
         final User fromUser = userRepository.save(User.createUser("fromUserEmail"));
-        final Playlist playlist = playlistRepository.save(Playlist.buildPlaylist(fromUser));
-        final Recommend recommend = recommendRepository.save(Recommend.buildRecommend(FOLLOWING, playlist, toUser));
+        final Playlist playlist = playlistRepository.save(Playlist.createPlaylist(fromUser));
+        final Recommend recommend = recommendRepository.save(Recommend.createRecommend("comment", playlist, toUser));
 
         // when
         final Optional<Recommend> result = recommendRepository.findById(recommend.getId());
@@ -242,8 +242,8 @@ public class RecommendRepositoryTest {
         // given
         final User toUser = userRepository.save(User.createUser("toUserEmail"));
         final User fromUser = userRepository.save(User.createUser("fromUserEmail"));
-        final Playlist playlist = playlistRepository.save(Playlist.buildPlaylist(fromUser));
-        final Recommend recommend = recommendRepository.save(Recommend.buildRecommend(FOLLOWING, playlist, toUser));
+        final Playlist playlist = playlistRepository.save(Playlist.createPlaylist(fromUser));
+        final Recommend recommend = recommendRepository.save(Recommend.createRecommend("comment", playlist, toUser));
 
         // when
         final long result = recommendRepository.increasePlayCount(recommend.getId());
@@ -251,15 +251,6 @@ public class RecommendRepositoryTest {
         // then
         assertThat(result).isEqualTo(1);
 
-    }
-
-    Track buildTrack() {
-        return Track.builder()
-                .trackTitle("title")
-                .spotifyTrackHref("href")
-                .albumImageUrl("url")
-                .spotifyTrackId("id")
-                .build();
     }
 
 }

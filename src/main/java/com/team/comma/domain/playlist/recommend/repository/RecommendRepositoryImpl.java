@@ -22,7 +22,7 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<RecommendResponse> getRecommendsByToUser(User requestUser) {
+    public List<RecommendResponse> findAllRecommendsByToUser(User requestUser) {
 
         return queryFactory.select(
                         Projections.constructor(
@@ -52,7 +52,7 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
     }
 
     @Override
-    public List<RecommendResponse> getRecommendsByFromUser(User requestUser) {
+    public List<RecommendResponse> findAllRecommendsByFromUser(User requestUser) {
         return queryFactory.select(
                         Projections.constructor(
                                 RecommendResponse.class,
@@ -80,7 +80,7 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
     }
 
     @Override
-    public List<RecommendResponse> getRecommendsToAnonymous() {
+    public List<RecommendResponse> findAllRecommendsByToAnonymous() {
         return queryFactory.select(
                         Projections.constructor(
                                 RecommendResponse.class,
@@ -106,16 +106,6 @@ public class RecommendRepositoryImpl implements RecommendRepositoryCustom{
                 .where(recommend.recommendType.eq(ANONYMOUS))
                 .orderBy(recommend.id.desc())
                 .fetch();
-    }
-
-    @Override
-    public long getRecommendCountByToUserAndPlaylist(Recommend reco) {
-        return queryFactory
-                .select(recommend.count())
-                .from(recommend)
-                .where(recommend.toUser.eq(reco.getToUser())
-                        .and(recommend.playlist.eq(reco.getPlaylist())))
-                .fetchFirst();
     }
 
     @Override

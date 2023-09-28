@@ -1,6 +1,6 @@
 package com.team.comma.domain.playlist.track.service;
 
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
@@ -8,15 +8,12 @@ import static org.mockito.Mockito.doThrow;
 
 import com.team.comma.domain.playlist.playlist.service.PlaylistService;
 import com.team.comma.domain.track.track.service.TrackService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.track.domain.PlaylistTrack;
-import com.team.comma.domain.playlist.track.dto.PlaylistTrackRequest;
 import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
 import com.team.comma.domain.playlist.track.repository.PlaylistTrackRepository;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.user.user.constant.UserRole;
-import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
 import java.util.List;
 import java.util.Optional;
@@ -45,8 +42,8 @@ class PlaylistTrackServiceTest {
     void createPlaylistTrack_Success() {
         // given
         User user = User.createUser();
-        Track track = buildTrack("track title");
-        Playlist playlist = Playlist.buildPlaylist(user);
+        Track track = Track.buildTrack();
+        Playlist playlist = Playlist.createPlaylist(user);
 
         doReturn(track).when(trackService).findTrackOrSave(anyString());
         doReturn(playlist).when(playlistService).findPlaylistOrThrow(anyLong());
@@ -64,8 +61,8 @@ class PlaylistTrackServiceTest {
     void findPlaylistTrack_Success() throws PlaylistException {
         // given
         final long playlistId = 1L;
-        final User user = buildUser();
-        final Playlist playlist = buildPlaylist(user, "test playlist");
+        final User user = User.createUser();
+        final Playlist playlist = Playlist.createPlaylist(user);
 
         doReturn(playlist).when(playlistService).findPlaylistOrThrow(playlistId);
 
@@ -96,8 +93,8 @@ class PlaylistTrackServiceTest {
     void modifyPlaylistTrackSequence_Success() {
         // given
         User user = User.createUser();
-        Playlist playlist = Playlist.buildPlaylist(user);
-        Track track = buildTrack("title");
+        Playlist playlist = Playlist.createPlaylist(user);
+        Track track = Track.buildTrack();
         PlaylistTrack playlistTrack1 = PlaylistTrack.buildPlaylistTrack(playlist,track);
         PlaylistTrack playlistTrack2 = PlaylistTrack.buildPlaylistTrack(playlist,track);
         PlaylistTrack playlistTrack3 = PlaylistTrack.buildPlaylistTrack(playlist,track);
@@ -123,8 +120,8 @@ class PlaylistTrackServiceTest {
     void modifyPlaylistTrackAlarmFlag_Success() {
         // given
         User user = User.createUser();
-        Track track = buildTrack("track title");
-        Playlist playlist = Playlist.buildPlaylist(user);
+        Track track = Track.buildTrack();
+        Playlist playlist = Playlist.createPlaylist(user);
         PlaylistTrack playlistTrack = PlaylistTrack.buildPlaylistTrack(playlist,track);
         doReturn(Optional.of(playlistTrack)).when(playlistTrackRepository).findById(anyLong());
 
@@ -143,8 +140,8 @@ class PlaylistTrackServiceTest {
         final List<Long> playlistTrackIdList = List.of(1L, 2L, 3L);
 
         User user = User.createUser();
-        Playlist playlist = Playlist.buildPlaylist(user);
-        Track track = buildTrack("title");
+        Playlist playlist = Playlist.createPlaylist(user);
+        Track track = Track.buildTrack();
         PlaylistTrack playlistTrack1 = PlaylistTrack.buildPlaylistTrack(playlist,track);
         PlaylistTrack playlistTrack2 = PlaylistTrack.buildPlaylistTrack(playlist,track);
         PlaylistTrack playlistTrack3 = PlaylistTrack.buildPlaylistTrack(playlist,track);
@@ -162,35 +159,6 @@ class PlaylistTrackServiceTest {
         assertThat(pt1).isEmpty();
         assertThat(pt2).isEmpty();
         assertThat(pt3).isEmpty();
-    }
-
-    private User buildUser() {
-        return User.builder()
-                .email("email")
-                .type(UserType.GENERAL_USER)
-                .role(UserRole.USER)
-                .build();
-    }
-
-    private Playlist buildPlaylist(User user, String title) {
-        return Playlist.builder()
-                .playlistTitle(title)
-                .alarmFlag(true)
-                .user(user)
-                .build();
-    }
-
-    private Track buildTrack(String title) {
-        return Track.builder()
-                .trackTitle(title)
-                .build();
-    }
-
-    private PlaylistTrack buildPlaylistTrack(Playlist playlist, Track track) {
-        return PlaylistTrack.builder()
-                .playlist(playlist)
-                .track(track)
-                .build();
     }
 
 }

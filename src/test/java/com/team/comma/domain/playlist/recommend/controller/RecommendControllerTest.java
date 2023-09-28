@@ -1,9 +1,10 @@
 package com.team.comma.domain.playlist.recommend.controller;
 
-import static com.team.comma.domain.playlist.recommend.constant.RecommendType.FOLLOWING;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.RECOMMEND_ALREADY_EXIST;
-import static com.team.comma.global.common.constant.ResponseCodeEnum.REQUEST_SUCCESS;
+import static com.team.comma.global.constant.ResponseCodeEnum.RECOMMEND_ALREADY_EXIST;
+import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -19,24 +20,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.team.comma.domain.artist.domain.Artist;
-import com.team.comma.domain.track.artist.domain.TrackArtist;
 import com.team.comma.domain.track.track.service.TrackService;
-import com.team.comma.global.common.dto.MessageResponse;
+import com.team.comma.domain.user.detail.domain.UserDetail;
+import com.team.comma.global.message.MessageResponse;
 import com.team.comma.domain.playlist.playlist.domain.Playlist;
 import com.team.comma.domain.playlist.recommend.constant.RecommendListType;
-import com.team.comma.domain.playlist.recommend.constant.RecommendType;
 import com.team.comma.domain.playlist.recommend.domain.Recommend;
-import com.team.comma.domain.playlist.recommend.dto.RecommendListRequest;
 import com.team.comma.domain.playlist.recommend.dto.RecommendRequest;
 import com.team.comma.domain.playlist.recommend.dto.RecommendResponse;
 import com.team.comma.domain.playlist.recommend.exception.RecommendException;
 import com.team.comma.domain.playlist.recommend.service.RecommendService;
 import com.team.comma.domain.track.track.domain.Track;
-import com.team.comma.domain.user.user.constant.UserRole;
-import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
-import com.team.comma.domain.user.detail.domain.UserDetail;
 import com.team.comma.global.gson.GsonUtil;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,8 +55,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
 
 @AutoConfigureRestDocs
@@ -98,9 +91,12 @@ public class RecommendControllerTest {
         // given
         final String url = "/recommend";
 
-        final RecommendRequest recommendRequest = buildRequest();
+        final User user = User.createUser();
+        final Playlist playlist = Playlist.createPlaylist(1L, user);
+        final Recommend recommend = Recommend.createRecommend(1L, "comment", playlist, user);
+        final RecommendRequest recommendRequest = RecommendRequest.of(recommend);
         final MessageResponse messageResponse = MessageResponse.of(REQUEST_SUCCESS);
-        doReturn(messageResponse).when(recommendService).addRecommend("accessToken", recommendRequest);
+        doReturn(messageResponse).when(recommendService).createPlaylistRecommend("accessToken", recommendRequest);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -119,9 +115,9 @@ public class RecommendControllerTest {
                                 cookieWithName("accessToken").description("사용자 access token")
                         ),
                         requestFields(
-                                fieldWithPath("recommendPlaylistId").description("추천 플레이리스트 id"),
+                                fieldWithPath("playlistId").description("추천 플레이리스트 id"),
                                 fieldWithPath("recommendType").description("추천 대상(익명 = ANONYMOUS, 팔로잉 = FOLLOWING)"),
-                                fieldWithPath("recommendToEmail").description("추천 대상 이메일(익명인 경우 입력 X)"),
+                                fieldWithPath("toUserEmail").description("추천 대상 이메일(익명인 경우 입력 X)"),
                                 fieldWithPath("comment").description("추천 코멘트")
                         ),
                         responseFields(
@@ -145,9 +141,12 @@ public class RecommendControllerTest {
         // given
         final String url = "/recommend";
 
-        final RecommendRequest recommendRequest = buildRequest();
+        final User user = User.createUser();
+        final Playlist playlist = Playlist.createPlaylist(1L, user);
+        final Recommend recommend = Recommend.createRecommend(1L, "comment", playlist, user);
+        final RecommendRequest recommendRequest = RecommendRequest.of(recommend);
         doThrow(new RecommendException("사용자에게 이미 추천한 플레이리스트 입니다."))
-                .when(recommendService).addRecommend("accessToken", recommendRequest);
+                .when(recommendService).createPlaylistRecommend("accessToken", recommendRequest);
 
         // when
         final ResultActions resultActions = mockMvc.perform(
@@ -166,9 +165,9 @@ public class RecommendControllerTest {
                                 cookieWithName("accessToken").description("사용자 access token")
                         ),
                         requestFields(
-                                fieldWithPath("recommendPlaylistId").description("추천 플레이리스트 id"),
+                                fieldWithPath("playlistId").description("추천 플레이리스트 id"),
                                 fieldWithPath("recommendType").description("추천 대상(익명 = ANONYMOUS, 팔로잉 = FOLLOWING)"),
-                                fieldWithPath("recommendToEmail").description("추천 대상 이메일(익명인 경우 입력 X)"),
+                                fieldWithPath("toUserEmail").description("추천 대상 이메일(익명인 경우 입력 X)"),
                                 fieldWithPath("comment").description("추천 코멘트")
                         ),
                         responseFields(
@@ -189,29 +188,24 @@ public class RecommendControllerTest {
     @Test
     void 추천_리스트_조회_성공() throws Exception {
         // given
-        final String url = "/recommend";
-
-        final User toUser = buildUser("toUserEmail");
-        final User fromUser = buildUser("fromUserEmail");
-
-        final Track track = buildTrack();
-        final Playlist playlist = buildPlaylist(fromUser);
+        final String url = "/recommend/type/{type}";
+        final User toUser = User.createUser("toUserEmail");
+        final User fromUser = User.createUser("fromUserEmail");
+        UserDetail.buildUserDetail(toUser);
+        final Track track = Track.buildTrack();
+        Playlist playlist = Playlist.createPlaylist(1L, fromUser);
         playlist.addPlaylistTrack(track);
+        final Recommend recommend = Recommend.createRecommend(1L, "comment", playlist, toUser);
 
-        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, toUser);
         final List<RecommendResponse> recommendList = List.of(
-                RecommendResponse.of(recommend, toUser, 1L),
-                RecommendResponse.of(recommend, toUser, 1L));
-
-        final RecommendListRequest recommendListRequest = RecommendListRequest.builder().recommendListType(RecommendListType.RECIEVED).build();
-
+                RecommendResponse.of(recommend, toUser),
+                RecommendResponse.of(recommend, toUser));
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, recommendList);
-        doReturn(message).when(recommendService).getRecommendList("accessToken", recommendListRequest);
+        doReturn(message).when(recommendService).findAllPlaylistRecommends("accessToken", RecommendListType.ANONYMOUS);
 
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(url)
+                RestDocumentationRequestBuilders.get(url, "ANONYMOUS")
                         .cookie(new Cookie("accessToken", "accessToken"))
-                        .content(gson.toJson(recommendListRequest))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -223,8 +217,8 @@ public class RecommendControllerTest {
                         requestCookies(
                                 cookieWithName("accessToken").description("사용자 access token")
                         ),
-                        requestFields(
-                                fieldWithPath("recommendListType").description("받은 추천 리스트: RECIEVED, 보낸 추천 리스트: SENDED, 익명 추천 리스트: ANONYMOUS")
+                        pathParameters(
+                                parameterWithName("type").description("받은 추천 리스트: RECIEVED, 보낸 추천 리스트: SENDED, 익명 추천 리스트: ANONYMOUS")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -253,25 +247,25 @@ public class RecommendControllerTest {
     @Test
     void 추천_정보_조회_성공() throws Exception {
         // given
-        final String url = "/recommend/{recommendId}";
+        final String url = "/recommend/{id}";
 
-        final User toUser = buildUser("toUserEmail");
-        final User fromUser = buildUser("fromUserEmail");
-
-        final Playlist playlist = buildPlaylist(fromUser);
-        final Track track = buildTrack();
+        final User toUser = User.createUser("toUserEmail");
+        final User fromUser = User.createUser("fromUserEmail");
+        UserDetail.buildUserDetail(toUser);
+        final Track track = Track.buildTrack();
+        Playlist playlist = Playlist.createPlaylist(1L, fromUser);
         playlist.addPlaylistTrack(track);
+        final Recommend recommend = Recommend.createRecommend(1L, "comment", playlist, toUser);
 
-        final Recommend recommend = buildRecommendToFollowing(FOLLOWING, playlist, toUser);
-        final RecommendResponse recommendResponse = RecommendResponse.of(recommend, toUser, 0);
-
+        final RecommendResponse recommendResponse = RecommendResponse.of(recommend, toUser);
         final MessageResponse message = MessageResponse.of(REQUEST_SUCCESS, recommendResponse);
-        doReturn(message).when(recommendService).getRecommend(recommendResponse.getRecommendId());
+        doReturn(message).when(recommendService).findRecommend("accessToken", recommend.getId());
 
         // when
         final ResultActions resultActions = mockMvc.perform(
                 RestDocumentationRequestBuilders
-                        .get(url, recommendResponse.getRecommendId())
+                        .get(url, recommend.getId())
+                        .cookie(new Cookie("accessToken", "accessToken"))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -281,7 +275,7 @@ public class RecommendControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         pathParameters(
-                                parameterWithName("recommendId").description("추천 정보의 식별자 값")
+                                parameterWithName("id").description("추천 정보 id")
                         ),
                         responseFields(
                                 fieldWithPath("code").description("응답 코드"),
@@ -310,50 +304,4 @@ public class RecommendControllerTest {
 
     }
 
-    private User buildUser(String toUserEmail) {
-        return User.builder()
-                .id(1L)
-                .email(toUserEmail)
-                .type(UserType.GENERAL_USER)
-                .role(UserRole.USER)
-                .userDetail(UserDetail.builder().profileImageUrl("test").build())
-                .build();
-    }
-
-    private Track buildTrack() {
-        return Track.builder()
-                .id(1L)
-                .trackTitle("test track")
-                .build();
-    }
-
-    private Playlist buildPlaylist(User fromUser) {
-        return Playlist.builder()
-                .id(123L)
-                .user(fromUser)
-                .playlistTitle("test playlist")
-                .alarmFlag(true)
-                .alarmStartTime(LocalTime.now())
-                .build();
-    }
-
-    private RecommendRequest buildRequest() {
-        return RecommendRequest.builder()
-                .recommendPlaylistId(1L)
-                .recommendType(RecommendType.FOLLOWING)
-                .recommendToEmail("toUserEmail")
-                .comment("test recommend")
-                .build();
-    }
-
-    private Recommend buildRecommendToFollowing(RecommendType type, Playlist playlist, User toUser) {
-        return Recommend.builder()
-                .id(1L)
-                .toUser(toUser)
-                .recommendType(type)
-                .comment("test recommend")
-                .playlist(playlist)
-                .playCount(0L)
-                .build();
-    }
 }

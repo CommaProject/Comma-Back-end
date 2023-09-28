@@ -21,6 +21,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import static com.team.comma.domain.playlist.recommend.constant.RecommendType.ANONYMOUS;
+import static com.team.comma.domain.playlist.recommend.constant.RecommendType.FOLLOWING;
+
 @Entity
 @Getter
 @Builder
@@ -50,14 +53,35 @@ public class Recommend {
     @ManyToOne(fetch = FetchType.LAZY)
     private User toUser;
 
-    public static Recommend buildRecommend(RecommendType type, Playlist playlist, User toUser) {
+    public void modifyPlayCount() {
+        this.playCount += 1;
+    }
+
+    public static Recommend buildRecommend(Long id, RecommendType type, String comment, Playlist playlist, User toUser) {
         return Recommend.builder()
-                .toUser(toUser)
+                .id(id)
                 .recommendType(type)
-                .comment("test recommend")
+                .comment(comment)
+                .playCount(0L)
                 .playlist(playlist)
-                .playCount(1L)
+                .toUser(toUser)
                 .build();
+    }
+
+    public static Recommend createRecommend(String comment, Playlist playlist, User toUser) {
+        return buildRecommend(null, FOLLOWING, comment, playlist, toUser);
+    }
+
+    public static Recommend createRecommend(String comment, Playlist playlist) {
+        return buildRecommend(null, ANONYMOUS, comment, playlist, null);
+    }
+
+    public static Recommend createRecommend(long id, String comment, Playlist playlist, User toUser) {
+        return buildRecommend(id, FOLLOWING, comment, playlist, toUser);
+    }
+
+    public static Recommend createRecommend(long id, String comment, Playlist playlist) {
+        return buildRecommend(id, ANONYMOUS, comment, playlist, null);
     }
 
 }
