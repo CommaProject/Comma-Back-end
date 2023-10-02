@@ -105,16 +105,28 @@
   - AccessToken과 RefreshToken은 쿠키에 보관하나 Security , HTTPOnly 옵션을 추가해서 서버와 클라이언트 간 https 통신 및 자바스크립트로 쿠키 접근을 제한합니다. 
   - 로그아웃시 Access Token, Refresh Token 쿠키 삭제합니다.
  
-<h2>2 . 음악 탐색</h2>
+<h2>2 . 음악 탐색 ( 탐색 , 탐색 결과 ) </h2>
 
 > Spotify API 를 활용해 트랙을 검색합니다.
 
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/78508ef8-78b7-4083-83fe-ee2454387381" width="25%">
 
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/2bc3d4cb-01a8-421b-9870-dce8c76f9cb4" width="25%">
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/cf1bf79d-8572-444c-a3b7-38a09c92a4eb" width="25%">
+
 - 최적화를 위해 검색된 트랙은 좋아요나 플레이리스트에 추가되지 않은 한 DB에 저장되지 않습니다.
 - Spotify API 를 이용하여 트랙에 대한 정보를 가져옵니다.
 
-<h2>3 . 사용자 탐색</h2>
+<h2>3 . 가수 탐색</h2>
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/2ca7f398-7bcd-419c-98b0-54022f1e23eb" width="25%">
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/d0e97da7-a191-42f5-b904-148d6aa83140" width="25%">
+
+- Spotify API 를 이용하여 검색한 가수의 트랙 정보를 가져옵니다.
+
+<h2>4 . 사용자 탐색</h2>
 
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/fb59c9be-0418-489f-8884-5fe2a9458511" width="25%">
 
@@ -123,31 +135,67 @@
 - 사용자를 탐색하고 팔로우할 수 있습니다.
 - 조회된 사용자의 플레이리스트와 아카이브 , 좋아하는 장르 및 가수를 조회할 수 있습니다. 
 
-<h2>4 . 음악 재생 </h2>
+<h2>5 . 음악 재생 및 아카이브 작성</h2>
 
-<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/8697ba13-2627-48b6-b493-5b3f04da6afa" width="25%">
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/9190525b-f3ea-4778-af3d-95cb5d196140" width="25%">
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/5f7cff8e-91f5-459e-b70b-4249592cdcd5" width="25%">
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/1369a60d-2146-473c-b841-f0adeb9ca10a" width="25%">
 
 - Spotify API 의 재생 URL 을 통해 클라이언트 쪽에서 음악을 재생합니다.
 - 음악이 모두 재생될 경우에 자동으로 다음 트랙을 재생합니다.
+- 아카이브를 통해 현재 듣고 있는 플레이리스트에 대해 내 감정을 기록합니다.
 
-<h2>5 . 플레이리스트</h2>
+<h2>6 . 플레이리스트 ( 메인 , 수정 , 알림 시간 수정 ) </h2>
 
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/d8924a95-072a-4cbe-b42f-8d0c1f6f39eb" width="25%">
 
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/30b80e2e-b390-4744-bf5c-894347b43b45" width="25%">
 
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/c566d833-19b1-403c-ac0c-e9b7c4b3c0a7" width="25%">
+
 - 플레이리스트 이름을 설정하고 곡을 저장, 수정할 수 있습니다.
 - 플레이리스트에 있는 곡을 선택할 경우 음악 재생화면으로 이동됩니다.
 - 알림이 설정된 플레이리스트는 설정한 시간에 푸시 알림을 통해 사용자에게 알려줍니다.
   
-<h2>6 . 플레이리스트 추천</h2>
+<h2>7 . 플레이리스트 추천하기</h2>
 
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/992cdcf5-8bcc-41a1-9b24-6d05f4278b20" width="25%">
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/6b6ea381-7384-4291-af8a-6919c7c25e11" width="25%">
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/de2b10fa-510c-4542-b33a-66a86e585e39" width="25%">
 
 - 친구 & 익명에게 플레이리스트를 추천할 수 있으며 추천 받은 플레이리스트는 하단 메뉴에 표시됩니다.
 - 내가 추천한 플레이리스트를 들은 횟수를 확인할 수 있습니다.
 
-<h2>7 . 알림</h2>
+<h2>8 . 추천받은 플레이리스트</h2>
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/2ff764ad-0c9d-4b99-827c-0580d2c601dd" width="25%">
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/41f85eb2-04bc-4bc0-b64e-69fafae32293" width="25%">
+
+<h2>9 . 프로필 ( 메인 , 내 아카이브 , 수정 )</h2>
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/3d653df0-2361-41f7-bf08-d32af3a46f74" width="25%">
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/1b8fb493-3abc-47bd-a877-57e9962a9b40" width="25%">
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/fce23845-c3a6-4780-89a2-6e4d5fee97f5" width="25%">
+
+- 현재 팔로우 수 및 나와 관련된 정보들을 한눈에 보기 쉽게 출력했습니다.
+- 특정 날짜마다 작성된 아카이브를 보기 쉽게 정렬 및 표기합니다.
+
+<h2>10 . 프로필 수정 </h2>
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/c1292367-7c01-4d38-876a-447bb969a80d" width="25%">
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/3085e23d-1378-4b77-8716-620fe5272746" width="25%">
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/7003aa16-6e91-4afb-8691-b64d00ca1e54" width="25%">
+
+<h2>11 . 알림</h2>
 
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/50e9fa3c-a073-43e4-814d-38d5245def52" width="25%">
 
