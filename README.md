@@ -100,9 +100,11 @@
 
  <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/ded146d5-9a1e-4247-aceb-b40d36d8707d" width="25%">
 
+ <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/2af3c76c-998a-4e6f-b512-142647fc57a9" width="25%">
+
 - OAuth 2.0 를 통해 회원가입 과정을 생략할 수 있습니다.
 - 로그인 후 발급되는 Access Token 과 Refresh Token 은 다음과 같이 보관합니다. 
-  - AccessToken과 RefreshToken은 쿠키에 보관하나 Security , HTTPOnly 옵션을 추가해서 서버와 클라이언트 간 https 통신 및 자바스크립트로 쿠키 접근을 제한합니다. 
+  - AccessToken과 RefreshToken은 쿠키에 보관하나 HTTPOnly 옵션을 추가해 클라이언트에서 자바스크립트로 쿠키 접근을 제한합니다. 
   - 로그아웃시 Access Token, Refresh Token 쿠키 삭제합니다.
  
 <h2>2 . 음악 탐색 ( 탐색 , 탐색 결과 ) </h2>
@@ -116,17 +118,18 @@
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/cf1bf79d-8572-444c-a3b7-38a09c92a4eb" width="25%">
 
 - 최적화를 위해 검색된 트랙은 좋아요나 플레이리스트에 추가되지 않은 한 DB에 저장되지 않습니다.
-- Spotify API 를 이용하여 트랙에 대한 정보를 가져옵니다.
 
 <h2>3 . 가수 탐색</h2>
+
+> Spotify API 를 활용해 가수를 검색합니다.
 
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/2ca7f398-7bcd-419c-98b0-54022f1e23eb" width="25%">
 
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/d0e97da7-a191-42f5-b904-148d6aa83140" width="25%">
 
-- Spotify API 를 이용하여 검색한 가수의 트랙 정보를 가져옵니다.
-
 <h2>4 . 사용자 탐색</h2>
+
+> Spotify API 를 활용해 사용자를 검색합니다.
 
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/fb59c9be-0418-489f-8884-5fe2a9458511" width="25%">
 
@@ -167,8 +170,8 @@
 
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/de2b10fa-510c-4542-b33a-66a86e585e39" width="25%">
 
-- 친구 & 익명에게 플레이리스트를 추천할 수 있으며 추천 받은 플레이리스트는 하단 메뉴에 표시됩니다.
-- 내가 추천한 플레이리스트를 들은 횟수를 확인할 수 있습니다.
+- 친구 & 익명에게 플레이리스트를 추천할 수 있으며 추천 받은 플레이리스트는 하단에 표시됩니다.
+- 내가 추천한 플레이리스트는 추천 받은 사용자가 몇번 들었는지 확인할 수 있습니다.
 
 <h2>8 . 추천받은 플레이리스트</h2>
 
@@ -184,7 +187,7 @@
 
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/fce23845-c3a6-4780-89a2-6e4d5fee97f5" width="25%">
 
-- 현재 팔로우 수 및 나와 관련된 정보들을 한눈에 보기 쉽게 출력했습니다.
+- 현재 팔로우 수 및 나와 관련된 정보들을 한눈에 보기 쉽게 출력했습니다. ( 내가 팔로우한 가수 및 사용자 , 내가 만든 플레이리스트 )
 - 특정 날짜마다 작성된 아카이브를 보기 쉽게 정렬 및 표기합니다.
 
 <h2>10 . 프로필 수정 </h2>
