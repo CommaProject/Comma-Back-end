@@ -77,7 +77,7 @@
 
 > SSE 를 이용하여 사용자 푸시 알림을 구현했습니다.
 
-- 로그아웃 상태에서 손실된 데이터는 제거합니다.
+- 로그아웃 상태에서 전송된 데이터는 제거합니다.
 - 단방향 통신을 이용하여 리소스 낭비를 최소화했습니다.
 
 <h2>OAuth2.0 & JWT</h2>
@@ -160,7 +160,7 @@
 
 - 플레이리스트 이름을 설정하고 곡을 저장, 수정할 수 있습니다.
 - 플레이리스트에 있는 곡을 선택할 경우 음악 재생화면으로 이동됩니다.
-- 알림이 설정된 플레이리스트는 설정한 시간에 푸시 알림을 통해 사용자에게 알려줍니다.
+- 알림이 설정된 플레이리스트는 설정한 시간에 푸시 알림을 통해 사용자에게 알려줍니다. ( SSE 기반 )
   
 <h2>7 . 플레이리스트 추천하기</h2>
 
@@ -179,13 +179,15 @@
 
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/41f85eb2-04bc-4bc0-b64e-69fafae32293" width="25%">
 
-<h2>9 . 프로필 ( 메인 , 내 아카이브 , 수정 )</h2>
+<h2>9 . 프로필 ( 메인 , 내 플레이리스트 , 내 아카이브 , 수정 )</h2>
 
-<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/3d653df0-2361-41f7-bf08-d32af3a46f74" width="25%">
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/3d653df0-2361-41f7-bf08-d32af3a46f74" width="20%">
 
-<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/1b8fb493-3abc-47bd-a877-57e9962a9b40" width="25%">
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/97455709-8be7-4b2a-b72f-716fc1f65ba5" width="20%">
 
-<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/fce23845-c3a6-4780-89a2-6e4d5fee97f5" width="25%">
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/1b8fb493-3abc-47bd-a877-57e9962a9b40" width="20%">
+
+<img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/fce23845-c3a6-4780-89a2-6e4d5fee97f5" width="20%">
 
 - 현재 팔로우 수 및 나와 관련된 정보들을 한눈에 보기 쉽게 출력했습니다. ( 내가 팔로우한 가수 및 사용자 , 내가 만든 플레이리스트 )
 - 특정 날짜마다 작성된 아카이브를 보기 쉽게 정렬 및 표기합니다.
