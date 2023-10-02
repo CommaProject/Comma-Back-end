@@ -200,6 +200,8 @@
 
 <h2>11 . 알림</h2>
 
+> SSE 를 통해 푸시 알림을 구현했습니다.
+
 <img src="https://github.com/5tr1ker/Comma-Back-end/assets/49367338/50e9fa3c-a073-43e4-814d-38d5245def52" width="25%">
 
 - 사용자가 설정한 플레이리스트 알림 시간이 되었을 때 푸시 알람을 통해 사용자에게 알려줍니다. 
