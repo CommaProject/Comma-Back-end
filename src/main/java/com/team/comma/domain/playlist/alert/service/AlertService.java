@@ -45,8 +45,7 @@ public class AlertService {
         return emitter;
     }
 
-    // FIXME - 추후 주석 해제
-    // @Scheduled(cron = "0 0/10 * * * *")
+    @Scheduled(cron = "0 0/10 * * * *")
     public void sendPlaylistAtSpecificTime() {
         List<AlertResponse> result = playlistRepository.findAllPlaylistsByAlertTime(LocalTime.now());
 
