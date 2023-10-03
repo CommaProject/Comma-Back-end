@@ -1,38 +1,49 @@
-= API 문서
+= Comma API 문서
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
 :toclevels: 3
 
-== GitHub 주소
+== GitHub
 
-* link:https://github.com/CommaProject[GitHub 주소]
+* link:https://github.com/CommaProject[]
 
-== Login 문서
+== API
 
-* link:login.html[Login 문서]
+=== Security 문서
 
-== Security 문서
+* link:security.html[Security]
 
-* link:security.html[Security 문서]
+=== User 문서
 
-== Follow 문서
+* link:user.html[User]
+* link:user-detail.html[UserDetail]
+* link:followship.html[Followship]
+* link:history.html[History]
 
-* link:follow.html[Follow 문서]
+=== Favorite 문서
 
-== Spotify 문서
+* link:favorite-artist.html[Artist]
+* link:favorite-track.html[Track]
 
-* link:spotifySearch.html[Search 탐색 문서]
+=== Playlist 문서
 
-* link:spotifyHistory.html[History 문서]
+* link:playlist.html[Playlist]
+* link:playlist-track.html[PlaylistTrack]
+* link:archive.html[Archive]
+* link:recommend.html[Recommend]
+* link:alert.html[Alert]
 
-* link:playlist.html[Playlist 문서]
+=== Track 문서
 
-* link:archive.html[Archive 문서]
+* link:track.html[Track]
+* link:play-count.html[PlayCount]
 
-* link:favoriteArtist.html[관심 아티스트 문서]
+=== Spotify 문서
 
-* link:playlist-track.html[Playlist-Track 문서]
+* link:spotify.html[Spotify]
 
-* link:recommend.adoc[Recommend 문서]
+=== S3 문서
+
+* link:file-upload.html[FileUpload]

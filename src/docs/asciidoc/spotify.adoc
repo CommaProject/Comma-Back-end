@@ -1,0 +1,91 @@
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+
+== 메인 화면
+
+link:main.html[main 화면]
+
+== Spotify API
+
+=== 아티스트 검색
+
+==== 성공
+
+===== Request
+
+include::{snippets}/spotify/artists/search-success/http-request.adoc[]
+include::{snippets}/spotify/artists/search-success/path-parameters.adoc[]
+include::{snippets}/spotify/artists/search-success/request-cookies.adoc[]
+
+===== Response
+
+include::{snippets}/spotify/artists/search-success/http-response.adoc[]
+include::{snippets}/spotify/artists/search-success/response-fields.adoc[]
+
+---
+
+=== 트랙 검색
+
+==== 성공
+
+===== Request
+
+include::{snippets}/spotify/tracks/search-success/http-request.adoc[]
+include::{snippets}/spotify/tracks/search-success/path-parameters.adoc[]
+include::{snippets}/spotify/tracks/search-success/request-cookies.adoc[]
+
+===== Response
+
+include::{snippets}/spotify/tracks/search-success/http-response.adoc[]
+include::{snippets}/spotify/tracks/search-success/response-fields.adoc[]
+
+---
+
+=== 아티스트의 트랙 검색
+
+==== 성공
+
+===== Request
+
+include::{snippets}/spotify/tracks/search-by-artist-success/http-request.adoc[]
+include::{snippets}/spotify/tracks/search-by-artist-success/path-parameters.adoc[]
+include::{snippets}/spotify/tracks/search-by-artist-success/request-cookies.adoc[]
+
+===== Response
+
+include::{snippets}/spotify/tracks/search-by-artist-success/http-response.adoc[]
+include::{snippets}/spotify/tracks/search-by-artist-success/response-fields.adoc[]
+
+---
+
+=== 모든 장르 가져오기
+
+==== 성공
+
+===== Request
+
+include::{snippets}/spotify/genreList/http-request.adoc[]
+
+===== Response
+
+include::{snippets}/spotify/genreList/http-response.adoc[]
+include::{snippets}/spotify/genreList/response-fields.adoc[]
+
+---
+
+=== 연도별 아티스트 정보 가져오기
+
+==== 성공
+
+===== Request
+
+include::{snippets}/spotify/searchArtistByYear/http-request.adoc[]
+include::{snippets}/spotify/searchArtistByYear/query-parameters.adoc[]
+
+===== Response
+
+include::{snippets}/spotify/searchArtistByYear/http-response.adoc[]
+include::{snippets}/spotify/searchArtistByYear/response-fields.adoc[]
+

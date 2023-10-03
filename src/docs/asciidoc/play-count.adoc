@@ -1,0 +1,56 @@
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+
+== 메인 화면
+
+link:main.html[main 화면]
+
+== Play-count API
+
+=== 트랙 재생 횟수 추가
+
+==== 성공
+
+===== Request
+
+include::{snippets}/play-count/create-success/http-request.adoc[]
+include::{snippets}/play-count/create-success/request-fields.adoc[]
+
+===== Response
+
+include::{snippets}/play-count/create-success/http-response.adoc[]
+include::{snippets}/play-count/create-success/response-fields.adoc[]
+
+---
+
+=== 내가 가장 많이 들은 곡 조회
+
+==== 성공
+
+===== Request
+
+include::{snippets}/play-count/find-most-listened-track-success/http-request.adoc[]
+include::{snippets}/play-count/find-most-listened-track-success/request-cookies.adoc[]
+
+===== Response
+
+include::{snippets}/play-count/find-most-listened-track-success/http-response.adoc[]
+include::{snippets}/play-count/find-most-listened-track-success/response-fields.adoc[]
+
+---
+
+=== 친구가 가장 많이 들은 곡 조회
+
+==== 성공
+
+===== Request
+
+include::{snippets}/play-count/find-most-listened-track-friend-success/http-request.adoc[]
+include::{snippets}/play-count/find-most-listened-track-friend-success/request-cookies.adoc[]
+
+===== Response
+
+include::{snippets}/play-count/find-most-listened-track-friend-success/http-response.adoc[]
+include::{snippets}/play-count/find-most-listened-track-friend-success/response-fields.adoc[]

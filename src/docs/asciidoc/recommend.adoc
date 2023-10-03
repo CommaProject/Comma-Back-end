@@ -1,60 +1,77 @@
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
-:toclevels: 2
+:toclevels: 3
 
 == 메인 화면
 
 link:main.html[main 화면]
 
-== 플레이리스트 추천 API
+== RECOMMEND API
 
-=== 플레이리스트 추천(익명/팔로잉) 성공
+=== 플레이리스트 추천 추가
 
-==== Request
+==== 성공
+
+===== Request
 
 include::{snippets}/spotify/saveRecommend/http-request.adoc[]
 include::{snippets}/spotify/saveRecommend/request-cookies.adoc[]
 include::{snippets}/spotify/saveRecommend/request-fields.adoc[]
 
-==== Response
+===== Response
 
 include::{snippets}/spotify/saveRecommend/http-response.adoc[]
 include::{snippets}/spotify/saveRecommend/response-fields.adoc[]
 
-=== 플레이리스트 추천 실패 - 이미 추천한 사용자, 플레이리스트
+==== 실패 - 이미 추천한 사용자
 
-==== Request
+===== Request
 
 include::{snippets}/spotify/saveRecommendFailure/http-request.adoc[]
 include::{snippets}/spotify/saveRecommendFailure/request-cookies.adoc[]
 include::{snippets}/spotify/saveRecommendFailure/request-fields.adoc[]
 
-==== Response
+===== Response
 
 include::{snippets}/spotify/saveRecommendFailure/http-response.adoc[]
 include::{snippets}/spotify/saveRecommendFailure/response-fields.adoc[]
 
-=== 추천 리스트 조회
+---
 
-==== Request
+=== 플레이리스트 추천 리스트 조회
+
+==== 성공
+
+===== Request
 
 include::{snippets}/spotify/selectRecommendList/http-request.adoc[]
 include::{snippets}/spotify/selectRecommendList/request-cookies.adoc[]
-include::{snippets}/spotify/selectRecommendList/request-fields.adoc[]
+include::{snippets}/spotify/selectRecommendList/path-parameters.adoc[]
 
-==== Response
+===== Response
 
 include::{snippets}/spotify/selectRecommendList/http-response.adoc[]
 include::{snippets}/spotify/selectRecommendList/response-fields.adoc[]
 
-=== 추천 정보 상세 조회
+---
 
-==== Request
+=== 플레이리스트 추천 상세 조회
+
+==== 성공
+
+===== Request
 
 include::{snippets}/spotify/selectRecommend/http-request.adoc[]
+include::{snippets}/spotify/selectRecommend/path-parameters.adoc[]
 
-==== Response
+===== Response
 
 include::{snippets}/spotify/selectRecommend/http-response.adoc[]
 include::{snippets}/spotify/selectRecommend/response-fields.adoc[]
+
+=== 가장 많이 추천된 트랙 정보
+
+===== Request
+include::{snippets}/track/mostListenTrackByRecommendTrack/http-response.adoc[]
+include::{snippets}/track/mostListenTrackByRecommendTrack/response-fields.adoc[]
