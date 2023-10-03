@@ -75,22 +75,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // CORS 허용 적용
-
-    /**
-     * FIXME: CORS 세부 설정 필요
-     */
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.addAllowedOriginPattern("*"); //허용할 URL
-        configuration.addAllowedHeader("*"); //허용할 Header
-        configuration.addAllowedMethod("*"); //허용할 Http Method
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 }
