@@ -2,6 +2,7 @@ package com.team.comma.domain.playlist.track.service;
 
 import static com.team.comma.global.constant.ResponseCodeEnum.REQUEST_SUCCESS;
 
+import com.team.comma.domain.playlist.playlist.exception.PlaylistException;
 import com.team.comma.domain.playlist.playlist.service.PlaylistService;
 import com.team.comma.domain.playlist.track.dto.PlaylistTrackResponse;
 import com.team.comma.domain.playlist.track.exception.PlaylistTrackException;
@@ -31,8 +32,14 @@ public class PlaylistTrackService {
         Track track = trackService.findTrackOrSave(spotifyTrackId);
         for(long playlistId : playlistIdList){
             Playlist playlist = playlistService.findPlaylistOrThrow(playlistId);
-            PlaylistTrack playlistTrack = PlaylistTrack.buildPlaylistTrack(playlist,track);
-            playlistTrackRepository.save(playlistTrack);
+            for(PlaylistTrack playlistTrack : playlist.getPlaylistTrackList()){
+                if(playlistTrack.getTrack().getSpotifyTrackId().equals(track.getSpotifyTrackId())){
+                    throw new PlaylistException("이미 플레이리스트에 추가 된 트랙 입니다.");
+                } else {
+                    PlaylistTrack buildEntity = PlaylistTrack.buildPlaylistTrack(playlist,track);
+                    playlistTrackRepository.save(buildEntity);
+                }
+            }
         }
 
         return MessageResponse.of(REQUEST_SUCCESS);

@@ -22,7 +22,6 @@ public class PlaylistTrackController {
             @RequestBody final PlaylistTrackRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(playlistTrackService.createPlaylistTrack(request.getPlaylistIdList(), request.getSpotifyTrackId()));
-
     }
 
     @GetMapping("/{playlistId}")
