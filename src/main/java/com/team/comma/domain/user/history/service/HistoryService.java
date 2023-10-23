@@ -30,9 +30,9 @@ public class HistoryService {
         String userEmail = jwtTokenProvider.getUserPk(token);
         User user = userRepository.findUserByEmail(userEmail)
                 .orElseThrow(() -> new UserException(NOT_FOUNT_USER));
-
-        user.addHistory(history.getSearchHistory());
-
+        if(!history.getSearchHistory().isEmpty()){
+            user.addHistory(history.getSearchHistory());
+        }
         return MessageResponse.of(REQUEST_SUCCESS);
     }
 
