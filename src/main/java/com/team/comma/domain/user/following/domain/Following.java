@@ -19,12 +19,12 @@ public class Following {
 
     @Setter
     @JoinColumn(name = "user_from")
-    @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User userFrom;
 
     @Setter
     @JoinColumn(name = "user_to")
-    @ManyToOne(cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private User userTo;
 
     public static Following createFollowingToFrom(User userTo, User userFrom) {

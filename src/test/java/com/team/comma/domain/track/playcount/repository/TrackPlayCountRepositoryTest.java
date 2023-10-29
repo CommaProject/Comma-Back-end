@@ -57,9 +57,9 @@ public class TrackPlayCountRepositoryTest {
         User user = User.createUser("email");
         userRepository.save(user);
         User friend1 = User.createUser("friend1");
-        userRepository.save(user);
+        userRepository.save(friend1);
         User friend2 = User.createUser("friend2");
-        userRepository.save(user);
+        userRepository.save(friend2);
 
         Following following1 = createFollowingToFrom(friend1 , user);
         Following following2 = createFollowingToFrom(friend2 , user);

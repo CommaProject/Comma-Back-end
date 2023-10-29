@@ -61,12 +61,8 @@ public class FollowingRepositoryTest {
     @DisplayName("나를 팔로우한 사용자 탐색 없음")
     public void searchFollowedMeUser_none() {
         // given
-        User toUser = User.builder()
-                .email("toEmail")
-                .build();
-        User fromUser = User.builder()
-                .email("fromEmail")
-                .build();
+        User toUser = userRepository.save(User.builder().email("toUser1").build());
+        User fromUser = userRepository.save(User.builder().email("fromEmail").build());
 
         Following follow = Following.builder()
                 .userTo(toUser)
@@ -74,10 +70,7 @@ public class FollowingRepositoryTest {
                 .blockFlag(false)
                 .build();
 
-        follow.setUserTo(toUser);
-        follow.setUserFrom(fromUser);
         followingRepository.save(follow);
-
 
         // when
         User result = followingRepository.getFollowedMeUserByEmail(1L , "fromEmails").orElse(null);

@@ -18,6 +18,8 @@ import com.team.comma.domain.track.playcount.repository.TrackPlayCountRepository
 import com.team.comma.domain.track.track.domain.Track;
 import com.team.comma.domain.track.track.repository.TrackRepository;
 import com.team.comma.domain.user.detail.domain.UserDetail;
+import com.team.comma.domain.user.following.domain.Following;
+import com.team.comma.domain.user.following.repository.FollowingRepository;
 import com.team.comma.domain.user.user.constant.UserRole;
 import com.team.comma.domain.user.user.constant.UserType;
 import com.team.comma.domain.user.user.domain.User;
@@ -32,12 +34,16 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class InitData {
 
     private final UserRepository userRepository;
+    private final FollowingRepository followingRepository;
     private final TrackRepository trackRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final TrackPlayCountRepository trackPlayCountRepository;
@@ -53,12 +59,29 @@ public class InitData {
     public void init() {
         User user1 = User.builder().email("testEmail").password(bCryptPasswordEncoder.encode("password")).role(UserRole.USER).delFlag(false).type(UserType.GENERAL_USER).joinDate(Date.valueOf(LocalDate.of(2023 , 8 , 21))).build();
         User user2 = User.builder().email("toUserEmail").password(bCryptPasswordEncoder.encode("password")).role(UserRole.USER).delFlag(false).type(UserType.GENERAL_USER).joinDate(Date.valueOf(LocalDate.of(2023 , 8 , 25))).build();
+        User user3 = User.builder().email("testUser1").password(bCryptPasswordEncoder.encode("password")).role(UserRole.USER).delFlag(false).type(UserType.GENERAL_USER).joinDate(Date.valueOf(LocalDate.of(2023 , 10 , 29))).build();
+        User user4 = User.builder().email("testUser2").password(bCryptPasswordEncoder.encode("password")).role(UserRole.USER).delFlag(false).type(UserType.GENERAL_USER).joinDate(Date.valueOf(LocalDate.of(2023 , 10 , 29))).build();
         UserDetail userDetail1 = UserDetail.builder().name("name").nickname("nickname").profileImageUrl("no profile image").popupAlertFlag(true).favoritePublicFlag(true).calenderPublicFlag(true).allPublicFlag(true).user(user1).build();
         UserDetail userDetail2 = UserDetail.builder().name("name2").nickname("nickname2").profileImageUrl("no profile image").popupAlertFlag(true).favoritePublicFlag(true).calenderPublicFlag(true).allPublicFlag(true).user(user2).build();
+        UserDetail userDetail3 = UserDetail.builder().name("name3").nickname("nickname3").profileImageUrl("no profile image").popupAlertFlag(true).favoritePublicFlag(true).calenderPublicFlag(true).allPublicFlag(true).user(user3).build();
+        UserDetail userDetail4 = UserDetail.builder().name("name4").nickname("nickname4").profileImageUrl("no profile image").popupAlertFlag(true).favoritePublicFlag(true).calenderPublicFlag(true).allPublicFlag(true).user(user4).build();
         user1.setUserDetail(userDetail1);
         user2.setUserDetail(userDetail2);
+        user3.setUserDetail(userDetail3);
+        user4.setUserDetail(userDetail4);
         userRepository.save(user1);
         userRepository.save(user2);
+        userRepository.save(user3);
+        userRepository.save(user4);
+
+        Following following1 = Following.builder().userTo(user1).userFrom(user2).blockFlag(false).build();
+        Following following2 = Following.builder().userTo(user2).userFrom(user1).blockFlag(false).build();
+        Following following3 = Following.builder().userTo(user1).userFrom(user3).blockFlag(false).build();
+        Following following4 = Following.builder().userTo(user4).userFrom(user1).blockFlag(false).build();
+        followingRepository.save(following1);
+        followingRepository.save(following2);
+        followingRepository.save(following3);
+        followingRepository.save(following4);
 
         Artist iu = Artist.builder().spotifyArtistId("3HqSLMAZ3g3d5poNaI7GOU").artistName("IU").artistImageUrl("https://i.scdn.co/image/ab6761610000e5eb006ff3c0136a71bfb9928d34").build();
         artistRepository.save(iu);
@@ -107,6 +130,7 @@ public class InitData {
 
         FavoriteArtist favoriteArtist = FavoriteArtist.builder().user(user1).artist(iu).build();
         favoriteArtistRepository.save(favoriteArtist);
+
     }
 
 }
