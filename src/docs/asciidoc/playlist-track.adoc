@@ -56,6 +56,23 @@ include::{snippets}/playlist/track/find-fail-playlist-not-found/response-fields.
 
 ---
 
+=== 플레이리스트 트랙 순서 변경
+- 배열에 담긴 순서대로 sequence 재정렬
+
+==== 성공
+
+===== Request
+
+include::{snippets}/playlist/track/modify-sequence-success/http-request.adoc[]
+include::{snippets}/playlist/track/modify-sequence-success/request-fields.adoc[]
+
+===== Response
+
+include::{snippets}/playlist/track/modify-sequence-success/http-response.adoc[]
+include::{snippets}/playlist/track/modify-sequence-success/response-fields.adoc[]
+
+---
+
 === 플레이리스트 트랙 알람 상태 변경
 
 ==== 성공
