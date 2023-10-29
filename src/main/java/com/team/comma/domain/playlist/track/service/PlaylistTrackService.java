@@ -28,19 +28,18 @@ public class PlaylistTrackService {
 
     private final PlaylistTrackRepository playlistTrackRepository;
 
-    public MessageResponse createPlaylistTrack(final List<Long> playlistIdList, final String spotifyTrackId) {
+    public MessageResponse createPlaylistTrack(final Long playlistId, final String spotifyTrackId) {
         Track track = trackService.findTrackOrSave(spotifyTrackId);
-        for(long playlistId : playlistIdList){
-            Playlist playlist = playlistService.findPlaylistOrThrow(playlistId);
-            for(PlaylistTrack playlistTrack : playlist.getPlaylistTrackList()){
-                if(playlistTrack.getTrack().getSpotifyTrackId().equals(track.getSpotifyTrackId())){
-                    throw new PlaylistException("이미 플레이리스트에 추가 된 트랙 입니다.");
-                } else {
-                    PlaylistTrack buildEntity = PlaylistTrack.buildPlaylistTrack(playlist,track);
-                    playlistTrackRepository.save(buildEntity);
-                }
+        Playlist playlist = playlistService.findPlaylistOrThrow(playlistId);
+
+        for(PlaylistTrack playlistTrack : playlist.getPlaylistTrackList()){
+            if(playlistTrack.getTrack().getSpotifyTrackId().equals(track.getSpotifyTrackId())){
+                throw new PlaylistException("이미 플레이리스트에 추가 된 트랙 입니다.");
             }
         }
+
+        PlaylistTrack buildEntity = PlaylistTrack.buildPlaylistTrack(playlist,track);
+        playlistTrackRepository.save(buildEntity);
 
         return MessageResponse.of(REQUEST_SUCCESS);
     }

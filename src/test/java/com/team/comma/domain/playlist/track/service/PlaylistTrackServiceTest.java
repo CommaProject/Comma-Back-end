@@ -49,7 +49,7 @@ class PlaylistTrackServiceTest {
         doReturn(playlist).when(playlistService).findPlaylistOrThrow(anyLong());
 
         // when
-        MessageResponse result = playlistTrackService.createPlaylistTrack(List.of(1L, 2L, 3L), "spotify track id");
+        MessageResponse result = playlistTrackService.createPlaylistTrack(1L, "spotify track id");
 
         // then
         assertThat(result.getCode()).isEqualTo(REQUEST_SUCCESS.getCode());

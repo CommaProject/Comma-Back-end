@@ -88,12 +88,12 @@ class PlaylistTrackControllerTest {
         final String api = "/playlist/track";
 
         final PlaylistTrackRequest request = PlaylistTrackRequest.builder()
-                .playlistIdList(List.of(1L, 2L, 3L))
+                .playlistId(1L)
                 .spotifyTrackId("spotify track id")
                 .build();
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS))
-                .when(playlistTrackService).createPlaylistTrack(anyList(), anyString());
+                .when(playlistTrackService).createPlaylistTrack(anyLong(), anyString());
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -109,7 +109,7 @@ class PlaylistTrackControllerTest {
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 requestFields(
-                                        fieldWithPath("playlistIdList.[]").description("플레이리스트 Id 리스트"),
+                                        fieldWithPath("playlistId").description("플레이리스트 Id"),
                                         fieldWithPath("spotifyTrackId").description("스포티파이 트랙 Id")
                                 ),
                                 responseFields(
@@ -127,13 +127,13 @@ class PlaylistTrackControllerTest {
         Cookie accessToken = new Cookie("accessToken", "testToken");
 
         PlaylistTrackRequest playlistTrackRequest = PlaylistTrackRequest.builder()
-                .playlistIdList(List.of(1L,2L,3L))
+                .playlistId(1L)
                 .spotifyTrackId("spotifyTrackId")
                 .build();
 
         doThrow(new PlaylistException("플레이리스트를 찾을 수 없습니다."))
                 .when(playlistTrackService)
-                .createPlaylistTrack(anyList(), anyString());
+                .createPlaylistTrack(anyLong(), anyString());
 
         //when
         ResultActions resultActions = mockMvc.perform(

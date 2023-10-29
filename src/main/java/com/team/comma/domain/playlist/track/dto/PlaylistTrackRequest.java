@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 public class PlaylistTrackRequest {
 
-    private List<Long> playlistIdList;
+    private Long playlistId;
     private String spotifyTrackId;
 
 }
