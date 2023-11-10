@@ -148,7 +148,12 @@ QueryDSL : 복잡한 JPQL 작성시 발생할 수 있는 문법오류를 컴파�
 - Access Token과 Refresh Token은 웹 브라우저 쿠키에 저장하며 httpOnly 옵션으로 보안처리 했습니다
 
 **CI/CD**
-- Jenkins 를 이용하여 지속적인 배포를 구성 , Github Action 을 통해 지속적인 통합을 구성
-- Github Action 을 통해 테스트에 통과되지 않을 경우 Merge가 되지 않습니다.
-- 병합된 코드는 Jenkins WebHook 을 통해 AWS 에 호스팅됩니다.
-- AWS 서버는 프론트엔드 개발자가 테스트를 용이하게 하기 위해 가동했습니다.
+- ~~Jenkins 를 이용하여 지속적인 배포를 구성 , Github Action 을 통해 지속적인 통합을 구성~~
+- ~~Github Action 을 통해 테스트에 통과되지 않을 경우 Merge가 되지 않습니다.~~
+- ~~병합된 코드는 Jenkins WebHook 을 통해 AWS 에 호스팅됩니다.~~
+- ~~AWS 서버는 프론트엔드 개발자가 테스트를 용이하게 하기 위해 가동했습니다.~~
+
+**최종 배포**
+- 개발 완료 시점에 Jenkins, 배포 서버 AWS 인스턴스는 종료하였습니다.
+- 이후 개인 서버(맥 미니)를 활용해여 배포 하였습니다.
+- 상단 배포 링크 및 프로젝트 구조도 참조
