@@ -41,6 +41,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.Cookie;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -468,7 +469,7 @@ class PlaylistControllerTest {
         final String url = "/playlist/alert/day-time";
 
         final PlaylistModifyRequest request = PlaylistModifyRequest.builder()
-                .playlistId(1L).alarmDays(List.of(1,2,3)).build();
+                .playlistId(1L).alarmStartTime(LocalTime.of(12,0,0)).alarmDays(List.of(1,2,3)).build();
 
         doReturn(MessageResponse.of(REQUEST_SUCCESS)).when(playlistService).modifyPlaylistAlarmDayAndTime(any());
 
@@ -486,6 +487,7 @@ class PlaylistControllerTest {
                         preprocessResponse(prettyPrint()),
                         requestFields(
                                 fieldWithPath("playlistId").description("플레이리스트 id"),
+                                fieldWithPath("alarmStartTime").description("알람 설정 시간"),
                                 fieldWithPath("alarmDays.[]").description("알람 설정 요일 리스트 (1 ~ 7 : 월 ~ 일)")
                         ),
                         responseFields(
