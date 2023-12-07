@@ -11,8 +11,8 @@ import java.io.IOException;
 
 public class CreationAccessToken {
 
-    private String clientId = "f6d89d8d397049678cbbf45f829dd85a";
-    private String clientSecret = "cc7efec4579a45789125d76f29e16db0";
+    private String clientId = "9e82664657014649840297d86007bb09";
+    private String clientSecret = "39d768fc6d624899ba13a3472ab8b353";
     private SpotifyApi spotifyApi = new SpotifyApi.Builder().setClientId(clientId)
             .setClientSecret(clientSecret)
             .build();

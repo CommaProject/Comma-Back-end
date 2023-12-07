@@ -55,7 +55,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
 
     //Spotify
-    implementation 'se.michaelthelin.spotify:spotify-web-api-java:8.0.0'
     implementation 'com.github.thelinmichael:spotify-web-api-java:master-SNAPSHOT'
 
     //GOOGLE-GUAVA
