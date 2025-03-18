@@ -116,11 +116,11 @@ comma-back-end
 
 ## Frontend
 **Atomic Design**
- - 작업량이 많아지지 않을 것을 고려하여 보통의 Atomic(아주 작은)을 사용하지 않고 적절한 단위의 Component로 만들었습니다.
+ - 효율적인 작업량을 위하여 보통의 Atomic(아주 작은)을 사용하지 않고 적절한 단위의 Component로 만들었습니다.
 
 **Custom hooks**
  - 모든 API는 react Query를 사용했고 useMutation, uesQuery 등 Custon hooks을 사용하여 코드를 읽고, 쓰기 편하도록 구성하였습니다. 
- - API이외에도 Page에 코드가 난잡해지지 않도록 필요시 Custom hooks를 이용하였습니다.
+ - API이외에도 Page에 코드가 복잡해지지 않도록 필요시 Custom hooks를 이용하였습니다.
 
 **SSR**
  - getStaticProps(Nextjs)를 활용하여 Rendering이 되기 전(pre-rendering)에 Navigation, Login Session 상태를 확인하는데 이용하였습니다.
