@@ -114,6 +114,10 @@ comma-back-end
 
 ![image](https://github.com/CommaProject/Comma-Back-end/assets/39878215/da0bef34-0472-471f-a4e7-67615dc20306)
 
+### 6. Spring 아키텍처
+<img width="1081" height="361" alt="Comma 아키텍처" src="https://github.com/user-attachments/assets/75d5156b-1ff8-4038-90a8-03bb8416a46b" />
+
+
 ## Frontend
 **Atomic Design**
  - 효율적인 작업량을 위하여 보통의 Atomic(아주 작은)을 사용하지 않고 적절한 단위의 Component로 만들었습니다.
